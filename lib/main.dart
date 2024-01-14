@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'features/pokemon/presentation/providers/pokemon_provider.dart';
-import 'features/pokemon/presentation/providers/selected_pokemon_item_provider.dart';
+// import 'features/pokemon/presentation/providers/pokemon_provider.dart';
+// import 'features/pokemon/presentation/providers/selected_pokemon_item_provider.dart';
 import 'features/skeleton/providers/selected_page_provider.dart';
 import 'features/skeleton/skeleton.dart';
 
@@ -19,19 +19,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => SelectedPageProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => PokemonProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => SelectedPokemonItemProvider(),
-        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => PokemonProvider(),
+        // ),
+        // ChangeNotifierProvider(
+        //   create: (context) => SelectedPokemonItemProvider(),
+        // ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Poke Mapp',
+        title: 'CTUE',
         theme: ThemeData(
             useMaterial3: true,
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.teal,
+            primaryColor: Colors.teal,
             appBarTheme: const AppBarTheme(
               titleTextStyle: TextStyle(
                 color: Colors.black87,
@@ -58,11 +59,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
-    SelectedPokemonItemProvider selectedPokemonItem = Provider.of<SelectedPokemonItemProvider>(context, listen: false);
+    // SelectedPokemonItemProvider selectedPokemonItem =
+    //     Provider.of<SelectedPokemonItemProvider>(context, listen: false);
 
-    Provider.of<PokemonProvider>(context, listen: false).eitherFailureOrPokemon(
-      value: (selectedPokemonItem.number + 1).toString(),
-    );
+    // Provider.of<PokemonProvider>(context, listen: false).eitherFailureOrPokemon(
+    //   value: (selectedPokemonItem.number + 1).toString(),
+    // );
     super.initState();
   }
 
