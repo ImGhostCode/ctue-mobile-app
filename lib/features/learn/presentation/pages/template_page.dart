@@ -5,9 +5,17 @@ class LearnPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('CTUE'),
+      ),
       body: Center(
-        child: Text('Learn'),
+        child: ElevatedButton(
+            child: Text('login page'),
+            onPressed: () {
+              Navigator.pushNamed(context, '/login');
+            }),
       ),
     );
   }

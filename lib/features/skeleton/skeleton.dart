@@ -25,10 +25,10 @@ class Skeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     int selectedPage = Provider.of<SelectedPageProvider>(context).selectedPage;
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('CTUE'),
-      ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: const Text('CTUE'),
+      // ),
       body: pages[selectedPage],
       bottomNavigationBar: const CustomBottomBarWidget(),
     );

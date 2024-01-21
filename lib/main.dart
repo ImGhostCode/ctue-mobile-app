@@ -1,3 +1,7 @@
+import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
+import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
+import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
+import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'features/pokemon/presentation/providers/pokemon_provider.dart';
@@ -70,6 +74,61 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return const Skeleton();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'CTUE Learn English',
+      theme: ThemeData(
+          fontFamily: 'Roboto',
+          useMaterial3: true,
+
+          // Define the default brightness and colors.
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.teal,
+            secondary: Colors.teal.shade300,
+            // ···
+            brightness: Brightness.light,
+          ),
+          textTheme: TextTheme(
+            displayLarge: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+            // ···
+            titleLarge:
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            titleMedium:
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            labelMedium: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+
+            bodyMedium: const TextStyle(
+              fontSize: 14,
+            ),
+            bodyLarge: const TextStyle(
+              fontSize: 18,
+            ),
+            displaySmall: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15))),
+                  backgroundColor: const MaterialStatePropertyAll(Colors.teal),
+                  foregroundColor: const MaterialStatePropertyAll(Colors.white),
+                  textStyle: const MaterialStatePropertyAll(TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w600))))),
+      initialRoute: '/',
+      routes: {
+        // '/': (context) => const Skeleton(),
+        '/': (context) => const VerifyCodePage(),
+        // '/verify-code': (context) => const VerifyCodePage(),
+        '/login': (context) => const LoginPage(),
+        '/reset-password': (context) => const ResetPasswordPage(),
+        '/sign-up': (context) => const SignUpPage(),
+      },
+    );
+    // return const Skeleton();
   }
 }
