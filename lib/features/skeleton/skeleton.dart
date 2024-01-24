@@ -1,5 +1,5 @@
 import 'package:ctue_app/features/contribute/presentation/pages/template_page.dart';
-import 'package:ctue_app/features/learn/presentation/pages/template_page.dart';
+import 'package:ctue_app/features/home/presentation/pages/home_page.dart';
 import 'package:ctue_app/features/practice/presentation/pages/template_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/template_page.dart';
 import 'package:flutter/material.dart';
@@ -9,11 +9,11 @@ import 'package:provider/provider.dart';
 import 'widgets/custom_bottom_bar_widget.dart';
 import 'providers/selected_page_provider.dart';
 
-List<Widget> pages = const [
-  LearnPage(),
-  ContributePage(),
-  PracticePage(),
-  ProfilePage(),
+List<Widget> pages = [
+  HomePage(),
+  const ContributePage(),
+  const PracticePage(),
+  const ProfilePage(),
   // PokemonPage(),
   // DataPage(),
 ];
