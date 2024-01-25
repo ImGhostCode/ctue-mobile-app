@@ -16,6 +16,7 @@ dependencies:
   provider: ^6.0.5
   path_provider: ^2.1.0
   cupertino_icons: ^1.0.2
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -26,7 +27,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    # - assets/images/icons/
+    - assets/images/icons/
   fonts:
     - family: Roboto
       fonts:
@@ -42,3 +43,6 @@ flutter:
           weight: 900
         - asset: assets/fonts/Poppins-Italic.ttf
           style: italic
+    - family: DoulosSIL
+      fonts:
+        - asset: assets/fonts/DoulosSIL-Regular.ttf

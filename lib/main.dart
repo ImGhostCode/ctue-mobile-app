@@ -90,27 +90,26 @@ class _HomeState extends State<Home> {
             brightness: Brightness.light,
           ),
           textTheme: TextTheme(
-            displayLarge: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey.shade700),
-            // ···
-            titleLarge:
-                const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            titleMedium:
-                const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            labelMedium:
-                const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-
-            bodyMedium: const TextStyle(
-              fontSize: 14,
-            ),
-            bodyLarge:
-                const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             displaySmall: TextStyle(
-                fontSize: 13,
-                color: Colors.grey.shade600,
-                fontWeight: FontWeight.w500),
+                fontWeight: FontWeight.bold, color: Colors.blueGrey.shade700),
+            // ···
+            titleLarge: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.blueGrey.shade700),
+            // titleMedium:
+            //     const TextStyle(
+            //       // fontSize: 18,
+            //      fontWeight: FontWeight.w600),
+            labelMedium: const TextStyle(
+                // fontSize: 13,
+                fontWeight: FontWeight.bold),
+
+            bodyMedium: TextStyle(
+                color: Colors.grey.shade500, fontWeight: FontWeight.w600),
+            bodyLarge: const TextStyle(fontWeight: FontWeight.w600),
+            // displaySmall: TextStyle(
+            //     // fontSize: 13,
+            //     color: Colors.grey.shade600,
+            //     fontWeight: FontWeight.w500),
           ),
           appBarTheme: AppBarTheme(backgroundColor: Colors.blue.shade800),
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -124,7 +123,7 @@ class _HomeState extends State<Home> {
       initialRoute: '/',
       routes: {
         '/': (context) => const Skeleton(),
-        // '/': (context) => const VerifyCodePage(),
+        // '/': (context) => const LoginPage(),
         // '/verify-code': (context) => const VerifyCodePage(),
         '/login': (context) => const LoginPage(),
         '/reset-password': (context) => const ResetPasswordPage(),

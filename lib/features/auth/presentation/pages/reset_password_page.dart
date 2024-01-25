@@ -23,9 +23,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           'Khôi phục mật khẩu',
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         centerTitle: true,
         leading: IconButton(
@@ -177,7 +178,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     'Tiếp tục',
                     style: Theme.of(context)
                         .textTheme
-                        .titleMedium!
+                        .bodyLarge!
                         .copyWith(color: Colors.white),
                   ),
                 ),

@@ -1,4 +1,4 @@
-import 'package:ctue_app/features/contribute/presentation/pages/template_page.dart';
+import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/home_page.dart';
 import 'package:ctue_app/features/practice/presentation/pages/template_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/template_page.dart';

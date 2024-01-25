@@ -13,9 +13,10 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           'Nhập mã',
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         centerTitle: true,
         leading: IconButton(
@@ -33,7 +34,10 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
           const SizedBox(
             height: 10,
           ),
-          const Text('Nhập mã gồm 6 chữ số được gửi đến email của bạn'),
+          Text(
+            'Nhập mã gồm 6 chữ số được gửi đến email của bạn',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
             child: Form(
@@ -50,7 +54,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                       }
                     },
                     onSaved: (pin1) {},
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w900, color: Colors.grey),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -75,7 +79,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                       }
                     },
                     onSaved: (pin1) {},
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w900, color: Colors.grey),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -100,7 +104,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                       }
                     },
                     onSaved: (pin1) {},
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w900, color: Colors.grey),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -125,7 +129,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                       }
                     },
                     onSaved: (pin1) {},
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w900, color: Colors.grey),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -150,7 +154,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                       }
                     },
                     onSaved: (pin1) {},
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w900, color: Colors.grey),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -175,7 +179,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                       }
                     },
                     onSaved: (pin1) {},
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w900, color: Colors.grey),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -221,7 +225,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                 'Xác nhận',
                 style: Theme.of(context)
                     .textTheme
-                    .titleMedium!
+                    .bodyLarge!
                     .copyWith(color: Colors.white),
               ),
             ),

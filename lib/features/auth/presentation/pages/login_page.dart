@@ -20,9 +20,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           'Đăng nhập',
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         centerTitle: true,
         leading: IconButton(
@@ -51,7 +52,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   hintText: 'Nhập email của bạn',
                   alignLabelWithHint: true,
                   hintStyle: TextStyle(
@@ -84,7 +86,8 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 obscureText: !isPasswordVisible,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   hintText: 'Nhập mật khẩu',
                   alignLabelWithHint: true,
                   hintStyle: TextStyle(
@@ -124,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: Text(
                           'Quên mật khẩu?',
-                          style: Theme.of(context).textTheme.displaySmall,
+                          style: Theme.of(context).textTheme.bodySmall,
                         )),
                   ),
                 ],
@@ -156,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                     'Đăng nhập',
                     style: Theme.of(context)
                         .textTheme
-                        .titleMedium!
+                        .bodyLarge!
                         .copyWith(color: Colors.white),
                   ),
                 ),
@@ -166,7 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Text(
                     'Bạn chưa có tài khoản?',
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),

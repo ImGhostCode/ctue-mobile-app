@@ -47,6 +47,7 @@ class HomePage extends StatelessWidget {
               icon: const Icon(
                 Icons.notifications,
                 color: Colors.white,
+                size: 28,
               ))
         ],
       ),
@@ -58,7 +59,7 @@ class HomePage extends StatelessWidget {
             children: [
               RichText(
                 text: TextSpan(
-                  text: 'Hello,\n',
+                  text: 'Welcome back,\n',
                   style: Theme.of(context).textTheme.bodyMedium,
                   children: <TextSpan>[
                     TextSpan(
@@ -75,7 +76,7 @@ class HomePage extends StatelessWidget {
               ),
               Text(
                 'Đề xuất cho bạn',
-                style: Theme.of(context).textTheme.displayLarge,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(
                 height: 90.0, // Set a fixed height for the ListView
@@ -108,7 +109,7 @@ class HomePage extends StatelessWidget {
               ),
               Text(
                 'Công cụ và tính năng',
-                style: Theme.of(context).textTheme.displayLarge,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(
                 height: 10,

@@ -23,9 +23,10 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           'Tạo tài khoản',
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         centerTitle: true,
         leading: IconButton(
@@ -208,7 +209,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     'Đăng ký',
                     style: Theme.of(context)
                         .textTheme
-                        .titleMedium!
+                        .bodyLarge!
                         .copyWith(color: Colors.white),
                   ),
                 ),
@@ -218,7 +219,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   Text(
                     'Bạn đã có tài khoản',
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
