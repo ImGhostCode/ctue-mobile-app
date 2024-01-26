@@ -1,3 +1,4 @@
+import 'package:ctue_app/features/contribute/presentation/widgets/sen_con_form.dart';
 import 'package:ctue_app/features/contribute/presentation/widgets/voca_con_form.dart';
 import 'package:flutter/material.dart';
 
@@ -43,6 +44,7 @@ class ContributePage extends StatelessWidget {
                 ),
                 const TabBar(
                   indicatorSize: TabBarIndicatorSize.tab,
+                  // isScrollable: false,
                   tabs: <Widget>[
                     Tab(
                       text: 'Đóng góp từ',
@@ -55,12 +57,8 @@ class ContributePage extends StatelessWidget {
                 Expanded(
                   child: TabBarView(
                     children: <Widget>[
-                      Center(
-                        child: VocaConForm(),
-                      ),
-                      Center(
-                        child: Text("It's rainy here"),
-                      ),
+                      VocaConForm(),
+                      SenConForm(),
                     ],
                   ),
                 ),

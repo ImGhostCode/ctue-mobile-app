@@ -473,7 +473,7 @@ class _VocaConFormState extends State<VocaConForm> {
                     headerBuilder: (BuildContext context, bool isExpanded) {
                       return ListTile(
                         title: Text(
-                          'Chọn chủ đề',
+                          'Thêms chủ đề',
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
