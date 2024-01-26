@@ -119,7 +119,7 @@ class _HomeState extends State<Home> {
                   backgroundColor: const MaterialStatePropertyAll(Colors.teal),
                   foregroundColor: const MaterialStatePropertyAll(Colors.white),
                   textStyle: const MaterialStatePropertyAll(TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w600))))),
+                      color: Colors.white, fontWeight: FontWeight.w500))))),
       initialRoute: '/',
       routes: {
         '/': (context) => const Skeleton(),
