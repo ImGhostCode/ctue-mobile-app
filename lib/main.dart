@@ -2,6 +2,8 @@ import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
+import 'package:ctue_app/features/practice/presentation/pages/correct_word_page.dart';
+import 'package:ctue_app/features/practice/presentation/pages/word_match_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'features/pokemon/presentation/providers/pokemon_provider.dart';
@@ -128,6 +130,8 @@ class _HomeState extends State<Home> {
         '/login': (context) => const LoginPage(),
         '/reset-password': (context) => const ResetPasswordPage(),
         '/sign-up': (context) => const SignUpPage(),
+        '/correct-word': (context) => const CorrectWordPage(),
+        '/word-match': (context) => const WordMatchPage()
       },
     );
     // return const Skeleton();

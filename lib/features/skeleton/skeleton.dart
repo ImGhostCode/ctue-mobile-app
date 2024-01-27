@@ -1,6 +1,6 @@
 import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/home_page.dart';
-import 'package:ctue_app/features/practice/presentation/pages/template_page.dart';
+import 'package:ctue_app/features/practice/presentation/pages/practice_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/template_page.dart';
 import 'package:flutter/material.dart';
 // import '../pokemon/presentation/pages/data_page.dart';
@@ -12,7 +12,7 @@ import 'providers/selected_page_provider.dart';
 List<Widget> pages = [
   HomePage(),
   const ContributePage(),
-  const PracticePage(),
+  PracticePage(),
   const ProfilePage(),
   // PokemonPage(),
   // DataPage(),

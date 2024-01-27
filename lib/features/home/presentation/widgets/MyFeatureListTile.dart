@@ -18,14 +18,14 @@ class MyFeatureListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      horizontalTitleGap: 8,
+      horizontalTitleGap: 10,
       minVerticalPadding: 8,
       titleTextStyle: const TextStyle(color: Colors.yellow),
       tileColor: Colors.green,
       leading: Image.asset(
         imagePath,
-        height: 50,
-        width: 50,
+        height: 40,
+        width: 40,
       ),
       title: Text(
         title,

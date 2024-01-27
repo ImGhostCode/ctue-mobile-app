@@ -233,7 +233,7 @@ class _SenConFormState extends State<SenConForm> {
                         ],
                       ),
                       const SizedBox(
-                        height: 5,
+                        height: 10,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
