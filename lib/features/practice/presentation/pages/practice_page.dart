@@ -89,7 +89,7 @@ class PracticePage extends StatelessWidget {
               ),
               SizedBox(
                 // Adding a Container to provide constraints
-                height: 150, // You can adjust these values based on your design
+                height: 170, // You can adjust these values based on your design
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
@@ -160,8 +160,11 @@ class PracticePage extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Expanded(
+              SizedBox(
+                height: 80,
                 child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  physics: const NeverScrollableScrollPhysics(),
                   separatorBuilder: (context, index) => const SizedBox(
                     height: 5,
                   ),
@@ -172,7 +175,17 @@ class PracticePage extends StatelessWidget {
                       subtitle: features[index].subtitle,
                       onTap: features[index].onTap),
                 ),
-              )
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                'Thư viên kỹ năng',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),
