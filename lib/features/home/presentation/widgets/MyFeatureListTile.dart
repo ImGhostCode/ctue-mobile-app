@@ -19,7 +19,7 @@ class MyFeatureListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       horizontalTitleGap: 10,
-      minVerticalPadding: 8,
+      minVerticalPadding: 5,
       titleTextStyle: const TextStyle(color: Colors.yellow),
       tileColor: Colors.green,
       leading: Image.asset(

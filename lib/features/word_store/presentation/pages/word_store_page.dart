@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class TemplatePage extends StatelessWidget {
-  const TemplatePage({Key? key}) : super(key: key);
+class WordStorePage extends StatelessWidget {
+  const WordStorePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text('Template'),
+        child: Text('Word Store'),
       ),
     );
   }
