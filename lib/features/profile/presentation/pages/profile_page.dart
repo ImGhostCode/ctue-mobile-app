@@ -267,6 +267,7 @@ class ProfilePage extends StatelessWidget {
                                       stop1: 0.6,
                                       stop2: 0.4,
                                       percent: 60,
+                                      fontSize: 30,
                                     ),
                                   ],
                                 ),

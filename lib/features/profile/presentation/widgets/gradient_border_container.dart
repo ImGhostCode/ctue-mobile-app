@@ -8,6 +8,7 @@ class GradientBorderContainer extends StatelessWidget {
   final double stop1;
   final double stop2;
   final int percent;
+  final double fontSize;
 
   const GradientBorderContainer(
       {required this.diameter,
@@ -16,7 +17,8 @@ class GradientBorderContainer extends StatelessWidget {
       required this.borderColor2,
       required this.stop1,
       required this.stop2,
-      required this.percent});
+      required this.percent,
+      required this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +30,8 @@ class GradientBorderContainer extends StatelessWidget {
         gradient: LinearGradient(
           colors: [borderColor1, borderColor2],
           stops: [stop1, stop2],
-          begin: Alignment.topLeft,
-          end: Alignment.topRight,
+          begin: Alignment.topRight,
+          end: Alignment.topLeft,
         ),
       ),
       child: Container(
@@ -41,7 +43,7 @@ class GradientBorderContainer extends StatelessWidget {
         child: Center(
           child: Text(
             '$percent',
-            style: TextStyle(fontSize: 30, color: borderColor1),
+            style: TextStyle(fontSize: fontSize, color: borderColor1),
           ),
         ),
       ),

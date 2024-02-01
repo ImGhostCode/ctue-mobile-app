@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
                                         TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14,
-                                            fontWeight: FontWeight.w500)),
+                                            fontWeight: FontWeight.w600)),
                                 elevation: const MaterialStatePropertyAll(0),
                                 backgroundColor: MaterialStatePropertyAll(
                                     Colors.grey.shade100),
@@ -227,7 +227,10 @@ class HomePage extends StatelessWidget {
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyLarge!
-                                        .copyWith(color: Colors.teal),
+                                        .copyWith(color: Colors.red),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
                                   ),
                                   ElevatedButton(
                                       onPressed: () {},
@@ -241,7 +244,7 @@ class HomePage extends StatelessWidget {
                                   width: 100,
                                   child: Image.asset(
                                     'assets/images/note.png',
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.fill,
                                   )))
                         ],
                       ),
