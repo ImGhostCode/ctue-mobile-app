@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'features/skeleton/providers/selected_page_provider.dart';
 import 'features/skeleton/skeleton.dart';
 
+import 'package:rename/rename.dart';
+
 void main() {
   runApp(const MyApp());
 }
