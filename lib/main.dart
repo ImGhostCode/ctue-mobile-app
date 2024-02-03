@@ -2,8 +2,14 @@ import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
-import 'package:ctue_app/features/practice/presentation/pages/correct_word_page.dart';
-import 'package:ctue_app/features/practice/presentation/pages/word_match_page.dart';
+import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.dart';
+import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart';
+import 'package:ctue_app/features/game/presentation/pages/game_page.dart';
+import 'package:ctue_app/features/game/presentation/pages/word_match_page.dart';
+import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
+import 'package:ctue_app/features/word_store/presentation/pages/statistic_learned_words.dart';
+import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_set_detail.dart';
+import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_sets_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'features/pokemon/presentation/providers/pokemon_provider.dart';
@@ -99,10 +105,9 @@ class _HomeState extends State<Home> {
             // ···
             titleLarge: TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.blueGrey.shade700),
-            // titleMedium:
-            //     const TextStyle(
-            //       // fontSize: 18,
-            //      fontWeight: FontWeight.w600),
+            titleMedium: const TextStyle(
+                // fontSize: 18,
+                fontWeight: FontWeight.w600),
             labelMedium: const TextStyle(
                 // fontSize: 13,
                 fontWeight: FontWeight.bold),
@@ -133,7 +138,14 @@ class _HomeState extends State<Home> {
         '/reset-password': (context) => const ResetPasswordPage(),
         '/sign-up': (context) => const SignUpPage(),
         '/correct-word': (context) => const CorrectWordPage(),
-        '/word-match': (context) => const WordMatchPage()
+        '/word-match': (context) => const WordMatchPage(),
+        '/contribution': (context) => const ContributePage(),
+        '/games': (context) => GamePage(),
+        '/create-vocabulary-set': (context) => const CreateVocabularySet(),
+        '/vocabulary-sets': (context) => const VocabularySets(),
+        '/vocabulary-set-detail': (context) => const VocabularySetDetail(),
+        '/statistic-learned-words': (context) =>
+            const StatisticLearnedWordPage(),
       },
     );
     // return const Skeleton();

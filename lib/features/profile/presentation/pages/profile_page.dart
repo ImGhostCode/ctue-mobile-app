@@ -408,92 +408,10 @@ class ProfilePage extends StatelessWidget {
                                     },
                                   ),
                                 )
-
-                                // ListTile(
-                                //   horizontalTitleGap: 10,
-                                //   contentPadding: EdgeInsets.zero,
-                                //   leading: Container(
-                                //     width: size,
-                                //     height: size,
-                                //     child: Transform.rotate(
-                                //       angle: HexagonClipper().degToRad(90),
-                                //       child: ClipPath(
-                                //         clipper: HexagonClipper(),
-                                //         child: Container(
-                                //             color: color,
-                                //             child: Transform.rotate(
-                                //               angle: HexagonClipper().degToRad(-90),
-                                //               child: const Icon(
-                                //                 Icons.mic,
-                                //                 size: 30,
-                                //                 color: Colors.white,
-                                //               ),
-                                //             )),
-                                //       ),
-                                //     ),
-                                //   ),
-                                //   title: Text(
-                                //     'Phát âm',
-                                //     style: Theme.of(context).textTheme.bodyLarge,
-                                //   ),
-                                //   subtitle: Text(
-                                //     'so với người bản sư',
-                                //     style: Theme.of(context).textTheme.bodySmall,
-                                //   ),
-                                //   trailing: Container(
-                                //     width: 100,
-                                //     height: 150,
-                                //     decoration: BoxDecoration(
-                                //       // shape: BoxShape.circle,
-                                //       color: color,
-                                //     ),
-                                //   ),
-                                // )
                               ]),
                         ),
                         const SizedBox(
                           width: 15,
-                        ),
-                        Container(
-                          width: 260,
-                          height: 240,
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey
-                                    .withOpacity(0.5), // Shadow color
-                                spreadRadius: 1, // Spread radius
-                                blurRadius: 5, // Blur radius
-                                // offset: Offset(1, 1), // Offset
-                              ),
-                            ],
-                          ),
-                          child: Column(children: []),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Container(
-                          width: 260,
-                          height: 240,
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey
-                                    .withOpacity(0.5), // Shadow color
-                                spreadRadius: 1, // Spread radius
-                                blurRadius: 5, // Blur radius
-                                // offset: Offset(1, 1), // Offset
-                              ),
-                            ],
-                          ),
-                          child: Column(children: []),
                         ),
                       ],
                     ))

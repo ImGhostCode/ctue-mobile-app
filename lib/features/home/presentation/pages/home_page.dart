@@ -1,41 +1,48 @@
-import 'package:ctue_app/features/home/presentation/widgets/MyFeatureListTile.dart';
 import 'package:ctue_app/features/word_store/presentation/widgets/reminder.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
 
-  final List<LearningSource> _learningSources = [
-    LearningSource(
-      icon: Icons.abc,
-      title: 'Bảng phiên âm IPA',
-      bgColor: Colors.green,
-      onTap: () {},
-    ),
-    LearningSource(
-      icon: Icons.record_voice_over_outlined,
-      title: 'Mẫu câu giao tiếp',
-      bgColor: Colors.blueAccent,
-      onTap: () {},
-    ),
-    LearningSource(
-      icon: Icons.menu_book,
-      title: 'Từ điển',
-      bgColor: Colors.yellow,
-      onTap: () {},
-    ),
-    LearningSource(
-      icon: Icons.article,
-      title: 'Động từ bất quy tắc',
-      bgColor: Colors.orange,
-      onTap: () {},
-    ),
-  ];
-
   bool isDark = false;
 
   @override
   Widget build(BuildContext context) {
+    final List<LearningSource> _learningSources = [
+      LearningSource(
+        icon: Icons.abc,
+        title: 'Bảng phiên âm IPA',
+        bgColor: Colors.green,
+        onTap: () {},
+      ),
+      LearningSource(
+        icon: Icons.record_voice_over_outlined,
+        title: 'Mẫu câu giao tiếp',
+        bgColor: Colors.blueAccent,
+        onTap: () {},
+      ),
+      LearningSource(
+        icon: Icons.menu_book,
+        title: 'Từ điển',
+        bgColor: Colors.yellow,
+        onTap: () {},
+      ),
+      LearningSource(
+        icon: Icons.article,
+        title: 'Động từ bất quy tắc',
+        bgColor: Colors.orange,
+        onTap: () {},
+      ),
+      LearningSource(
+        icon: Icons.sports_esports,
+        title: 'Game',
+        bgColor: Colors.teal.shade400,
+        onTap: () {
+          Navigator.pushNamed(context, '/games');
+        },
+      ),
+    ];
+
     return Scaffold(
         appBar: AppBar(
           // centerTitle: true,
@@ -208,7 +215,7 @@ class HomePage extends StatelessWidget {
                 ),
 
                 Container(
-                  height: 200,
+                  height: 240,
                   width: MediaQuery.of(context).size.width,
                   padding: const EdgeInsets.all(8),
                   decoration: const BoxDecoration(color: Colors.white),
@@ -241,14 +248,14 @@ class HomePage extends StatelessWidget {
                                 children: [
                                   Container(
                                     margin: const EdgeInsets.only(bottom: 5),
-                                    padding: const EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
                                       color: _learningSources[index].bgColor,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Icon(
                                       _learningSources[index].icon,
-                                      size: 28,
+                                      size: 26,
                                       color: Colors.white,
                                     ),
                                   ),

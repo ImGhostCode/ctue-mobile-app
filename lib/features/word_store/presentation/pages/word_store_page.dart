@@ -11,6 +11,8 @@ class WordStorePage extends StatefulWidget {
   State<WordStorePage> createState() => _WordStorePageState();
 }
 
+enum SampleItem { itemOne, itemTwo, itemThree }
+
 class _WordStorePageState extends State<WordStorePage> {
   late List<_ChartData> data;
   late TooltipBehavior _tooltip;
@@ -168,35 +170,40 @@ class _WordStorePageState extends State<WordStorePage> {
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Expanded(
-              child: SfCartesianChart(
-                  primaryXAxis: const CategoryAxis(),
-                  primaryYAxis: const NumericAxis(
-                    isVisible: false,
-                  ),
-                  enableAxisAnimation: true,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/statistic-learned-words');
+                },
+                child: SfCartesianChart(
+                    primaryXAxis: const CategoryAxis(),
+                    primaryYAxis: const NumericAxis(
+                      isVisible: false,
+                    ),
+                    enableAxisAnimation: true,
 
-                  // tooltipBehavior: _tooltip,
-                  series: <CartesianSeries<_ChartData, String>>[
-                    ColumnSeries<_ChartData, String>(
-                        dataSource: data,
-                        xValueMapper: (_ChartData data, _) => data.x,
-                        yValueMapper: (_ChartData data, _) => data.y,
-                        pointColorMapper: (_ChartData data, _) => data.color,
-                        name: 'Gold',
-                        color: Color.fromRGBO(8, 142, 255, 1),
-                        dataLabelMapper: (_ChartData data, _) =>
-                            '${data.y!.toInt()} từ',
-                        width: 0.5,
-                        dataLabelSettings: const DataLabelSettings(
-                          isVisible: true,
+                    // tooltipBehavior: _tooltip,
+                    series: <CartesianSeries<_ChartData, String>>[
+                      ColumnSeries<_ChartData, String>(
+                          dataSource: data,
+                          xValueMapper: (_ChartData data, _) => data.x,
+                          yValueMapper: (_ChartData data, _) => data.y,
+                          pointColorMapper: (_ChartData data, _) => data.color,
+                          name: 'Gold',
+                          color: Color.fromRGBO(8, 142, 255, 1),
+                          dataLabelMapper: (_ChartData data, _) =>
+                              '${data.y!.toInt()} từ',
+                          width: 0.5,
+                          dataLabelSettings: const DataLabelSettings(
+                            isVisible: true,
 
-                          // Positioning the data label
-                          // useSeriesColor: true,
-                        ),
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            topRight: Radius.circular(8)))
-                  ]),
+                            // Positioning the data label
+                            // useSeriesColor: true,
+                          ),
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8)))
+                    ]),
+              ),
             )
           ]),
         ),
@@ -227,7 +234,7 @@ class _WordStorePageState extends State<WordStorePage> {
               Expanded(
                   child: Container(
                 height: 50,
-                margin: EdgeInsets.only(right: 10),
+                margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12)),
@@ -239,7 +246,9 @@ class _WordStorePageState extends State<WordStorePage> {
                       elevation: const MaterialStatePropertyAll(0),
                       backgroundColor:
                           const MaterialStatePropertyAll(Colors.white)),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/create-vocabulary-set');
+                  },
                   child: Row(children: [
                     const Icon(
                       Icons.create_new_folder_rounded,
@@ -261,7 +270,7 @@ class _WordStorePageState extends State<WordStorePage> {
               Expanded(
                   child: Container(
                 height: 50,
-                margin: EdgeInsets.only(right: 10),
+                margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12)),
@@ -273,7 +282,9 @@ class _WordStorePageState extends State<WordStorePage> {
                       elevation: const MaterialStatePropertyAll(0),
                       backgroundColor:
                           const MaterialStatePropertyAll(Colors.white)),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/vocabulary-sets');
+                  },
                   child: Row(children: [
                     const Icon(
                       Icons.library_books,
@@ -320,43 +331,108 @@ class _WordStorePageState extends State<WordStorePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(12),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                tileColor: Colors.white,
-                leading: _vocabularySets[index].title == 'Default'
-                    ? Container(
-                        height: 55,
-                        width: 55,
-                        decoration: BoxDecoration(
-                          // color: const Color(0xff7c94b6),
-                          color: Colors.blue.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.folder,
-                          color: Colors.blue,
-                          size: 30,
-                        ),
-                      )
-                    : Container(
-                        height: 55,
-                        width: 55,
-                        decoration: BoxDecoration(
-                          // color: const Color(0xff7c94b6),
-                          image: const DecorationImage(
-                            image: NetworkImage(
-                                'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'),
-                            fit: BoxFit.cover,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/vocabulary-set-detail',
+                      arguments: VocabularySetArguments(id: index));
+                },
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  tileColor: Colors.white,
+                  leading: _vocabularySets[index].title == 'Default'
+                      ? Container(
+                          height: 55,
+                          width: 55,
+                          decoration: BoxDecoration(
+                            // color: const Color(0xff7c94b6),
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          borderRadius: BorderRadius.circular(12),
+                          child: const Icon(
+                            Icons.folder,
+                            color: Colors.blue,
+                            size: 30,
+                          ),
+                        )
+                      : Container(
+                          height: 55,
+                          width: 55,
+                          decoration: BoxDecoration(
+                            // color: const Color(0xff7c94b6),
+                            image: const DecorationImage(
+                              image: NetworkImage(
+                                  'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ),
-                title: Text(_vocabularySets[index].title),
-                trailing: _vocabularySets[index].title != 'Default'
-                    ? const Icon(Icons.more_vert)
-                    : null,
+                  title: Text(_vocabularySets[index].title),
+                  trailing: _vocabularySets[index].title != 'Default'
+                      ? IconButton(
+                          icon: const Icon(Icons.more_vert),
+                          onPressed: () => showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              // title: Text(
+                              //   'AlertDialog Title $index',
+                              // ),
+                              buttonPadding: EdgeInsets.zero,
+                              contentPadding: EdgeInsets.zero,
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(3)),
+                              content: SizedBox(
+                                height: 65,
+                                width: MediaQuery.of(context).size.width - 100,
+                                child: ListView(children: [
+                                  TextButton(
+                                      style: const ButtonStyle(
+                                          shape: MaterialStatePropertyAll(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.zero)),
+                                          backgroundColor:
+                                              MaterialStatePropertyAll(
+                                                  Colors.white)),
+                                      onPressed: () {},
+                                      child: const Text(
+                                          textAlign: TextAlign.left,
+                                          'Đổi tên')),
+                                  TextButton(
+                                      style: const ButtonStyle(
+                                          padding: MaterialStatePropertyAll(
+                                              EdgeInsets.all(8)),
+                                          shape: MaterialStatePropertyAll(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.zero)),
+                                          backgroundColor:
+                                              MaterialStatePropertyAll(
+                                                  Colors.white)),
+                                      onPressed: () {},
+                                      child: const Text(
+                                          textAlign: TextAlign.right, 'Xóa'))
+                                ]),
+                              ),
+                              // actions: <Widget>[
+                              //   TextButton(
+                              //     onPressed: () =>
+                              //         Navigator.pop(context, 'Cancel'),
+                              //     child: const Text('Cancel'),
+                              //   ),
+                              //   TextButton(
+                              //     onPressed: () => Navigator.pop(context, 'OK'),
+                              //     child: const Text('OK'),
+                              //   ),
+                              // ],
+                            ),
+                          ),
+                        )
+                      : null,
+                ),
               ));
         },
       ),
@@ -376,4 +452,10 @@ class VocabularySet {
   final String title;
 
   VocabularySet({this.image, required this.title});
+}
+
+class VocabularySetArguments {
+  final int id;
+
+  VocabularySetArguments({required this.id});
 }

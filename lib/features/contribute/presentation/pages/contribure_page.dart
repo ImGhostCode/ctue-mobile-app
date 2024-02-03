@@ -12,6 +12,9 @@ class ContributePage extends StatelessWidget {
         initialIndex: 0,
         length: 2,
         child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+          ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
