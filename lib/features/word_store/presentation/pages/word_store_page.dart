@@ -1,4 +1,5 @@
 import 'package:ctue_app/features/word_store/presentation/pages/spaced_repetition_detail.dart';
+import 'package:ctue_app/features/word_store/presentation/widgets/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -68,7 +69,7 @@ class _WordStorePageState extends State<WordStorePage> {
                 Container(
                   height: 160,
                   width: double.infinity,
-                  color: Colors.blue.shade600,
+                  color: Colors.blue.shade800,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -112,7 +113,7 @@ class _WordStorePageState extends State<WordStorePage> {
               ],
             ),
           ),
-          _buildReminder(context),
+          Reminder(),
           _buildVocabularySetManagement(context),
           const SizedBox(
             height: 10,
@@ -201,55 +202,6 @@ class _WordStorePageState extends State<WordStorePage> {
         ),
       ),
     );
-  }
-
-  Container _buildReminder(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(color: Colors.grey.shade100),
-        child: Container(
-          margin: EdgeInsets.all(16),
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: Colors.blue.shade50,
-              boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 3)]),
-          child: Row(
-            children: [
-              Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Đã đến lúc ôn tập',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      Text(
-                        '3 từ',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(color: Colors.red),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {}, child: const Text('Ôn tập ngay'))
-                    ],
-                  )),
-              Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Image.asset(
-                        'assets/images/note.png',
-                        fit: BoxFit.fill,
-                      )))
-            ],
-          ),
-        ));
   }
 
   Container _buildVocabularySetManagement(BuildContext context) {
