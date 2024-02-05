@@ -6,6 +6,7 @@ import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.
 import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/game_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/word_match_page.dart';
+import 'package:ctue_app/features/home/presentation/pages/ipa_page.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/statistic_learned_words.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_set_detail.dart';
@@ -141,6 +142,7 @@ class _HomeState extends State<Home> {
         '/word-match': (context) => const WordMatchPage(),
         '/contribution': (context) => const ContributePage(),
         '/games': (context) => GamePage(),
+        '/api': (context) => const IPA(),
         '/create-vocabulary-set': (context) => const CreateVocabularySet(),
         '/vocabulary-sets': (context) => const VocabularySets(),
         '/vocabulary-set-detail': (context) => const VocabularySetDetail(),

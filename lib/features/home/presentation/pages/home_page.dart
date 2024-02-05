@@ -13,7 +13,9 @@ class HomePage extends StatelessWidget {
         icon: Icons.abc,
         title: 'Bảng phiên âm IPA',
         bgColor: Colors.green,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, '/api');
+        },
       ),
       LearningSource(
         icon: Icons.record_voice_over_outlined,
