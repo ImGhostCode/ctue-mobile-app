@@ -53,7 +53,9 @@ class HomePage extends StatelessWidget {
               width: 150),
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/notification');
+                },
                 icon: const Icon(
                   Icons.notifications,
                   color: Colors.white,

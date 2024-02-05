@@ -7,6 +7,9 @@ import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart
 import 'package:ctue_app/features/game/presentation/pages/game_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/word_match_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/ipa_page.dart';
+import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
+import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
+import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/statistic_learned_words.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_set_detail.dart';
@@ -106,9 +109,8 @@ class _HomeState extends State<Home> {
             // ···
             titleLarge: TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.blueGrey.shade700),
-            titleMedium: const TextStyle(
-                // fontSize: 18,
-                fontWeight: FontWeight.w600),
+            titleMedium:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             labelMedium: const TextStyle(
                 // fontSize: 13,
                 fontWeight: FontWeight.bold),
@@ -142,7 +144,10 @@ class _HomeState extends State<Home> {
         '/word-match': (context) => const WordMatchPage(),
         '/contribution': (context) => const ContributePage(),
         '/games': (context) => GamePage(),
+        '/setting': (context) => SettingPage(),
+        '/user-info': (context) => UserInfoPage(),
         '/api': (context) => const IPA(),
+        '/notification': (context) => const NotificationPage(),
         '/create-vocabulary-set': (context) => const CreateVocabularySet(),
         '/vocabulary-sets': (context) => const VocabularySets(),
         '/vocabulary-set-detail': (context) => const VocabularySetDetail(),

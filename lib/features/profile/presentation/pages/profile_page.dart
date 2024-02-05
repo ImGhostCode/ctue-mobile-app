@@ -57,7 +57,9 @@ class ProfilePage extends StatelessWidget {
               title: const Text('Liem'),
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/notification');
+                  },
                   icon: Icon(
                     Icons.notifications_rounded,
                     color: Colors.grey.shade400,
@@ -65,7 +67,9 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/setting');
+                  },
                   icon: Icon(
                     Icons.settings_rounded,
                     color: Colors.grey.shade400,

@@ -10,8 +10,7 @@ class DiscoverPage extends StatelessWidget {
       Feature(
           imagePath: 'assets/images/icons/edit.png',
           title: 'Đóng góp',
-          subtitle:
-              'CTUE rất mong được sự đóng góp của bạn. Bạn có thể thêm từ mới, sửa lỗi sai',
+          subtitle: 'CTUE rất mong được sự đóng góp của bạn.',
           onTap: () {
             // Navigator.push(
             //   context,
@@ -34,7 +33,9 @@ class DiscoverPage extends StatelessWidget {
               width: 150),
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/notification');
+                },
                 icon: const Icon(
                   Icons.notifications,
                   color: Colors.white,

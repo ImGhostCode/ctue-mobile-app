@@ -19,7 +19,8 @@ dependencies:
   image_picker: ^1.0.7
   rename: ^3.0.1
   syncfusion_flutter_charts: ^24.2.3
-  audioplayers: ^5.2.1
+  app_settings: ^5.1.1
+  # audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_test:
