@@ -21,7 +21,9 @@ class HomePage extends StatelessWidget {
         icon: Icons.record_voice_over_outlined,
         title: 'Mẫu câu giao tiếp',
         bgColor: Colors.blueAccent,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, '/communication-phrases');
+        },
       ),
       LearningSource(
         icon: Icons.menu_book,
@@ -33,7 +35,9 @@ class HomePage extends StatelessWidget {
         icon: Icons.article,
         title: 'Động từ bất quy tắc',
         bgColor: Colors.orange,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, '/irregular-verb');
+        },
       ),
       LearningSource(
         icon: Icons.sports_esports,

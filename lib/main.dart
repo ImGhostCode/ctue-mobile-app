@@ -6,7 +6,10 @@ import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.
 import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/game_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/word_match_page.dart';
+import 'package:ctue_app/features/home/presentation/pages/com_phrase_detail.dart';
+import 'package:ctue_app/features/home/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/ipa_page.dart';
+import 'package:ctue_app/features/home/presentation/pages/irregular_verb_page.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
@@ -147,6 +150,10 @@ class _HomeState extends State<Home> {
         '/setting': (context) => SettingPage(),
         '/user-info': (context) => UserInfoPage(),
         '/api': (context) => const IPA(),
+        '/irregular-verb': (context) => IrregularVerbPage(),
+        '/communication-phrases': (context) => ComPhrasePage(),
+        '/communication-phrase-detail': (context) =>
+            CommunicationPhraseDetail(),
         '/notification': (context) => const NotificationPage(),
         '/create-vocabulary-set': (context) => const CreateVocabularySet(),
         '/vocabulary-sets': (context) => const VocabularySets(),
