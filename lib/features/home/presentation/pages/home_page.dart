@@ -29,7 +29,9 @@ class HomePage extends StatelessWidget {
         icon: Icons.menu_book,
         title: 'Từ điển',
         bgColor: Colors.yellow,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, '/dictionary');
+        },
       ),
       LearningSource(
         icon: Icons.article,
@@ -94,9 +96,11 @@ class HomePage extends StatelessWidget {
                       SizedBox(
                         height: 45,
                         child: SearchAnchor(
+                            isFullScreen: false,
                             viewElevation: 8,
                             dividerColor: Theme.of(context).colorScheme.primary,
                             viewBackgroundColor: Colors.white,
+                            viewSurfaceTintColor: Colors.white,
                             viewHintText: 'Tra từ điển',
                             headerHintStyle:
                                 const TextStyle(color: Colors.grey),
@@ -108,7 +112,9 @@ class HomePage extends StatelessWidget {
                             builder: (BuildContext context,
                                 SearchController controller) {
                               return SearchBar(
-                                hintText: 'Tra từ điển',
+                                hintText: 'Nhập từ để tra cứu',
+                                overlayColor: const MaterialStatePropertyAll(
+                                    Colors.transparent),
                                 hintStyle:
                                     const MaterialStatePropertyAll<TextStyle>(
                                         TextStyle(
@@ -116,13 +122,14 @@ class HomePage extends StatelessWidget {
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600)),
                                 elevation: const MaterialStatePropertyAll(0),
-                                backgroundColor: MaterialStatePropertyAll(
-                                    Colors.grey.shade100),
-                                controller: controller,
-                                padding:
-                                    const MaterialStatePropertyAll<EdgeInsets>(
-                                        EdgeInsets.symmetric(
-                                            horizontal: 12.0, vertical: 2)),
+                                shape: MaterialStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                        side: const BorderSide(
+                                            color: Colors.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(12))),
+                                backgroundColor: const MaterialStatePropertyAll(
+                                    Colors.transparent),
                                 onTap: () {
                                   controller.openView();
                                 },
@@ -144,7 +151,7 @@ class HomePage extends StatelessWidget {
                                     },
                                   ),
                                   IconButton(
-                                    icon: const Icon(Icons.image),
+                                    icon: const Icon(Icons.image_outlined),
                                     color:
                                         Theme.of(context).colorScheme.primary,
                                     onPressed: () {

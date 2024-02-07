@@ -8,8 +8,10 @@ import 'package:ctue_app/features/game/presentation/pages/game_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/word_match_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/com_phrase_detail.dart';
 import 'package:ctue_app/features/home/presentation/pages/communication_phrase_page.dart';
+import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/ipa_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/irregular_verb_page.dart';
+import 'package:ctue_app/features/home/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
@@ -150,6 +152,8 @@ class _HomeState extends State<Home> {
         '/setting': (context) => SettingPage(),
         '/user-info': (context) => UserInfoPage(),
         '/api': (context) => const IPA(),
+        '/dictionary': (context) => DictionaryPage(),
+        '/word-detail': (context) => WordDetail(),
         '/irregular-verb': (context) => IrregularVerbPage(),
         '/communication-phrases': (context) => ComPhrasePage(),
         '/communication-phrase-detail': (context) =>
