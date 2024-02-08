@@ -96,8 +96,10 @@ class WordDetail extends StatelessWidget {
                           '/tɛst/',
                           style: Theme.of(context)
                               .textTheme
-                              .bodyMedium!
-                              .copyWith(fontWeight: FontWeight.normal),
+                              .bodyLarge!
+                              .copyWith(
+                                  fontWeight: FontWeight.normal,
+                                  fontFamily: 'DoulosSIL'),
                         ),
                         const SizedBox(
                           height: 5,
