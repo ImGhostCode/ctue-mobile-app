@@ -11,3 +11,9 @@ String kFrontDefault = 'front_default';
 String kFrontShiny = 'front_shiny';
 
 int maxPokemonId = 1008;
+
+class VocabularySetArguments {
+  final int id;
+
+  VocabularySetArguments({required this.id});
+}

@@ -16,6 +16,7 @@ import 'package:ctue_app/features/notification/presentation/pages/notification.d
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
+import 'package:ctue_app/features/word_store/presentation/pages/search_voca_set.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/statistic_learned_words.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_set_detail.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_sets_page.dart';
@@ -160,7 +161,8 @@ class _HomeState extends State<Home> {
             CommunicationPhraseDetail(),
         '/notification': (context) => const NotificationPage(),
         '/create-vocabulary-set': (context) => const CreateVocabularySet(),
-        '/vocabulary-sets': (context) => const VocabularySets(),
+        '/vocabulary-sets': (context) => VocabularySets(),
+        '/search-voca-set': (context) => SearchVocaSetPage(),
         '/vocabulary-set-detail': (context) => const VocabularySetDetail(),
         '/statistic-learned-words': (context) =>
             const StatisticLearnedWordPage(),

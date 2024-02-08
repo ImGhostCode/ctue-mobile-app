@@ -1,4 +1,4 @@
-import 'package:ctue_app/features/word_store/presentation/pages/word_store_page.dart';
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class VocabularySetDetail extends StatelessWidget {

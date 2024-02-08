@@ -1,6 +1,6 @@
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+// import 'package:carousel_slider/carousel_slider.dart';
 
 class WordDetail extends StatelessWidget {
   WordDetail({Key? key}) : super(key: key);
