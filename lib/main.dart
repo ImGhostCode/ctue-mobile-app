@@ -129,6 +129,11 @@ class _HomeState extends State<Home> {
             //     color: Colors.grey.shade600,
             //     fontWeight: FontWeight.w500),
           ),
+          inputDecorationTheme: InputDecorationTheme(
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(fontWeight: FontWeight.normal)),
           appBarTheme: AppBarTheme(backgroundColor: Colors.blue.shade800),
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ButtonStyle(
@@ -160,7 +165,7 @@ class _HomeState extends State<Home> {
         '/communication-phrase-detail': (context) =>
             CommunicationPhraseDetail(),
         '/notification': (context) => const NotificationPage(),
-        '/create-vocabulary-set': (context) => const CreateVocabularySet(),
+        '/create-vocabulary-set': (context) => CreateVocabularySet(),
         '/vocabulary-sets': (context) => VocabularySets(),
         '/search-voca-set': (context) => SearchVocaSetPage(),
         '/vocabulary-set-detail': (context) => const VocabularySetDetail(),
