@@ -67,10 +67,21 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                 const SizedBox(
                   width: 5,
                 ),
-                Text(
-                  '/tɛst/',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontWeight: FontWeight.normal, fontFamily: 'DoulosSIL'),
+                Row(
+                  children: [
+                    Text(
+                      '/tɛst/',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.normal,
+                          fontFamily: 'DoulosSIL'),
+                    ),
+                    IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.volume_up_rounded,
+                          color: Colors.grey.shade600,
+                        ))
+                  ],
                 ),
               ],
             ),

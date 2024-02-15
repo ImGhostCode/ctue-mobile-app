@@ -22,7 +22,9 @@ class DiscoverPage extends StatelessWidget {
           imagePath: 'assets/images/icons/favorite.png',
           title: 'Từ vựng yêu thích của bạn',
           subtitle: 'Danh sách những từ vựng yêu thích mà bạn đã lưu',
-          onTap: () {}),
+          onTap: () {
+            Navigator.pushNamed(context, '/favorite-vocabulary');
+          }),
     ];
 
     return Scaffold(

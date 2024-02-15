@@ -92,15 +92,26 @@ class WordDetail extends StatelessWidget {
                                 ))
                           ],
                         ),
-                        Text(
-                          '/tɛst/',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                  fontWeight: FontWeight.normal,
-                                  fontFamily: 'DoulosSIL'),
+                        Row(
+                          children: [
+                            Text(
+                              '/tɛst/',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      fontFamily: 'DoulosSIL'),
+                            ),
+                            IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.volume_up_rounded,
+                                  color: Colors.grey.shade600,
+                                ))
+                          ],
                         ),
+
                         const SizedBox(
                           height: 5,
                         ),

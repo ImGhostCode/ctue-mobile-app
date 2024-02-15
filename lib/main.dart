@@ -3,6 +3,7 @@ import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.da
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
 import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.dart';
+import 'package:ctue_app/features/discover/presentation/pages/favotite_vocabulary.dart';
 import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/game_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/word_match_page.dart';
@@ -161,6 +162,7 @@ class _HomeState extends State<Home> {
         '/dictionary': (context) => DictionaryPage(),
         '/word-detail': (context) => WordDetail(),
         '/irregular-verb': (context) => IrregularVerbPage(),
+        '/favorite-vocabulary': (context) => FavoriteVocabulary(),
         '/communication-phrases': (context) => ComPhrasePage(),
         '/communication-phrase-detail': (context) =>
             CommunicationPhraseDetail(),
