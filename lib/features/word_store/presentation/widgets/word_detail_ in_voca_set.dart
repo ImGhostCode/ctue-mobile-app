@@ -1,3 +1,5 @@
+import 'package:ctue_app/core/constants/memory_level_constants.dart';
+import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
 import 'package:flutter/material.dart';
 
 class WordDetailInVocaSet extends StatefulWidget {
@@ -12,7 +14,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -26,23 +28,21 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                          color: Colors.black87,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Text('B1',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: Colors.white)),
-                    ),
+                    GradientBorderContainer(
+                        diameter: level_1.diameter,
+                        borderWidth: level_1.borderWidth,
+                        borderColor1: level_1.borderColor1,
+                        borderColor2: level_1.borderColor2,
+                        stop1: level_1.stop1,
+                        stop2: level_1.stop2,
+                        percent: level_1.percent,
+                        fontSize: level_1.fontSize),
                     const SizedBox(
                       width: 5,
                     ),
                     Text(
                       'test',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
@@ -51,11 +51,30 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                     onPressed: () {}, icon: const Icon(Icons.more_vert_rounded))
               ],
             ),
-            Text(
-              '/tɛst/',
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  fontWeight: FontWeight.normal, fontFamily: 'DoulosSIL'),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(2.5),
+                  decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Text('B1',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.white)),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  '/tɛst/',
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.normal, fontFamily: 'DoulosSIL'),
+                ),
+              ],
             ),
+
             const SizedBox(
               height: 5,
             ),

@@ -1,3 +1,4 @@
+import 'package:ctue_app/core/constants/memory_level_constants.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
 import 'package:flutter/material.dart';
 
@@ -136,14 +137,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GradientBorderContainer(
-                            diameter: 20,
-                            borderWidth: 0.12,
-                            borderColor1: Colors.orange,
-                            borderColor2: Colors.grey.shade300,
-                            stop1: 0.167,
-                            stop2: 0.168,
-                            percent: 1,
-                            fontSize: 12),
+                            diameter: level_1.diameter,
+                            borderWidth: level_1.borderWidth,
+                            borderColor1: level_1.borderColor1,
+                            borderColor2: level_1.borderColor2,
+                            stop1: level_1.stop1,
+                            stop2: level_1.stop2,
+                            percent: level_1.percent,
+                            fontSize: level_1.fontSize),
                         const SizedBox(
                           width: 5,
                         ),
@@ -185,14 +186,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GradientBorderContainer(
-                            diameter: 20,
-                            borderWidth: 0.12,
-                            borderColor1: Colors.yellow.shade700,
-                            borderColor2: Colors.grey.shade300,
-                            stop1: 0.34,
-                            stop2: 0.35,
-                            percent: 2,
-                            fontSize: 12),
+                            diameter: level_2.diameter,
+                            borderWidth: level_2.borderWidth,
+                            borderColor1: level_2.borderColor1,
+                            borderColor2: level_2.borderColor2,
+                            stop1: level_2.stop1,
+                            stop2: level_2.stop2,
+                            percent: level_2.percent,
+                            fontSize: level_2.fontSize),
                         const SizedBox(
                           width: 5,
                         ),
@@ -234,14 +235,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GradientBorderContainer(
-                            diameter: 20,
-                            borderWidth: 0.12,
-                            borderColor1: Colors.green.shade400,
-                            borderColor2: Colors.grey.shade300,
-                            stop1: 0.51,
-                            stop2: 0.52,
-                            percent: 3,
-                            fontSize: 12),
+                            diameter: level_3.diameter,
+                            borderWidth: level_3.borderWidth,
+                            borderColor1: level_3.borderColor1,
+                            borderColor2: level_3.borderColor2,
+                            stop1: level_3.stop1,
+                            stop2: level_3.stop2,
+                            percent: level_3.percent,
+                            fontSize: level_3.fontSize),
                         const SizedBox(
                           width: 5,
                         ),
@@ -283,14 +284,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GradientBorderContainer(
-                            diameter: 20,
-                            borderWidth: 0.12,
-                            borderColor1: Colors.green.shade700,
-                            borderColor2: Colors.grey.shade300,
-                            stop1: 0.667,
-                            stop2: 0.668,
-                            percent: 4,
-                            fontSize: 12),
+                            diameter: level_4.diameter,
+                            borderWidth: level_4.borderWidth,
+                            borderColor1: level_4.borderColor1,
+                            borderColor2: level_4.borderColor2,
+                            stop1: level_4.stop1,
+                            stop2: level_4.stop2,
+                            percent: level_4.percent,
+                            fontSize: level_4.fontSize),
                         const SizedBox(
                           width: 5,
                         ),
@@ -332,14 +333,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GradientBorderContainer(
-                            diameter: 20,
-                            borderWidth: 0.12,
-                            borderColor1: Colors.blue,
-                            borderColor2: Colors.grey.shade300,
-                            stop1: 0.835,
-                            stop2: 0.836,
-                            percent: 5,
-                            fontSize: 12),
+                            diameter: level_5.diameter,
+                            borderWidth: level_5.borderWidth,
+                            borderColor1: level_5.borderColor1,
+                            borderColor2: level_5.borderColor2,
+                            stop1: level_5.stop1,
+                            stop2: level_5.stop2,
+                            percent: level_5.percent,
+                            fontSize: level_5.fontSize),
                         const SizedBox(
                           width: 5,
                         ),
@@ -381,14 +382,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GradientBorderContainer(
-                            diameter: 20,
-                            borderWidth: 0.12,
-                            borderColor1: Colors.blue.shade900,
-                            borderColor2: Colors.grey.shade300,
-                            stop1: 1,
-                            stop2: 1,
-                            percent: 6,
-                            fontSize: 12),
+                            diameter: level_6.diameter,
+                            borderWidth: level_6.borderWidth,
+                            borderColor1: level_6.borderColor1,
+                            borderColor2: level_6.borderColor2,
+                            stop1: level_6.stop1,
+                            stop2: level_6.stop2,
+                            percent: level_6.percent,
+                            fontSize: level_6.fontSize),
                         const SizedBox(
                           width: 5,
                         ),
