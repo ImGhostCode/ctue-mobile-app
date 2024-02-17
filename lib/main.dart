@@ -17,6 +17,8 @@ import 'package:ctue_app/features/notification/presentation/pages/notification.d
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
+import 'package:ctue_app/features/word_store/presentation/pages/learn_page.dart';
+import 'package:ctue_app/features/word_store/presentation/pages/learn_setting_page.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/search_voca_set.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/statistic_learned_words.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_set_detail.dart';
@@ -159,6 +161,8 @@ class _HomeState extends State<Home> {
         '/setting': (context) => SettingPage(),
         '/user-info': (context) => UserInfoPage(),
         '/api': (context) => const IPA(),
+        '/learn': (context) => const LearnPage(),
+        '/learn-setting': (context) => const LearnSettingPage(),
         '/dictionary': (context) => DictionaryPage(),
         '/word-detail': (context) => WordDetail(),
         '/irregular-verb': (context) => IrregularVerbPage(),

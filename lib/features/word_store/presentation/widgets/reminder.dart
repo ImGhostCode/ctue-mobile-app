@@ -41,7 +41,9 @@ class Reminder extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8))),
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.blue.shade800)),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/learn');
+                        },
                         child: const Text('Ôn tập ngay')),
                   )
                 ],

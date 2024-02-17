@@ -3,7 +3,11 @@ import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_c
 import 'package:flutter/material.dart';
 
 class WordDetailInVocaSet extends StatefulWidget {
-  const WordDetailInVocaSet({super.key});
+  final bool showLevel;
+  final bool showMore;
+
+  const WordDetailInVocaSet(
+      {super.key, this.showLevel = false, this.showMore = false});
 
   @override
   State<WordDetailInVocaSet> createState() => _WordDetailInVocaSetState();
@@ -28,15 +32,16 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
               children: [
                 Row(
                   children: [
-                    GradientBorderContainer(
-                        diameter: level_1.diameter,
-                        borderWidth: level_1.borderWidth,
-                        borderColor1: level_1.borderColor1,
-                        borderColor2: level_1.borderColor2,
-                        stop1: level_1.stop1,
-                        stop2: level_1.stop2,
-                        percent: level_1.percent,
-                        fontSize: level_1.fontSize),
+                    if (widget.showLevel)
+                      GradientBorderContainer(
+                          diameter: level_1.diameter,
+                          borderWidth: level_1.borderWidth,
+                          borderColor1: level_1.borderColor1,
+                          borderColor2: level_1.borderColor2,
+                          stop1: level_1.stop1,
+                          stop2: level_1.stop2,
+                          percent: level_1.percent,
+                          fontSize: level_1.fontSize),
                     const SizedBox(
                       width: 5,
                     ),
@@ -47,8 +52,10 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                     ),
                   ],
                 ),
-                IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.more_vert_rounded))
+                if (widget.showMore)
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.more_vert_rounded))
               ],
             ),
             Row(
