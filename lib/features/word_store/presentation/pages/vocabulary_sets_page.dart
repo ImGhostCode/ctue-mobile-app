@@ -96,7 +96,9 @@ class VocabularySets extends StatelessWidget {
             //     EdgeInsets.symmetric(vertical: 0, horizontal: 16)),
             overlayColor: const MaterialStatePropertyAll(Colors.transparent),
             hintStyle: const MaterialStatePropertyAll<TextStyle>(TextStyle(
-                color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w600)),
+                color: Colors.grey,
+                fontSize: 14,
+                fontWeight: FontWeight.normal)),
             elevation: const MaterialStatePropertyAll(0),
             shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                 side: const BorderSide(color: Colors.grey),

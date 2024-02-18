@@ -101,7 +101,7 @@ class SearchVocaSetPage extends StatelessWidget {
                       TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
-                          fontWeight: FontWeight.w600)),
+                          fontWeight: FontWeight.normal)),
                   elevation: const MaterialStatePropertyAll(0),
                   shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                       side: const BorderSide(color: Colors.grey),

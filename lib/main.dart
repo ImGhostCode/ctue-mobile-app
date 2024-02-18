@@ -125,7 +125,7 @@ class _HomeState extends State<Home> {
                 fontWeight: FontWeight.bold),
 
             bodyMedium: TextStyle(
-                color: Colors.grey.shade500, fontWeight: FontWeight.w600),
+                color: Colors.grey.shade900, fontWeight: FontWeight.normal),
             bodyLarge: const TextStyle(fontWeight: FontWeight.w600),
             // displaySmall: TextStyle(
             //     // fontSize: 13,

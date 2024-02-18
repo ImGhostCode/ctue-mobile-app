@@ -102,8 +102,10 @@ class HomePage extends StatelessWidget {
                             viewBackgroundColor: Colors.white,
                             viewSurfaceTintColor: Colors.white,
                             viewHintText: 'Tra từ điển',
-                            headerHintStyle:
-                                const TextStyle(color: Colors.grey),
+                            headerHintStyle: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(fontWeight: FontWeight.normal),
                             viewShape: const ContinuousRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
@@ -120,7 +122,7 @@ class HomePage extends StatelessWidget {
                                         TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14,
-                                            fontWeight: FontWeight.w600)),
+                                            fontWeight: FontWeight.normal)),
                                 elevation: const MaterialStatePropertyAll(0),
                                 shape: MaterialStatePropertyAll(
                                     RoundedRectangleBorder(
@@ -175,7 +177,7 @@ class HomePage extends StatelessWidget {
                                     // });
                                   },
                                   trailing: IconButton(
-                                    icon: Icon(Icons.history),
+                                    icon: const Icon(Icons.history),
                                     onPressed: () {},
                                   ),
                                 );

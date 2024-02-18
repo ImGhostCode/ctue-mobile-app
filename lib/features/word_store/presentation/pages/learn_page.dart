@@ -49,9 +49,9 @@ class LearnPage extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           // child: _buildChooseMeaingQuestion(context),
-          child: _buildWritingQuestion(context),
+          // child: _buildWritingQuestion(context),
           // child: _buildListenQuestion(context),
-          // child: _buldChooseWordQuestion(context),
+          child: _buldChooseWordQuestion(context),
         ));
   }
 
@@ -186,7 +186,7 @@ class LearnPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Nghe và viêt lại từ',
+            'Nghe và viết lại từ',
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!

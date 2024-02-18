@@ -137,8 +137,7 @@ class _VocaConFormState extends State<VocaConForm> {
                 height: 4,
               ),
               TextFormField(
-                style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.normal),
+                style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -165,11 +164,9 @@ class _VocaConFormState extends State<VocaConForm> {
                 height: 4,
               ),
               TextFormField(
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: 'DoulosSIL',
-                ),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontFamily: 'DoulosSIL',
+                    ),
                 readOnly: true,
                 // showCursor: true,
                 controller: _pronunciationController,
@@ -225,6 +222,7 @@ class _VocaConFormState extends State<VocaConForm> {
               Container(
                 color: Colors.white,
                 child: DropdownButtonFormField<String>(
+                  style: Theme.of(context).textTheme.bodyMedium,
                   value: _selectedLevel,
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
@@ -266,6 +264,7 @@ class _VocaConFormState extends State<VocaConForm> {
               Container(
                 color: Colors.white,
                 child: DropdownButtonFormField<String>(
+                  style: Theme.of(context).textTheme.bodyMedium,
                   value: _selectedSpecializaiton,
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
@@ -327,8 +326,7 @@ class _VocaConFormState extends State<VocaConForm> {
               ),
               TextFormField(
                 controller: _synonymController,
-                style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.normal),
+                style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   helperText: 'Viết cách nhau bởi dấy phẩy',
                   contentPadding:
@@ -351,8 +349,7 @@ class _VocaConFormState extends State<VocaConForm> {
               ),
               TextFormField(
                 controller: _antonymController,
-                style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.normal),
+                style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   helperText: 'Viết cách nhau bởi dấy phẩy',
                   contentPadding:
@@ -376,8 +373,7 @@ class _VocaConFormState extends State<VocaConForm> {
               TextFormField(
                 maxLines: 4,
                 controller: _noteController,
-                style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.normal),
+                style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -461,7 +457,7 @@ class _VocaConFormState extends State<VocaConForm> {
                 height: 5,
               ),
               ExpansionPanelList(
-                elevation: 1,
+                elevation: 2,
                 expandedHeaderPadding: const EdgeInsets.all(0),
                 expansionCallback: (int index, bool isExpanded) {
                   setState(() {
@@ -502,8 +498,8 @@ class _VocaConFormState extends State<VocaConForm> {
                                     color: Theme.of(context)
                                         .colorScheme
                                         .primary
-                                        .withOpacity(0.5),
-                                    width: 1.5),
+                                        .withOpacity(0.7),
+                                    width: 2),
                                 backgroundColor: topic.isSeleted
                                     ? Colors.green.shade500
                                     : Colors.grey.shade100,
@@ -589,11 +585,9 @@ class _VocaConFormState extends State<VocaConForm> {
                 height: 5,
               ),
               TextFormField(
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: 'DoulosSIL',
-                ),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontFamily: 'DoulosSIL',
+                    ),
                 readOnly: true,
                 showCursor: true,
                 controller: _pronunciationController,
@@ -665,7 +659,8 @@ class _VocaConFormState extends State<VocaConForm> {
           Expanded(
               child: TextFormField(
             // controller: TextEditingController(text: wordDefinition.meaning),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+            style: Theme.of(context).textTheme.bodyMedium,
+
             decoration: InputDecoration(
               // hintText: 'Cau vi du',
               contentPadding:
@@ -716,6 +711,7 @@ class _VocaConFormState extends State<VocaConForm> {
       child: Row(
         children: [
           DropdownButton<String>(
+            style: Theme.of(context).textTheme.bodyMedium!,
             value: wordDefinition.wordType,
             items: ['Noun', 'Verb', 'Adjective', 'Adverb']
                 .map<DropdownMenuItem<String>>(
@@ -735,9 +731,10 @@ class _VocaConFormState extends State<VocaConForm> {
           Expanded(
               child: TextFormField(
             // controller: TextEditingController(text: wordDefinition.meaning),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+            style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(
               // hintText: 'Nhập nghĩa của từ',
+              helperText: 'Nghĩa của từ',
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               border: OutlineInputBorder(

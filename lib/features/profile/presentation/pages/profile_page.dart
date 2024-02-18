@@ -47,11 +47,11 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Positioned(
-                      bottom: 2,
-                      child: Icon(
-                        Icons.camera_alt,
-                      ))
+                  // const Positioned(
+                  //     bottom: 2,
+                  //     child: Icon(
+                  //       Icons.camera_alt,
+                  //     ))
                 ]),
               ),
               title: const Text('Liem'),

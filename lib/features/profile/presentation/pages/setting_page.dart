@@ -63,7 +63,7 @@ class _SettingPageState extends State<SettingPage> {
         body: Column(
           children: [
             SizedBox(
-              height: 180,
+              height: 190,
               child: ListView.separated(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -83,6 +83,9 @@ class _SettingPageState extends State<SettingPage> {
                     );
                   },
                   itemCount: _settings.length),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             SizedBox(
                 height: 120,
@@ -173,7 +176,7 @@ class _SettingPageState extends State<SettingPage> {
                     height: 5,
                   ),
                   SizedBox(
-                    height: 45,
+                    height: 50,
                     width: double.infinity,
                     child: ElevatedButton(
                         style: ButtonStyle(

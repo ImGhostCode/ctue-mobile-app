@@ -44,8 +44,7 @@ class _SenConFormState extends State<SenConForm> {
                       ),
                       TextFormField(
                         maxLines: 3,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
+                        style: Theme.of(context).textTheme.bodyMedium,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
@@ -73,8 +72,7 @@ class _SenConFormState extends State<SenConForm> {
                       ),
                       TextFormField(
                         maxLines: 3,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
+                        style: Theme.of(context).textTheme.bodyMedium,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
@@ -103,8 +101,8 @@ class _SenConFormState extends State<SenConForm> {
                       TextFormField(
                         maxLines: 4,
                         // controller: _noteController,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.normal),
+                        style: Theme.of(context).textTheme.bodyMedium,
+
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
@@ -127,6 +125,7 @@ class _SenConFormState extends State<SenConForm> {
                       Container(
                         color: Colors.white,
                         child: DropdownButtonFormField<String>(
+                          style: Theme.of(context).textTheme.bodyMedium,
                           value: _selectedType,
                           validator: (String? value) {
                             if (value == null || value.isEmpty) {
@@ -157,7 +156,7 @@ class _SenConFormState extends State<SenConForm> {
                         ),
                       ),
                       const SizedBox(
-                        height: 5,
+                        height: 10,
                       ),
                       ExpansionPanelList(
                         elevation: 1,

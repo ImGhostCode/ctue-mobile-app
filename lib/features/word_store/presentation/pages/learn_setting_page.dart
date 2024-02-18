@@ -49,8 +49,11 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Từ mới',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  'TỪ MỚI',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Colors.black87),
                 ),
                 Text(
                   'Cài đặt cách học cho các từ mới, chưa lên cấp độ 1',
@@ -64,8 +67,11 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                   height: 15,
                 ),
                 Text(
-                  'Từ ôn lại',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  'TỪ ÔN LẠI',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Colors.black87),
                 ),
                 Text(
                   'Cài đặt cách học cho các từ được nhắc ôn lại, các từ có cấp độ 1 trở lên',
@@ -79,8 +85,14 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                   height: 15,
                 ),
                 Text(
-                  'Chung',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  'CHUNG',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Colors.black87),
+                ),
+                const SizedBox(
+                  height: 5,
                 ),
                 _buildListGeneralSettings(context),
                 const SizedBox(
@@ -128,8 +140,7 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
         Container(
           // height: 30,
           // width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4), color: Colors.white),
+          decoration: const BoxDecoration(color: Colors.white),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,8 +167,11 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
         Container(
           // height: 30,
           // width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4), color: Colors.white),
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(4),
+                  bottomRight: Radius.circular(4)),
+              color: Colors.white),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -288,8 +302,8 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                 EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
             shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4)))),
+                    bottomLeft: Radius.circular(4),
+                    bottomRight: Radius.circular(4)))),
             backgroundColor: MaterialStatePropertyAll(Colors.white),
             foregroundColor: MaterialStatePropertyAll(Colors.black87),
           ),

@@ -1,8 +1,8 @@
-// import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ctue_app/core/constants/ipa_constants.dart';
 import 'package:flutter/material.dart';
 
-// final player = AudioPlayer();
+final player = AudioPlayer();
 
 class PhonemeWidget extends StatelessWidget {
   final Phoneme phoneme;
@@ -109,8 +109,8 @@ _showPhonemeDetail(context, phoneme) {
                 const Spacer(),
                 ElevatedButton(
                     onPressed: () async {
-                      // await player
-                      //     .play(AssetSource('audios/${phoneme.source}'));
+                      await player
+                          .play(AssetSource('audios/${phoneme.source}'));
                     },
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
