@@ -39,7 +39,8 @@ class _LoginPageState extends State<LoginPage> {
         centerTitle: true,
         leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/welcome', (route) => false);
             },
             icon: const Icon(
               Icons.navigate_before,

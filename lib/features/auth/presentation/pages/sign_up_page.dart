@@ -1,4 +1,8 @@
+import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
+import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -14,6 +18,8 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isButtonEnabled = false; // Add this variable
   bool isPasswordsMatch = false;
   final TextEditingController _passwordController = TextEditingController();
+  String _name = ''; // Variable to store the entered name
+  String _email = ''; // Variable to store the entered email
 
   bool isEmailValid(String email) {
     return RegExp(r'^[\w-\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}$').hasMatch(email);
@@ -73,6 +79,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   }
                   return null;
                 },
+                onSaved: (newValue) {
+                  _name = newValue!;
+                },
               ),
               const SizedBox(
                 height: 10,
@@ -105,6 +114,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     return 'Email khong hop le';
                   }
                   return null;
+                },
+                onSaved: (newValue) {
+                  _email = newValue!;
                 },
               ),
               const SizedBox(
@@ -202,8 +214,46 @@ class _SignUpPageState extends State<SignUpPage> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save(); // Save the form data
+
+                      // Call your authentication method
+                      await Provider.of<AuthProvider>(context, listen: false)
+                          .eitherFailureOrSignup(
+                              name: _name,
+                              email: _email,
+                              password: _passwordController.text);
+
+                      // Get the updated values
+                      if (!context.mounted) return;
+
+                      Failure? updatedFailure =
+                          Provider.of<AuthProvider>(context, listen: false)
+                              .failure;
+                      AccountEntity? updatedAccount =
+                          Provider.of<AuthProvider>(context, listen: false)
+                              .accountEntity;
+
+                      if (updatedFailure != null) {
+                        // Show a SnackBar with the failure message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 1),
+                            content: Text(
+                              updatedFailure.errorMessage,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor:
+                                Colors.red, // You can customize the color
+                          ),
+                        );
+                      } else if (updatedAccount != null) {
+                        // Navigate to the next screen
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/login', (_) => false);
+                      }
+                    }
                   },
                   child: Text(
                     'Đăng ký',
@@ -225,6 +275,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                         onTap: () {
+                          Navigator.of(context).pop();
                           Navigator.pushNamed(context, '/login');
                         },
                         child: Text('Đăng nhập',

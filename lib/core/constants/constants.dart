@@ -15,7 +15,13 @@ String kFrontShiny = 'front_shiny';
 String kAccessToken = 'accessToken';
 String kData = 'data';
 String kMessage = 'message';
-String kStatusCode = 'statusCode';
+String kEmail = 'email';
+String kUserId = 'userId';
+String kAuthType = 'authType';
+String kAccountType = 'accountType';
+String kIsBan = 'isBan';
+String kFeedback = 'feedback';
+String kIsDeleted = 'isDeleted';
 
 enum ResponseData { data, message, statusCode }
 

@@ -5,12 +5,17 @@ import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
 import 'package:ctue_app/features/auth/business/entities/user_entity.dart';
 import 'package:dartz/dartz.dart';
 import '../../../../../core/errors/failure.dart';
+// import '../entities/user_entity.dart';
+import '../repositories/auth_repository.dart';
 
-abstract class AuthRepository {
-  Future<Either<Failure, ResponseDataModel<AccessTokenEntity>>> login({
-    required LoginParams loginParams,
-  });
-  Future<Either<Failure, ResponseDataModel<AccountEntity>>> signup({
+class SignUpUsecase {
+  final AuthRepository authRepository;
+
+  SignUpUsecase({required this.authRepository});
+
+  Future<Either<Failure, ResponseDataModel<AccountEntity>>> call({
     required SignupParams signupParams,
-  });
+  }) async {
+    return await authRepository.signup(signupParams: signupParams);
+  }
 }
