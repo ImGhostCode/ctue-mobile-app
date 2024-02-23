@@ -1,10 +1,12 @@
 abstract class Failure {
   final String errorMessage;
   const Failure({required this.errorMessage});
+
+  get accessToken => null;
 }
 
 class ServerFailure extends Failure {
-  ServerFailure({required String errorMessage})
+  ServerFailure({required int statusCode, required String errorMessage})
       : super(errorMessage: errorMessage);
 }
 

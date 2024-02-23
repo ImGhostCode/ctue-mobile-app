@@ -1,7 +1,9 @@
+import 'package:ctue_app/core/api/api_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
+import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.dart';
 import 'package:ctue_app/features/discover/presentation/pages/favotite_vocabulary.dart';
 import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart';
@@ -12,6 +14,7 @@ import 'package:ctue_app/features/home/presentation/pages/communication_phrase_p
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/ipa_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/irregular_verb_page.dart';
+import 'package:ctue_app/features/home/presentation/pages/welcome_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
@@ -33,6 +36,7 @@ import 'features/skeleton/skeleton.dart';
 import 'package:rename/rename.dart';
 
 void main() {
+  ApiService.init();
   runApp(const MyApp());
 }
 
@@ -52,6 +56,9 @@ class MyApp extends StatelessWidget {
         // ChangeNotifierProvider(
         //   create: (context) => SelectedPokemonItemProvider(),
         // ),
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -133,6 +140,9 @@ class _HomeState extends State<Home> {
             //     fontWeight: FontWeight.w500),
           ),
           inputDecorationTheme: InputDecorationTheme(
+              errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.red.shade400)),
               hintStyle: Theme.of(context)
                   .textTheme
                   .bodyMedium!
@@ -142,14 +152,15 @@ class _HomeState extends State<Home> {
               style: ButtonStyle(
                   shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15))),
-                  backgroundColor: const MaterialStatePropertyAll(Colors.teal),
+                  backgroundColor:
+                      MaterialStatePropertyAll(Colors.tealAccent.shade700),
                   foregroundColor: const MaterialStatePropertyAll(Colors.white),
                   textStyle: const MaterialStatePropertyAll(TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w500))))),
-      initialRoute: '/',
+      initialRoute: '/welcome',
       routes: {
         '/': (context) => const Skeleton(),
-        // '/': (context) => const LoginPage(),
+        '/welcome': (context) => const WelcomePage(),
         // '/verify-code': (context) => const VerifyCodePage(),
         '/login': (context) => const LoginPage(),
         '/reset-password': (context) => const ResetPasswordPage(),

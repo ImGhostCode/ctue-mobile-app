@@ -32,7 +32,8 @@ class TemplateRepositoryImpl implements TemplateRepository {
 
         return Right(remoteTemplate);
       } on ServerException {
-        return Left(ServerFailure(errorMessage: 'This is a server exception'));
+        return Left(ServerFailure(
+            errorMessage: 'This is a server exception', statusCode: 400));
       }
     } else {
       try {

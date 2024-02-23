@@ -1,4 +1,8 @@
+import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/auth/business/entities/access_token_entity.dart';
+import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,12 +16,19 @@ class _LoginPageState extends State<LoginPage> {
   bool isPasswordVisible = false;
   bool isButtonEnabled = false; // Add this variable
 
+  String _password = ''; // Variable to store the entered name
+  String _email = ''; // Variable to store the entered email
+
   bool isEmailValid(String email) {
     return RegExp(r'^[\w-\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}$').hasMatch(email);
   }
 
   @override
   Widget build(BuildContext context) {
+    AccessTokenEntity? accessToken =
+        Provider.of<AuthProvider>(context).accessTokenEntity;
+    Failure? failure = Provider.of<AuthProvider>(context).failure;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -52,6 +63,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextFormField(
                 decoration: InputDecoration(
+                  // errorText: failure ?? failure.errorMessage,
+                  errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.red.shade400)),
+
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   hintText: 'Nhập email của bạn',
@@ -64,6 +80,9 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(15),
                       borderSide: BorderSide(color: Colors.grey.shade400)),
                 ),
+                onSaved: (value) {
+                  _email = value!; // Save the entered name
+                },
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Vui lòng nhập email của bạn';
@@ -109,6 +128,9 @@ class _LoginPageState extends State<LoginPage> {
                         });
                       }),
                 ),
+                onSaved: (value) {
+                  _password = value!; // Save the entered name
+                },
                 validator: (String? value) {
                   if (value == null || value.isEmpty || value.length < 6) {
                     return 'Mật khẩu ít nhât 6 ký tự';
@@ -151,8 +173,44 @@ class _LoginPageState extends State<LoginPage> {
                   //     },
                   //   ),
                   // ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save(); // Save the form data
+
+                      // Call your authentication method
+                      await Provider.of<AuthProvider>(context, listen: false)
+                          .eitherFailureOrLogin(
+                              email: _email, password: _password);
+
+                      // Get the updated values
+                      if (!context.mounted) return;
+
+                      Failure? updatedFailure =
+                          Provider.of<AuthProvider>(context, listen: false)
+                              .failure;
+                      AccessTokenEntity? updatedAccessToken =
+                          Provider.of<AuthProvider>(context, listen: false)
+                              .accessTokenEntity;
+
+                      if (updatedFailure != null) {
+                        // Show a SnackBar with the failure message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 1),
+                            content: Text(
+                              updatedFailure.errorMessage,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor:
+                                Colors.red, // You can customize the color
+                          ),
+                        );
+                      } else if (updatedAccessToken?.accessToken != null) {
+                        // Navigate to the next screen
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/', (_) => false);
+                      }
+                    }
                   },
 
                   child: Text(

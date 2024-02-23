@@ -12,6 +12,13 @@ String kOfficialArtwork = 'official-artwork';
 String kFrontDefault = 'front_default';
 String kFrontShiny = 'front_shiny';
 
+String kAccessToken = 'accessToken';
+String kData = 'data';
+String kMessage = 'message';
+String kStatusCode = 'statusCode';
+
+enum ResponseData { data, message, statusCode }
+
 int maxPokemonId = 1008;
 
 class VocabularySetArguments {
@@ -19,3 +26,7 @@ class VocabularySetArguments {
 
   VocabularySetArguments({required this.id});
 }
+
+String accNotFound = 'Tài khoản không tồn tại';
+String accBaned = 'Tài khoản đã bị khóa';
+String pwdErrorMessage = 'Mật khẩu không chính xác';

@@ -57,6 +57,7 @@ class HomePage extends StatelessWidget {
           title: Image.asset(
               'assets/images/ctue-high-resolution-logo-transparent2.png',
               width: 150),
+
           actions: [
             IconButton(
                 onPressed: () {
