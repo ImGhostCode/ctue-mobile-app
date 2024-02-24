@@ -13,3 +13,9 @@ class SignupParams {
   const SignupParams(
       {required this.name, required this.email, required this.password});
 }
+
+class GetUserParams {
+  final String accessToken;
+
+  GetUserParams({required this.accessToken});
+}

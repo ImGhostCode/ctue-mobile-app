@@ -1,6 +1,9 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:ctue_app/features/profile/presentation/pages/voice_setting_page.dart';
+import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
 class SettingPage extends StatefulWidget {
   SettingPage({super.key});
@@ -185,7 +188,17 @@ class _SettingPageState extends State<SettingPage> {
                             shape: MaterialStatePropertyAll(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12)))),
-                        onPressed: () {},
+                        onPressed: () async {
+                          const storage = FlutterSecureStorage();
+                          await storage.delete(key: 'accessToken');
+                          // ignore: use_build_context_synchronously
+                          Provider.of<SelectedPageProvider>(context,
+                                  listen: false)
+                              .selectedPage = 0;
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, '/welcome', (route) => false);
+                        },
                         child: Text(
                           'Đăng xuất',
                           style: Theme.of(context)

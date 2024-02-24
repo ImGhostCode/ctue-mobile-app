@@ -296,7 +296,8 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
+                ElevatedButton(onPressed: () {}, child: Text('delete'))
               ]),
         )));
   }

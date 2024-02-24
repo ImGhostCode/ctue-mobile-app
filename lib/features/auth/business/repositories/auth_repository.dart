@@ -13,4 +13,8 @@ abstract class AuthRepository {
   Future<Either<Failure, ResponseDataModel<AccountEntity>>> signup({
     required SignupParams signupParams,
   });
+
+  Future<Either<Failure, ResponseDataModel<UserEntity>>> getUser({
+    required GetUserParams getUserParams,
+  });
 }
