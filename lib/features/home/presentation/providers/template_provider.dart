@@ -1,3 +1,5 @@
+import 'package:ctue_app/features/home/data/datasources/template_remote_data_source.dart';
+import 'package:ctue_app/features/home/data/repositories/template_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 
 import 'package:dio/dio.dart';
@@ -11,8 +13,6 @@ import '../../../../../core/params/params.dart';
 import '../../business/entities/template_entity.dart';
 import '../../business/usecases/get_template.dart';
 import '../../data/datasources/template_local_data_source.dart';
-import '../../data/datasources/template_remote_data_source.dart';
-import '../../data/repositories/template_repository_impl.dart';
 
 class TemplateProvider extends ChangeNotifier {
   TemplateEntity? template;

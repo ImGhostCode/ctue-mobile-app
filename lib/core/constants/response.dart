@@ -11,7 +11,7 @@ class ResponseDataModel<D> {
 
   factory ResponseDataModel.fromJson({
     required Map<String, dynamic> json,
-    required D Function(Map<String, dynamic>) fromJsonD,
+    required D Function(dynamic) fromJsonD,
   }) {
     return ResponseDataModel(
       data: fromJsonD(json['data']),

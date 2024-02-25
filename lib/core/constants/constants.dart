@@ -28,6 +28,7 @@ String kName = 'name';
 String kAvt = 'avt';
 String kCreatedAt = 'createdAt';
 String kUpdatedAt = 'updatedAt';
+String kisWord = 'isWord';
 
 enum ResponseData { data, message, statusCode }
 

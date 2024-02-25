@@ -1,5 +1,6 @@
 import 'package:ctue_app/features/word_store/presentation/widgets/reminder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -226,7 +227,10 @@ class HomePage extends StatelessWidget {
                 //   ),
                 // ),
 
-                Reminder(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Reminder(),
+                ),
 
                 const SizedBox(
                   height: 8,
@@ -297,7 +301,6 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                ElevatedButton(onPressed: () {}, child: Text('delete'))
               ]),
         )));
   }

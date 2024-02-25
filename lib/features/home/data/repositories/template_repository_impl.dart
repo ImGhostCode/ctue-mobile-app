@@ -1,3 +1,4 @@
+import 'package:ctue_app/features/home/data/datasources/template_remote_data_source.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/connection/network_info.dart';
@@ -6,7 +7,7 @@ import '../../../../../core/errors/failure.dart';
 import '../../../../../core/params/params.dart';
 import '../../business/repositories/template_repository.dart';
 import '../datasources/template_local_data_source.dart';
-import '../datasources/template_remote_data_source.dart';
+
 import '../models/template_model.dart';
 
 class TemplateRepositoryImpl implements TemplateRepository {

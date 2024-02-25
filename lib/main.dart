@@ -19,6 +19,7 @@ import 'package:ctue_app/features/home/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
+import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/learn_page.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/learn_setting_page.dart';
@@ -59,6 +60,10 @@ class MyApp extends StatelessWidget {
         // ),
         ChangeNotifierProvider(
           create: (context) => AuthProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => TopicProvider(),
           // builder: (context, child) {},
         ),
       ],
@@ -192,12 +197,14 @@ class _HomeState extends State<Home> {
       // Token is invalid, clear it and redirect to login
       // await storage.delete(key: 'accessToken');
       // ignore: use_build_context_synchronously
-      // print(Provider.of<AuthProvider>(context, listen: true).userEntity);
-      // if (Provider.of<AuthProvider>(context, listen: false).userEntity ==
-      //     null) {
-      //   Navigator.pushNamedAndRemoveUntil(
-      //       context, '/welcome', (route) => false);
-      // }
+      // print(Provider.of<AuthProvider>(context, listen: false).userEntity);
+      // ignore: use_build_context_synchronously
+      if (Provider.of<AuthProvider>(context, listen: false).userEntity ==
+          null) {
+        // ignore: use_build_context_synchronously
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/welcome', (route) => false);
+      }
 
       // Navigator.popUntil(context, (route) => false);
       // ignore: use_build_context_synchronously
