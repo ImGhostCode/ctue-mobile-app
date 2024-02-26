@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 String kTemplate = 'template';
 
 // String kName = 'name';
@@ -37,6 +35,17 @@ String kMean = 'mean';
 String kNote = 'note';
 
 String kTopics = 'topics';
+String kMeanings = 'meanings';
+String kLevelId = 'levelId';
+String kSpecializationId = 'specializationId';
+String kPhonetic = 'phonetic';
+String kPictures = 'pictures';
+String kExamples = 'examples';
+String kSynonyms = 'synonyms';
+String kAntonyms = 'antonyms';
+
+String kMeaning = 'meaning';
+String kWordId = 'wordId';
 
 enum ResponseData { data, message, statusCode }
 
