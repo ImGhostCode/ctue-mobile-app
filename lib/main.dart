@@ -19,6 +19,7 @@ import 'package:ctue_app/features/home/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
+import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/learn_page.dart';
@@ -64,6 +65,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => TopicProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SentenceProvider(),
           // builder: (context, child) {},
         ),
       ],

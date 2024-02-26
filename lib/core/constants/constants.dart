@@ -30,6 +30,14 @@ String kCreatedAt = 'createdAt';
 String kUpdatedAt = 'updatedAt';
 String kisWord = 'isWord';
 
+String kTypeId = 'typeId';
+String kContent = 'content';
+String kMean = 'mean';
+
+String kNote = 'note';
+
+String kTopics = 'topics';
+
 enum ResponseData { data, message, statusCode }
 
 int maxPokemonId = 1008;

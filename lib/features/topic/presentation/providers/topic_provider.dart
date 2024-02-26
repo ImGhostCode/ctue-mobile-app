@@ -25,6 +25,7 @@ import '../../data/repositories/template_repository_impl.dart';
 class TopicProvider extends ChangeNotifier {
   List<TopicEntity>? listTopicEntity = [];
   Failure? failure;
+  bool isLoading = false;
 
   TopicProvider({
     this.listTopicEntity,
@@ -32,6 +33,8 @@ class TopicProvider extends ChangeNotifier {
   });
 
   void eitherFailureOrTopics(int? id, bool? isWord) async {
+    isLoading = true;
+
     TopicRepositoryImpl repository = TopicRepositoryImpl(
       remoteDataSource: TopicRemoteDataSourceImpl(
         dio: ApiService.dio,
@@ -51,13 +54,15 @@ class TopicProvider extends ChangeNotifier {
 
     failureOrTopic.fold(
       (Failure newFailure) {
+        isLoading = false;
         listTopicEntity = [];
         failure = newFailure;
         notifyListeners();
       },
       (ResponseDataModel<List<TopicEntity>> newTopics) {
+        isLoading = false;
         listTopicEntity = [
-          TopicEntity(id: 0, name: 'Tất cả', isWord: false),
+          TopicEntity(id: 0, name: 'Tất cả', isWord: false, isSelected: true),
           ...newTopics.data
         ];
         failure = null;

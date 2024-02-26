@@ -1,4 +1,6 @@
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
+import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:flutter/material.dart';
@@ -12,78 +14,20 @@ class ComPhrasePage extends StatefulWidget {
 }
 
 class _ComPhrasePageState extends State<ComPhrasePage> {
-  final List<Topic> _topics = [
-    Topic(title: 'Tất cả', isSelected: true),
-    Topic(title: 'Ăn uống', isSelected: false),
-    Topic(title: 'Du lịch', isSelected: false),
-    Topic(title: 'Du lịch', isSelected: false),
-    Topic(title: 'Du lịch', isSelected: false),
-    Topic(title: 'Du lịch', isSelected: false),
-  ];
-
-  final List<Phrase> _phrases = [
-    Phrase(
-        id: 1,
-        title: 'Why do you want to learn English?',
-        meaning: 'Tại sao bạn lại muốn học tiếng Anh?'),
-    Phrase(
-        id: 2,
-        title: 'How long have you been learning English?',
-        meaning: 'Bạn đã học tiếng Anh được bao lâu rồi?'),
-    Phrase(
-        id: 3,
-        title: 'How long have you been learning English?',
-        meaning: 'Bạn đã học tiếng Anh được bao lâu rồi?'),
-  ];
-
-  Future<List<TopicEntity>> fetchTopics() async {
-    // Simulate an API call or fetch data from a database
-    //   Provider.of<TopicProvider>(context, listen: false)
-    //       .eitherFailureOrTopics(null, false);
-    //  return Provider.of<TopicProvider>(context, listen: false).listTopicEntity ?? [];
-
-    await Future.delayed(Duration(seconds: 2)); // Simulating a delay
-
-    return [
-      // Topic(title: 'Tất cả', isSelected: true),
-      // Topic(title: 'Ăn uống', isSelected: false),
-      // Topic(title: 'Du lịch', isSelected: false),
-      // Add other topics as needed
-    ];
-  }
-
-  Future<List<Phrase>> fetchPhrases() async {
-    // Simulate an API call or fetch data from a database
-    await Future.delayed(Duration(seconds: 2)); // Simulating a delay
-
-    return [
-      Phrase(
-          id: 1,
-          title: 'Why do you want to learn English?',
-          meaning: 'Tại sao bạn lại muốn học tiếng Anh?'),
-      Phrase(
-          id: 2,
-          title: 'How long have you been learning English?',
-          meaning: 'Bạn đã học tiếng Anh được bao lâu rồi?'),
-      // Add other phrases as needed
-    ];
-  }
-
   @override
   void initState() {
     super.initState();
 
     // Fetch topics when the widget initializes
-    Provider.of<TopicProvider>(context, listen: false)
-        .eitherFailureOrTopics(null, false);
   }
 
   @override
   Widget build(BuildContext context) {
-    // List<TopicEntity> listTopics =
-    //     Provider.of<TopicProvider>(context).listTopicEntity!;
-    // Failure? failure = Provider.of<TopicProvider>(context).failure;
-    // late Widget widget;
+    Provider.of<TopicProvider>(context, listen: false)
+        .eitherFailureOrTopics(null, false);
+
+    Provider.of<SentenceProvider>(context, listen: false)
+        .eitherFailureOrSentences([], null, 1, 'asc');
 
     return Scaffold(
       appBar: AppBar(
@@ -100,18 +44,16 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
           const Divider(),
           Consumer<TopicProvider>(
             builder: (context, topicProvider, _) {
-              // Access the list of topics from the provider
               List<TopicEntity>? topics = topicProvider.listTopicEntity;
-
-              // Access the failure from the provider
+              bool isLoading = topicProvider.isLoading;
               Failure? failure = topicProvider.failure;
 
               if (failure != null) {
-                // Handle failure, for example, show an error message
-                return Text('$failure');
+                return Text(failure.errorMessage);
               } else if (topics == null || topics.isEmpty) {
-                // Handle the case where topics are empty
-                return CircularProgressIndicator(); // or show an empty state message
+                return const Center(child: Text('null'));
+              } else if (isLoading) {
+                return const CircularProgressIndicator(); // or show an empty state message
               } else {
                 return SizedBox(
                   height: 35,
@@ -136,7 +78,7 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
                             .textTheme
                             .bodyMedium!
                             .copyWith(
-                                color: _topics[index].isSelected
+                                color: topics[index].isSelected
                                     ? Theme.of(context)
                                         .colorScheme
                                         .primary
@@ -165,34 +107,62 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
           const SizedBox(
             height: 5,
           ),
-          Expanded(
-              child: ListView.separated(
-            itemBuilder: (context, index) {
-              return ListTile(
-                minVerticalPadding: 0,
-                leading: Text(
-                  '${index + 1}',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                minLeadingWidth: 15,
-                contentPadding:
-                    const EdgeInsets.only(left: 0, top: 0, bottom: 0, right: 0),
-                title: Text(_phrases[index].title),
-                subtitle: Text(
-                  _phrases[index].meaning,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/communication-phrase-detail',
-                      arguments: ComPhraseArguments(id: _phrases[index].id));
+          Consumer<SentenceProvider>(builder: (context, sentenceProvider, _) {
+            // Access the list of topics from the provider
+            List<SentenceEntity>? sentences =
+                sentenceProvider.listSentenceEntity;
+
+            bool isLoading = sentenceProvider.isLoading;
+
+            // Access the failure from the provider
+            Failure? failure = sentenceProvider.failure;
+
+            if (failure != null) {
+              // Handle failure, for example, show an error message
+              return Text(failure.errorMessage);
+            } else if (isLoading) {
+              // Handle the case where topics are empty
+              return const Center(
+                  child:
+                      CircularProgressIndicator()); // or show an empty state message
+            } else if (sentences == null || sentences.isEmpty) {
+              // Handle the case where topics are empty
+              return const Center(
+                  child:
+                      CircularProgressIndicator()); // or show an empty state message
+            } else {
+              return Expanded(
+                  child: ListView.separated(
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    minVerticalPadding: 0,
+                    leading: Text(
+                      '${index + 1}',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    minLeadingWidth: 15,
+                    contentPadding: const EdgeInsets.only(
+                        left: 0, top: 0, bottom: 0, right: 0),
+                    title: Text(sentences[index].content),
+                    subtitle: Text(
+                      sentences[index].mean,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(
+                          context, '/communication-phrase-detail',
+                          arguments:
+                              ComPhraseArguments(id: sentences[index].id));
+                    },
+                  );
                 },
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-            itemCount: _phrases.length,
-          ))
+                separatorBuilder: (context, index) {
+                  return const Divider();
+                },
+                itemCount: sentences.length,
+              ));
+            }
+          })
         ]),
       ),
     );
