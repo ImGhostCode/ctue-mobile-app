@@ -48,6 +48,8 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
               bool isLoading = topicProvider.isLoading;
               Failure? failure = topicProvider.failure;
 
+              // print(topicProvider.getSelectedTopics());
+
               if (failure != null) {
                 return Text(failure.errorMessage);
               } else if (topics == null || topics.isEmpty) {
@@ -85,10 +87,8 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
                                         .withOpacity(0.8)
                                     : Colors.grey.shade700),
                         onPressed: () {
-                          setState(() {
-                            topics[index].isSelected =
-                                !topics[index].isSelected;
-                          });
+                          Provider.of<TopicProvider>(context, listen: false)
+                              .handleSelectTopic(index);
                         },
                       );
                     },
@@ -104,13 +104,21 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
             },
           ),
           const Divider(),
-          const SizedBox(
-            height: 5,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.filter_alt_outlined))
+            ],
           ),
           Consumer<SentenceProvider>(builder: (context, sentenceProvider, _) {
+            List<int?> selectedTopics =
+                Provider.of<TopicProvider>(context, listen: true)
+                    .getSelectedTopics();
             // Access the list of topics from the provider
-            List<SentenceEntity>? sentences =
-                sentenceProvider.listSentenceEntity;
+            List<SentenceEntity?> sentences =
+                sentenceProvider.filteredSentences(selectedTopics);
 
             bool isLoading = sentenceProvider.isLoading;
 
@@ -125,11 +133,11 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
               return const Center(
                   child:
                       CircularProgressIndicator()); // or show an empty state message
-            } else if (sentences == null || sentences.isEmpty) {
+            } else if (sentences.isEmpty) {
               // Handle the case where topics are empty
               return const Center(
-                  child:
-                      CircularProgressIndicator()); // or show an empty state message
+                  child: Text(
+                      'Không có dữ liệu')); // or show an empty state message
             } else {
               return Expanded(
                   child: ListView.separated(
@@ -143,16 +151,16 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
                     minLeadingWidth: 15,
                     contentPadding: const EdgeInsets.only(
                         left: 0, top: 0, bottom: 0, right: 0),
-                    title: Text(sentences[index].content),
+                    title: Text(sentences[index]!.content),
                     subtitle: Text(
-                      sentences[index].mean,
+                      sentences[index]!.mean,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     onTap: () {
                       Navigator.pushNamed(
                           context, '/communication-phrase-detail',
                           arguments:
-                              ComPhraseArguments(id: sentences[index].id));
+                              ComPhraseArguments(id: sentences[index]!.id));
                     },
                   );
                 },
@@ -167,21 +175,6 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
       ),
     );
   }
-}
-
-class Topic {
-  final String title;
-  bool isSelected;
-
-  Topic({required this.title, required this.isSelected});
-}
-
-class Phrase {
-  final int id;
-  final String title;
-  final String meaning;
-
-  Phrase({required this.id, required this.title, required this.meaning});
 }
 
 class ComPhraseArguments {

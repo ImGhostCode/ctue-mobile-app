@@ -46,7 +46,7 @@ class CommunicationPhraseDetail extends StatelessWidget {
                         CircularProgressIndicator()); // or show an empty state message
               } else if (sentenceDetail == null) {
                 // Handle the case where topics are empty
-                return const Text('null'); // or show an empty state message
+                return const Center(child: Text('Không có dữ liệu'));
               } else {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

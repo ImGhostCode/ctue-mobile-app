@@ -2,6 +2,7 @@ import 'package:ctue_app/core/api/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/topic_params.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
+import 'package:ctue_app/features/profile/presentation/pages/voice_setting_page.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/business/usecases/get_topics_usecase.dart';
@@ -31,6 +32,26 @@ class TopicProvider extends ChangeNotifier {
     this.listTopicEntity,
     this.failure,
   });
+
+  void handleSelectTopic(int index) {
+    if (index != 0) {
+      listTopicEntity![0].isSelected = false;
+    } else {
+      for (var topic in listTopicEntity!) {
+        topic.isSelected = false;
+      }
+    }
+    listTopicEntity![index].isSelected = !listTopicEntity![index].isSelected;
+    if (getSelectedTopics().isEmpty) listTopicEntity![0].isSelected = true;
+    notifyListeners();
+  }
+
+  List<int?> getSelectedTopics() {
+    return listTopicEntity!
+        .where((topic) => topic.isSelected)
+        .map((e) => e.id)
+        .toList();
+  }
 
   void eitherFailureOrTopics(int? id, bool? isWord) async {
     isLoading = true;

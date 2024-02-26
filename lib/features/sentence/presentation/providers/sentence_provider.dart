@@ -27,6 +27,16 @@ class SentenceProvider extends ChangeNotifier {
     this.failure,
   });
 
+  List<SentenceEntity?> filteredSentences(List<int?> selectedTopics) {
+    // Filter the list of sentences based on selected topic IDs
+    if (selectedTopics[0] == 0) return listSentenceEntity!;
+
+    return listSentenceEntity!
+        .where((sentence) =>
+            sentence.topics!.any((topic) => selectedTopics.contains(topic.id)))
+        .toList();
+  }
+
   void eitherFailureOrSentences(
       List<int> topics, int? type, int page, String sort) async {
     isLoading = true;
