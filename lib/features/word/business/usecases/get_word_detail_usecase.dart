@@ -14,6 +14,6 @@ class GetWordDetailUsecase {
   Future<Either<Failure, ResponseDataModel<WordEntity>>> call({
     required GetWordParams getWordParams,
   }) async {
-    return await wordRepository.getWordDetail(getWordParams: GetWordParams());
+    return await wordRepository.getWordDetail(getWordParams: getWordParams);
   }
 }

@@ -58,7 +58,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
   Future<ResponseDataModel<WordModel>> getWordDetail(
       {required GetWordParams getWordParams}) async {
     try {
-      final response = await dio.get('/word/${getWordParams.id}',
+      final response = await dio.get('/word/id/${getWordParams.id}',
           queryParameters: {},
           options: Options(headers: {
             // "authorization": "Bearer ${getUserParams.accessToken}"

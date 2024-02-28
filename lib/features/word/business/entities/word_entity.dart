@@ -46,7 +46,11 @@ class WordMeaningEntity {
   final int wordId;
   final int typeId;
   final String meaning;
+  final TypeEntity? type;
 
   WordMeaningEntity(
-      {required this.typeId, required this.wordId, required this.meaning});
+      {required this.typeId,
+      required this.wordId,
+      required this.meaning,
+      this.type});
 }

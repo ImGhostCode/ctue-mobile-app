@@ -193,8 +193,6 @@ class _DictionaryPageState extends State<DictionaryPage> {
                   //     wordProvider.filteredSentences(selectedTopics);
                   List<WordEntity>? words = wordProvider.listWordEntity;
 
-                  print(words);
-
                   bool isLoading = wordProvider.isLoading;
 
                   // Access the failure from the provider
