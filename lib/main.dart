@@ -16,6 +16,7 @@ import 'package:ctue_app/features/home/presentation/pages/ipa_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/irregular_verb_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/welcome_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/word_detail.dart';
+import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
@@ -74,6 +75,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => WordProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => IrrVerbProvider(),
           // builder: (context, child) {},
         ),
       ],

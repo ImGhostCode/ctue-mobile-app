@@ -47,6 +47,10 @@ String kAntonyms = 'antonyms';
 String kMeaning = 'meaning';
 String kWordId = 'wordId';
 
+String kV1 = 'v1';
+String kV2 = 'v2';
+String kV3 = 'v3';
+
 enum ResponseData { data, message, statusCode }
 
 int maxPokemonId = 1008;
