@@ -22,6 +22,7 @@ import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
+import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/learn_page.dart';
@@ -79,6 +80,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => IrrVerbProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(),
           // builder: (context, child) {},
         ),
       ],
@@ -196,25 +201,26 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _checkLoggedInStatus();
+    _checkLoggedInStatus(context);
   }
 
-  Future<void> _checkLoggedInStatus() async {
+  Future<void> _checkLoggedInStatus(context) async {
     const storage = FlutterSecureStorage();
     final accessToken = await storage.read(key: 'accessToken');
     if (accessToken != null) {
       // final isTokenValid = await isTokenValid(accessToken);
       // if (isTokenValid) {
       // Token is valid, proceed with loading user info
-      await Provider.of<AuthProvider>(context, listen: false)
+
+      await Provider.of<UserProvider>(context, listen: false)
           .eitherFailureOrGetUser();
       // } else {
       // Token is invalid, clear it and redirect to login
       // await storage.delete(key: 'accessToken');
       // ignore: use_build_context_synchronously
       // print(Provider.of<AuthProvider>(context, listen: false).userEntity);
-      // ignore: use_build_context_synchronously
-      if (Provider.of<AuthProvider>(context, listen: false).userEntity ==
+
+      if (Provider.of<UserProvider>(context, listen: false).userEntity ==
           null) {
         // ignore: use_build_context_synchronously
         Navigator.pushNamedAndRemoveUntil(

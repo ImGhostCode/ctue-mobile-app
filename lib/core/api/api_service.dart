@@ -16,9 +16,9 @@ class ApiService {
     _dio.options.baseUrl = 'http://localhost:8000/apis';
     _dio.options.contentType = Headers.jsonContentType;
     _dio.options.connectTimeout =
-        const Duration(milliseconds: 5000); // Timeout sau 5 giây
+        const Duration(milliseconds: 10000); // Timeout sau 5 giây
     _dio.options.receiveTimeout =
-        const Duration(milliseconds: 3000); // Timeout nhận dữ liệu sau 3 giây
+        const Duration(milliseconds: 10000); // Timeout nhận dữ liệu sau 3 giây
 
     // dio.interceptors.add(InterceptorsWrapper(onResponse: (response, handler) {
     //   // Xử lý response trước khi trả về cho ứng dụng

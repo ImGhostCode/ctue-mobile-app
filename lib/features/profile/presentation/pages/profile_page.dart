@@ -1,7 +1,10 @@
 import 'package:ctue_app/features/profile/presentation/widgets/colored_line.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
+import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -32,7 +35,7 @@ class ProfilePage extends StatelessWidget {
               floating: false,
               pinned: false,
               leading: CircleAvatar(
-                backgroundColor: Colors.teal, // Set background color as needed
+                backgroundColor: Colors.white, // Set background color as needed
                 radius: 30,
                 // Set border properties
                 // foregroundColor: Colors.teal, // Border color
@@ -41,10 +44,17 @@ class ProfilePage extends StatelessWidget {
                     child: SizedBox(
                       height: 60,
                       width: 60,
-                      child: Image.network(
-                        'https://logowik.com/content/uploads/images/flutter5786.jpg',
-                        fit: BoxFit.cover,
-                      ),
+                      child: Provider.of<UserProvider>(context, listen: false)
+                                  .userEntity!
+                                  .avt !=
+                              null
+                          ? Image.network(
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .userEntity!
+                                  .avt!,
+                              fit: BoxFit.cover,
+                            )
+                          : const FlutterLogo(),
                     ),
                   ),
                   // const Positioned(
@@ -54,7 +64,9 @@ class ProfilePage extends StatelessWidget {
                   //     ))
                 ]),
               ),
-              title: const Text('Liem'),
+              title: Text(Provider.of<UserProvider>(context, listen: true)
+                  .userEntity!
+                  .name),
               actions: [
                 IconButton(
                   onPressed: () {
