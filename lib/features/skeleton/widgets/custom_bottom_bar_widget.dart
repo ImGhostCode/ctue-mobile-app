@@ -31,7 +31,7 @@ class CustomBottomBarWidget extends StatelessWidget {
           BottomNavigationBarItem(
             activeIcon: Icon(Icons.travel_explore),
             icon: Icon(Icons.travel_explore_outlined),
-            label: 'Khám phá',
+            label: 'Tiện ích',
           ),
           BottomNavigationBarItem(
             activeIcon: Icon(Icons.person),

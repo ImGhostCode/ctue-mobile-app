@@ -2,10 +2,11 @@ import 'package:ctue_app/core/api/api_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
-import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
+// import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
 import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.dart';
-import 'package:ctue_app/features/discover/presentation/pages/favotite_vocabulary.dart';
+import 'package:ctue_app/features/extension/presentation/pages/favotite_vocabulary.dart';
+import 'package:ctue_app/features/extension/presentation/providers/favorite_provider.dart';
 import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/game_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/word_match_page.dart';
@@ -39,7 +40,7 @@ import 'package:provider/provider.dart';
 import 'features/skeleton/providers/selected_page_provider.dart';
 import 'features/skeleton/skeleton.dart';
 
-import 'package:rename/rename.dart';
+// import 'package:rename/rename.dart';
 
 void main() {
   ApiService.init();
@@ -84,6 +85,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => UserProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => FavoriteProvider(),
           // builder: (context, child) {},
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/extension/presentation/providers/favorite_provider.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
@@ -9,26 +10,26 @@ import 'package:provider/provider.dart';
 class WordDetail extends StatelessWidget {
   WordDetail({Key? key}) : super(key: key);
 
-  final List<Topic> _topics = [
-    Topic(
-        title: 'Tất cả',
-        picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-    Topic(
-        title: 'Ăn uống',
-        picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-    Topic(
-        title: 'Du lịch',
-        picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-    Topic(
-        title: 'Du lịch',
-        picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-    Topic(
-        title: 'Du lịch',
-        picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-    Topic(
-        title: 'Du lịch',
-        picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-  ];
+  // final List<Topic> _topics = [
+  //   Topic(
+  //       title: 'Tất cả',
+  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
+  //   Topic(
+  //       title: 'Ăn uống',
+  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
+  //   Topic(
+  //       title: 'Du lịch',
+  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
+  //   Topic(
+  //       title: 'Du lịch',
+  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
+  //   Topic(
+  //       title: 'Du lịch',
+  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
+  //   Topic(
+  //       title: 'Du lịch',
+  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,8 @@ class WordDetail extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as WordDetailAgrument;
     Provider.of<WordProvider>(context, listen: false)
         .eitherFailureOrWordDetail(args.id);
+    Provider.of<FavoriteProvider>(context, listen: false)
+        .eitherFailureOrIsFavorite(args.id);
 
     return Scaffold(
         appBar: AppBar(
@@ -115,12 +118,30 @@ class WordDetail extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                          Icons.favorite,
-                                          color: Colors.red,
-                                        ))
+                                    Consumer<FavoriteProvider>(
+                                      builder: (context, provider, child) {
+                                        return IconButton(
+                                            onPressed: !provider.isLoading
+                                                ? () async {
+                                                    await provider
+                                                        .eitherFailureOrToggleFavorite(
+                                                            wordDetail.id);
+                                                    provider
+                                                        .eitherFailureOrIsFavorite(
+                                                            wordDetail.id);
+                                                  }
+                                                : null,
+                                            icon: provider.isFavorite
+                                                ? const Icon(
+                                                    Icons.favorite,
+                                                    color: Colors.red,
+                                                  )
+                                                : const Icon(
+                                                    Icons
+                                                        .favorite_outline_rounded,
+                                                  ));
+                                      },
+                                    ),
                                   ],
                                 ),
                                 Row(

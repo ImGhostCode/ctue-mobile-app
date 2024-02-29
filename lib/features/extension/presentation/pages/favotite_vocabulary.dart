@@ -1,5 +1,9 @@
+import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/extension/presentation/providers/favorite_provider.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
+import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FavoriteVocabulary extends StatefulWidget {
   FavoriteVocabulary({super.key});
@@ -64,6 +68,8 @@ class _FavoriteVocabularyState extends State<FavoriteVocabulary> {
   @override
   void initState() {
     super.initState();
+    Provider.of<FavoriteProvider>(context, listen: false)
+        .eitherFailureOrGetFavorites(1, 'asc', '');
 
     _searchFocusNode.addListener(() {
       if (!_searchFocusNode.hasFocus) {
@@ -160,59 +166,96 @@ class _FavoriteVocabularyState extends State<FavoriteVocabulary> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.filter_alt_outlined)),
                 ],
               ),
             // const SizedBox(
             //   height: 2,
             // ),
             if (_searchResults.isEmpty)
-              Expanded(
-                child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    // physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        shape: RoundedRectangleBorder(
-                            // side: BorderSide(color: Colors.black)
-                            borderRadius: BorderRadius.circular(12)),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 0),
-                        leading: Container(
-                          decoration: const BoxDecoration(
-                              // border: Border.all(),
-                              // borderRadius: BorderRadius.circular(15)
-                              ),
-                          height: 40,
-                          width: 40,
-                          child: Image.network(
-                            _words[index].picture,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        title: Text(_words[index].content),
-                        subtitle: Text(
-                          _words[index].meaning,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  color: Colors.grey.shade500,
-                                  fontWeight: FontWeight.w600),
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/word-detail',
-                              arguments:
-                                  WordDetailAgrument(id: _words[index].id));
+              Consumer<FavoriteProvider>(
+                  builder: (context, favoriteProvider, _) {
+                // List<int?> selectedTopics =
+                //     Provider.of<TopicProvider>(context, listen: true)
+                //         .getSelectedTopics();
+                // Access the list of topics from the provider
+                // List<SentenceEntity?> words =
+                //     wordProvider.filteredSentences(selectedTopics);
+
+                List<WordEntity>? words = favoriteProvider.favoriteList;
+
+                bool isLoading = favoriteProvider.isLoading;
+
+                // Access the failure from the provider
+                Failure? failure = favoriteProvider.failure;
+
+                if (failure != null) {
+                  // Handle failure, for example, show an error message
+                  return Text(failure.errorMessage);
+                } else if (isLoading) {
+                  // Handle the case where topics are empty
+                  return const Center(
+                      child:
+                          CircularProgressIndicator()); // or show an empty state message
+                } else if (words!.isEmpty) {
+                  // Handle the case where topics are empty
+                  return const Center(
+                      child: Text(
+                          'Danh sách trống')); // or show an empty state message
+                } else {
+                  return Expanded(
+                    child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        // physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            shape: RoundedRectangleBorder(
+                                // side: BorderSide(color: Colors.black)
+                                borderRadius: BorderRadius.circular(12)),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 0),
+                            leading: Container(
+                              decoration: const BoxDecoration(
+                                  // border: Border.all(),
+                                  // borderRadius: BorderRadius.circular(15)
+                                  ),
+                              height: 40,
+                              width: 40,
+                              child: words[index].pictures.isNotEmpty
+                                  ? Image.network(
+                                      words[index].pictures[0],
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Container(),
+                            ),
+                            title: Text(words[index].content),
+                            subtitle: Text(
+                              words[index].meanings[0].meaning,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                      color: Colors.grey.shade500,
+                                      fontWeight: FontWeight.w600),
+                            ),
+                            onTap: () {
+                              Navigator.pushNamed(context, '/word-detail',
+                                  arguments:
+                                      WordDetailAgrument(id: words[index].id));
+                            },
+                          );
                         },
-                      );
-                    },
-                    // separatorBuilder: (context, index) {
-                    //   return const SizedBox(
-                    //     height: 1,
-                    //   );
-                    // },
-                    itemCount: _words.length),
-              ),
+                        // separatorBuilder: (context, index) {
+                        //   return const SizedBox(
+                        //     height: 1,
+                        //   );
+                        // },
+                        itemCount: words.length),
+                  );
+                }
+              }),
             if (_searchResults.isNotEmpty)
               Expanded(
                 child: ListView.builder(

@@ -1,8 +1,8 @@
 import 'package:ctue_app/features/contribute/presentation/widgets/MyFeatureListTile.dart';
 import 'package:flutter/material.dart';
 
-class DiscoverPage extends StatelessWidget {
-  DiscoverPage({Key? key}) : super(key: key);
+class ExtentionPage extends StatelessWidget {
+  ExtentionPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
