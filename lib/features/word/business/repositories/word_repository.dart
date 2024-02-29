@@ -12,4 +12,9 @@ abstract class WordRepository {
   Future<Either<Failure, ResponseDataModel<WordEntity>>> getWordDetail({
     required GetWordParams getWordParams,
   });
+
+  Future<Either<Failure, ResponseDataModel<List<WordEntity>>>>
+      lookupDictionary({
+    required LookUpDictionaryParams lookUpDictionaryParams,
+  });
 }

@@ -1,3 +1,4 @@
+import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart';
 import 'package:ctue_app/features/word_store/presentation/widgets/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -95,97 +96,7 @@ class HomePage extends StatelessWidget {
                       const SizedBox(
                         height: 5,
                       ),
-                      SizedBox(
-                        height: 45,
-                        child: SearchAnchor(
-                            isFullScreen: false,
-                            viewElevation: 8,
-                            dividerColor: Theme.of(context).colorScheme.primary,
-                            viewBackgroundColor: Colors.white,
-                            viewSurfaceTintColor: Colors.white,
-                            viewHintText: 'Tra từ điển',
-                            headerHintStyle: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(fontWeight: FontWeight.normal),
-                            viewShape: const ContinuousRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              side: BorderSide(color: Colors.grey),
-                            ),
-                            builder: (BuildContext context,
-                                SearchController controller) {
-                              return SearchBar(
-                                hintText: 'Nhập từ để tra cứu',
-                                overlayColor: const MaterialStatePropertyAll(
-                                    Colors.transparent),
-                                hintStyle:
-                                    const MaterialStatePropertyAll<TextStyle>(
-                                        TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.normal)),
-                                elevation: const MaterialStatePropertyAll(0),
-                                shape: MaterialStatePropertyAll(
-                                    RoundedRectangleBorder(
-                                        side: const BorderSide(
-                                            color: Colors.grey),
-                                        borderRadius:
-                                            BorderRadius.circular(12))),
-                                backgroundColor: const MaterialStatePropertyAll(
-                                    Colors.transparent),
-                                onTap: () {
-                                  controller.openView();
-                                },
-                                onChanged: (_) {
-                                  controller.openView();
-                                },
-                                leading: Icon(
-                                  Icons.search,
-                                  size: 28,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                                trailing: <Widget>[
-                                  IconButton(
-                                    icon: const Icon(Icons.keyboard_voice),
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    onPressed: () {
-                                      print('Use voice command');
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.image_outlined),
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    onPressed: () {
-                                      print('Use image search');
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                            suggestionsBuilder: (BuildContext context,
-                                SearchController controller) {
-                              return List<ListTile>.generate(5, (int index) {
-                                final String item = 'item $index';
-                                return ListTile(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 4),
-                                  title: Text(item),
-                                  onTap: () {
-                                    // setState(() {
-                                    //   controller.closeView(item);
-                                    // });
-                                  },
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.history),
-                                    onPressed: () {},
-                                  ),
-                                );
-                              });
-                            }),
-                      ),
+                      LookUpDicBar()
                     ],
                   ),
                 ),

@@ -19,4 +19,8 @@ class GetWordParams {
       this.key});
 }
 
-// sort: any, types: number[], level: number, specialization: number, topic: [], page: number, key: string
+class LookUpDictionaryParams {
+  final String key;
+
+  LookUpDictionaryParams({required this.key});
+}

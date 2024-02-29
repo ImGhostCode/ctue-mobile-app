@@ -5,6 +5,7 @@ import 'package:ctue_app/features/home/data/datasources/template_local_data_sour
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/business/usecases/get_word_detail_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/get_word_usecase.dart';
+import 'package:ctue_app/features/word/business/usecases/look_up_dic_usecase.dart';
 import 'package:ctue_app/features/word/data/datasources/word_remote_data_source.dart';
 import 'package:ctue_app/features/word/data/repositories/word_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
@@ -17,6 +18,7 @@ import '../../../../../core/errors/failure.dart';
 
 class WordProvider extends ChangeNotifier {
   List<WordEntity>? listWordEntity = [];
+  List<WordEntity> lookUpResults = [];
   WordEntity? wordEntity;
   Failure? failure;
   bool isLoading = false;
@@ -68,6 +70,41 @@ class WordProvider extends ChangeNotifier {
       (ResponseDataModel<List<WordEntity>> newWords) {
         isLoading = false;
         listWordEntity = newWords.data;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrLookUpDic(String key) async {
+    isLoading = true;
+    WordRepositoryImpl repository = WordRepositoryImpl(
+      remoteDataSource: WordRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrWord =
+        await LookUpDicUsecase(wordRepository: repository).call(
+      lookUpDictionaryParams: LookUpDictionaryParams(key: key),
+    );
+
+    failureOrWord.fold(
+      (Failure newFailure) {
+        isLoading = false;
+        lookUpResults = [];
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<List<WordEntity>> results) {
+        isLoading = false;
+        lookUpResults = results.data;
         failure = null;
         notifyListeners();
       },

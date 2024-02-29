@@ -123,7 +123,6 @@ class FavoriteProvider extends ChangeNotifier {
       (ResponseDataModel<FavoriteEntity> newFavorite) {
         _isLoading = false;
         favoriteEntity = newFavorite.data;
-        favoriteList!.removeWhere((item) => item.id == wordId);
         failure = null;
         notifyListeners();
       },

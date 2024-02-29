@@ -32,19 +32,27 @@ class WordModel extends WordEntity {
       isDeleted: json['isDeleted'],
       note: json['note'],
       userId: json['userId'],
-      topics: json['Topic']
-          .map<TopicModel>((topicJson) => TopicModel.fromJson(json: topicJson))
-          .toList(),
+      topics: json['Topic'] != null
+          ? json['Topic']
+              .map<TopicModel>(
+                  (topicJson) => TopicModel.fromJson(json: topicJson))
+              .toList()
+          : [],
       // type: TypeModel.fromJson(json: json['Type']),
       levelId: json['levelId'],
       specializationId: json['specializationId'],
-      meanings: json['meanings']
-          .map<WordMeaningModel>(
-              (meaingJson) => WordMeaningModel.fromJson(json: meaingJson))
-          .toList(),
-      levelEntity: LevelModel.fromJson(json: json['Level']),
-      specializationEntity:
-          SpecializationModel.fromJson(json: json['Specialization']),
+      meanings: json['meanings'] != null
+          ? json['meanings']
+              .map<WordMeaningModel>(
+                  (meaingJson) => WordMeaningModel.fromJson(json: meaingJson))
+              .toList()
+          : [],
+      levelEntity: json['Level'] != null
+          ? LevelModel.fromJson(json: json['Level'])
+          : null,
+      specializationEntity: json['Specialization'] != null
+          ? SpecializationModel.fromJson(json: json['Specialization'])
+          : null,
       phonetic: json['phonetic'],
       pictures: json['pictures'].map<String>((pic) => pic.toString()).toList(),
       examples:

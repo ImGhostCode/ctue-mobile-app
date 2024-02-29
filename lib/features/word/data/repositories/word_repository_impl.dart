@@ -38,12 +38,7 @@ class WordRepositoryImpl implements WordRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localAuth = await localDataSource.getLastAuth();
-      //   return Right(localAuth);
-      // } on CacheException {
       return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
     }
   }
 
@@ -63,12 +58,27 @@ class WordRepositoryImpl implements WordRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localAuth = await localDataSource.getLastAuth();
-      //   return Right(localAuth);
-      // } on CacheException {
       return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<List<WordModel>>>> lookupDictionary(
+      {required LookUpDictionaryParams lookUpDictionaryParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<List<WordModel>> remoteWord = await remoteDataSource
+            .lookUpDictionary(lookUpDictionaryParams: lookUpDictionaryParams);
+
+        // localDataSource.cacheAuth(AuthToCache: remoteWord);
+
+        return Right(remoteWord);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
     }
   }
 }

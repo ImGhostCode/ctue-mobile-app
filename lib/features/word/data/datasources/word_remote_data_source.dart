@@ -9,6 +9,8 @@ abstract class WordRemoteDataSource {
       {required GetWordParams getWordParams});
   Future<ResponseDataModel<WordModel>> getWordDetail(
       {required GetWordParams getWordParams});
+  Future<ResponseDataModel<List<WordModel>>> lookUpDictionary(
+      {required LookUpDictionaryParams lookUpDictionaryParams});
 }
 
 class WordRemoteDataSourceImpl implements WordRemoteDataSource {
@@ -67,6 +69,36 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
       return ResponseDataModel<WordModel>.fromJson(
           json: response.data,
           fromJsonD: (json) => WordModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<List<WordModel>>> lookUpDictionary(
+      {required LookUpDictionaryParams lookUpDictionaryParams}) async {
+    try {
+      final response = await dio.get(
+          '/word/look-up-dictionary?key=${lookUpDictionaryParams.key}',
+          queryParameters: {},
+          options: Options(headers: {
+            // "authorization": "Bearer ${getUserParams.accessToken}"
+          }));
+
+      return ResponseDataModel<List<WordModel>>.fromJson(
+          json: response.data,
+          fromJsonD: (jsonWords) => jsonWords['results']
+              ?.map<WordModel>((json) => WordModel.fromJson(json: json))
+              .toList());
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {
