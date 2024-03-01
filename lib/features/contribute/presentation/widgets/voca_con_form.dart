@@ -1,14 +1,24 @@
 import 'dart:io';
 
+import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/contribute/presentation/widgets/ipa_keyboard.dart';
+import 'package:ctue_app/features/level/business/entities/level_entity.dart';
+import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
+import 'package:ctue_app/features/specialization/business/entities/specialization_entity.dart';
+import 'package:ctue_app/features/specialization/presentation/providers/spec_provider.dart';
+import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
+import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
+import 'package:ctue_app/features/type/business/entities/type_entity.dart';
+import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class WordDefinition {
-  String? wordType;
+  int? wordTypeId;
   String? meaning;
 
-  WordDefinition({this.wordType, this.meaning});
+  WordDefinition({this.wordTypeId, this.meaning});
 }
 
 class VocaConForm extends StatefulWidget {
@@ -86,8 +96,8 @@ class _VocaConFormState extends State<VocaConForm> {
         isSeleted: false)
   ];
 
-  String? _selectedLevel;
-  String? _selectedSpecializaiton;
+  int? _selectedLevel;
+  int? _selectedSpecializaiton;
   bool _isExpanded = false;
 
   Future<void> _pickImage() async {
@@ -116,6 +126,19 @@ class _VocaConFormState extends State<VocaConForm> {
     } else {
       _pronunciationController.text += label;
     }
+  }
+
+  @override
+  void initState() {
+    Provider.of<TypeProvider>(context, listen: false)
+        .eitherFailureOrGetTypes(true);
+    Provider.of<SpecializationProvider>(context, listen: false)
+        .eitherFailureOrGetSpecializations();
+    Provider.of<LevelProvider>(context, listen: false)
+        .eitherFailureOrGetLevels();
+    Provider.of<TopicProvider>(context, listen: false)
+        .eitherFailureOrTopics(null, true, null);
+    super.initState();
   }
 
   @override
@@ -219,38 +242,7 @@ class _VocaConFormState extends State<VocaConForm> {
               const SizedBox(
                 height: 4,
               ),
-              Container(
-                color: Colors.white,
-                child: DropdownButtonFormField<String>(
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  value: _selectedLevel,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Vui lòng chọn bậc của từ";
-                    }
-                    return null;
-                  },
-                  items: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
-                      .map<DropdownMenuItem<String>>(
-                          (String value) => DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedLevel = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 15),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(10),
-                      )),
-                ),
-              ),
+              _buildLevels(context),
               const SizedBox(
                 height: 4,
               ),
@@ -261,38 +253,7 @@ class _VocaConFormState extends State<VocaConForm> {
               const SizedBox(
                 height: 4,
               ),
-              Container(
-                color: Colors.white,
-                child: DropdownButtonFormField<String>(
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  value: _selectedSpecializaiton,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Vui lòng chọn chuyên ngành";
-                    }
-                    return null;
-                  },
-                  items: ['Xa hoi hoc', 'Cong nghe thong tin', 'Marketing']
-                      .map<DropdownMenuItem<String>>(
-                          (String value) => DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedSpecializaiton = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(10),
-                      )),
-                ),
-              ),
+              _buildSpecializaitons(context),
               const SizedBox(
                 height: 4,
               ),
@@ -456,85 +417,7 @@ class _VocaConFormState extends State<VocaConForm> {
               const SizedBox(
                 height: 5,
               ),
-              ExpansionPanelList(
-                elevation: 2,
-                expandedHeaderPadding: const EdgeInsets.all(0),
-                expansionCallback: (int index, bool isExpanded) {
-                  setState(() {
-                    _isExpanded = isExpanded;
-                  });
-                },
-                children: [
-                  ExpansionPanel(
-                    headerBuilder: (BuildContext context, bool isExpanded) {
-                      return ListTile(
-                        title: Text(
-                          'Thêm chủ đề',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(color: Colors.black),
-                        ),
-                      );
-                    },
-                    body: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey.shade100),
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.all(5),
-                      child: Wrap(
-                        spacing: 8.0, // Khoảng cách giữa các Chip
-                        children: _topics.asMap().entries.map((entry) {
-                          final topic = entry.value;
-                          return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            child: ActionChip(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      25.0), // Set the border radius here
-                                ),
-                                side: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.7),
-                                    width: 2),
-                                backgroundColor: topic.isSeleted
-                                    ? Colors.green.shade500
-                                    : Colors.grey.shade100,
-                                avatar: ClipOval(
-                                  child: Image.network(
-                                    topic.image,
-                                    fit: BoxFit.fill,
-                                    width: 60.0,
-                                    height: 60.0,
-                                  ),
-                                ),
-                                label: Text(
-                                  topic.name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          fontWeight: FontWeight.normal,
-                                          color: topic.isSeleted
-                                              ? Colors.white
-                                              : Colors.black),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    topic.isSeleted = !topic.isSeleted;
-                                  });
-                                }),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    isExpanded: _isExpanded,
-                  ),
-                ],
-              ),
+              _buildTopics(context),
               const SizedBox(
                 height: 10,
               ),
@@ -561,6 +444,188 @@ class _VocaConFormState extends State<VocaConForm> {
           ),
         ),
       ),
+    );
+  }
+
+  ExpansionPanelList _buildTopics(BuildContext context) {
+    return ExpansionPanelList(
+      elevation: 2,
+      expandedHeaderPadding: const EdgeInsets.all(0),
+      expansionCallback: (int index, bool isExpanded) {
+        setState(() {
+          _isExpanded = isExpanded;
+        });
+      },
+      children: [
+        ExpansionPanel(
+          headerBuilder: (BuildContext context, bool isExpanded) {
+            return ListTile(
+              title: Text(
+                'Thêm chủ đề',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: Colors.black),
+              ),
+            );
+          },
+          body: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey.shade100),
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.all(5),
+            child: Consumer<TopicProvider>(builder: (context, provider, child) {
+              List<TopicEntity> listTopics = provider.listTopicEntity;
+
+              bool isLoading = provider.isLoading;
+
+              // Access the failure from the provider
+              Failure? failure = provider.failure;
+
+              if (failure != null) {
+                return Text(failure.errorMessage);
+              } else if (isLoading) {
+                return const Center(
+                    child:
+                        CircularProgressIndicator()); // or show an empty state message
+              } else if (listTopics.isEmpty) {
+                // Handle the case where topics are empty
+                return const Center(child: Text('Không có dữ liệu'));
+              } else {
+                return Wrap(
+                  spacing: 8.0, // Khoảng cách giữa các Chip
+                  children: listTopics.map((topic) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      child: ActionChip(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                25.0), // Set the border radius here
+                          ),
+                          side: BorderSide(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.7),
+                              width: 2),
+                          backgroundColor: topic.isSelected
+                              ? Colors.green.shade500
+                              : Colors.grey.shade100,
+                          avatar: ClipOval(
+                            child: topic.image.isNotEmpty
+                                ? Image.network(
+                                    topic.image,
+                                    fit: BoxFit.fill,
+                                    width: 60.0,
+                                    height: 60.0,
+                                  )
+                                : Container(),
+                          ),
+                          label: Text(
+                            topic.name,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                    fontWeight: FontWeight.normal,
+                                    color: topic.isSelected
+                                        ? Colors.white
+                                        : Colors.black),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              topic.isSelected = !topic.isSelected;
+                            });
+                          }),
+                    );
+                  }).toList(),
+                );
+              }
+            }),
+          ),
+          isExpanded: _isExpanded,
+        ),
+      ],
+    );
+  }
+
+  Container _buildLevels(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Consumer<LevelProvider>(builder: (context, provider, child) {
+        return DropdownButtonFormField<int>(
+          style: Theme.of(context).textTheme.bodyMedium,
+          value: _selectedLevel =
+              provider.listLevels.isNotEmpty ? provider.listLevels[0].id : null,
+          validator: (int? value) {
+            if (value == null) {
+              return "Vui lòng chọn bậc của từ";
+            }
+            return null;
+          },
+          items: provider.listLevels
+              .map<DropdownMenuItem<int>>(
+                  (LevelEntity levelEntity) => DropdownMenuItem(
+                        value: levelEntity.id,
+                        child: Text(levelEntity.name),
+                      ))
+              .toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedLevel = value;
+            });
+          },
+          decoration: InputDecoration(
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400),
+                borderRadius: BorderRadius.circular(10),
+              )),
+        );
+      }),
+    );
+  }
+
+  Container _buildSpecializaitons(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child:
+          Consumer<SpecializationProvider>(builder: (context, provider, child) {
+        return DropdownButtonFormField<int>(
+          style: Theme.of(context).textTheme.bodyMedium,
+          value: _selectedSpecializaiton =
+              provider.listSpecializations.isNotEmpty
+                  ? provider.listSpecializations[0].id
+                  : null,
+          validator: (int? value) {
+            if (value == null) {
+              return "Vui lòng chọn chuyên ngành";
+            }
+            return null;
+          },
+          items: provider.listSpecializations
+              .map<DropdownMenuItem<int>>(
+                  (SpecializationEntity specialization) => DropdownMenuItem(
+                        value: specialization.id,
+                        child: Text(specialization.name),
+                      ))
+              .toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedSpecializaiton = value;
+            });
+          },
+          decoration: InputDecoration(
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400),
+                borderRadius: BorderRadius.circular(10),
+              )),
+        );
+      }),
     );
   }
 
@@ -709,24 +774,32 @@ class _VocaConFormState extends State<VocaConForm> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          DropdownButton<String>(
-            style: Theme.of(context).textTheme.bodyMedium!,
-            value: wordDefinition.wordType,
-            items: ['Noun', 'Verb', 'Adjective', 'Adverb']
-                .map<DropdownMenuItem<String>>(
-                    (String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                _wordDefinitions[index].wordType = value;
-              });
-            },
-            hint: const Text('Loại từ'),
-          ),
+          Consumer<TypeProvider>(builder: (context, provider, child) {
+            return DropdownButton<int>(
+              alignment: Alignment.center,
+              focusColor: Colors.white,
+              style: Theme.of(context).textTheme.bodyMedium!,
+              value: wordDefinition.wordTypeId = provider.listTypes.isNotEmpty
+                  ? provider.listTypes[0].id
+                  : null,
+              items: provider.listTypes
+                  .map<DropdownMenuItem<int>>(
+                      (TypeEntity type) => DropdownMenuItem<int>(
+                            value: type.id,
+                            child: Text(type.name),
+                          ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  _wordDefinitions[index].wordTypeId = value;
+                });
+              },
+              hint: const Text('Loại từ'),
+            );
+          }),
           const SizedBox(width: 10),
           Expanded(
               child: TextFormField(
@@ -734,7 +807,8 @@ class _VocaConFormState extends State<VocaConForm> {
             style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(
               // hintText: 'Nhập nghĩa của từ',
-              helperText: 'Nghĩa của từ',
+              // helperText: 'Nghĩa của từ',
+              hintText: 'Nghĩa của từ',
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               border: OutlineInputBorder(

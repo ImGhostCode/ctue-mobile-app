@@ -1,7 +1,7 @@
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/type/business/entities/type_entity.dart';
-import 'package:ctue_app/features/word/business/entities/level_entity.dart';
-import 'package:ctue_app/features/word/business/entities/specialization_entity.dart';
+import 'package:ctue_app/features/level/business/entities/level_entity.dart';
+import 'package:ctue_app/features/specialization/business/entities/specialization_entity.dart';
 
 class WordEntity {
   final int id;

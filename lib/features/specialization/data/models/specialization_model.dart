@@ -1,5 +1,5 @@
 import 'package:ctue_app/core/constants/constants.dart';
-import 'package:ctue_app/features/word/business/entities/specialization_entity.dart';
+import 'package:ctue_app/features/specialization/business/entities/specialization_entity.dart';
 
 class SpecializationModel extends SpecializationEntity {
   SpecializationModel({required super.id, required super.name});

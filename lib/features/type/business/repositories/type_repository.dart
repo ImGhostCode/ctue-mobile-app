@@ -5,7 +5,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../../core/errors/failure.dart';
 
 abstract class TypeRepository {
-  Future<Either<Failure, ResponseDataModel<TypeEntity>>> getTypes({
+  Future<Either<Failure, ResponseDataModel<List<TypeEntity>>>> getTypes({
     required TypeParams typeParams,
   });
 }

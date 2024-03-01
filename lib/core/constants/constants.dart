@@ -52,6 +52,9 @@ String kV2 = 'v2';
 String kV3 = 'v3';
 String kWords = 'words';
 String kWord = 'Word';
+String kStatus = 'status';
+String kUser = 'User';
+String kContriType = 'type';
 
 enum ResponseData { data, message, statusCode }
 

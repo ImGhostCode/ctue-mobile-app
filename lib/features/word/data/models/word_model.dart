@@ -1,8 +1,8 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/topic/data/models/topic_model.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
-import 'package:ctue_app/features/word/data/models/level_model.dart';
-import 'package:ctue_app/features/word/data/models/specialization_model.dart';
+import 'package:ctue_app/features/level/data/models/level_model.dart';
+import 'package:ctue_app/features/specialization/data/models/specialization_model.dart';
 import 'package:ctue_app/features/word/data/models/word_meaing_model.dart';
 
 class WordModel extends WordEntity {

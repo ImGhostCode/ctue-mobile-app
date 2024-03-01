@@ -6,12 +6,12 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
 
-class GetTypeUsecase {
+class GetTypesUsecase {
   final TypeRepository typeRepository;
 
-  GetTypeUsecase({required this.typeRepository});
+  GetTypesUsecase({required this.typeRepository});
 
-  Future<Either<Failure, ResponseDataModel<TypeEntity>>> call({
+  Future<Either<Failure, ResponseDataModel<List<TypeEntity>>>> call({
     required TypeParams typeParams,
   }) async {
     return await typeRepository.getTypes(typeParams: typeParams);

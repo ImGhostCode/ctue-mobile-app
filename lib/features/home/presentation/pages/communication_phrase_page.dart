@@ -17,18 +17,16 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
   @override
   void initState() {
     super.initState();
-
-    // Fetch topics when the widget initializes
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<TopicProvider>(context, listen: false)
-        .eitherFailureOrTopics(null, false);
-
+    Provider.of<TopicProvider>(context, listen: false).eitherFailureOrTopics(
+        null,
+        false,
+        TopicEntity(id: 0, name: 'Tất cả', isWord: false, isSelected: true));
     Provider.of<SentenceProvider>(context, listen: false)
         .eitherFailureOrSentences([], null, 1, 'asc');
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -52,7 +50,7 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
 
               if (failure != null) {
                 return Text(failure.errorMessage);
-              } else if (topics == null || topics.isEmpty) {
+              } else if (topics.isEmpty) {
                 return const Center(child: Text('null'));
               } else if (isLoading) {
                 return const CircularProgressIndicator(); // or show an empty state message
@@ -88,7 +86,7 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
                                     : Colors.grey.shade700),
                         onPressed: () {
                           Provider.of<TopicProvider>(context, listen: false)
-                              .handleSelectTopic(index);
+                              .handleSelectTopicComPhrase(index);
                         },
                       );
                     },

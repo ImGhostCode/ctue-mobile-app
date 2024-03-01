@@ -1,8 +1,5 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/type_params.dart';
-import 'package:ctue_app/features/auth/data/models/access_token_model.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
-import 'package:ctue_app/features/type/business/entities/type_entity.dart';
 import 'package:ctue_app/features/type/business/repositories/type_repository.dart';
 import 'package:ctue_app/features/type/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/type/data/datasources/type_remote_data_source.dart';
@@ -25,11 +22,11 @@ class TypeRepositoryImpl implements TypeRepository {
   });
 
   @override
-  Future<Either<Failure, ResponseDataModel<TypeModel>>> getTypes(
+  Future<Either<Failure, ResponseDataModel<List<TypeModel>>>> getTypes(
       {required TypeParams typeParams}) async {
     if (await networkInfo.isConnected!) {
       try {
-        ResponseDataModel<TypeModel> remoteType =
+        ResponseDataModel<List<TypeModel>> remoteType =
             await remoteDataSource.getTypes(typeParams: typeParams);
 
         // localDataSource.cacheAuth(AuthToCache: remoteType);
@@ -40,12 +37,7 @@ class TypeRepositoryImpl implements TypeRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localAuth = await localDataSource.getLastAuth();
-      //   return Right(localAuth);
-      // } on CacheException {
       return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
     }
   }
 }

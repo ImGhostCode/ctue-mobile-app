@@ -18,11 +18,14 @@ import 'package:ctue_app/features/home/presentation/pages/irregular_verb_page.da
 import 'package:ctue_app/features/home/presentation/pages/welcome_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
+import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
+import 'package:ctue_app/features/specialization/presentation/providers/spec_provider.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
+import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
@@ -89,6 +92,18 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => FavoriteProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => TypeProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SpecializationProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LevelProvider(),
           // builder: (context, child) {},
         ),
       ],

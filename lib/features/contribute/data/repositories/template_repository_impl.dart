@@ -1,3 +1,8 @@
+import 'package:ctue_app/core/constants/response.dart';
+import 'package:ctue_app/core/params/contribution_params.dart';
+import 'package:ctue_app/features/contribute/business/entities/contribution_entity.dart';
+import 'package:ctue_app/features/contribute/business/repositories/contribution_repositoty.dart';
+import 'package:ctue_app/features/contribute/data/models/contribution_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/connection/network_info.dart';
@@ -6,42 +11,39 @@ import '../../../../../core/errors/failure.dart';
 import '../../../../../core/params/params.dart';
 import '../../business/repositories/template_repository.dart';
 import '../datasources/template_local_data_source.dart';
-import '../datasources/template_remote_data_source.dart';
+import '../datasources/contribution_remote_data_source.dart';
 import '../models/template_model.dart';
 
-class TemplateRepositoryImpl implements TemplateRepository {
-  final TemplateRemoteDataSource remoteDataSource;
+class ContributionRepositoryImpl implements ContributionRepository {
+  final ContributionRemoteDataSource remoteDataSource;
   final TemplateLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
-  TemplateRepositoryImpl({
+  ContributionRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
     required this.networkInfo,
   });
 
   @override
-  Future<Either<Failure, TemplateModel>> getTemplate(
-      {required TemplateParams templateParams}) async {
+  Future<Either<Failure, ResponseDataModel<ContributionModel>>>
+      createWordContribution(
+          {required CreateWordConParams createWordConParams}) async {
     if (await networkInfo.isConnected!) {
       try {
-        TemplateModel remoteTemplate =
-            await remoteDataSource.getTemplate(templateParams: templateParams);
+        ResponseDataModel<ContributionModel> remoteContribution =
+            await remoteDataSource.createWordContribution(
+                createWordConParams: createWordConParams);
 
-        localDataSource.cacheTemplate(templateToCache: remoteTemplate);
+        // localDataSource.cacheContribution(ContributionToCache: remoteContribution);
 
-        return Right(remoteTemplate);
-      } on ServerException {
+        return Right(remoteContribution);
+      } on ServerException catch (e) {
         return Left(ServerFailure(
-            errorMessage: 'This is a server exception', statusCode: 400));
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      try {
-        TemplateModel localTemplate = await localDataSource.getLastTemplate();
-        return Right(localTemplate);
-      } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a cache exception'));
-      }
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
     }
   }
 }

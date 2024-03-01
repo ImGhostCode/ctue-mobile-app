@@ -4,57 +4,54 @@ import 'package:ctue_app/core/params/topic_params.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/profile/presentation/pages/voice_setting_page.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
-import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/business/usecases/get_topics_usecase.dart';
+import 'package:ctue_app/features/topic/data/datasources/topic_remote_data_source.dart';
 import 'package:ctue_app/features/topic/data/repositories/topic_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
-
-import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/failure.dart';
-import '../../../../../core/params/params.dart';
-import '../../business/entities/template_entity.dart';
-import '../../business/usecases/get_template.dart';
-import '../../data/datasources/template_local_data_source.dart';
-import '../../data/datasources/topic_remote_data_source.dart';
-import '../../data/repositories/template_repository_impl.dart';
 
 class TopicProvider extends ChangeNotifier {
-  List<TopicEntity>? listTopicEntity = [];
+  List<TopicEntity> listTopicEntity = [];
   Failure? failure;
-  bool isLoading = false;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
   TopicProvider({
-    this.listTopicEntity,
     this.failure,
   });
 
-  void handleSelectTopic(int index) {
+  void handleSelectTopicComPhrase(int index) {
     if (index != 0) {
-      listTopicEntity![0].isSelected = false;
+      listTopicEntity[0].isSelected = false;
     } else {
-      for (var topic in listTopicEntity!) {
+      for (var topic in listTopicEntity) {
         topic.isSelected = false;
       }
     }
-    listTopicEntity![index].isSelected = !listTopicEntity![index].isSelected;
-    if (getSelectedTopics().isEmpty) listTopicEntity![0].isSelected = true;
+    listTopicEntity[index].isSelected = !listTopicEntity[index].isSelected;
+    if (getSelectedTopics().isEmpty) listTopicEntity[0].isSelected = true;
     notifyListeners();
   }
 
   List<int?> getSelectedTopics() {
-    return listTopicEntity!
+    return listTopicEntity
         .where((topic) => topic.isSelected)
         .map((e) => e.id)
         .toList();
   }
 
-  void eitherFailureOrTopics(int? id, bool? isWord) async {
-    isLoading = true;
+  void eitherFailureOrTopics(int? id, bool? isWord, TopicEntity? init) async {
+    _isLoading = true;
 
     TopicRepositoryImpl repository = TopicRepositoryImpl(
       remoteDataSource: TopicRemoteDataSourceImpl(
@@ -75,17 +72,17 @@ class TopicProvider extends ChangeNotifier {
 
     failureOrTopic.fold(
       (Failure newFailure) {
-        isLoading = false;
+        _isLoading = false;
         listTopicEntity = [];
         failure = newFailure;
         notifyListeners();
       },
       (ResponseDataModel<List<TopicEntity>> newTopics) {
-        isLoading = false;
-        listTopicEntity = [
-          TopicEntity(id: 0, name: 'Tất cả', isWord: false, isSelected: true),
-          ...newTopics.data
-        ];
+        _isLoading = false;
+        listTopicEntity = newTopics.data;
+        if (init != null) {
+          listTopicEntity = [init, ...listTopicEntity];
+        }
         failure = null;
         notifyListeners();
       },

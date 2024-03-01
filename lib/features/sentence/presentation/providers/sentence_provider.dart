@@ -16,22 +16,29 @@ import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/failure.dart';
 
 class SentenceProvider extends ChangeNotifier {
-  List<SentenceEntity>? listSentenceEntity = [];
+  List<SentenceEntity> listSentenceEntity = [];
   SentenceEntity? sentenceEntity;
   Failure? failure;
-  bool isLoading = false;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
   SentenceProvider({
-    this.listSentenceEntity,
     this.sentenceEntity,
     this.failure,
   });
 
   List<SentenceEntity?> filteredSentences(List<int?> selectedTopics) {
     // Filter the list of sentences based on selected topic IDs
-    if (selectedTopics[0] == 0) return listSentenceEntity!;
+    if (selectedTopics.isNotEmpty ? selectedTopics[0] == 0 : false) {
+      return listSentenceEntity;
+    }
 
-    return listSentenceEntity!
+    return listSentenceEntity
         .where((sentence) =>
             sentence.topics!.any((topic) => selectedTopics.contains(topic.id)))
         .toList();
@@ -39,7 +46,7 @@ class SentenceProvider extends ChangeNotifier {
 
   void eitherFailureOrSentences(
       List<int> topics, int? type, int page, String sort) async {
-    isLoading = true;
+    _isLoading = true;
     SentenceRepositoryImpl repository = SentenceRepositoryImpl(
       remoteDataSource: SentenceRemoteDataSourceImpl(
         dio: ApiService.dio,
@@ -60,14 +67,14 @@ class SentenceProvider extends ChangeNotifier {
 
     failureOrSentence.fold(
       (Failure newFailure) {
-        isLoading = false;
+        _isLoading = false;
 
         listSentenceEntity = [];
         failure = newFailure;
         notifyListeners();
       },
       (ResponseDataModel<List<SentenceEntity>> newSentences) {
-        isLoading = false;
+        _isLoading = false;
         listSentenceEntity = newSentences.data;
         failure = null;
         notifyListeners();
@@ -76,7 +83,7 @@ class SentenceProvider extends ChangeNotifier {
   }
 
   void eitherFailureOrSenDetail(int id) async {
-    isLoading = true;
+    _isLoading = true;
     SentenceRepositoryImpl repository = SentenceRepositoryImpl(
       remoteDataSource: SentenceRemoteDataSourceImpl(
         dio: ApiService.dio,
@@ -96,14 +103,14 @@ class SentenceProvider extends ChangeNotifier {
 
     failureOrSentence.fold(
       (Failure newFailure) {
-        isLoading = false;
+        _isLoading = false;
 
         sentenceEntity = null;
         failure = newFailure;
         notifyListeners();
       },
       (ResponseDataModel<SentenceEntity> newSentence) {
-        isLoading = false;
+        _isLoading = false;
 
         sentenceEntity = newSentence.data;
         failure = null;

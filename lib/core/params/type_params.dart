@@ -1,5 +1,5 @@
 class TypeParams {
-  final int id;
+  final int? id;
   final bool isWord;
-  const TypeParams({required this.id, required this.isWord});
+  const TypeParams({this.id, required this.isWord});
 }

@@ -1,0 +1,63 @@
+import 'package:ctue_app/core/constants/response.dart';
+import 'package:ctue_app/core/params/contribution_params.dart';
+import 'package:ctue_app/features/contribute/data/models/contribution_model.dart';
+import 'package:dio/dio.dart';
+import '../../../../../core/errors/exceptions.dart';
+import '../../../../../core/params/params.dart';
+import '../models/template_model.dart';
+
+abstract class ContributionRemoteDataSource {
+  Future<ResponseDataModel<ContributionModel>> createWordContribution(
+      {required CreateWordConParams createWordConParams});
+}
+
+class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
+  final Dio dio;
+
+  ContributionRemoteDataSourceImpl({required this.dio});
+
+  @override
+  Future<ResponseDataModel<ContributionModel>> createWordContribution(
+      {required CreateWordConParams createWordConParams}) async {
+    try {
+      final formData = FormData.fromMap({
+        'type': createWordConParams.type,
+        'content': {
+          "topicId": createWordConParams.content.topicId,
+          "levelId": createWordConParams.content.levelId,
+          "specializationId": createWordConParams.content.specializationId,
+          "content": createWordConParams.content.content,
+          "meanings": createWordConParams.content.meanings,
+          "note": createWordConParams.content.note,
+          "phonetic": createWordConParams.content.phonetic,
+          "examples": createWordConParams.content.examples,
+          "synonyms": createWordConParams.content.synonyms,
+          "antonyms": createWordConParams.content.antonyms,
+          "pictures": createWordConParams.content.pictures
+              .map((e) => MultipartFile.fromFileSync(e.path, filename: e.name))
+              .toList(),
+        },
+      });
+      final response = await dio.post('/contribution',
+          data: formData,
+          options: Options(headers: {
+            "authorization": "Bearer ${createWordConParams.accessToken}"
+          }));
+
+      return ResponseDataModel<ContributionModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => ContributionModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+}

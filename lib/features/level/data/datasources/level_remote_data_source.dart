@@ -1,34 +1,34 @@
 import 'package:ctue_app/core/constants/response.dart';
-import 'package:ctue_app/core/params/type_params.dart';
-import 'package:ctue_app/features/type/data/models/type_model.dart';
+import 'package:ctue_app/core/params/level_params.dart';
+import 'package:ctue_app/features/level/data/models/level_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
 
-abstract class TypeRemoteDataSource {
-  Future<ResponseDataModel<List<TypeModel>>> getTypes(
-      {required TypeParams typeParams});
+abstract class LevelRemoteDataSource {
+  Future<ResponseDataModel<List<LevelModel>>> getLevels(
+      {required LevelParams levelParams});
 }
 
-class TypeRemoteDataSourceImpl implements TypeRemoteDataSource {
+class LevelRemoteDataSourceImpl implements LevelRemoteDataSource {
   final Dio dio;
 
-  TypeRemoteDataSourceImpl({required this.dio});
+  LevelRemoteDataSourceImpl({required this.dio});
 
   @override
-  Future<ResponseDataModel<List<TypeModel>>> getTypes(
-      {required TypeParams typeParams}) async {
+  Future<ResponseDataModel<List<LevelModel>>> getLevels(
+      {required LevelParams levelParams}) async {
     try {
-      final response = await dio.get('/type/${typeParams.isWord}',
+      final response = await dio.get('/level',
           queryParameters: {
             'api_key': 'if needed',
           },
           options: Options(headers: {
             // "authorization": "Bearer ${getUserParams.accessToken}"
           }));
-      return ResponseDataModel<List<TypeModel>>.fromJson(
+      return ResponseDataModel<List<LevelModel>>.fromJson(
           json: response.data,
-          fromJsonD: (jsonTypes) => jsonTypes['results']
-              ?.map<TypeModel>((json) => TypeModel.fromJson(json: json))
+          fromJsonD: (jsonLevels) => jsonLevels['results']
+              ?.map<LevelModel>((json) => LevelModel.fromJson(json: json))
               .toList());
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||

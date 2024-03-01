@@ -1,5 +1,5 @@
 import 'package:ctue_app/core/constants/constants.dart';
-import 'package:ctue_app/features/word/business/entities/level_entity.dart';
+import 'package:ctue_app/features/level/business/entities/level_entity.dart';
 
 class LevelModel extends LevelEntity {
   LevelModel({required super.id, required super.name});
