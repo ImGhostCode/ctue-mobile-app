@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/core/params/contribution_params.dart';
+import 'package:ctue_app/features/contribute/presentation/providers/contribution_provider.dart';
 import 'package:ctue_app/features/contribute/presentation/widgets/ipa_keyboard.dart';
 import 'package:ctue_app/features/level/business/entities/level_entity.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
@@ -22,7 +25,7 @@ class WordDefinition {
 }
 
 class VocaConForm extends StatefulWidget {
-  VocaConForm({Key? key}) : super(key: key);
+  const VocaConForm({Key? key}) : super(key: key);
 
   @override
   _VocaConFormState createState() => _VocaConFormState();
@@ -32,73 +35,24 @@ class _VocaConFormState extends State<VocaConForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _pronunciationController =
       TextEditingController();
-  final TextEditingController _meaningController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+  // final TextEditingController _meaningController = TextEditingController();
   final TextEditingController _synonymController = TextEditingController();
   final TextEditingController _antonymController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
   final List<WordDefinition> _wordDefinitions = [];
-  List<String> _examples = [];
+  final List<String> _examples = [];
   List<XFile> _selectedImages = [];
-  List<Topic> _topics = [
-    Topic(
-        id: 1,
-        image:
-            'https://e7.pngegg.com/pngimages/122/14/png-clipart-life-skills-training-education-daily-life-miscellaneous-leaf-thumbnail.png',
-        name: 'Doi song',
-        isSeleted: false),
-    Topic(
-        id: 1,
-        image:
-            'https://e7.pngegg.com/pngimages/122/14/png-clipart-life-skills-training-education-daily-life-miscellaneous-leaf-thumbnail.png',
-        name: 'Thong thuong1',
-        isSeleted: false),
-    Topic(
-        id: 1,
-        image:
-            'https://e7.pngegg.com/pngimages/122/14/png-clipart-life-skills-training-education-daily-life-miscellaneous-leaf-thumbnail.png',
-        name: 'Thong thuong6',
-        isSeleted: false),
-    Topic(
-        id: 1,
-        image: 'https://logowik.com/content/uploads/images/flutter5786.jpg',
-        name: 'Thong thuong4',
-        isSeleted: false),
-    Topic(
-        id: 1,
-        image:
-            'https://e7.pngegg.com/pngimages/122/14/png-clipart-life-skills-training-education-daily-life-miscellaneous-leaf-thumbnail.png',
-        name: 'Thong thuong',
-        isSeleted: false),
-    Topic(
-        id: 1,
-        image:
-            'https://e7.pngegg.com/pngimages/122/14/png-clipart-life-skills-training-education-daily-life-miscellaneous-leaf-thumbnail.png',
-        name: 'Thong thuong2',
-        isSeleted: false),
-    Topic(
-        id: 1,
-        image:
-            'https://e7.pngegg.com/pngimages/122/14/png-clipart-life-skills-training-education-daily-life-miscellaneous-leaf-thumbnail.png',
-        name: 'Thong thuong3',
-        isSeleted: false),
-    Topic(
-        id: 1,
-        image:
-            'https://e7.pngegg.com/pngimages/122/14/png-clipart-life-skills-training-education-daily-life-miscellaneous-leaf-thumbnail.png',
-        name: 'Thong thuong5',
-        isSeleted: false),
-    Topic(
-        id: 1,
-        image:
-            'https://e7.pngegg.com/pngimages/122/14/png-clipart-life-skills-training-education-daily-life-miscellaneous-leaf-thumbnail.png',
-        name: 'The thao',
-        isSeleted: false)
-  ];
 
   int? _selectedLevel;
   int? _selectedSpecializaiton;
   bool _isExpanded = false;
+
+  String? _wordDefinitionError = '';
+  String? _levelError = '';
+  String? _specError = '';
+  String? _topicError = '';
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickMultiImage();
@@ -160,6 +114,7 @@ class _VocaConFormState extends State<VocaConForm> {
                 height: 4,
               ),
               TextFormField(
+                controller: _contentController,
                 style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   contentPadding:
@@ -235,6 +190,18 @@ class _VocaConFormState extends State<VocaConForm> {
                   },
                 ),
               ),
+              _wordDefinitionError != null
+                  ? Text(
+                      _wordDefinitionError!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.red),
+                    )
+                  : const SizedBox.shrink(),
+              const SizedBox(
+                height: 4,
+              ),
               Text(
                 'Bậc của từ',
                 style: Theme.of(context).textTheme.labelMedium,
@@ -243,6 +210,15 @@ class _VocaConFormState extends State<VocaConForm> {
                 height: 4,
               ),
               _buildLevels(context),
+              _levelError != null
+                  ? Text(
+                      _levelError!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.red),
+                    )
+                  : const SizedBox.shrink(),
               const SizedBox(
                 height: 4,
               ),
@@ -254,6 +230,15 @@ class _VocaConFormState extends State<VocaConForm> {
                 height: 4,
               ),
               _buildSpecializaitons(context),
+              _specError != null
+                  ? Text(
+                      _specError!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.red),
+                    )
+                  : const SizedBox.shrink(),
               const SizedBox(
                 height: 4,
               ),
@@ -419,6 +404,18 @@ class _VocaConFormState extends State<VocaConForm> {
               ),
               _buildTopics(context),
               const SizedBox(
+                height: 8,
+              ),
+              _topicError != null
+                  ? Text(
+                      _topicError!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.red),
+                    )
+                  : const SizedBox.shrink(),
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -426,17 +423,128 @@ class _VocaConFormState extends State<VocaConForm> {
                 children: [
                   SizedBox(
                     height: 45,
+                    width: 150,
                     child: ElevatedButton(
-                        onPressed: () {
-                          _formKey.currentState!.validate();
-                        },
-                        child: Text(
-                          'Gửi đóng góp',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(color: Colors.white),
-                        )),
+                        onPressed: Provider.of<ContributionProvider>(context,
+                                    listen: true)
+                                .isLoading
+                            ? null
+                            : () async {
+                                setState(() {
+                                  _wordDefinitionError = null;
+                                  _levelError = null;
+                                  _specError = null;
+                                  _topicError = null;
+                                });
+
+                                // print(_contentController.text);
+                                // print(_pronunciationController.text);
+                                // print(_wordDefinitions);
+                                // print(_selectedLevel);
+                                // print(_selectedSpecializaiton);
+                                // print(_examples);
+                                // print(_synonymController.text);
+                                // print(_antonymController.text);
+                                // print(_noteController.text);
+                                // print(_selectedImages);
+                                // print(
+                                //     Provider.of<TopicProvider>(context, listen: false)
+                                //         .getSelectedTopics());
+
+                                List<dynamic> selectedTopics =
+                                    Provider.of<TopicProvider>(context,
+                                            listen: false)
+                                        .getSelectedTopics();
+
+                                Content content = Content(
+                                    topicId: selectedTopics,
+                                    levelId: _selectedLevel!,
+                                    specializationId: _selectedSpecializaiton!,
+                                    content: _contentController.text,
+                                    meanings: _wordDefinitions
+                                        .map((item) => WordMeaning(
+                                            typeId: item.wordTypeId!,
+                                            meaning: item.meaning!))
+                                        .toList(),
+                                    phonetic: _pronunciationController.text,
+                                    examples: _examples,
+                                    antonyms: _antonymController.text.isNotEmpty
+                                        ? _antonymController.text.split(',')
+                                        : [],
+                                    synonyms: _synonymController.text.isNotEmpty
+                                        ? _synonymController.text.split(',')
+                                        : [],
+                                    note: _noteController.text,
+                                    pictures: _selectedImages);
+
+                                if (_formKey.currentState!.validate() &&
+                                    _validateForm()) {
+                                  await Provider.of<ContributionProvider>(
+                                          context,
+                                          listen: false)
+                                      .eitherFailureOrCreWordCon(
+                                          typeConWord, content);
+
+                                  if (Provider.of<ContributionProvider>(context,
+                                              listen: false)
+                                          .contributionEntity !=
+                                      null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: const Duration(seconds: 1),
+                                        content: Text(
+                                          Provider.of<ContributionProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .message!,
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors
+                                            .green, // You can customize the color
+                                      ),
+                                    );
+                                  } else if (Provider.of<ContributionProvider>(
+                                              context,
+                                              listen: true)
+                                          .failure !=
+                                      null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: const Duration(seconds: 1),
+                                        content: Text(
+                                          Provider.of<ContributionProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .message!,
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors
+                                            .red, // You can customize the color
+                                      ),
+                                    );
+                                  }
+                                }
+                                Navigator.of(context).pop();
+                              },
+                        child: Provider.of<ContributionProvider>(context,
+                                    listen: true)
+                                .isLoading
+                            ? const SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'Gửi đóng góp',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              )),
                   ),
                 ],
               ),
@@ -741,7 +849,7 @@ class _VocaConFormState extends State<VocaConForm> {
             },
             validator: (String? value) {
               if (value == null || value.isEmpty) {
-                return 'Vui long dien vao o trong';
+                return 'Vui lòng điền vào chỗ trống';
               }
               return null;
             },
@@ -822,7 +930,7 @@ class _VocaConFormState extends State<VocaConForm> {
             },
             validator: (String? value) {
               if (value == null || value.isEmpty) {
-                return 'Vui long nhap nghia';
+                return 'Vui lòng điền vào chỗ trống';
               }
               return null;
             },
@@ -839,6 +947,40 @@ class _VocaConFormState extends State<VocaConForm> {
         ],
       ),
     );
+  }
+
+  bool _validateForm() {
+    bool isValid = true;
+
+    if (_wordDefinitions.isEmpty) {
+      setState(() {
+        _wordDefinitionError = 'Vui lòng nhập nghĩa của từ';
+      });
+      isValid = false;
+    }
+
+    if (_selectedLevel == null) {
+      setState(() {
+        _levelError = 'Vui lòng chọn cập độ của từ';
+      });
+      isValid = false;
+    }
+    if (_selectedSpecializaiton == null) {
+      setState(() {
+        _specError = 'Vui lòng chọn chuyên ngành của từ';
+      });
+      isValid = false;
+    }
+
+    if (Provider.of<TopicProvider>(context, listen: false)
+        .getSelectedTopics()
+        .isEmpty) {
+      setState(() {
+        _topicError = 'Vui lòng chọn ít nhất 1 chủ đề';
+      });
+      isValid = false;
+    }
+    return isValid;
   }
 
   void _removeWordDefinition(int index) {

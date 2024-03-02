@@ -6,15 +6,15 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
 
-class CreateWordConUsecase {
+class CreateSenConUsecase {
   final ContributionRepository contributionRepository;
 
-  CreateWordConUsecase({required this.contributionRepository});
+  CreateSenConUsecase({required this.contributionRepository});
 
   Future<Either<Failure, ResponseDataModel<ContributionEntity>>> call({
-    required CreateWordConParams createWordConParams,
+    required CreateSenConParams createSenConParams,
   }) async {
-    return await contributionRepository.createWordContribution(
-        createWordConParams: createWordConParams);
+    return await contributionRepository.createSenContribution(
+        createSenConParams: createSenConParams);
   }
 }

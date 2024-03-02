@@ -18,7 +18,7 @@ class ApiService {
     _dio.options.connectTimeout =
         const Duration(milliseconds: 10000); // Timeout sau 5 giây
     _dio.options.receiveTimeout =
-        const Duration(milliseconds: 10000); // Timeout nhận dữ liệu sau 3 giây
+        const Duration(milliseconds: 30000); // Timeout nhận dữ liệu sau 3 giây
 
     // dio.interceptors.add(InterceptorsWrapper(onResponse: (response, handler) {
     //   // Xử lý response trước khi trả về cho ứng dụng

@@ -5,6 +5,7 @@ import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 // import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
 import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:ctue_app/features/contribute/presentation/pages/contribure_page.dart';
+import 'package:ctue_app/features/contribute/presentation/providers/contribution_provider.dart';
 import 'package:ctue_app/features/extension/presentation/pages/favotite_vocabulary.dart';
 import 'package:ctue_app/features/extension/presentation/providers/favorite_provider.dart';
 import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart';
@@ -104,6 +105,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => LevelProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ContributionProvider(),
           // builder: (context, child) {},
         ),
       ],

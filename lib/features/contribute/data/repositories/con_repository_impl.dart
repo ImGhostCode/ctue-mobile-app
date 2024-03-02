@@ -8,11 +8,8 @@ import 'package:dartz/dartz.dart';
 import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/errors/failure.dart';
-import '../../../../../core/params/params.dart';
-import '../../business/repositories/template_repository.dart';
 import '../datasources/template_local_data_source.dart';
 import '../datasources/contribution_remote_data_source.dart';
-import '../models/template_model.dart';
 
 class ContributionRepositoryImpl implements ContributionRepository {
   final ContributionRemoteDataSource remoteDataSource;
@@ -34,6 +31,28 @@ class ContributionRepositoryImpl implements ContributionRepository {
         ResponseDataModel<ContributionModel> remoteContribution =
             await remoteDataSource.createWordContribution(
                 createWordConParams: createWordConParams);
+
+        // localDataSource.cacheContribution(ContributionToCache: remoteContribution);
+
+        return Right(remoteContribution);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<ContributionEntity>>>
+      createSenContribution(
+          {required CreateSenConParams createSenConParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<ContributionModel> remoteContribution =
+            await remoteDataSource.createSenContribution(
+                createSenConParams: createSenConParams);
 
         // localDataSource.cacheContribution(ContributionToCache: remoteContribution);
 

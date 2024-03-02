@@ -69,3 +69,9 @@ class VocabularySetArguments {
 String accNotFound = 'Tài khoản không tồn tại';
 String accBaned = 'Tài khoản đã bị khóa';
 String pwdErrorMessage = 'Mật khẩu không chính xác';
+
+String typeConWord = 'word';
+String typeConSen = 'sentence';
+const int refused = -1;
+const int pending = -1;
+const int approved = -1;

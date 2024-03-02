@@ -8,31 +8,43 @@ class CreateWordConParams {
       {required this.type, required this.content, required this.accessToken});
 }
 
+class CreateSenConParams {
+  final String type;
+  final Content content;
+  final String accessToken;
+  CreateSenConParams(
+      {required this.type, required this.content, required this.accessToken});
+}
+
 class Content {
-  final List<int> topicId;
-  final int levelId;
-  final int specializationId;
+  List<dynamic> topicId = [];
+  final int? levelId;
+  final int? specializationId;
+  final int? typeId;
   final String content;
-  final List<WordMeaning> meanings;
+  List<WordMeaning>? meanings = [];
+  final String? meaning;
   final String? note;
-  final String phonetic;
-  final List<String> examples;
-  final List<String> synonyms;
-  final List<String> antonyms;
-  final List<XFile> pictures;
+  final String? phonetic;
+  List<String>? examples = [];
+  List<String>? synonyms = [];
+  List<String>? antonyms = [];
+  List<XFile>? pictures = [];
 
   Content(
       {required this.topicId,
-      required this.levelId,
-      required this.specializationId,
+      this.levelId,
+      this.specializationId,
+      this.typeId,
       required this.content,
-      required this.meanings,
-      required this.phonetic,
-      required this.examples,
-      required this.antonyms,
-      required this.synonyms,
-      required this.note,
-      required this.pictures});
+      this.meanings,
+      this.meaning,
+      this.phonetic,
+      this.examples,
+      this.antonyms,
+      this.synonyms,
+      this.note,
+      this.pictures});
 }
 
 class WordMeaning {
