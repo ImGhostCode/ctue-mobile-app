@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LearnSettingPage extends StatefulWidget {
   const LearnSettingPage({Key? key}) : super(key: key);
@@ -44,16 +45,14 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             // height: double.infinity,
 
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            decoration: BoxDecoration(color: Colors.grey.shade300),
+            decoration: BoxDecoration(color: Colors.grey.shade200),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'TỪ MỚI',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.black87),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Cài đặt cách học cho các từ mới, chưa lên cấp độ 1',
@@ -68,10 +67,8 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                 ),
                 Text(
                   'TỪ ÔN LẠI',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.black87),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Cài đặt cách học cho các từ được nhắc ôn lại, các từ có cấp độ 1 trở lên',
@@ -86,10 +83,8 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                 ),
                 Text(
                   'CHUNG',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.black87),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 5,
@@ -119,7 +114,7 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Số từ tối đa một lần học',
+                'Chọn các từ mới ngẫu nhiên',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.normal),
               ),
@@ -213,8 +208,7 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             backgroundColor: MaterialStatePropertyAll(Colors.white),
             foregroundColor: MaterialStatePropertyAll(Colors.black87),
           ),
-          onPressed: () => _showDialogChooseNumber(
-              context, 'Số từ tối đa', [5, 10, 15, 20, 30]),
+          onPressed: () => _showDialogInputNumber(context, 'Số từ tối đa'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -357,6 +351,67 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                       ),
                     ),
                   ))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<String?> _showDialogInputNumber(BuildContext context, String title) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                title,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextField(
+                decoration: InputDecoration(
+                  // errorText: failure ?? failure.errorMessage,
+                  errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.red.shade400)),
+
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  hintText: 'Nhập số từ',
+                  alignLabelWithHint: true,
+                  hintStyle: TextStyle(
+                      color: Colors.grey.shade400,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(color: Colors.grey.shade400)),
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ], // Only numbers can be entered
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(onPressed: () {}, child: Text('Xác nhận')),
+                ],
+              ),
+              // const SizedBox(height: 15),
             ],
           ),
         ),

@@ -13,10 +13,11 @@ class ContributePage extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
+            toolbarHeight: 50,
           ),
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             child: Column(
               children: [
                 Row(
@@ -27,11 +28,11 @@ class ContributePage extends StatelessWidget {
                         children: [
                           Text(
                             'Đóng góp cùng CTUE',
-                            style: Theme.of(context).textTheme.displaySmall,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(
                             'CTUE rất mong được sự đóng góp của bạn. Bạn có thể thêm từ mới, sửa lỗi sai',
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(context).textTheme.bodySmall,
                           )
                         ],
                       ),
@@ -40,8 +41,8 @@ class ContributePage extends StatelessWidget {
                         flex: 1,
                         child: Image.asset(
                           'assets/images/icons/contribution.png',
-                          height: 150,
-                          width: 150,
+                          height: 100,
+                          width: 100,
                         ))
                   ],
                 ),

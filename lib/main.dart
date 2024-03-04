@@ -21,6 +21,7 @@ import 'package:ctue_app/features/home/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
+import 'package:ctue_app/features/profile/presentation/pages/pronoun_statistic_detail_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
@@ -208,6 +209,7 @@ class MyApp extends StatelessWidget {
           '/vocabulary-set-detail': (context) => const VocabularySetDetail(),
           '/statistic-learned-words': (context) =>
               const StatisticLearnedWordPage(),
+          '/pro-statistics-detail': (context) => const ProStatisticDetailPage(),
         },
         // home: const Home(),
       ),

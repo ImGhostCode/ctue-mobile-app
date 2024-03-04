@@ -71,39 +71,37 @@ class LearnPage extends StatelessWidget {
       const SizedBox(
         height: 5,
       ),
-      Expanded(
-        flex: 2,
-        child: ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text('test'),
-                  style: ButtonStyle(
-                    // backgroundColor: MaterialStatePropertyAll(Colors.white),
-                    // foregroundColor: MaterialStatePropertyAll(Colors.black),
-                    // textStyle:,
-                    side: MaterialStateProperty.all(
-                        BorderSide(color: Colors.grey)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12))),
-                    elevation:
-                        MaterialStateProperty.all(2), // Set the elevation value
-                    // You can also set other properties like shadowColor if needed
-                  ),
+      ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return SizedBox(
+              height: 50,
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Text('test'),
+                style: ButtonStyle(
+                  // backgroundColor: MaterialStatePropertyAll(Colors.white),
+                  // foregroundColor: MaterialStatePropertyAll(Colors.black),
+                  // textStyle:,
+                  side:
+                      MaterialStateProperty.all(BorderSide(color: Colors.grey)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
+                  elevation:
+                      MaterialStateProperty.all(2), // Set the elevation value
+                  // You can also set other properties like shadowColor if needed
                 ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 5,
-              );
-            },
-            itemCount: 2),
-      )
+              ),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const SizedBox(
+              height: 5,
+            );
+          },
+          itemCount: 4)
     ]);
   }
 

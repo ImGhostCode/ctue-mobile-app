@@ -190,14 +190,14 @@ class ProfilePage extends StatelessWidget {
                   height: 10,
                 ),
                 SizedBox(
-                    height: 370,
+                    height: 365,
                     child: ListView(
                       padding: const EdgeInsets.all(8),
                       scrollDirection: Axis.horizontal,
                       children: [
                         Container(
                           width: 260,
-                          height: 240,
+                          // height: 240,
                           padding: const EdgeInsets.only(
                               top: 15, left: 15, right: 24, bottom: 15),
                           decoration: BoxDecoration(
@@ -423,6 +423,32 @@ class ProfilePage extends StatelessWidget {
                                       );
                                     },
                                   ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        style: const ButtonStyle(
+                                            padding: MaterialStatePropertyAll(
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 4,
+                                                    vertical: 8))),
+                                        onPressed: () {
+                                          Navigator.pushNamed(context,
+                                              '/pro-statistics-detail');
+                                        },
+                                        child: Text(
+                                          'Xem chi tiết',
+                                          textAlign: TextAlign.right,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        )),
+                                    // const Icon(
+                                    //   Icons.arrow_right_rounded,
+                                    //   size: 30,
+                                    // )
+                                  ],
                                 )
                               ]),
                         ),
