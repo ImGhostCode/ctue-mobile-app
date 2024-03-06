@@ -41,4 +41,45 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
       return Left(CacheFailure(errorMessage: 'This is a network exception'));
     }
   }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<List<VocaSetEntity>>>>
+      getUserVocaSets({required GetVocaSetParams getVocaSetParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<List<VocaSetModel>> remoteVocaSet =
+            await remoteDataSource.getUserVocaSets(
+                getVocaSetParams: getVocaSetParams);
+
+        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+
+        return Right(remoteVocaSet);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> getVocaSetDetail(
+      {required GetVocaSetParams getVocaSetParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<VocaSetModel> remoteVocaSet = await remoteDataSource
+            .getVocaSetDetail(getVocaSetParams: getVocaSetParams);
+
+        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+
+        return Right(remoteVocaSet);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
 }

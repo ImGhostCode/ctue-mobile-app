@@ -31,9 +31,11 @@ class VocaSetModel extends VocaSetEntity {
         isPublic: json[kIsPublic],
         createdAt: DateTime.parse(json[kCreatedAt]),
         downloads: json[kDownloads],
-        words: json[kWords]
-            .map<WordModel>((word) => WordModel.fromJson(json: word))
-            .toList(),
+        words: json[kWords] != null
+            ? json[kWords]
+                .map<WordModel>((word) => WordModel.fromJson(json: word))
+                .toList()
+            : [],
         isDeleted: json[kIsDeleted],
         picture: json[kPicture],
         specId: json[kSpecId],

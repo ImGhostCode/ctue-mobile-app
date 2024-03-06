@@ -1,19 +1,14 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/spaced_repetition_detail.dart';
+import 'package:ctue_app/features/word_store/presentation/providers/voca_set_provider.dart';
 import 'package:ctue_app/features/word_store/presentation/widgets/statistic_chart.dart';
 import 'package:ctue_app/features/word_store/presentation/widgets/reminder.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class WordStorePage extends StatefulWidget {
-  const WordStorePage({Key? key}) : super(key: key);
+class WordStorePage extends StatelessWidget {
+  WordStorePage({Key? key}) : super(key: key);
 
-  @override
-  State<WordStorePage> createState() => _WordStorePageState();
-}
-
-enum SampleItem { itemOne, itemTwo, itemThree }
-
-class _WordStorePageState extends State<WordStorePage> {
   final List<VocabularySet> _vocabularySets = [
     VocabularySet(
         title: 'Default',
@@ -27,6 +22,8 @@ class _WordStorePageState extends State<WordStorePage> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerUsrVocaSets();
     return Scaffold(
         body: CustomScrollView(
       slivers: [
@@ -220,17 +217,17 @@ class _WordStorePageState extends State<WordStorePage> {
     );
   }
 
-  SizedBox _buildListVocabularySets() {
-    return SizedBox(
-      height: 500,
-      child: ListView.separated(
+  Consumer _buildListVocabularySets() {
+    return Consumer<VocaSetProvider>(builder: (context, provider, child) {
+      return ListView.separated(
+        shrinkWrap: true,
         separatorBuilder: (context, index) {
           return const SizedBox(
             height: 3,
           );
         },
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: _vocabularySets.length,
+        itemCount: provider.userVocaSets.length,
         itemBuilder: (context, index) {
           return Card(
               color: Colors.white, // Set the background color here
@@ -240,19 +237,21 @@ class _WordStorePageState extends State<WordStorePage> {
               child: GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, '/vocabulary-set-detail',
-                      arguments: VocabularySetArguments(id: index));
+                      arguments: VocabularySetArguments(
+                          id: provider.userVocaSets[index].id));
                 },
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(12),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   tileColor: Colors.white,
-                  leading: _vocabularySets[index].title == 'Default'
+                  leading: provider.userVocaSets[index].picture == null
                       ? Container(
                           height: 55,
                           width: 55,
                           decoration: BoxDecoration(
                             // color: const Color(0xff7c94b6),
+
                             color: Colors.blue.shade50,
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -267,82 +266,76 @@ class _WordStorePageState extends State<WordStorePage> {
                           width: 55,
                           decoration: BoxDecoration(
                             // color: const Color(0xff7c94b6),
-                            image: const DecorationImage(
+                            // border: Border.all(color: Colors.blue, width: 2),
+                            image: DecorationImage(
                               image: NetworkImage(
-                                  'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'),
+                                  provider.userVocaSets[index].picture!),
                               fit: BoxFit.cover,
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                  title: Text(_vocabularySets[index].title),
-                  trailing: _vocabularySets[index].title != 'Default'
-                      ? IconButton(
-                          icon: const Icon(Icons.more_vert),
-                          onPressed: () => showDialog<String>(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                              // title: Text(
-                              //   'AlertDialog Title $index',
-                              // ),
-                              buttonPadding: EdgeInsets.zero,
-                              contentPadding: EdgeInsets.zero,
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(3)),
-                              content: SizedBox(
-                                height: 65,
-                                width: MediaQuery.of(context).size.width - 100,
-                                child: ListView(children: [
-                                  TextButton(
-                                      style: const ButtonStyle(
-                                          shape: MaterialStatePropertyAll(
-                                              RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.zero)),
-                                          backgroundColor:
-                                              MaterialStatePropertyAll(
-                                                  Colors.white)),
-                                      onPressed: () {},
-                                      child: const Text(
-                                          textAlign: TextAlign.left,
-                                          'Đổi tên')),
-                                  TextButton(
-                                      style: const ButtonStyle(
-                                          padding: MaterialStatePropertyAll(
-                                              EdgeInsets.all(8)),
-                                          shape: MaterialStatePropertyAll(
-                                              RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.zero)),
-                                          backgroundColor:
-                                              MaterialStatePropertyAll(
-                                                  Colors.white)),
-                                      onPressed: () {},
-                                      child: const Text(
-                                          textAlign: TextAlign.right, 'Xóa'))
-                                ]),
-                              ),
-                              // actions: <Widget>[
-                              //   TextButton(
-                              //     onPressed: () =>
-                              //         Navigator.pop(context, 'Cancel'),
-                              //     child: const Text('Cancel'),
-                              //   ),
-                              //   TextButton(
-                              //     onPressed: () => Navigator.pop(context, 'OK'),
-                              //     child: const Text('OK'),
-                              //   ),
-                              // ],
-                            ),
-                          ),
-                        )
-                      : null,
+                  title: Text(provider.userVocaSets[index].title),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        // title: Text(
+                        //   'AlertDialog Title $index',
+                        // ),
+                        buttonPadding: EdgeInsets.zero,
+                        contentPadding: EdgeInsets.zero,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(3)),
+                        content: SizedBox(
+                          height: 65,
+                          width: MediaQuery.of(context).size.width - 100,
+                          child: ListView(children: [
+                            TextButton(
+                                style: const ButtonStyle(
+                                    shape: MaterialStatePropertyAll(
+                                        RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.zero)),
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(Colors.white)),
+                                onPressed: () {},
+                                child: const Text(
+                                    textAlign: TextAlign.left, 'Đổi tên')),
+                            TextButton(
+                                style: const ButtonStyle(
+                                    padding: MaterialStatePropertyAll(
+                                        EdgeInsets.all(8)),
+                                    shape: MaterialStatePropertyAll(
+                                        RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.zero)),
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(Colors.white)),
+                                onPressed: () {},
+                                child: const Text(
+                                    textAlign: TextAlign.right, 'Xóa'))
+                          ]),
+                        ),
+                        // actions: <Widget>[
+                        //   TextButton(
+                        //     onPressed: () =>
+                        //         Navigator.pop(context, 'Cancel'),
+                        //     child: const Text('Cancel'),
+                        //   ),
+                        //   TextButton(
+                        //     onPressed: () => Navigator.pop(context, 'OK'),
+                        //     child: const Text('OK'),
+                        //   ),
+                        // ],
+                      ),
+                    ),
+                  ),
                 ),
               ));
         },
-      ),
-    );
+      );
+    });
   }
 }
 

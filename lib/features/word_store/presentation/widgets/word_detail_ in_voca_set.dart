@@ -1,13 +1,18 @@
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
+import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 
 class WordDetailInVocaSet extends StatefulWidget {
   final bool showLevel;
   final bool showMore;
+  final WordEntity? wordEntity;
 
   const WordDetailInVocaSet(
-      {super.key, this.showLevel = false, this.showMore = false});
+      {super.key,
+      this.showLevel = false,
+      this.showMore = false,
+      this.wordEntity});
 
   @override
   State<WordDetailInVocaSet> createState() => _WordDetailInVocaSetState();
@@ -46,7 +51,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                       width: 5,
                     ),
                     Text(
-                      'test',
+                      widget.wordEntity!.content,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           color: Theme.of(context).colorScheme.primary),
                     ),
@@ -65,7 +70,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                   decoration: BoxDecoration(
                       color: Colors.black87,
                       borderRadius: BorderRadius.circular(5)),
-                  child: Text('B1',
+                  child: Text(widget.wordEntity!.levelEntity!.name,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall!
@@ -77,7 +82,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                 Row(
                   children: [
                     Text(
-                      '/tɛst/',
+                      '/${widget.wordEntity!.phonetic!}/',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           fontWeight: FontWeight.normal,
                           fontFamily: 'DoulosSIL'),
@@ -96,35 +101,37 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
             const SizedBox(
               height: 5,
             ),
-            SizedBox(
-              height: 100,
-              child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: 100,
-                      width: 130,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          'https://cdn-blog.novoresume.com/articles/career-aptitude-test/bg.png',
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(
-                      width: 5,
-                    );
-                  },
-                  itemCount: 5),
-            ),
+            widget.wordEntity!.pictures.isNotEmpty
+                ? SizedBox(
+                    height: 100,
+                    child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            height: 100,
+                            width: 130,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.network(
+                                widget.wordEntity!.pictures[index],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(
+                            width: 5,
+                          );
+                        },
+                        itemCount: widget.wordEntity!.pictures.length),
+                  )
+                : const SizedBox.shrink(),
             const SizedBox(
               height: 5,
             ),
@@ -133,10 +140,10 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                 text: 'Nghĩa của từ ',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.normal),
-                children: const <TextSpan>[
+                children: <TextSpan>[
                   TextSpan(
-                      text: 'test',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      text: widget.wordEntity!.content,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                   // TextSpan(text: ' world!'),
                 ],
               ),
@@ -145,11 +152,11 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
               height: 5,
             ),
             ...List.generate(
-                2,
+                widget.wordEntity!.meanings.length,
                 (index) => Row(
                       children: [
                         Text(
-                          'Danh từ.',
+                          widget.wordEntity!.meanings[index].type!.name,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -161,7 +168,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                           width: 10,
                         ),
                         Text(
-                          '- thử nghiệm, thử, kiểm tra',
+                          '- ${widget.wordEntity!.meanings[index].meaning}',
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -185,7 +192,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
               height: 5,
             ),
             ...List.generate(
-                2,
+                widget.wordEntity!.examples.length,
                 (index) => Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -197,8 +204,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                           width: 15,
                         ),
                         Flexible(
-                          child: Text(
-                              'The class are doing/having a spelling test today. dddd ddd ddd dd',
+                          child: Text(widget.wordEntity!.examples[index],
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -221,7 +227,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                 ),
                 Flexible(
                   child: Text(
-                    'Công nghệ thông tin (Information Technology)',
+                    widget.wordEntity!.specializationEntity!.name,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Colors.black87, fontWeight: FontWeight.normal),
                   ),
@@ -241,7 +247,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                 ),
                 Flexible(
                   child: Text(
-                    'experiment, try, prove',
+                    widget.wordEntity!.synonyms.join(','),
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Colors.black87, fontWeight: FontWeight.normal),
                   ),
@@ -259,13 +265,13 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: Colors.black87, fontWeight: FontWeight.bold),
                 ),
-                // Flexible(
-                //   child: Text(
-                //     'Công nghệ thông tin (Information Technology)',
-                //     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                //         color: Colors.black87, fontWeight: FontWeight.normal),
-                //   ),
-                // ),
+                Flexible(
+                  child: Text(
+                    widget.wordEntity!.antonyms.join(','),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Colors.black87, fontWeight: FontWeight.normal),
+                  ),
+                ),
               ],
             ),
             // const SizedBox(

@@ -7,6 +7,10 @@ import '../../../../../core/errors/exceptions.dart';
 abstract class VocaSetRemoteDataSource {
   Future<ResponseDataModel<VocaSetModel>> creVocaSet(
       {required CreVocaSetParams creVocaSetParams});
+  Future<ResponseDataModel<List<VocaSetModel>>> getUserVocaSets(
+      {required GetVocaSetParams getVocaSetParams});
+  Future<ResponseDataModel<VocaSetModel>> getVocaSetDetail(
+      {required GetVocaSetParams getVocaSetParams});
 }
 
 class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
@@ -33,6 +37,60 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
           data: formData,
           options: Options(headers: {
             "authorization": "Bearer ${creVocaSetParams.accessToken}"
+          }));
+      return ResponseDataModel<VocaSetModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => VocaSetModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<List<VocaSetModel>>> getUserVocaSets(
+      {required GetVocaSetParams getVocaSetParams}) async {
+    try {
+      final response = await dio.get('/vocabulary-set/user',
+          queryParameters: {},
+          options: Options(headers: {
+            "authorization": "Bearer ${getVocaSetParams.accessToken}"
+          }));
+      return ResponseDataModel<List<VocaSetModel>>.fromJson(
+          json: response.data,
+          fromJsonD: (jsonWords) => jsonWords['results']
+              ?.map<VocaSetModel>((json) => VocaSetModel.fromJson(json: json))
+              .toList());
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<VocaSetModel>> getVocaSetDetail(
+      {required GetVocaSetParams getVocaSetParams}) async {
+    try {
+      final response = await dio.get('/vocabulary-set/${getVocaSetParams.id}',
+          queryParameters: {},
+          options: Options(headers: {
+            "authorization": "Bearer ${getVocaSetParams.accessToken}"
           }));
       return ResponseDataModel<VocaSetModel>.fromJson(
           json: response.data,
