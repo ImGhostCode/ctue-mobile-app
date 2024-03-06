@@ -1,5 +1,5 @@
 import 'package:ctue_app/core/constants/constants.dart';
-import 'package:ctue_app/features/word_store/presentation/providers/statistic_chart.dart';
+import 'package:ctue_app/features/word_store/presentation/widgets/statistic_chart.dart';
 import 'package:ctue_app/features/word_store/presentation/widgets/reminder.dart';
 import 'package:ctue_app/features/word_store/presentation/widgets/word_detail_%20in_voca_set.dart';
 import 'package:flutter/material.dart';

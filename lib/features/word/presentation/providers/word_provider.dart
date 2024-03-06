@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ctue_app/core/api/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/word_pararms.dart';
@@ -22,6 +24,8 @@ class WordProvider extends ChangeNotifier {
   WordEntity? wordEntity;
   Failure? failure;
   bool isLoading = false;
+
+  Timer? _debounce;
 
   WordProvider({
     this.listWordEntity,
@@ -77,38 +81,41 @@ class WordProvider extends ChangeNotifier {
   }
 
   Future eitherFailureOrLookUpDic(String key) async {
-    isLoading = true;
-    WordRepositoryImpl repository = WordRepositoryImpl(
-      remoteDataSource: WordRemoteDataSourceImpl(
-        dio: ApiService.dio,
-      ),
-      localDataSource: TemplateLocalDataSourceImpl(
-        sharedPreferences: await SharedPreferences.getInstance(),
-      ),
-      networkInfo: NetworkInfoImpl(
-        DataConnectionChecker(),
-      ),
-    );
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      // Pe isLoading = true;
+      WordRepositoryImpl repository = WordRepositoryImpl(
+        remoteDataSource: WordRemoteDataSourceImpl(
+          dio: ApiService.dio,
+        ),
+        localDataSource: TemplateLocalDataSourceImpl(
+          sharedPreferences: await SharedPreferences.getInstance(),
+        ),
+        networkInfo: NetworkInfoImpl(
+          DataConnectionChecker(),
+        ),
+      );
 
-    final failureOrWord =
-        await LookUpDicUsecase(wordRepository: repository).call(
-      lookUpDictionaryParams: LookUpDictionaryParams(key: key),
-    );
+      final failureOrWord =
+          await LookUpDicUsecase(wordRepository: repository).call(
+        lookUpDictionaryParams: LookUpDictionaryParams(key: key),
+      );
 
-    failureOrWord.fold(
-      (Failure newFailure) {
-        isLoading = false;
-        lookUpResults = [];
-        failure = newFailure;
-        notifyListeners();
-      },
-      (ResponseDataModel<List<WordEntity>> results) {
-        isLoading = false;
-        lookUpResults = results.data;
-        failure = null;
-        notifyListeners();
-      },
-    );
+      failureOrWord.fold(
+        (Failure newFailure) {
+          isLoading = false;
+          lookUpResults = [];
+          failure = newFailure;
+          notifyListeners();
+        },
+        (ResponseDataModel<List<WordEntity>> results) {
+          isLoading = false;
+          lookUpResults = results.data;
+          failure = null;
+          notifyListeners();
+        },
+      );
+    });
   }
 
   void eitherFailureOrWordDetail(int id) async {

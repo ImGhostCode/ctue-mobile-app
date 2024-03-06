@@ -231,7 +231,7 @@ class _SenConFormState extends State<SenConForm> {
                                           } else if (Provider.of<
                                                           ContributionProvider>(
                                                       context,
-                                                      listen: true)
+                                                      listen: false)
                                                   .failure !=
                                               null) {
                                             ScaffoldMessenger.of(context)

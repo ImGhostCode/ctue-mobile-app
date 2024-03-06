@@ -506,7 +506,7 @@ class _VocaConFormState extends State<VocaConForm> {
                                     );
                                   } else if (Provider.of<ContributionProvider>(
                                               context,
-                                              listen: true)
+                                              listen: false)
                                           .failure !=
                                       null) {
                                     ScaffoldMessenger.of(context).showSnackBar(

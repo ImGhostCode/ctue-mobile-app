@@ -37,6 +37,7 @@ import 'package:ctue_app/features/word_store/presentation/pages/search_voca_set.
 import 'package:ctue_app/features/word_store/presentation/pages/statistic_learned_words.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_set_detail.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_sets_page.dart';
+import 'package:ctue_app/features/word_store/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -110,6 +111,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => ContributionProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => VocaSetProvider(),
           // builder: (context, child) {},
         ),
       ],

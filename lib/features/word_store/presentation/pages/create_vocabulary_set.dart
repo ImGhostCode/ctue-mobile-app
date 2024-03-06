@@ -1,4 +1,9 @@
+import 'package:ctue_app/features/word/business/entities/word_entity.dart';
+import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
+import 'package:ctue_app/features/word_store/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:multiple_search_selection/multiple_search_selection.dart';
+import 'package:provider/provider.dart';
 
 class CreateVocabularySet extends StatefulWidget {
   CreateVocabularySet({super.key});
@@ -9,10 +14,11 @@ class CreateVocabularySet extends StatefulWidget {
 
 class _CreateVocabularySetState extends State<CreateVocabularySet> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _wordController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  MultipleSearchController controller = MultipleSearchController();
   int numOfLines = 0;
+  List<WordEntity> selectedWords = [];
 
   @override
   Widget build(BuildContext context) {
@@ -34,22 +40,69 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
         shadowColor: Colors.grey.shade100,
         surfaceTintColor: Colors.white,
         actions: [
-          if (_titleController.text.isNotEmpty)
+          if (_titleController.text.isNotEmpty && selectedWords.isNotEmpty)
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 // Validate returns true if the form is valid, or false otherwise.
                 if (_formKey.currentState!.validate()) {
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(content: Text('Processing Data')),
+                  // );
+                  List<int> wordIds = selectedWords.map((e) => e.id).toList();
+
+                  await Provider.of<VocaSetProvider>(context, listen: false)
+                      .eitherFailureOrCreVocaSet(
+                          _titleController.text, null, null, null, wordIds);
+
+                  if (Provider.of<VocaSetProvider>(context, listen: false)
+                          .vocaSetEntity !=
+                      null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        duration: const Duration(seconds: 1),
+                        content: Text(
+                          Provider.of<VocaSetProvider>(context, listen: false)
+                              .message!,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor:
+                            Colors.green, // You can customize the color
+                      ),
+                    );
+                  } else if (Provider.of<VocaSetProvider>(context,
+                              listen: false)
+                          .failure !=
+                      null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        duration: const Duration(seconds: 1),
+                        content: Text(
+                          Provider.of<VocaSetProvider>(context, listen: false)
+                              .message!,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor:
+                            Colors.red, // You can customize the color
+                      ),
+                    );
+                  }
                 }
+                Navigator.of(context).pop();
               },
-              child: const Text(
-                'LƯU',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
+              child: Provider.of<VocaSetProvider>(context, listen: true)
+                      .isLoading
+                  ? const SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                      ),
+                    )
+                  : const Text(
+                      'LƯU',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
             ),
         ],
       ),
@@ -106,62 +159,131 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                 const SizedBox(
                   height: 5,
                 ),
-                Text(
-                  '- Bạn chỉ cần nhập các từ, hệ thống sẽ tự động lấy nghĩa, ví dụ, hình ảnh cho bạn.',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Text(
-                  '- Xuống dòng để phân biệt các từ.',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Text(
-                  '- Tối đa 100 từ',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextFormField(
-                  minLines: 6,
-                  maxLines: 100,
-                  controller: _wordController,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.black87, fontWeight: FontWeight.normal),
+                selectedWords.isNotEmpty
+                    ? Container(
+                        margin: const EdgeInsets.only(bottom: 15),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.all(8),
+                        child: Wrap(children: [
+                          ...List.generate(selectedWords.length, (index) {
+                            return Container(
+                              margin:
+                                  const EdgeInsets.only(right: 5, bottom: 5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.lightBlueAccent.shade100
+                                    .withOpacity(0.6),
+                                border:
+                                    Border.all(color: Colors.lightBlueAccent),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 8,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      selectedWords[index].content,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: Colors.blue.shade800),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.close,
+                                        size: 18,
+                                        color: Colors.blue.shade800,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedWords.removeAt(index);
+                                        });
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          })
+                        ]),
+                      )
+                    : const SizedBox.shrink(),
+                TextField(
+                  controller: _searchController,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   decoration: InputDecoration(
-                      hintText: 'Ví dụ:\nhello\nlove',
-                      hintMaxLines: 3,
-                      // counter: Text('$numOfLines'),
-                      counterText: '$numOfLines',
-                      counterStyle: Theme.of(context).textTheme.bodySmall,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade50, width: 2))),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      if (value.isNotEmpty) {
-                        RegExp rex = RegExp(r'\w+');
-                        numOfLines = rex.allMatches(value).length;
-                      } else {
-                        numOfLines = 0;
-                      }
-                    });
+                    hintText: 'Nhập từ để tìm kiếm',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  onChanged: (value) async {
+                    await Provider.of<WordProvider>(context, listen: false)
+                        .eitherFailureOrLookUpDic(value);
                   },
                 ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Consumer<WordProvider>(builder: (context, provider, child) {
+                  Iterable<WordEntity> filterdResults = provider.lookUpResults
+                      .where((word) =>
+                          !selectedWords.map((e) => e.id).contains(word.id));
+
+                  if (filterdResults.isEmpty ||
+                      _searchController.text.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+                  return Container(
+                    // height: 300,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                            color: Theme.of(context).colorScheme.primary),
+                        borderRadius: BorderRadius.circular(6)),
+                    child: ListView.separated(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            // horizontalTitleGap: 0,
+                            titleAlignment: ListTileTitleAlignment.center,
+                            // minVerticalPadding: 0,
+                            // contentPadding: const EdgeInsets.symmetric(
+                            //     horizontal: 8, vertical: 0),
+                            title: Text(
+                              filterdResults.elementAt(index).content,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w600),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                selectedWords
+                                    .add(filterdResults.elementAt(index));
+                              });
+                            },
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider();
+                        },
+                        itemCount: filterdResults.length),
+                  );
+                }),
               ],
             ),
           ),

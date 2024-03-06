@@ -40,6 +40,7 @@ String kLevelId = 'levelId';
 String kSpecializationId = 'specializationId';
 String kPhonetic = 'phonetic';
 String kPictures = 'pictures';
+String kPicture = 'picture';
 String kExamples = 'examples';
 String kSynonyms = 'synonyms';
 String kAntonyms = 'antonyms';
@@ -55,6 +56,13 @@ String kWord = 'Word';
 String kStatus = 'status';
 String kUser = 'User';
 String kContriType = 'type';
+String kTitle = 'title';
+String kIsPublic = 'isPublic';
+String kDownloads = 'downloads';
+String kSpecId = 'specId';
+String kTopicId = 'topicId';
+String kSpecialization = 'Specialization';
+String kTopic = 'Topic';
 
 enum ResponseData { data, message, statusCode }
 
