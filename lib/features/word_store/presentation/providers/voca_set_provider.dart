@@ -4,6 +4,7 @@ import 'package:ctue_app/core/params/voca_set_params.dart';
 import 'package:ctue_app/features/word_store/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/word_store/business/usecases/get_usr_voca_sets.dart';
 import 'package:ctue_app/features/word_store/business/usecases/get_voca_set_detail.dart';
+import 'package:ctue_app/features/word_store/business/usecases/get_voca_sets.dart';
 import 'package:ctue_app/features/word_store/data/datasources/voca_set_local_data_source.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,8 @@ final storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
 class VocaSetProvider extends ChangeNotifier {
   VocaSetEntity? vocaSetEntity;
   List<VocaSetEntity> userVocaSets = [];
+  List<VocaSetEntity> publicVocaSets = [];
+
   Failure? failure;
   String? message = '';
   bool _isLoading = false;
@@ -99,13 +102,13 @@ class VocaSetProvider extends ChangeNotifier {
       ),
     );
 
-    final failureOrCreVocaSet =
+    final failureOrGetUsrVocaSets =
         await GetUsrVocaSetUsecase(vocaSetRepository: repository).call(
       getVocaSetParams: GetVocaSetParams(
           accessToken: await storage.read(key: 'accessToken') ?? ''),
     );
 
-    failureOrCreVocaSet.fold(
+    failureOrGetUsrVocaSets.fold(
       (Failure newFailure) {
         _isLoading = false;
         userVocaSets = [];
@@ -116,6 +119,48 @@ class VocaSetProvider extends ChangeNotifier {
       (ResponseDataModel<List<VocaSetEntity>> newVocaSets) {
         _isLoading = false;
         userVocaSets = newVocaSets.data;
+        message = newVocaSets.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  void eitherFailureOrGerVocaSets(
+      int? specId, int? topicId, String? key) async {
+    _isLoading = true;
+    VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
+      remoteDataSource: VocaSetRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: VocaSetLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrGetVocaSets =
+        await GetVocaSetUsecase(vocaSetRepository: repository).call(
+      getVocaSetParams: GetVocaSetParams(
+          specId: specId,
+          topicId: topicId,
+          key: key,
+          accessToken: await storage.read(key: 'accessToken') ?? ''),
+    );
+
+    failureOrGetVocaSets.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        publicVocaSets = [];
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<List<VocaSetEntity>> newVocaSets) {
+        _isLoading = false;
+        publicVocaSets = newVocaSets.data;
         message = newVocaSets.message;
         failure = null;
         notifyListeners();
