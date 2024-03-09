@@ -13,6 +13,10 @@ abstract class VocaSetRemoteDataSource {
       {required GetVocaSetParams getVocaSetParams});
   Future<ResponseDataModel<VocaSetModel>> getVocaSetDetail(
       {required GetVocaSetParams getVocaSetParams});
+  Future<ResponseDataModel<VocaSetModel>> updateVocaSet(
+      {required UpdateVocaSetParams updateVocaSetParams});
+  Future<ResponseDataModel<VocaSetModel>> removeVocaSet(
+      {required RemoveVocaSetParams removeVocaSetParams});
 }
 
 class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
@@ -129,6 +133,91 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
           fromJsonD: (jsonWords) => jsonWords['results']
               ?.map<VocaSetModel>((json) => VocaSetModel.fromJson(json: json))
               .toList());
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<VocaSetModel>> removeVocaSet(
+      {required RemoveVocaSetParams removeVocaSetParams}) async {
+    try {
+      final response = await dio.delete(
+          '/vocabulary-set${removeVocaSetParams.isDownloaded ? '/user' : ''}/${removeVocaSetParams.id}',
+          queryParameters: {},
+          options: Options(headers: {
+            "authorization": "Bearer ${removeVocaSetParams.accessToken}"
+          }));
+      return ResponseDataModel<VocaSetModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => VocaSetModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<VocaSetModel>> updateVocaSet(
+      {required UpdateVocaSetParams updateVocaSetParams}) async {
+    try {
+      final dataUpdate = {
+        "title": updateVocaSetParams.title,
+        "topicId": updateVocaSetParams.topicId,
+        "specId": updateVocaSetParams.specId,
+        "oldPicture": updateVocaSetParams.oldPicture,
+        "picture": updateVocaSetParams.picture != null
+            ? MultipartFile.fromFileSync(updateVocaSetParams.picture!.path,
+                filename: updateVocaSetParams.picture!.name)
+            : null
+      };
+
+      if (updateVocaSetParams.words != null) {
+        dataUpdate['words'] = updateVocaSetParams.words;
+      }
+
+      final formData = FormData.fromMap({
+        "title": updateVocaSetParams.title,
+        "topicId": updateVocaSetParams.topicId,
+        "specId": updateVocaSetParams.specId,
+        "isPublic": updateVocaSetParams.isPublic,
+        "oldPicture": updateVocaSetParams.oldPicture,
+        "picture": updateVocaSetParams.picture != null
+            ? MultipartFile.fromFileSync(updateVocaSetParams.picture!.path,
+                filename: updateVocaSetParams.picture!.name)
+            : null
+      });
+
+      // if (updateVocaSetParams.words != null) {
+      //   formData.fields.add(MapEntry('words', updateVocaSetParams.words));
+      // }
+
+      final response = await dio.patch(
+          '/vocabulary-set/${updateVocaSetParams.id}',
+          data: formData,
+          options: Options(headers: {
+            "authorization": "Bearer ${updateVocaSetParams.accessToken}"
+          }));
+      return ResponseDataModel<VocaSetModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => VocaSetModel.fromJson(json: json));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

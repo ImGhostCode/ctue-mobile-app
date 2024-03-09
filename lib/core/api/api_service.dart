@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:ctue_app/core/constants/response.dart';
 import 'package:dio/dio.dart';
 
 //Singleton Pattern
@@ -14,6 +11,7 @@ class ApiService {
   static init() {
     // Cấu hình Dio ở đây
     _dio.options.baseUrl = 'http://localhost:8000/apis';
+    // _dio.options.baseUrl = 'https://ctue-learn-english-api.onrender.com/apis';
     _dio.options.contentType = Headers.jsonContentType;
     _dio.options.connectTimeout =
         const Duration(milliseconds: 10000); // Timeout sau 5 giây

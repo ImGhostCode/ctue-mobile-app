@@ -5,6 +5,8 @@ import 'package:ctue_app/features/word_store/business/entities/voca_set_entity.d
 import 'package:ctue_app/features/word_store/business/usecases/get_usr_voca_sets.dart';
 import 'package:ctue_app/features/word_store/business/usecases/get_voca_set_detail.dart';
 import 'package:ctue_app/features/word_store/business/usecases/get_voca_sets.dart';
+import 'package:ctue_app/features/word_store/business/usecases/rm_voca_set.dart';
+import 'package:ctue_app/features/word_store/business/usecases/update_voca_set.dart';
 import 'package:ctue_app/features/word_store/data/datasources/voca_set_local_data_source.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,7 @@ class VocaSetProvider extends ChangeNotifier {
 
   Failure? failure;
   String? message = '';
+  int? statusCode;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -186,6 +189,105 @@ class VocaSetProvider extends ChangeNotifier {
         await GetVocaSetDetailUsecase(vocaSetRepository: repository).call(
       getVocaSetParams: GetVocaSetParams(
           id: id, accessToken: await storage.read(key: 'accessToken') ?? ''),
+    );
+
+    failureOrCreVocaSet.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        vocaSetEntity = null;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<VocaSetEntity> newVocaSet) {
+        _isLoading = false;
+        vocaSetEntity = newVocaSet.data;
+        message = newVocaSet.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrRmVocaSet(int id, bool isDownloaded) async {
+    _isLoading = true;
+    VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
+      remoteDataSource: VocaSetRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: VocaSetLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrRmVocaSet =
+        await RemoveVocaSetUsecase(vocaSetRepository: repository).call(
+      removeVocaSetParams: RemoveVocaSetParams(
+          isDownloaded: isDownloaded,
+          id: id,
+          accessToken: await storage.read(key: 'accessToken') ?? ''),
+    );
+
+    failureOrRmVocaSet.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        vocaSetEntity = null;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        statusCode = 400;
+        notifyListeners();
+      },
+      (ResponseDataModel<VocaSetEntity> newVocaSet) {
+        _isLoading = false;
+        vocaSetEntity = newVocaSet.data;
+        message = newVocaSet.message;
+        statusCode = newVocaSet.statusCode;
+
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrUpdateVocaSet(
+    int id,
+    String title,
+    int? topicId,
+    int? specId,
+    String? oldPicture,
+    XFile? picture,
+    bool? isPublic,
+    List<int>? words,
+  ) async {
+    _isLoading = true;
+    VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
+      remoteDataSource: VocaSetRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: VocaSetLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrCreVocaSet =
+        await UpdateVocaSetUsecase(vocaSetRepository: repository).call(
+      updateVocaSetParams: UpdateVocaSetParams(
+        id: id,
+        accessToken: await storage.read(key: 'accessToken') ?? '',
+        title: title,
+        topicId: topicId,
+        specId: specId,
+        oldPicture: oldPicture,
+        picture: picture,
+        isPublic: isPublic,
+        words: words,
+      ),
     );
 
     failureOrCreVocaSet.fold(

@@ -103,4 +103,44 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
       return Left(CacheFailure(errorMessage: 'This is a network exception'));
     }
   }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> removeVocaSet(
+      {required RemoveVocaSetParams removeVocaSetParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<VocaSetModel> remoteVocaSet = await remoteDataSource
+            .removeVocaSet(removeVocaSetParams: removeVocaSetParams);
+
+        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+
+        return Right(remoteVocaSet);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> updateVocaSet(
+      {required UpdateVocaSetParams updateVocaSetParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<VocaSetModel> remoteVocaSet = await remoteDataSource
+            .updateVocaSet(updateVocaSetParams: updateVocaSetParams);
+
+        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+
+        return Right(remoteVocaSet);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
 }

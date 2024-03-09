@@ -31,3 +31,37 @@ class GetVocaSetParams {
       this.topicId,
       this.id});
 }
+
+class UpdateVocaSetParams {
+  final int id;
+  final String? title;
+  final int? topicId;
+  final int? specId;
+  final String? oldPicture;
+  final XFile? picture;
+  final bool? isPublic;
+  List<int>? words;
+  final String accessToken;
+
+  UpdateVocaSetParams(
+      {required this.accessToken,
+      this.title,
+      this.oldPicture,
+      this.picture,
+      this.isPublic,
+      this.words,
+      this.specId,
+      this.topicId,
+      required this.id});
+}
+
+class RemoveVocaSetParams {
+  final int id;
+  final bool isDownloaded;
+  final String accessToken;
+
+  RemoveVocaSetParams(
+      {required this.accessToken,
+      required this.isDownloaded,
+      required this.id});
+}

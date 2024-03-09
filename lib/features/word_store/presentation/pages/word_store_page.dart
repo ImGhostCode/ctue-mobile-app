@@ -1,14 +1,21 @@
 import 'package:ctue_app/core/constants/constants.dart';
+import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/spaced_repetition_detail.dart';
 import 'package:ctue_app/features/word_store/presentation/providers/voca_set_provider.dart';
+import 'package:ctue_app/features/word_store/presentation/widgets/dialog_input.dart';
 import 'package:ctue_app/features/word_store/presentation/widgets/statistic_chart.dart';
 import 'package:ctue_app/features/word_store/presentation/widgets/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class WordStorePage extends StatelessWidget {
+class WordStorePage extends StatefulWidget {
   WordStorePage({Key? key}) : super(key: key);
 
+  @override
+  State<WordStorePage> createState() => _WordStorePageState();
+}
+
+class _WordStorePageState extends State<WordStorePage> {
   final List<VocabularySet> _vocabularySets = [
     VocabularySet(
         title: 'Default',
@@ -290,29 +297,89 @@ class WordStorePage extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3)),
                         content: SizedBox(
-                          height: 65,
+                          // height: 65,
                           width: MediaQuery.of(context).size.width - 100,
-                          child: ListView(children: [
-                            TextButton(
-                                style: const ButtonStyle(
-                                    shape: MaterialStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.zero)),
-                                    backgroundColor:
-                                        MaterialStatePropertyAll(Colors.white)),
-                                onPressed: () {},
-                                child: const Text(
-                                    textAlign: TextAlign.left, 'Đổi tên')),
+                          child: ListView(shrinkWrap: true, children: [
+                            provider.userVocaSets[index].userId ==
+                                    Provider.of<UserProvider>(context,
+                                            listen: false)
+                                        .userEntity!
+                                        .id
+                                ? TextButton(
+                                    style: const ButtonStyle(
+                                        padding: MaterialStatePropertyAll(
+                                            EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 18)),
+                                        shape: MaterialStatePropertyAll(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.zero)),
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                Colors.white)),
+                                    onPressed: () async {
+                                      _showDialogInput(context, 'Đổi tên',
+                                          provider.userVocaSets[index]);
+
+                                      // await provider.eitherFailureOrUpdateVocaSet(provider.userVocaSets[index].id, _ti, topicId, specId, oldPicture, picture, isPublic, words)
+                                    },
+                                    child: const Text(
+                                        textAlign: TextAlign.left, 'Đổi tên'))
+                                : const SizedBox.shrink(),
                             TextButton(
                                 style: const ButtonStyle(
                                     padding: MaterialStatePropertyAll(
-                                        EdgeInsets.all(8)),
+                                        EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 18)),
                                     shape: MaterialStatePropertyAll(
                                         RoundedRectangleBorder(
                                             borderRadius: BorderRadius.zero)),
                                     backgroundColor:
                                         MaterialStatePropertyAll(Colors.white)),
-                                onPressed: () {},
+                                onPressed: () => showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        backgroundColor: Colors.white,
+                                        // title: const Text('Cảnh báo'),
+                                        content: const Text(
+                                            'Bạn có chắc chắn muốn xóa bộ từ này không?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, 'Xóa'),
+                                            child: const Text('Trở lại'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              await provider
+                                                  .eitherFailureOrRmVocaSet(
+                                                      provider
+                                                          .userVocaSets[index]
+                                                          .id,
+                                                      provider
+                                                              .userVocaSets[
+                                                                  index]
+                                                              .userId !=
+                                                          Provider.of<UserProvider>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .userEntity!
+                                                              .id);
+                                              if (provider.statusCode == 200) {
+                                                provider.userVocaSets
+                                                    .removeAt(index);
+                                              }
+                                              Navigator.pop(context, 'OK');
+                                              Navigator.pop(
+                                                context,
+                                              );
+                                            },
+                                            child: const Text('OK'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                 child: const Text(
                                     textAlign: TextAlign.right, 'Xóa'))
                           ]),
@@ -336,6 +403,23 @@ class WordStorePage extends StatelessWidget {
         },
       );
     });
+  }
+
+  Future<String?> _showDialogInput(
+      BuildContext context, String title, dynamic data) {
+    return showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => DialogInput(
+            initialValue: data.title,
+            title: title,
+            callback: (title) async {
+              await Provider.of<VocaSetProvider>(context, listen: false)
+                  .eitherFailureOrUpdateVocaSet(
+                      data.id, title, null, null, null, null, null, null);
+
+              Navigator.pop(context);
+              Navigator.pop(context);
+            }));
   }
 }
 

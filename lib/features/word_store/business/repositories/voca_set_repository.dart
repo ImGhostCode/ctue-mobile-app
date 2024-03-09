@@ -18,4 +18,10 @@ abstract class VocaSetRepository {
   Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> getVocaSetDetail({
     required GetVocaSetParams getVocaSetParams,
   });
+  Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> updateVocaSet({
+    required UpdateVocaSetParams updateVocaSetParams,
+  });
+  Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> removeVocaSet({
+    required RemoveVocaSetParams removeVocaSetParams,
+  });
 }
