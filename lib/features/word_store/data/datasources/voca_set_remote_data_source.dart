@@ -17,6 +17,8 @@ abstract class VocaSetRemoteDataSource {
       {required UpdateVocaSetParams updateVocaSetParams});
   Future<ResponseDataModel<VocaSetModel>> removeVocaSet(
       {required RemoveVocaSetParams removeVocaSetParams});
+  Future<ResponseDataModel<VocaSetModel>> downloadVocaSet(
+      {required DownloadVocaSetParams downloadVocaSetParams});
 }
 
 class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
@@ -214,6 +216,33 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
           data: formData,
           options: Options(headers: {
             "authorization": "Bearer ${updateVocaSetParams.accessToken}"
+          }));
+      return ResponseDataModel<VocaSetModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => VocaSetModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<VocaSetModel>> downloadVocaSet(
+      {required DownloadVocaSetParams downloadVocaSetParams}) async {
+    try {
+      final response = await dio.patch(
+          '/vocabulary-set/download/${downloadVocaSetParams.id}',
+          queryParameters: {},
+          options: Options(headers: {
+            "authorization": "Bearer ${downloadVocaSetParams.accessToken}"
           }));
       return ResponseDataModel<VocaSetModel>.fromJson(
           json: response.data,

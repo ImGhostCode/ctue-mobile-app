@@ -67,6 +67,7 @@ String kTopic = 'Topic';
 enum ResponseData { data, message, statusCode }
 
 int maxPokemonId = 1008;
+int maxDisplayedWords = 5;
 
 class VocabularySetArguments {
   final int id;

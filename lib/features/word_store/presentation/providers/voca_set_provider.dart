@@ -2,6 +2,7 @@ import 'package:ctue_app/core/api/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/voca_set_params.dart';
 import 'package:ctue_app/features/word_store/business/entities/voca_set_entity.dart';
+import 'package:ctue_app/features/word_store/business/usecases/download_voca_set%20copy.dart';
 import 'package:ctue_app/features/word_store/business/usecases/get_usr_voca_sets.dart';
 import 'package:ctue_app/features/word_store/business/usecases/get_voca_set_detail.dart';
 import 'package:ctue_app/features/word_store/business/usecases/get_voca_sets.dart';
@@ -31,6 +32,7 @@ class VocaSetProvider extends ChangeNotifier {
   VocaSetEntity? vocaSetEntity;
   List<VocaSetEntity> userVocaSets = [];
   List<VocaSetEntity> publicVocaSets = [];
+  List<VocaSetEntity> searchResults = [];
 
   Failure? failure;
   String? message = '';
@@ -171,6 +173,46 @@ class VocaSetProvider extends ChangeNotifier {
     );
   }
 
+  Future eitherFailureOrSearchVocaSets(String? key, int? topicId) async {
+    _isLoading = true;
+    VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
+      remoteDataSource: VocaSetRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: VocaSetLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrSearchVocaSets =
+        await GetVocaSetUsecase(vocaSetRepository: repository).call(
+      getVocaSetParams: GetVocaSetParams(
+          topicId: topicId,
+          key: key,
+          accessToken: await storage.read(key: 'accessToken') ?? ''),
+    );
+
+    failureOrSearchVocaSets.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        searchResults = [];
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<List<VocaSetEntity>> newVocaSets) {
+        _isLoading = false;
+        searchResults = newVocaSets.data;
+        message = newVocaSets.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
   Future eitherFailureOrGerVocaSetDetail(int id) async {
     _isLoading = true;
     VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
@@ -252,6 +294,48 @@ class VocaSetProvider extends ChangeNotifier {
     );
   }
 
+  Future eitherFailureOrDownVocaSet(int id) async {
+    _isLoading = true;
+    VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
+      remoteDataSource: VocaSetRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: VocaSetLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrDownVocaSet =
+        await DownloadVocaSetUsecase(vocaSetRepository: repository).call(
+      downloadVocaSetParams: DownloadVocaSetParams(
+          id: id, accessToken: await storage.read(key: 'accessToken') ?? ''),
+    );
+
+    failureOrDownVocaSet.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        vocaSetEntity = null;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        statusCode = 400;
+        notifyListeners();
+      },
+      (ResponseDataModel<VocaSetEntity> newVocaSet) {
+        _isLoading = false;
+        vocaSetEntity = newVocaSet.data;
+        userVocaSets.add(newVocaSet.data);
+        message = newVocaSet.message;
+        statusCode = newVocaSet.statusCode;
+
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
   Future eitherFailureOrUpdateVocaSet(
     int id,
     String title,
@@ -306,5 +390,14 @@ class VocaSetProvider extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  bool isDownloaded(int id) {
+    for (var set in userVocaSets) {
+      if (set.id == id) {
+        return true;
+      }
+    }
+    return false;
   }
 }

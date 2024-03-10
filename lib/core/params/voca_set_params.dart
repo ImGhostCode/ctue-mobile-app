@@ -17,6 +17,13 @@ class CreVocaSetParams {
       required this.accessToken});
 }
 
+class DownloadVocaSetParams {
+  final int? id;
+  final String accessToken;
+
+  DownloadVocaSetParams({required this.accessToken, this.id});
+}
+
 class GetVocaSetParams {
   final int? id;
   final String? key;

@@ -24,4 +24,7 @@ abstract class VocaSetRepository {
   Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> removeVocaSet({
     required RemoveVocaSetParams removeVocaSetParams,
   });
+  Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> downloadVocaSet({
+    required DownloadVocaSetParams downloadVocaSetParams,
+  });
 }
