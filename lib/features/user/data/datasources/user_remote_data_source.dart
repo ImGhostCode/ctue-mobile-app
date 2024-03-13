@@ -41,7 +41,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         throw ServerException(
             statusCode: e.response!.statusCode!,
             errorMessage:
-                e.response!.data['message'] ?? 'Unknown server error');
+                e.response?.data['message'] ?? 'Unknown server error');
       }
     }
   }

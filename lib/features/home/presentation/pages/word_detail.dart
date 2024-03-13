@@ -1,11 +1,18 @@
+import 'dart:typed_data';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/extension/presentation/providers/favorite_provider.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
+import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
+import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 // import 'package:carousel_slider/carousel_slider.dart';
+final audioPlayer = AudioPlayer();
 
 class WordDetail extends StatelessWidget {
   WordDetail({Key? key}) : super(key: key);
@@ -481,55 +488,70 @@ class WordDetail extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {
-                            // Your onTap logic here
-                          },
-                          child: Material(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Theme.of(context).colorScheme.secondary,
-                            child: Container(
-                              padding: const EdgeInsets.all(3.0),
-                              child: const Icon(
-                                Icons.volume_up_rounded,
-                                size: 30,
-                                color: Colors.white,
+                  Consumer<SpeechProvider>(
+                    builder: (context, provider, child) {
+                      bool isLoading = provider.isLoading;
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: isLoading
+                                  ? null
+                                  : () async {
+                                      VoiceEntity voice =
+                                          await provider.getSelectedVoice();
+                                      await provider.eitherFailureOrTts(
+                                          wordDetail.content, voice);
+                                      try {
+                                        await audioPlayer.play(BytesSource(
+                                            Uint8List.fromList(
+                                                provider.audioBytes)));
+                                      } catch (e) {
+                                        print("Error playing audio: $e");
+                                      }
+                                    },
+                              child: Material(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Theme.of(context).colorScheme.secondary,
+                                child: Container(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: const Icon(
+                                    Icons.volume_up_rounded,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            // Your onTap logic here
-                          },
-                          borderRadius: BorderRadius.circular(28),
-                          child: Material(
-                            shape: RoundedRectangleBorder(
+                            InkWell(
+                              onTap: () {},
                               borderRadius: BorderRadius.circular(28),
-                            ),
-                            color: Theme.of(context).colorScheme.secondary,
-                            child: Container(
-                              height: 70,
-                              width: 130,
-                              padding: const EdgeInsets.all(3.0),
-                              child: const Icon(
-                                Icons.mic_rounded,
-                                size: 50,
-                                color: Colors.white,
+                              child: Material(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                color: Theme.of(context).colorScheme.secondary,
+                                child: Container(
+                                  height: 70,
+                                  width: 130,
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: const Icon(
+                                    Icons.mic_rounded,
+                                    size: 50,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            const SizedBox()
+                          ],
                         ),
-                        const SizedBox()
-                      ],
-                    ),
-                  ),
+                      );
+                    },
+                  )
                 ],
               );
             }

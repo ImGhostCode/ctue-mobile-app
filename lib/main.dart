@@ -26,6 +26,7 @@ import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
 import 'package:ctue_app/features/specialization/presentation/providers/spec_provider.dart';
+import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
@@ -39,17 +40,24 @@ import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_set_d
 import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_sets_page.dart';
 import 'package:ctue_app/features/word_store/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_azure_tts/flutter_azure_tts.dart';
 import 'package:provider/provider.dart';
 // import 'features/pokemon/presentation/providers/pokemon_provider.dart';
 // import 'features/pokemon/presentation/providers/selected_pokemon_item_provider.dart';
 import 'features/skeleton/providers/selected_page_provider.dart';
 import 'features/skeleton/skeleton.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 // import 'package:rename/rename.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: "lib/.env");
   ApiService.init();
+  AzureTts.init(
+      subscriptionKey: dotenv.env['SPEECH_KEY']!,
+      region: dotenv.env['SPEECH_REGION']!,
+      withLogs: true); // enable logs
   runApp(const MyApp());
 }
 
@@ -115,6 +123,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => VocaSetProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SpeechProvider(),
           // builder: (context, child) {},
         ),
       ],
@@ -224,7 +236,6 @@ class MyApp extends StatelessWidget {
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
-
   @override
   State<Home> createState() => _HomeState();
 }
@@ -237,21 +248,12 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _checkLoggedInStatus(context) async {
-    const storage = FlutterSecureStorage();
-    final accessToken = await storage.read(key: 'accessToken');
-    if (accessToken != null) {
-      // final isTokenValid = await isTokenValid(accessToken);
-      // if (isTokenValid) {
-      // Token is valid, proceed with loading user info
+    final accessToken = await Provider.of<AuthProvider>(context, listen: false)
+        .getAccessToken();
 
+    if (accessToken != null) {
       await Provider.of<UserProvider>(context, listen: false)
           .eitherFailureOrGetUser();
-      // } else {
-      // Token is invalid, clear it and redirect to login
-      // await storage.delete(key: 'accessToken');
-      // ignore: use_build_context_synchronously
-      // print(Provider.of<AuthProvider>(context, listen: false).userEntity);
-
       if (Provider.of<UserProvider>(context, listen: false).userEntity ==
           null) {
         // ignore: use_build_context_synchronously
@@ -271,6 +273,8 @@ class _HomeState extends State<Home> {
     }
   }
 
+  final permissionCamera = Permission.camera;
+  final permissionLocation = Permission.location;
   @override
   Widget build(BuildContext context) {
     return const Skeleton();

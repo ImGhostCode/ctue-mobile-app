@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 class ResponseDataModel<D> {
   final D data;
   final int statusCode;
@@ -10,13 +12,20 @@ class ResponseDataModel<D> {
   });
 
   factory ResponseDataModel.fromJson({
-    required Map<String, dynamic> json,
+    required dynamic json,
     required D Function(dynamic) fromJsonD,
   }) {
+    if (json.runtimeType == Response<dynamic>) {
+      return ResponseDataModel(
+        data: fromJsonD(json.data),
+        message: json.statusMessage,
+        statusCode: json.statusCode,
+      );
+    }
     return ResponseDataModel(
-      data: fromJsonD(json['data']),
-      message: json['message'],
-      statusCode: json['statusCode'],
+      data: fromJsonD(json['data'] ?? json.data),
+      message: json?['message'] ?? json.statusMessage,
+      statusCode: json?['statusCode'] ?? json.statusCode,
     );
   }
 

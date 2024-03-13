@@ -1,15 +1,8 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/sentence_params.dart';
-import 'package:ctue_app/core/params/topic_params.dart';
-import 'package:ctue_app/core/params/type_params.dart';
-import 'package:ctue_app/features/home/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/sentence/data/models/sentence_model.dart';
-import 'package:ctue_app/features/topic/data/models/topic_model.dart';
-import 'package:ctue_app/features/type/data/models/type_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
-import '../../../../../core/params/params.dart';
-import '../models/template_model.dart';
 
 abstract class SentenceRemoteDataSource {
   Future<ResponseDataModel<List<SentenceModel>>> getSentences(

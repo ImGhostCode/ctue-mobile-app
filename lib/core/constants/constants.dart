@@ -63,8 +63,15 @@ String kSpecId = 'specId';
 String kTopicId = 'topicId';
 String kSpecialization = 'Specialization';
 String kTopic = 'Topic';
+String kDisplayName = 'DisplayName';
+String kShortName = 'ShortName';
+String kGender = 'Gender';
+String kLocate = 'Locale';
+String kVoiceType = 'VoiceType';
 
 enum ResponseData { data, message, statusCode }
+
+String localeUS = 'en-US';
 
 int maxPokemonId = 1008;
 int maxDisplayedWords = 5;
@@ -84,3 +91,9 @@ String typeConSen = 'sentence';
 const int refused = -1;
 const int pending = -1;
 const int approved = -1;
+
+String defaultDisplayName = 'Ava';
+String defaultLocale = 'en-US';
+String defaultGender = 'Female';
+String defaultShortName = 'en-US-AvaNeural';
+String defaultVoiceType = 'Neural';

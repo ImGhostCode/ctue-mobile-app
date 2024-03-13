@@ -40,6 +40,10 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider({this.accessTokenEntity, this.failure, this.message});
 
+  Future<String?> getAccessToken() async {
+    return await storage.read(key: 'accessToken');
+  }
+
   Future eitherFailureOrLogin(
       {required String email, required String password}) async {
     AuthRepositoryImpl repository = AuthRepositoryImpl(
@@ -69,7 +73,6 @@ class AuthProvider extends ChangeNotifier {
 
         await storage.write(
             key: 'accessToken', value: newAccessToken.data.accessToken);
-
         isLoggedIn = true;
 
         notifyListeners();

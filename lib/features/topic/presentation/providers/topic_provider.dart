@@ -2,7 +2,7 @@ import 'package:ctue_app/core/api/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/topic_params.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
-import 'package:ctue_app/features/profile/presentation/pages/voice_setting_page.dart';
+import 'package:ctue_app/features/speech/presentation/pages/voice_setting_page.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/business/usecases/get_topics_usecase.dart';
 import 'package:ctue_app/features/topic/data/datasources/topic_remote_data_source.dart';

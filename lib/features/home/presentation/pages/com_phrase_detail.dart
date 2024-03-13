@@ -2,6 +2,7 @@ import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/home/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
+import 'package:ctue_app/features/speech/presentation/widgets/listen_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,27 +69,7 @@ class CommunicationPhraseDetail extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    Center(
-                      child: Container(
-                        height: 75,
-                        width: 95,
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                                shadowColor:
-                                    MaterialStatePropertyAll(Colors.black),
-                                backgroundColor: MaterialStatePropertyAll(
-                                    Colors.grey.shade200)),
-                            onPressed: () {},
-                            child: Icon(
-                              Icons.volume_up_outlined,
-                              size: 40,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.7),
-                            )),
-                      ),
-                    ),
+                    ListenButton(text: sentenceDetail.content),
                     const SizedBox(
                       height: 20,
                     ),

@@ -1,5 +1,5 @@
 import 'package:app_settings/app_settings.dart';
-import 'package:ctue_app/features/profile/presentation/pages/voice_setting_page.dart';
+import 'package:ctue_app/features/speech/presentation/pages/voice_setting_page.dart';
 import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
