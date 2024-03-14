@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
+import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,9 +23,9 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
   @override
   Widget build(BuildContext context) {
     return Consumer<WordProvider>(builder: (context, wordProvider, child) {
-      bool isLoading = wordProvider.isLoading;
-      // Access the failure from the provider
-      Failure? failure = wordProvider.failure;
+      // bool isLoading = wordProvider.isLoading;
+      // // Access the failure from the provider
+      // Failure? failure = wordProvider.failure;
 
       return SizedBox(
         height: 45,
@@ -89,11 +90,18 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                           await picker.pickImage(source: ImageSource.gallery);
 
                       if (newImage != null) {
+                        // ignore: use_build_context_synchronously
                         await Provider.of<WordProvider>(context, listen: false)
                             .eitherFailureOrLookUpByImage(newImage);
-                        print(Provider.of<WordProvider>(context, listen: false)
-                            .lookUpByImageResults);
-                        // Navigator.pushNamed(context, '/look-up-result');
+                        // print(Provider.of<WordProvider>(context, listen: false)
+                        //     .lookUpByImageResults);
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushNamed(context, '/look-up-result',
+                            arguments: ResultLookUpByImgAgr(
+                                // ignore: use_build_context_synchronously
+                                listObjects: Provider.of<WordProvider>(context,
+                                        listen: false)
+                                    .lookUpByImageResults));
                       }
                     },
                   ),
@@ -130,4 +138,10 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
       );
     });
   }
+}
+
+class ResultLookUpByImgAgr {
+  final List<ObjectEntity> listObjects;
+
+  ResultLookUpByImgAgr({required this.listObjects});
 }

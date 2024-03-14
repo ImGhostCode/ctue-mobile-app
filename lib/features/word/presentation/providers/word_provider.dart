@@ -92,41 +92,41 @@ class WordProvider extends ChangeNotifier {
   }
 
   Future eitherFailureOrLookUpDic(String key) async {
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 300), () async {
-      // Pe _isLoading = true;
-      WordRepositoryImpl repository = WordRepositoryImpl(
-        remoteDataSource: WordRemoteDataSourceImpl(
-          dio: ApiService.dio,
-        ),
-        localDataSource: TemplateLocalDataSourceImpl(
-          sharedPreferences: await SharedPreferences.getInstance(),
-        ),
-        networkInfo: NetworkInfoImpl(
-          DataConnectionChecker(),
-        ),
-      );
+    // if (_debounce?.isActive ?? false) _debounce?.cancel();
+    // _debounce = Timer(const Duration(milliseconds: 300), () async {
+    _isLoading = true;
+    WordRepositoryImpl repository = WordRepositoryImpl(
+      remoteDataSource: WordRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
 
-      final failureOrWord =
-          await LookUpDicUsecase(wordRepository: repository).call(
-        lookUpDictionaryParams: LookUpDictionaryParams(key: key),
-      );
+    final failureOrWord =
+        await LookUpDicUsecase(wordRepository: repository).call(
+      lookUpDictionaryParams: LookUpDictionaryParams(key: key),
+    );
 
-      failureOrWord.fold(
-        (Failure newFailure) {
-          _isLoading = false;
-          lookUpResults = [];
-          failure = newFailure;
-          notifyListeners();
-        },
-        (ResponseDataModel<List<WordEntity>> results) {
-          _isLoading = false;
-          lookUpResults = results.data;
-          failure = null;
-          notifyListeners();
-        },
-      );
-    });
+    failureOrWord.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        lookUpResults = [];
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<List<WordEntity>> results) {
+        _isLoading = false;
+        lookUpResults = results.data;
+        failure = null;
+        notifyListeners();
+      },
+    );
+    // });
   }
 
   Future eitherFailureOrLookUpByImage(XFile file) async {

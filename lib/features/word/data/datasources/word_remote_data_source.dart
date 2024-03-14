@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/word_pararms.dart';
 import 'package:ctue_app/features/word/data/models/object_model.dart';
@@ -122,18 +124,13 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
       {required LookUpByImageParams lookUpByImageParams}) async {
     try {
       final String visonKey = dotenv.env['VISON_KEY']!;
-      // FormData formData = FormData.fromMap({
-      //   'file': await MultipartFile.fromFile(lookUpByImageParams.file.path,
-      //       filename: lookUpByImageParams.file.name),
-      // });
+      final fileBytes = File(lookUpByImageParams.file.path).readAsBytesSync();
 
       dio.options.baseUrl =
           'https://ctue-mobile-app.cognitiveservices.azure.com';
 
       final response = await dio.post('/computervision/imageanalysis:analyze',
-          data: {
-            "url": 'https://pngfre.com/wp-content/uploads/apple-poster.png'
-          },
+          data: fileBytes,
           queryParameters: {
             'features': [
               // 'caption',
@@ -149,8 +146,8 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
           },
           options: Options(headers: {
             "Ocp-Apim-Subscription-Key": visonKey,
-            // 'Content-Type': 'application/octet-stream',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/octet-stream',
+            // 'Content-Type': 'multipart/form-data',
           }));
 
       dio.options.baseUrl = 'https://ctue-learn-english-api.onrender.com/apis';
