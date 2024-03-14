@@ -1,4 +1,4 @@
-import 'package:ctue_app/core/api/api_service.dart';
+import 'package:ctue_app/core/service/api_service.dart';
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/speech_params.dart';
@@ -106,7 +106,7 @@ class SpeechProvider extends ChangeNotifier {
   }
 
   Future eitherFailureOrTts(String text, VoiceEntity voice) async {
-    _isLoading = true;
+    isLoading = true;
 
     SpeechRepositoryImpl repository = SpeechRepositoryImpl(
       remoteDataSource: SpeechRemoteDataSourceImpl(
@@ -126,13 +126,13 @@ class SpeechProvider extends ChangeNotifier {
 
     failureOrSpeech.fold(
       (Failure newFailure) {
-        _isLoading = false;
+        isLoading = false;
         audioBytes = [];
         failure = newFailure;
         notifyListeners();
       },
       (ResponseDataModel<List<int>> newVoices) {
-        _isLoading = false;
+        isLoading = false;
         audioBytes = newVoices.data;
         failure = null;
         notifyListeners();

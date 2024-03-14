@@ -1,4 +1,5 @@
-import 'package:ctue_app/core/api/api_service.dart';
+import 'package:ctue_app/core/service/api_service.dart';
+import 'package:ctue_app/core/service/audio_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
@@ -11,13 +12,13 @@ import 'package:ctue_app/features/extension/presentation/providers/favorite_prov
 import 'package:ctue_app/features/game/presentation/pages/correct_word_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/game_page.dart';
 import 'package:ctue_app/features/game/presentation/pages/word_match_page.dart';
-import 'package:ctue_app/features/home/presentation/pages/com_phrase_detail.dart';
-import 'package:ctue_app/features/home/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/ipa_page.dart';
-import 'package:ctue_app/features/home/presentation/pages/irregular_verb_page.dart';
+import 'package:ctue_app/features/irregular_verb/presentation/pages/irregular_verb_page.dart';
 import 'package:ctue_app/features/home/presentation/pages/welcome_page.dart';
-import 'package:ctue_app/features/home/presentation/pages/word_detail.dart';
+import 'package:ctue_app/features/sentence/presentation/pages/com_phrase_detail.dart';
+import 'package:ctue_app/features/sentence/presentation/pages/communication_phrase_page.dart';
+import 'package:ctue_app/features/word/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
@@ -30,6 +31,7 @@ import 'package:ctue_app/features/speech/presentation/providers/speech_provider.
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
+import 'package:ctue_app/features/word/presentation/pages/look_up_result_page.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
 import 'package:ctue_app/features/word_store/presentation/pages/learn_page.dart';
@@ -54,6 +56,7 @@ import 'package:permission_handler/permission_handler.dart';
 void main() async {
   await dotenv.load(fileName: "lib/.env");
   ApiService.init();
+  AudioService.init();
   AzureTts.init(
       subscriptionKey: dotenv.env['SPEECH_KEY']!,
       region: dotenv.env['SPEECH_REGION']!,
@@ -213,6 +216,7 @@ class MyApp extends StatelessWidget {
           '/learn': (context) => const LearnPage(),
           '/learn-setting': (context) => const LearnSettingPage(),
           '/dictionary': (context) => DictionaryPage(),
+          '/look-up-result': (context) => LookUpResultPage(),
           '/word-detail': (context) => WordDetail(),
           '/irregular-verb': (context) => IrregularVerbPage(),
           '/favorite-vocabulary': (context) => FavoriteVocabulary(),

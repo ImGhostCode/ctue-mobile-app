@@ -1,3 +1,5 @@
+import 'package:image_picker/image_picker.dart';
+
 class GetWordParams {
   final int? id;
   List<int>? topic = [];
@@ -23,4 +25,10 @@ class LookUpDictionaryParams {
   final String key;
 
   LookUpDictionaryParams({required this.key});
+}
+
+class LookUpByImageParams {
+  final XFile file;
+
+  LookUpByImageParams({required this.file});
 }

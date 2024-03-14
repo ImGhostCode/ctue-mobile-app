@@ -1,4 +1,4 @@
-import 'package:ctue_app/core/api/api_service.dart';
+import 'package:ctue_app/core/service/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/specialization_params.dart';
 import 'package:ctue_app/features/specialization/business/entities/specialization_entity.dart';

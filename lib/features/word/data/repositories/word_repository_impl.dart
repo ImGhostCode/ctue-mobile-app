@@ -3,6 +3,7 @@ import 'package:ctue_app/core/params/word_pararms.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/word/business/repositories/word_repository.dart';
 import 'package:ctue_app/features/word/data/datasources/word_remote_data_source.dart';
+import 'package:ctue_app/features/word/data/models/object_model.dart';
 import 'package:ctue_app/features/word/data/models/word_model.dart';
 
 import 'package:dartz/dartz.dart';
@@ -69,6 +70,26 @@ class WordRepositoryImpl implements WordRepository {
       try {
         ResponseDataModel<List<WordModel>> remoteWord = await remoteDataSource
             .lookUpDictionary(lookUpDictionaryParams: lookUpDictionaryParams);
+
+        // localDataSource.cacheAuth(AuthToCache: remoteWord);
+
+        return Right(remoteWord);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<List<ObjectModel>>>> lookupByImage(
+      {required LookUpByImageParams lookUpByImageParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<List<ObjectModel>> remoteWord = await remoteDataSource
+            .lookUpByImage(lookUpByImageParams: lookUpByImageParams);
 
         // localDataSource.cacheAuth(AuthToCache: remoteWord);
 

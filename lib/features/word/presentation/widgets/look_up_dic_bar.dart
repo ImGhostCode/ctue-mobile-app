@@ -1,14 +1,23 @@
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
-import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-class LookUpDicBar extends StatelessWidget {
-  LookUpDicBar({super.key});
+class LookUpDicBar extends StatefulWidget {
+  const LookUpDicBar({super.key});
 
+  @override
+  State<LookUpDicBar> createState() => _LookUpDicBarState();
+}
+
+class _LookUpDicBarState extends State<LookUpDicBar> {
   final SearchController searchController = SearchController();
+
+  final ImagePicker picker = ImagePicker();
+
+  XFile? pickedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -65,18 +74,27 @@ class LookUpDicBar extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 trailing: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.keyboard_voice),
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {
-                      print('Use voice command');
-                    },
-                  ),
+                  // IconButton(
+                  //   icon: const Icon(Icons.keyboard_voice),
+                  //   color: Theme.of(context).colorScheme.primary,
+                  //   onPressed: () {
+                  //     print('Use voice command');
+                  //   },
+                  // ),
                   IconButton(
                     icon: const Icon(Icons.image_outlined),
                     color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {
-                      print('Use image search');
+                    onPressed: () async {
+                      final XFile? newImage =
+                          await picker.pickImage(source: ImageSource.gallery);
+
+                      if (newImage != null) {
+                        await Provider.of<WordProvider>(context, listen: false)
+                            .eitherFailureOrLookUpByImage(newImage);
+                        print(Provider.of<WordProvider>(context, listen: false)
+                            .lookUpByImageResults);
+                        // Navigator.pushNamed(context, '/look-up-result');
+                      }
                     },
                   ),
                 ],

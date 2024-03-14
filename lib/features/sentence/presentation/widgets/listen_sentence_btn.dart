@@ -1,16 +1,16 @@
 import 'dart:typed_data';
 
+import 'package:ctue_app/core/service/audio_service.dart';
 import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-final audioPlayer = AudioPlayer();
-
-class ListenButton extends StatelessWidget {
+class ListenSenButton extends StatelessWidget {
   final String text;
-  const ListenButton({super.key, required this.text});
+  ListenSenButton({super.key, required this.text});
+  final audioPlayer = AudioService.player;
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +24,9 @@ class ListenButton extends StatelessWidget {
             child: ElevatedButton(
                 style: ButtonStyle(
                     shadowColor: const MaterialStatePropertyAll(Colors.black),
-                    backgroundColor: MaterialStatePropertyAll(
-                        isLoading ? Colors.red : Colors.grey.shade200)),
+                    backgroundColor: MaterialStatePropertyAll(isLoading
+                        ? Colors.grey.shade400
+                        : Colors.grey.shade200)),
                 onPressed: isLoading
                     ? null
                     : () async {
@@ -39,7 +40,7 @@ class ListenButton extends StatelessWidget {
                         }
                       },
                 child: isLoading
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : Icon(
                         Icons.volume_up_outlined,
                         size: 40,

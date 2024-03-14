@@ -1,4 +1,4 @@
-import 'package:ctue_app/core/api/api_service.dart';
+import 'package:ctue_app/core/service/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/contribution_params.dart';
 import 'package:ctue_app/features/contribute/business/entities/contribution_entity.dart';

@@ -68,6 +68,7 @@ String kShortName = 'ShortName';
 String kGender = 'Gender';
 String kLocate = 'Locale';
 String kVoiceType = 'VoiceType';
+String kConfidence = 'confidence';
 
 enum ResponseData { data, message, statusCode }
 

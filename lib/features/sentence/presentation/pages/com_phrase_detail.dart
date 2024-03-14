@@ -1,13 +1,13 @@
 import 'package:ctue_app/core/errors/failure.dart';
-import 'package:ctue_app/features/home/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
+import 'package:ctue_app/features/sentence/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
-import 'package:ctue_app/features/speech/presentation/widgets/listen_btn.dart';
+import 'package:ctue_app/features/sentence/presentation/widgets/listen_sentence_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CommunicationPhraseDetail extends StatelessWidget {
-  CommunicationPhraseDetail({Key? key}) : super(key: key);
+  const CommunicationPhraseDetail({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class CommunicationPhraseDetail extends StatelessWidget {
                   children: [
                     Center(
                         child: Text(
-                      sentenceDetail!.content,
+                      sentenceDetail.content,
                       style: Theme.of(context).textTheme.titleMedium,
                     )),
                     const SizedBox(
@@ -69,7 +69,7 @@ class CommunicationPhraseDetail extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    ListenButton(text: sentenceDetail.content),
+                    ListenSenButton(text: sentenceDetail.content),
                     const SizedBox(
                       height: 20,
                     ),
