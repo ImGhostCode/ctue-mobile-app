@@ -17,7 +17,7 @@ dependencies:
   path_provider: ^2.1.0
   cupertino_icons: ^1.0.2
   image_picker: ^1.0.7
-  rename: ^3.0.1
+  # rename: ^3.0.1
   syncfusion_flutter_charts: ^24.2.3
   app_settings: ^5.1.1
   carousel_slider: ^4.2.1
@@ -30,6 +30,7 @@ dependencies:
   just_audio_mpv: any # substitute version number
   permission_handler: ^11.3.0
   audioplayers_linux: ^3.1.0
+  flutter_sound:
 
 dev_dependencies:
   flutter_test:

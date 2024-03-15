@@ -1,40 +1,25 @@
 import 'package:ctue_app/core/errors/failure.dart';
-import 'package:ctue_app/core/service/audio_service.dart';
+import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/features/extension/presentation/providers/favorite_provider.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:ctue_app/features/word/presentation/widgets/listen_word_btn.dart';
-import 'package:ctue_app/features/word/presentation/widgets/record_button.dart';
+import 'package:ctue_app/features/speech/presentation/widgets/record_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // import 'package:carousel_slider/carousel_slider.dart';
 
-class WordDetail extends StatelessWidget {
-  WordDetail({Key? key}) : super(key: key);
-  final audioPlayer = AudioService.player;
+class WordDetail extends StatefulWidget {
+  const WordDetail({Key? key}) : super(key: key);
 
-  // final List<Topic> _topics = [
-  //   Topic(
-  //       title: 'Tất cả',
-  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-  //   Topic(
-  //       title: 'Ăn uống',
-  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-  //   Topic(
-  //       title: 'Du lịch',
-  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-  //   Topic(
-  //       title: 'Du lịch',
-  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-  //   Topic(
-  //       title: 'Du lịch',
-  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-  //   Topic(
-  //       title: 'Du lịch',
-  //       picture: 'https://logowik.com/content/uploads/images/flutter5786.jpg'),
-  // ];
+  @override
+  State<WordDetail> createState() => _WordDetailState();
+}
+
+class _WordDetailState extends State<WordDetail> {
+  final audioPlayer = AudioService.player;
 
   @override
   Widget build(BuildContext context) {
@@ -492,8 +477,12 @@ class WordDetail extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         ListenWordButton(text: wordDetail.content),
-                        RecordButton(),
-                        const SizedBox()
+                        RecordButton(
+                          text: wordDetail.content,
+                        ),
+                        const SizedBox(
+                          width: 30,
+                        )
                       ],
                     ),
                   )

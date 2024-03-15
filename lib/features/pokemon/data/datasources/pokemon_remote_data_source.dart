@@ -15,17 +15,26 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
 
   @override
   Future<PokemonModel> getPokemon({required PokemonParams params}) async {
-    final response = await dio.get(
-      'https://pokeapi.co/api/v2/pokemon/${params.id}',
-      queryParameters: {
-        'api_key': 'if you need',
-      },
-    );
+    try {
+      final response = await dio.get(
+        'https://pokeapi.co/api/v2/pokemon/${params.id}',
+        queryParameters: {
+          'api_key': 'if you need',
+        },
+      );
 
-    if (response.statusCode == 200) {
       return PokemonModel.fromJson(response.data);
-    } else {
-      throw ServerException();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
     }
   }
 }

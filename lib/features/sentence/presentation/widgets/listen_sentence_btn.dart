@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:ctue_app/core/service/audio_service.dart';
+import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:flutter/material.dart';

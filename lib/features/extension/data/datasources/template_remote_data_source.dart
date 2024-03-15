@@ -15,17 +15,25 @@ class TemplateRemoteDataSourceImpl implements TemplateRemoteDataSource {
   @override
   Future<TemplateModel> getTemplate(
       {required TemplateParams templateParams}) async {
-    final response = await dio.get(
-      'https://pokeapi.co/api/v2/pokemon/',
-      queryParameters: {
-        'api_key': 'if needed',
-      },
-    );
+    try {
+      final response = await dio.get('/',
+          queryParameters: {},
+          options: Options(headers: {
+            // "authorization": "Bearer ${getUserParams.accessToken}"
+          }));
 
-    if (response.statusCode == 200) {
       return TemplateModel.fromJson(json: response.data);
-    } else {
-      throw ServerException();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
     }
   }
 }

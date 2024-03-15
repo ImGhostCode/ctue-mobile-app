@@ -1,5 +1,6 @@
-import 'package:ctue_app/core/service/api_service.dart';
-import 'package:ctue_app/core/service/audio_service.dart';
+import 'package:ctue_app/core/services/api_service.dart';
+import 'package:ctue_app/core/services/audio_service.dart';
+import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
@@ -57,6 +58,7 @@ void main() async {
   await dotenv.load(fileName: "lib/.env");
   ApiService.init();
   AudioService.init();
+  SecureStorageService.init();
   AzureTts.init(
       subscriptionKey: dotenv.env['SPEECH_KEY']!,
       region: dotenv.env['SPEECH_REGION']!,

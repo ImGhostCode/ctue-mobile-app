@@ -1,9 +1,14 @@
-import 'package:ctue_app/core/service/api_service.dart';
+import 'dart:io';
+
+import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/speech_params.dart';
+import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
+import 'package:ctue_app/features/speech/business/entities/pronunc_assessment_entity.dart';
 import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
+import 'package:ctue_app/features/speech/business/usecases/eval_speech_pron_usecase.dart';
 import 'package:ctue_app/features/speech/business/usecases/get_voices_usecase.dart';
 import 'package:ctue_app/features/speech/business/usecases/tts_usecase.dart';
 import 'package:ctue_app/features/speech/data/datasources/speech_remote_data_source.dart';
@@ -20,6 +25,7 @@ class SpeechProvider extends ChangeNotifier {
   List<VoiceEntity> listVoices = [];
   List<int> audioBytes = [];
   VoiceEntity? selectedVoice;
+  PronuncAssessmentEntity? assessmentResult;
 
   Failure? failure;
   bool _isLoading = false;
@@ -134,6 +140,47 @@ class SpeechProvider extends ChangeNotifier {
       (ResponseDataModel<List<int>> newVoices) {
         isLoading = false;
         audioBytes = newVoices.data;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureEvaluateSP(String text, File audio) async {
+    isLoading = true;
+
+    SpeechRepositoryImpl repository = SpeechRepositoryImpl(
+      remoteDataSource: SpeechRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrSpeech =
+        await EvalSpeechPronucUsecase(speechRepository: repository).call(
+      evaluateSpeechPronunParams: EvaluateSpeechPronunParams(
+          text: text,
+          audio: audio,
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
+    );
+
+    failureOrSpeech.fold(
+      (Failure newFailure) {
+        isLoading = false;
+        assessmentResult = null;
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<PronuncAssessmentEntity?> newVoices) {
+        isLoading = false;
+        assessmentResult = newVoices.data;
         failure = null;
         notifyListeners();
       },

@@ -1,4 +1,4 @@
-import 'package:ctue_app/core/service/api_service.dart';
+import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/auth_params.dart';

@@ -1,4 +1,3 @@
-import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';

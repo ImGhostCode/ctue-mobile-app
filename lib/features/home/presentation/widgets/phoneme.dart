@@ -1,7 +1,7 @@
 // import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:ctue_app/core/constants/ipa_constants.dart';
-import 'package:ctue_app/core/service/audio_service.dart';
+import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:flutter/material.dart';
 // import 'package:just_audio/just_audio.dart';
 

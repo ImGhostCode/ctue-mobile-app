@@ -23,7 +23,7 @@ class ResponseDataModel<D> {
       );
     }
     return ResponseDataModel(
-      data: fromJsonD(json['data'] ?? json.data),
+      data: fromJsonD(json['data']),
       message: json?['message'] ?? json.statusMessage,
       statusCode: json?['statusCode'] ?? json.statusCode,
     );

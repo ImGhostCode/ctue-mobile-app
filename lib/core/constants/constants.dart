@@ -69,6 +69,9 @@ String kGender = 'Gender';
 String kLocate = 'Locale';
 String kVoiceType = 'VoiceType';
 String kConfidence = 'confidence';
+String kLabel = 'label';
+String kScore = 'score';
+String kPhonemeAssessment = 'phonemeAssessments';
 
 enum ResponseData { data, message, statusCode }
 

@@ -37,6 +37,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
           e.type == DioExceptionType.cancel) {
         throw ServerException(
             statusCode: 400, errorMessage: 'Connection Refused');
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw ServerException(
+            statusCode: 500, errorMessage: 'Can\'t connect server');
       } else {
         throw ServerException(
             statusCode: e.response!.statusCode!,

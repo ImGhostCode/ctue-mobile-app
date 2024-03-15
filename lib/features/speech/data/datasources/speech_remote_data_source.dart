@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/speech_params.dart';
+import 'package:ctue_app/features/speech/data/models/pronunc_assessment_model.dart';
 import 'package:ctue_app/features/speech/data/models/voice_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +11,8 @@ abstract class SpeechRemoteDataSource {
   Future<ResponseDataModel<List<VoiceModel>>> getVoices(
       {required GetVoiceParams getVoiceParams});
   Future<ResponseDataModel<List<int>>> tts({required TTSParams ttsParams});
+  Future<ResponseDataModel<PronuncAssessmentModel?>> evaluateSpeechPronunc(
+      {required EvaluateSpeechPronunParams evaluateSpeechPronunParams});
 }
 
 class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
@@ -92,6 +94,45 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
       );
     } on DioException catch (e) {
       // _audioStreamController.close();
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<PronuncAssessmentModel?>> evaluateSpeechPronunc(
+      {required EvaluateSpeechPronunParams evaluateSpeechPronunParams}) async {
+    try {
+      final formData = FormData.fromMap({
+        "text": evaluateSpeechPronunParams.text,
+        "audio": MultipartFile.fromFileSync(
+            evaluateSpeechPronunParams.audio.path,
+            filename: 'audio.wav')
+      });
+      final response = await dio.post('/pronunciation-assessment/assess',
+          data: formData,
+          queryParameters: {},
+          options: Options(headers: {
+            "authorization": "Bearer ${evaluateSpeechPronunParams.accessToken}"
+          }));
+
+      return ResponseDataModel<PronuncAssessmentModel?>.fromJson(
+          json: response.data,
+          fromJsonD: (json) {
+            if (json != null) {
+              return PronuncAssessmentModel.fromJson(json: json);
+            }
+            return json;
+          });
+    } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {
         throw ServerException(
