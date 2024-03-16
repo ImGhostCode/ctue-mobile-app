@@ -2,31 +2,20 @@ import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/spaced_repetition_detail.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/dialog_input.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/widgets/dialog_text_input.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/widgets/statistic_chart.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/reminder.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WordStorePage extends StatefulWidget {
-  WordStorePage({Key? key}) : super(key: key);
+  const WordStorePage({Key? key}) : super(key: key);
 
   @override
   State<WordStorePage> createState() => _WordStorePageState();
 }
 
 class _WordStorePageState extends State<WordStorePage> {
-  final List<VocabularySet> _vocabularySets = [
-    VocabularySet(
-        title: 'Default',
-        image:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBO6Wl5_gZWvGZN_-cJJzEVLhJo9Y0uauwnw&usqp=CAU'),
-    VocabularySet(
-        title: 'Figures of speech',
-        image:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBO6Wl5_gZWvGZN_-cJJzEVLhJo9Y0uauwnw&usqp=CAU')
-  ];
-
   @override
   Widget build(BuildContext context) {
     Provider.of<VocaSetProvider>(context, listen: false)
@@ -110,7 +99,7 @@ class _WordStorePageState extends State<WordStorePage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             color: Colors.grey.shade200,
-            child: Reminder(),
+            child: ActionBox(),
           ),
           _buildVocabularySetManagement(context),
           const SizedBox(
@@ -409,7 +398,7 @@ class _WordStorePageState extends State<WordStorePage> {
       BuildContext context, String title, dynamic data) {
     return showDialog<String>(
         context: context,
-        builder: (BuildContext context) => DialogInput(
+        builder: (BuildContext context) => DialogTextInput(
             initialValue: data.title,
             title: title,
             callback: (title) async {

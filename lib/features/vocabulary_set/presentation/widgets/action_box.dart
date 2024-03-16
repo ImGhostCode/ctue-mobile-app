@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Reminder extends StatelessWidget {
-  const Reminder({super.key});
+class ActionBox extends StatelessWidget {
+  const ActionBox({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,17 +18,35 @@ class Reminder extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Đã đến lúc ôn tập',
-                    style: Theme.of(context).textTheme.bodyLarge,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.error_outline_sharp,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        width: 3,
+                      ),
+                      Flexible(
+                        child: Text(
+                          'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    '3 từ',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(color: Colors.red),
-                  ),
+                  // Text(
+                  //   '3 từ',
+                  //   style: Theme.of(context)
+                  //       .textTheme
+                  //       .bodyLarge!
+                  //       .copyWith(color: Colors.red),
+                  // ),
                   const SizedBox(
                     height: 5,
                   ),
@@ -40,11 +58,13 @@ class Reminder extends StatelessWidget {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8))),
                             backgroundColor:
-                                MaterialStatePropertyAll(Colors.blue.shade800)),
+                                MaterialStatePropertyAll(Colors.blue.shade600)),
                         onPressed: () {
                           Navigator.of(context).pushNamed('/learn');
                         },
-                        child: const Text('Ôn tập ngay')),
+                        child: const Text(
+                            // 'Ôn tập ngay'
+                            'Học ngay')),
                   )
                 ],
               )),

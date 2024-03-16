@@ -1,12 +1,11 @@
 import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/reminder.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
-  bool isDark = false;
+  // bool isDark = false;
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +137,9 @@ class HomePage extends StatelessWidget {
                 //   ),
                 // ),
 
-                Padding(
+                const Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Reminder(),
+                  child: ActionBox(),
                 ),
 
                 const SizedBox(

@@ -1,5 +1,7 @@
+import 'package:ctue_app/features/vocabulary_set/presentation/providers/learn_provider.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/widgets/dialog_number_input.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class LearnSettingPage extends StatefulWidget {
   const LearnSettingPage({Key? key}) : super(key: key);
@@ -39,63 +41,68 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            // width: double.infinity,
-            // height: double.infinity,
+        body: Consumer<LearnProvider>(
+          builder: (context, provider, child) {
+            return SingleChildScrollView(
+              child: Container(
+                // width: double.infinity,
+                // height: double.infinity,
 
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            decoration: BoxDecoration(color: Colors.grey.shade200),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'TỪ MỚI',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                decoration: BoxDecoration(color: Colors.grey.shade200),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'TỪ MỚI',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Colors.blue, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'Cài đặt cách học cho các từ mới, chưa lên cấp độ 1',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    _buildListSettings(context, provider, true),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'TỪ ÔN LẠI',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Colors.blue, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'Cài đặt cách học cho các từ được nhắc ôn lại, các từ có cấp độ 1 trở lên',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    _buildListSettings(context, provider, false),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'CHUNG',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Colors.blue, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    _buildListGeneralSettings(context),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
                 ),
-                Text(
-                  'Cài đặt cách học cho các từ mới, chưa lên cấp độ 1',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                _buildListSettings(context),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'TỪ ÔN LẠI',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Cài đặt cách học cho các từ được nhắc ôn lại, các từ có cấp độ 1 trở lên',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                _buildListSettings(context),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'CHUNG',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                _buildListGeneralSettings(context),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ));
   }
 
@@ -194,7 +201,8 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
     );
   }
 
-  Column _buildListSettings(BuildContext context) {
+  Column _buildListSettings(
+      BuildContext context, LearnProvider provider, bool isForNewWord) {
     return Column(
       children: [
         ElevatedButton(
@@ -208,7 +216,8 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             backgroundColor: MaterialStatePropertyAll(Colors.white),
             foregroundColor: MaterialStatePropertyAll(Colors.black87),
           ),
-          onPressed: () => _showDialogInputNumber(context, 'Số từ tối đa'),
+          onPressed: () =>
+              _showDialogInputNumber(context, 'Số từ tối đa', isForNewWord),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -217,7 +226,9 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.normal),
               ),
-              const Text('5', style: TextStyle(color: Colors.blue)),
+              Text(
+                  '${isForNewWord ? provider.nWMaxNumOfWords : provider.oWMaxNumOfWords}',
+                  style: const TextStyle(color: Colors.blue)),
             ],
           ),
         ),
@@ -230,8 +241,15 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             backgroundColor: MaterialStatePropertyAll(Colors.white),
             foregroundColor: MaterialStatePropertyAll(Colors.black87),
           ),
-          onPressed: () => _showDialogChooseNumber(context,
-              'Số câu hỏi dạng Viết khi học', [0, 1, 2, 3, 4, 5, 6, 7]),
+          onPressed: () => _showDialogChooseNumber(
+              context, 'Số câu hỏi dạng Viết khi học', [0, 1, 2, 3, 4, 5, 6, 7],
+              (int value) {
+            if (isForNewWord) {
+              provider.nWNumOfWritting = value;
+            } else {
+              provider.oWNumOfWritting = value;
+            }
+          }),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -240,7 +258,9 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.normal),
               ),
-              const Text('1', style: TextStyle(color: Colors.blue)),
+              Text(
+                  '${isForNewWord ? provider.nWNumOfWritting : provider.oWNumOfWritting}',
+                  style: const TextStyle(color: Colors.blue)),
             ],
           ),
         ),
@@ -253,8 +273,15 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             backgroundColor: MaterialStatePropertyAll(Colors.white),
             foregroundColor: MaterialStatePropertyAll(Colors.black87),
           ),
-          onPressed: () => _showDialogChooseNumber(context,
-              'Số câu hỏi dạng Nghe khi học', [0, 1, 2, 3, 4, 5, 6, 7]),
+          onPressed: () => _showDialogChooseNumber(
+              context, 'Số câu hỏi dạng Nghe khi học', [0, 1, 2, 3, 4, 5, 6, 7],
+              (int value) {
+            if (isForNewWord) {
+              provider.nWNumOfListening = value;
+            } else {
+              provider.oWNumOfListening = value;
+            }
+          }),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -263,7 +290,9 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.normal),
               ),
-              const Text('1', style: TextStyle(color: Colors.blue)),
+              Text(
+                  '${isForNewWord ? provider.nWNumOfListening : provider.oWNumOfListening}',
+                  style: const TextStyle(color: Colors.blue)),
             ],
           ),
         ),
@@ -276,8 +305,16 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             backgroundColor: MaterialStatePropertyAll(Colors.white),
             foregroundColor: MaterialStatePropertyAll(Colors.black87),
           ),
-          onPressed: () => _showDialogChooseNumber(context,
-              'Số câu hỏi dạng Chọn từ khi học', [0, 1, 2, 3, 4, 5, 6, 7]),
+          onPressed: () => _showDialogChooseNumber(
+              context,
+              'Số câu hỏi dạng Chọn từ khi học',
+              [0, 1, 2, 3, 4, 5, 6, 7], (int value) {
+            if (isForNewWord) {
+              provider.nWNumOfChooseWord = value;
+            } else {
+              provider.oWNumOfChooseWord = value;
+            }
+          }),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -286,7 +323,9 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.normal),
               ),
-              const Text('1', style: TextStyle(color: Colors.blue)),
+              Text(
+                  '${isForNewWord ? provider.nWNumOfChooseWord : provider.oWNumOfChooseWord}',
+                  style: const TextStyle(color: Colors.blue)),
             ],
           ),
         ),
@@ -301,8 +340,16 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             backgroundColor: MaterialStatePropertyAll(Colors.white),
             foregroundColor: MaterialStatePropertyAll(Colors.black87),
           ),
-          onPressed: () => _showDialogChooseNumber(context,
-              'Số câu hỏi dạng Chọn nghĩa khi học', [0, 1, 2, 3, 4, 5, 6, 7]),
+          onPressed: () => _showDialogChooseNumber(
+              context,
+              'Số câu hỏi dạng Chọn nghĩa khi học',
+              [0, 1, 2, 3, 4, 5, 6, 7], (int value) {
+            if (isForNewWord) {
+              provider.nWNumOfChooseMeaning = value;
+            } else {
+              provider.oWNumOfChooseMeaning = value;
+            }
+          }),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -311,7 +358,9 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.normal),
               ),
-              const Text('1', style: TextStyle(color: Colors.blue)),
+              Text(
+                  '${isForNewWord ? provider.nWNumOfChooseMeaning : provider.oWNumOfChooseMeaning}',
+                  style: const TextStyle(color: Colors.blue)),
             ],
           ),
         )
@@ -319,8 +368,8 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
     );
   }
 
-  Future<String?> _showDialogChooseNumber(
-      BuildContext context, String title, List<int> values) {
+  Future<String?> _showDialogChooseNumber(BuildContext context, String title,
+      List<int> values, Function(int) callback) {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => Dialog(
@@ -342,7 +391,10 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                     width: double.infinity,
                     child: TextButton(
                       // style: ButtonStyle(),
-                      onPressed: () {},
+                      onPressed: () {
+                        callback(e);
+                        Navigator.pop(context);
+                      },
                       child: Text(
                         '$e',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -358,64 +410,27 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
     );
   }
 
-  Future<String?> _showDialogInputNumber(BuildContext context, String title) {
+  Future<String?> _showDialogInputNumber(
+      BuildContext context, String title, bool isForNewWord) {
     return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => Dialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                title,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  // errorText: failure ?? failure.errorMessage,
-                  errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.red.shade400)),
-
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  hintText: 'Nhập số từ',
-                  alignLabelWithHint: true,
-                  hintStyle: TextStyle(
-                      color: Colors.grey.shade400,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.grey.shade400)),
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ], // Only numbers can be entered
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(onPressed: () {}, child: Text('Xác nhận')),
-                ],
-              ),
-              // const SizedBox(height: 15),
-            ],
-          ),
-        ),
-      ),
-    );
+        context: context,
+        builder: (BuildContext context) => DialogNumberInput(
+              title: 'Số từ tối đa một lần học',
+              initialValue: isForNewWord
+                  ? Provider.of<LearnProvider>(context, listen: false)
+                      .nWMaxNumOfWords
+                  : Provider.of<LearnProvider>(context, listen: false)
+                      .oWMaxNumOfWords,
+              callback: (int value) {
+                if (isForNewWord) {
+                  Provider.of<LearnProvider>(context, listen: false)
+                      .nWMaxNumOfWords = value;
+                } else {
+                  Provider.of<LearnProvider>(context, listen: false)
+                      .oWMaxNumOfWords = value;
+                }
+                Navigator.pop(context);
+              },
+            ));
   }
 }

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class DialogInput extends StatefulWidget {
+class DialogTextInput extends StatefulWidget {
   final String title;
   final dynamic initialValue;
   final void Function(String) callback;
-  const DialogInput(
+  const DialogTextInput(
       {super.key,
       required this.title,
       required this.initialValue,
       required this.callback});
 
   @override
-  State<DialogInput> createState() => _DialogInputState();
+  State<DialogTextInput> createState() => _DialogTextInputState();
 }
 
-class _DialogInputState extends State<DialogInput> {
+class _DialogTextInputState extends State<DialogTextInput> {
   late TextEditingController _titleController;
   @override
   void initState() {

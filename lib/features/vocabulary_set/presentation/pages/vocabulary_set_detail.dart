@@ -3,7 +3,7 @@ import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/widgets/statistic_chart.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/reminder.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/widgets/action_box.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_%20in_voca_set.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +81,8 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Reminder(),
+                      const ActionBox(),
+
                       const SizedBox(
                         height: 20,
                       ),

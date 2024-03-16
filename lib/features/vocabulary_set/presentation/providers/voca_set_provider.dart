@@ -1,6 +1,7 @@
 import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/voca_set_params.dart';
+import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/download_voca_set%20copy.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/get_usr_voca_sets.dart';
@@ -11,7 +12,6 @@ import 'package:ctue_app/features/vocabulary_set/business/usecases/update_voca_s
 import 'package:ctue_app/features/vocabulary_set/data/datasources/voca_set_local_data_source.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,12 +21,6 @@ import '../../business/usecases/create_voca_set.dart';
 
 import '../../data/datasources/voca_set_remote_data_source.dart';
 import '../../data/repositories/voca_set_repository_impl.dart';
-
-AndroidOptions _getAndroidOptions() => const AndroidOptions(
-      encryptedSharedPreferences: true,
-    );
-
-final storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
 
 class VocaSetProvider extends ChangeNotifier {
   VocaSetEntity? vocaSetEntity;
@@ -72,7 +66,9 @@ class VocaSetProvider extends ChangeNotifier {
           specId: specId,
           picture: picture,
           words: words,
-          accessToken: await storage.read(key: 'accessToken') ?? ''),
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
     );
 
     failureOrCreVocaSet.fold(
@@ -110,7 +106,9 @@ class VocaSetProvider extends ChangeNotifier {
     final failureOrGetUsrVocaSets =
         await GetUsrVocaSetUsecase(vocaSetRepository: repository).call(
       getVocaSetParams: GetVocaSetParams(
-          accessToken: await storage.read(key: 'accessToken') ?? ''),
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
     );
 
     failureOrGetUsrVocaSets.fold(
@@ -152,7 +150,9 @@ class VocaSetProvider extends ChangeNotifier {
           specId: specId,
           topicId: topicId,
           key: key,
-          accessToken: await storage.read(key: 'accessToken') ?? ''),
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
     );
 
     failureOrGetVocaSets.fold(
@@ -192,7 +192,9 @@ class VocaSetProvider extends ChangeNotifier {
       getVocaSetParams: GetVocaSetParams(
           topicId: topicId,
           key: key,
-          accessToken: await storage.read(key: 'accessToken') ?? ''),
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
     );
 
     failureOrSearchVocaSets.fold(
@@ -230,7 +232,10 @@ class VocaSetProvider extends ChangeNotifier {
     final failureOrCreVocaSet =
         await GetVocaSetDetailUsecase(vocaSetRepository: repository).call(
       getVocaSetParams: GetVocaSetParams(
-          id: id, accessToken: await storage.read(key: 'accessToken') ?? ''),
+          id: id,
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
     );
 
     failureOrCreVocaSet.fold(
@@ -270,7 +275,9 @@ class VocaSetProvider extends ChangeNotifier {
       removeVocaSetParams: RemoveVocaSetParams(
           isDownloaded: isDownloaded,
           id: id,
-          accessToken: await storage.read(key: 'accessToken') ?? ''),
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
     );
 
     failureOrRmVocaSet.fold(
@@ -311,7 +318,10 @@ class VocaSetProvider extends ChangeNotifier {
     final failureOrDownVocaSet =
         await DownloadVocaSetUsecase(vocaSetRepository: repository).call(
       downloadVocaSetParams: DownloadVocaSetParams(
-          id: id, accessToken: await storage.read(key: 'accessToken') ?? ''),
+          id: id,
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
     );
 
     failureOrDownVocaSet.fold(
@@ -363,7 +373,9 @@ class VocaSetProvider extends ChangeNotifier {
         await UpdateVocaSetUsecase(vocaSetRepository: repository).call(
       updateVocaSetParams: UpdateVocaSetParams(
         id: id,
-        accessToken: await storage.read(key: 'accessToken') ?? '',
+        accessToken:
+            await SecureStorageService.secureStorage.read(key: 'accessToken') ??
+                '',
         title: title,
         topicId: topicId,
         specId: specId,

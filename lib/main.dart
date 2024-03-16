@@ -1,6 +1,7 @@
 import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
+import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
@@ -19,6 +20,7 @@ import 'package:ctue_app/features/irregular_verb/presentation/pages/irregular_ve
 import 'package:ctue_app/features/home/presentation/pages/welcome_page.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/com_phrase_detail.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/communication_phrase_page.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/word/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
@@ -59,6 +61,7 @@ void main() async {
   ApiService.init();
   AudioService.init();
   SecureStorageService.init();
+  SharedPrefService.init();
   AzureTts.init(
       subscriptionKey: dotenv.env['SPEECH_KEY']!,
       region: dotenv.env['SPEECH_REGION']!,
@@ -132,6 +135,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => SpeechProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LearnProvider(),
           // builder: (context, child) {},
         ),
       ],
