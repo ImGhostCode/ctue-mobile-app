@@ -1,5 +1,5 @@
 import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart';
-import 'package:ctue_app/features/word_store/presentation/widgets/reminder.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/widgets/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

@@ -3,7 +3,7 @@ import 'package:ctue_app/features/extension/presentation/pages/extension_page.da
 import 'package:ctue_app/features/home/presentation/pages/home_page.dart';
 // import 'package:ctue_app/features/practice/presentation/pages/practice_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/profile_page.dart';
-import 'package:ctue_app/features/word_store/presentation/pages/word_store_page.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/word_store_page.dart';
 import 'package:flutter/material.dart';
 // import '../pokemon/presentation/pages/data_page.dart';
 // import '../pokemon/presentation/pages/pokemon_page.dart';

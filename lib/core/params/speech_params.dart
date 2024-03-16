@@ -23,3 +23,9 @@ class EvaluateSpeechPronunParams {
   EvaluateSpeechPronunParams(
       {required this.audio, required this.text, required this.accessToken});
 }
+
+class GetUserProStatisticParams {
+  final String accessToken;
+
+  GetUserProStatisticParams({required this.accessToken});
+}

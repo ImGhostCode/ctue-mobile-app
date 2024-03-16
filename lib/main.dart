@@ -23,7 +23,7 @@ import 'package:ctue_app/features/word/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
 import 'package:ctue_app/features/notification/presentation/pages/notification.dart';
-import 'package:ctue_app/features/profile/presentation/pages/pronoun_statistic_detail_page.dart';
+import 'package:ctue_app/features/speech/presentation/pages/pronoun_statistic_detail_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/setting_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/user_info_page.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
@@ -34,14 +34,14 @@ import 'package:ctue_app/features/type/presentation/providers/type_provider.dart
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/word/presentation/pages/look_up_result_page.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
-import 'package:ctue_app/features/word_store/presentation/pages/create_vocabulary_set.dart';
-import 'package:ctue_app/features/word_store/presentation/pages/learn_page.dart';
-import 'package:ctue_app/features/word_store/presentation/pages/learn_setting_page.dart';
-import 'package:ctue_app/features/word_store/presentation/pages/search_voca_set.dart';
-import 'package:ctue_app/features/word_store/presentation/pages/statistic_learned_words.dart';
-import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_set_detail.dart';
-import 'package:ctue_app/features/word_store/presentation/pages/vocabulary_sets_page.dart';
-import 'package:ctue_app/features/word_store/presentation/providers/voca_set_provider.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/create_vocabulary_set.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/learn_page.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/learn_setting_page.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/search_voca_set.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/statistic_learned_words.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_set_detail.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_sets_page.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_azure_tts/flutter_azure_tts.dart';
 import 'package:provider/provider.dart';
@@ -219,15 +219,15 @@ class MyApp extends StatelessWidget {
           '/learn-setting': (context) => const LearnSettingPage(),
           '/dictionary': (context) => DictionaryPage(),
           '/look-up-result': (context) => LookUpResultPage(),
-          '/word-detail': (context) => WordDetail(),
+          '/word-detail': (context) => const WordDetail(),
           '/irregular-verb': (context) => IrregularVerbPage(),
           '/favorite-vocabulary': (context) => FavoriteVocabulary(),
           '/communication-phrases': (context) => ComPhrasePage(),
           '/communication-phrase-detail': (context) =>
-              CommunicationPhraseDetail(),
+              const CommunicationPhraseDetail(),
           '/notification': (context) => const NotificationPage(),
           '/create-vocabulary-set': (context) => CreateVocabularySet(),
-          '/vocabulary-sets': (context) => VocabularySets(),
+          '/vocabulary-sets': (context) => const VocabularySets(),
           '/search-voca-set': (context) => SearchVocaSetPage(),
           '/vocabulary-set-detail': (context) => const VocabularySetDetail(),
           '/statistic-learned-words': (context) =>

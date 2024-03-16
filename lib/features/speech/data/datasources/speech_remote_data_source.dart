@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/speech_params.dart';
+import 'package:ctue_app/features/speech/data/models/pronuc_statistics_model.dart';
 import 'package:ctue_app/features/speech/data/models/pronunc_assessment_model.dart';
 import 'package:ctue_app/features/speech/data/models/voice_model.dart';
 import 'package:dio/dio.dart';
@@ -13,6 +14,8 @@ abstract class SpeechRemoteDataSource {
   Future<ResponseDataModel<List<int>>> tts({required TTSParams ttsParams});
   Future<ResponseDataModel<PronuncAssessmentModel?>> evaluateSpeechPronunc(
       {required EvaluateSpeechPronunParams evaluateSpeechPronunParams});
+  Future<ResponseDataModel<PronuncStatisticModel>> getUserProStatistics(
+      {required GetUserProStatisticParams getUserProStatisticParams});
 }
 
 class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
@@ -132,6 +135,34 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
             }
             return json;
           });
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<PronuncStatisticModel>> getUserProStatistics(
+      {required GetUserProStatisticParams getUserProStatisticParams}) async {
+    try {
+      final response = await dio.get(
+          '/pronunciation-assessment/user/statistics',
+          queryParameters: {},
+          options: Options(headers: {
+            "authorization": "Bearer ${getUserProStatisticParams.accessToken}"
+          }));
+
+      return ResponseDataModel<PronuncStatisticModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => PronuncStatisticModel.fromJson(json: json));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

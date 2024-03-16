@@ -72,6 +72,12 @@ String kConfidence = 'confidence';
 String kLabel = 'label';
 String kScore = 'score';
 String kPhonemeAssessment = 'phonemeAssessments';
+String kDetail = 'detail';
+String kAvg = 'Avg';
+String kavg = 'avg';
+String kLablesNeedToBeImprove = 'lablesNeedToBeImprove';
+String kLablesDoWell = 'lablesDoWell';
+String kSuggestWordsToImprove = 'suggestWordsToImprove';
 
 enum ResponseData { data, message, statusCode }
 

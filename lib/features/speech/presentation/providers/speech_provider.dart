@@ -7,8 +7,10 @@ import 'package:ctue_app/core/params/speech_params.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/speech/business/entities/pronunc_assessment_entity.dart';
+import 'package:ctue_app/features/speech/business/entities/prounc_statistics_entity.dart';
 import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
 import 'package:ctue_app/features/speech/business/usecases/eval_speech_pron_usecase.dart';
+import 'package:ctue_app/features/speech/business/usecases/get_usr_pronuc_statis_usecase.dart';
 import 'package:ctue_app/features/speech/business/usecases/get_voices_usecase.dart';
 import 'package:ctue_app/features/speech/business/usecases/tts_usecase.dart';
 import 'package:ctue_app/features/speech/data/datasources/speech_remote_data_source.dart';
@@ -26,6 +28,7 @@ class SpeechProvider extends ChangeNotifier {
   List<int> audioBytes = [];
   VoiceEntity? selectedVoice;
   PronuncAssessmentEntity? assessmentResult;
+  PronuncStatisticEntity? pronuncStatisticEntity;
 
   Failure? failure;
   bool _isLoading = false;
@@ -102,9 +105,48 @@ class SpeechProvider extends ChangeNotifier {
         failure = newFailure;
         notifyListeners();
       },
-      (ResponseDataModel<List<VoiceEntity>> newVoices) {
+      (ResponseDataModel<List<VoiceEntity>> dataModel) {
         _isLoading = false;
-        listVoices = newVoices.data;
+        listVoices = dataModel.data;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  void eitherFailureOrgetUserProStatistics() async {
+    _isLoading = true;
+
+    SpeechRepositoryImpl repository = SpeechRepositoryImpl(
+      remoteDataSource: SpeechRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrGetUsrPronucStatistics =
+        await GetUserPronuncStatisticUsecase(speechRepository: repository).call(
+      getUserProStatisticParams: GetUserProStatisticParams(
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
+    );
+
+    failureOrGetUsrPronucStatistics.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        pronuncStatisticEntity = null;
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<PronuncStatisticEntity> dataModel) {
+        _isLoading = false;
+        pronuncStatisticEntity = dataModel.data;
         failure = null;
         notifyListeners();
       },
@@ -137,9 +179,9 @@ class SpeechProvider extends ChangeNotifier {
         failure = newFailure;
         notifyListeners();
       },
-      (ResponseDataModel<List<int>> newVoices) {
+      (ResponseDataModel<List<int>> dataModel) {
         isLoading = false;
-        audioBytes = newVoices.data;
+        audioBytes = dataModel.data;
         failure = null;
         notifyListeners();
       },
@@ -178,9 +220,9 @@ class SpeechProvider extends ChangeNotifier {
         failure = newFailure;
         notifyListeners();
       },
-      (ResponseDataModel<PronuncAssessmentEntity?> newVoices) {
+      (ResponseDataModel<PronuncAssessmentEntity?> dataModel) {
         isLoading = false;
-        assessmentResult = newVoices.data;
+        assessmentResult = dataModel.data;
         failure = null;
         notifyListeners();
       },

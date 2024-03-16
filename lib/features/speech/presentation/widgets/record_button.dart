@@ -123,8 +123,9 @@ class _RecordButtonState extends State<RecordButton> {
                             ? GradientBorderContainer(
                                 diameter: 90.0,
                                 borderWidth: 0.1, // 10% of diameter
-                                borderColor1: getColor(score!),
-                                borderColor2: getColor(score!).withOpacity(0.3),
+                                borderColor1: scoreToColor(score!),
+                                borderColor2:
+                                    scoreToColor(score!).withOpacity(0.3),
                                 stop1: (score! / 100).toDouble(),
                                 stop2: 1 - (score! / 100).toDouble(),
                                 percent: score!,
@@ -159,7 +160,7 @@ class _RecordButtonState extends State<RecordButton> {
                                   //         .textTheme
                                   //         .titleMedium!
                                   //         .copyWith(
-                                  //             color: getColor(34),
+                                  //             color: scoreToColor(34),
                                   //             fontWeight: FontWeight.normal,
                                   //             fontFamily: 'DoulosSIL')),
                                   // Text('e',
@@ -167,7 +168,7 @@ class _RecordButtonState extends State<RecordButton> {
                                   //         .textTheme
                                   //         .titleMedium!
                                   //         .copyWith(
-                                  //             color: getColor(99),
+                                  //             color: scoreToColor(99),
                                   //             fontWeight: FontWeight.normal,
                                   //             fontFamily: 'DoulosSIL')),
                                   // Text('s',
@@ -175,7 +176,7 @@ class _RecordButtonState extends State<RecordButton> {
                                   //         .textTheme
                                   //         .titleMedium!
                                   //         .copyWith(
-                                  //             color: getColor(68),
+                                  //             color: scoreToColor(68),
                                   //             fontWeight: FontWeight.normal,
                                   //             fontFamily: 'DoulosSIL')),
                                   // Text('t',
@@ -183,7 +184,7 @@ class _RecordButtonState extends State<RecordButton> {
                                   //         .textTheme
                                   //         .titleMedium!
                                   //         .copyWith(
-                                  //             color: getColor(80),
+                                  //             color: scoreToColor(80),
                                   //             fontWeight: FontWeight.normal,
                                   //             fontFamily: 'DoulosSIL')),
                                   ...phonemeResults,
@@ -275,7 +276,7 @@ class _RecordButtonState extends State<RecordButton> {
             style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.normal,
-                color: getColor(phoneme.score),
+                color: scoreToColor(phoneme.score),
                 fontFamily: 'DoulosSIL')));
       });
     } else {
@@ -285,11 +286,11 @@ class _RecordButtonState extends State<RecordButton> {
   }
 }
 
-Color getColor(int score) {
+Color scoreToColor(int score) {
   if (score > 79) {
     return Colors.green;
   } else if (score > 59) {
-    return Colors.yellow.shade800;
+    return Colors.yellow.shade700;
   } else {
     return Colors.red;
   }
