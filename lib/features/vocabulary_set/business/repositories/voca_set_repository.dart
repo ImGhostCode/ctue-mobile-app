@@ -1,4 +1,5 @@
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/voca_set_params.dart';
@@ -26,5 +27,9 @@ abstract class VocaSetRepository {
   });
   Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> downloadVocaSet({
     required DownloadVocaSetParams downloadVocaSetParams,
+  });
+  Future<Either<Failure, ResponseDataModel<VocaSetStatisticsEntity>>>
+      getVocaSetStatistics({
+    required GetVocaSetStatisParams getVocaSetStatisParams,
   });
 }

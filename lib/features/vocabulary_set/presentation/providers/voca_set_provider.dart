@@ -3,9 +3,11 @@ import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/voca_set_params.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
+import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/download_voca_set%20copy.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/get_usr_voca_sets.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/get_voca_set_detail.dart';
+import 'package:ctue_app/features/vocabulary_set/business/usecases/get_voca_set_statis_usecase.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/get_voca_sets.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/rm_voca_set.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/update_voca_set.dart';
@@ -27,6 +29,7 @@ class VocaSetProvider extends ChangeNotifier {
   List<VocaSetEntity> userVocaSets = [];
   List<VocaSetEntity> publicVocaSets = [];
   List<VocaSetEntity> searchResults = [];
+  VocaSetStatisticsEntity? vocaSetStatisticsEntity;
 
   Failure? failure;
   String? message = '';
@@ -166,6 +169,47 @@ class VocaSetProvider extends ChangeNotifier {
       (ResponseDataModel<List<VocaSetEntity>> newVocaSets) {
         _isLoading = false;
         publicVocaSets = newVocaSets.data;
+        message = newVocaSets.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrGerVocaSetStatistics(int id) async {
+    _isLoading = true;
+    VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
+      remoteDataSource: VocaSetRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: VocaSetLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrGetVocaSetStatistics =
+        await GetVocaSetStatisUsecase(vocaSetRepository: repository).call(
+      getVocaSetStatisParams: GetVocaSetStatisParams(
+          id: id,
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
+    );
+
+    failureOrGetVocaSetStatistics.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        vocaSetStatisticsEntity = null;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<VocaSetStatisticsEntity> newVocaSets) {
+        _isLoading = false;
+        vocaSetStatisticsEntity = newVocaSets.data;
         message = newVocaSets.message;
         failure = null;
         notifyListeners();

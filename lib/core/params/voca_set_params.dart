@@ -24,6 +24,13 @@ class DownloadVocaSetParams {
   DownloadVocaSetParams({required this.accessToken, this.id});
 }
 
+class GetVocaSetStatisParams {
+  final int id;
+  final String accessToken;
+
+  GetVocaSetStatisParams({required this.accessToken, required this.id});
+}
+
 class GetVocaSetParams {
   final int? id;
   final String? key;

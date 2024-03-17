@@ -20,7 +20,7 @@ import 'package:ctue_app/features/irregular_verb/presentation/pages/irregular_ve
 import 'package:ctue_app/features/home/presentation/pages/welcome_page.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/com_phrase_detail.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/communication_phrase_page.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/providers/learn_provider.dart';
+import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/word/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
@@ -37,10 +37,10 @@ import 'package:ctue_app/features/user/presentation/providers/user_provider.dart
 import 'package:ctue_app/features/word/presentation/pages/look_up_result_page.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/create_vocabulary_set.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/pages/learn_page.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/pages/learn_setting_page.dart';
+import 'package:ctue_app/features/learn/presentation/pages/learn_page.dart';
+import 'package:ctue_app/features/learn/presentation/pages/learn_setting_page.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/search_voca_set.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/pages/statistic_learned_words.dart';
+import 'package:ctue_app/features/learn/presentation/pages/statistic_learned_words.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_set_detail.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_sets_page.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';

@@ -1,9 +1,10 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
+import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/statistic_chart.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/action_box.dart';
+import 'package:ctue_app/features/learn/presentation/widgets/statistic_chart.dart';
+import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_%20in_voca_set.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,9 +25,13 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
         ModalRoute.of(context)!.settings.arguments as VocabularySetArguments;
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetDetail(args.id);
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerVocaSetStatistics(args.id);
 
     return Consumer<VocaSetProvider>(builder: (context, provider, child) {
       VocaSetEntity? vocaSetEntity = provider.vocaSetEntity;
+      VocaSetStatisticsEntity? vocaSetStatisticsEntity =
+          provider.vocaSetStatisticsEntity;
 
       bool isLoading = provider.isLoading;
 
@@ -77,7 +82,14 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                   color: Colors.grey.shade200,
                   child: Column(
                     children: [
-                      StatisticChart(),
+                      StatisticChart(
+                          totalWords: vocaSetEntity.words.length,
+                          dataStatistics: vocaSetStatisticsEntity != null
+                              ? vocaSetStatisticsEntity
+                              : VocaSetStatisticsEntity(
+                                  numberOfWords: 0,
+                                  detailVocaSetStatisEntity:
+                                      DetailVocaSetStatisEntity())),
                       const SizedBox(
                         height: 20,
                       ),

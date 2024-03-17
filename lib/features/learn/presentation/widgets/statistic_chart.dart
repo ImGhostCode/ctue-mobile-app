@@ -1,8 +1,12 @@
+import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class StatisticChart extends StatefulWidget {
-  StatisticChart({super.key});
+  final int totalWords;
+  final VocaSetStatisticsEntity dataStatistics;
+  const StatisticChart(
+      {super.key, required this.totalWords, required this.dataStatistics});
 
   @override
   State<StatisticChart> createState() => _StatisticChartState();
@@ -15,12 +19,30 @@ class _StatisticChartState extends State<StatisticChart> {
   @override
   void initState() {
     data = [
-      _ChartData('1', 1, Colors.orange),
-      _ChartData('2', 2, Colors.yellow.shade700),
-      _ChartData('3', 3, Colors.green.shade400),
-      _ChartData('4', 4, Colors.green.shade800),
-      _ChartData('5', 5, Colors.blue.shade500),
-      _ChartData('Nhớ sâu', 6, Colors.blue.shade900)
+      _ChartData(
+          '1',
+          widget.dataStatistics.detailVocaSetStatisEntity.level_1.length,
+          Colors.orange),
+      _ChartData(
+          '2',
+          widget.dataStatistics.detailVocaSetStatisEntity.level_2.length,
+          Colors.yellow.shade700),
+      _ChartData(
+          '3',
+          widget.dataStatistics.detailVocaSetStatisEntity.level_3.length,
+          Colors.green.shade400),
+      _ChartData(
+          '4',
+          widget.dataStatistics.detailVocaSetStatisEntity.level_4.length,
+          Colors.green.shade800),
+      _ChartData(
+          '5',
+          widget.dataStatistics.detailVocaSetStatisEntity.level_5.length,
+          Colors.blue.shade500),
+      _ChartData(
+          'Nhớ sâu',
+          widget.dataStatistics.detailVocaSetStatisEntity.level_6.length,
+          Colors.blue.shade900)
     ];
     _tooltip = TooltipBehavior(enable: true);
     super.initState();
@@ -49,7 +71,7 @@ class _StatisticChartState extends State<StatisticChart> {
           ),
           RichText(
             text: TextSpan(
-              text: '3',
+              text: '${widget.dataStatistics.numberOfWords}',
               style: Theme.of(context).textTheme.titleLarge,
               children: <TextSpan>[
                 TextSpan(
@@ -57,7 +79,7 @@ class _StatisticChartState extends State<StatisticChart> {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 TextSpan(
-                  text: ' 2',
+                  text: '${widget.totalWords}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
@@ -87,9 +109,9 @@ class _StatisticChartState extends State<StatisticChart> {
                         yValueMapper: (_ChartData data, _) => data.y,
                         pointColorMapper: (_ChartData data, _) => data.color,
                         name: 'Gold',
-                        color: Color.fromRGBO(8, 142, 255, 1),
+                        color: const Color.fromRGBO(8, 142, 255, 1),
                         dataLabelMapper: (_ChartData data, _) =>
-                            '${data.y!.toInt()} từ',
+                            '${data.y!} từ',
                         width: 0.5,
                         dataLabelSettings: const DataLabelSettings(
                           isVisible: true,
@@ -112,6 +134,6 @@ class _StatisticChartState extends State<StatisticChart> {
 class _ChartData {
   _ChartData(this.x, this.y, this.color);
   final String x;
-  final double? y;
+  final int? y;
   final Color? color;
 }

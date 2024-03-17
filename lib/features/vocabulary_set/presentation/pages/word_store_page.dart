@@ -1,10 +1,11 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
+import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/spaced_repetition_detail.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/dialog_text_input.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/statistic_chart.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/action_box.dart';
+import 'package:ctue_app/features/learn/presentation/widgets/dialog_text_input.dart';
+import 'package:ctue_app/features/learn/presentation/widgets/statistic_chart.dart';
+import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -92,7 +93,13 @@ class _WordStorePageState extends State<WordStorePage> {
                 Positioned(
                     top: 60, // Center vertically
                     left: 16,
-                    child: StatisticChart())
+                    child: StatisticChart(
+                      totalWords: 5,
+                      dataStatistics: VocaSetStatisticsEntity(
+                          numberOfWords: 0,
+                          detailVocaSetStatisEntity:
+                              DetailVocaSetStatisEntity()),
+                    ))
               ],
             ),
           ),

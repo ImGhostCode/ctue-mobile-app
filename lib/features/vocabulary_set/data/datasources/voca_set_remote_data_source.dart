@@ -1,6 +1,7 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/voca_set_params.dart';
 import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_model.dart';
+import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_statis_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
 
@@ -19,6 +20,8 @@ abstract class VocaSetRemoteDataSource {
       {required RemoveVocaSetParams removeVocaSetParams});
   Future<ResponseDataModel<VocaSetModel>> downloadVocaSet(
       {required DownloadVocaSetParams downloadVocaSetParams});
+  Future<ResponseDataModel<VocaSetStatisticsModel>> getVocaSetStatistics(
+      {required GetVocaSetStatisParams getVocaSetStatisParams});
 }
 
 class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
@@ -247,6 +250,32 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
       return ResponseDataModel<VocaSetModel>.fromJson(
           json: response.data,
           fromJsonD: (json) => VocaSetModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<VocaSetStatisticsModel>> getVocaSetStatistics(
+      {required GetVocaSetStatisParams getVocaSetStatisParams}) async {
+    try {
+      final response = await dio.get('/learn/statistics',
+          queryParameters: {"setId": getVocaSetStatisParams.id},
+          options: Options(headers: {
+            "authorization": "Bearer ${getVocaSetStatisParams.accessToken}"
+          }));
+      return ResponseDataModel<VocaSetStatisticsModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => VocaSetStatisticsModel.fromJson(json: json));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

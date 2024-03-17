@@ -72,12 +72,23 @@ String kConfidence = 'confidence';
 String kLabel = 'label';
 String kScore = 'score';
 String kPhonemeAssessment = 'phonemeAssessments';
-String kDetail = 'detail';
+String kDetail = 'data';
 String kAvg = 'Avg';
 String kavg = 'avg';
 String kLablesNeedToBeImprove = 'lablesNeedToBeImprove';
 String kLablesDoWell = 'lablesDoWell';
 String kSuggestWordsToImprove = 'suggestWordsToImprove';
+
+String kNumberOfWords = 'count';
+String kLevel_1 = 'level_1';
+String kLevel_2 = 'level_2';
+String kLevel_3 = 'level_3';
+String kLevel_4 = 'level_4';
+String kLevel_5 = 'level_5';
+String kLevel_6 = 'level_6';
+
+String kVocaSetId = 'vocabularySetId';
+String kMemoryLevel = 'memoryLevel';
 
 enum ResponseData { data, message, statusCode }
 

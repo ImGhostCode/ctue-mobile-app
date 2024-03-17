@@ -1,5 +1,5 @@
 import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/action_box.dart';
+import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:ctue_app/features/vocabulary_set/presentation/providers/learn_provider.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/dialog_number_input.dart';
+import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
+import 'package:ctue_app/features/learn/presentation/widgets/dialog_number_input.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
