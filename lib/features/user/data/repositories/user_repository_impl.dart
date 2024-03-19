@@ -72,4 +72,49 @@ class UserRepositoryImpl implements UserRepository {
       // }
     }
   }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<void>>> resetPassword(
+      {required ResetPasswordParams resetPasswordParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<void> remoteUser = await remoteDataSource
+            .resetPassword(resetPasswordParams: resetPasswordParams);
+
+        // localDataSource.cacheUser(UserToCache: remoteUser);
+
+        return Right(remoteUser);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      // try {
+      // AccessTokenModel localUser = await localDataSource.getLastUser();
+      //   return Right(localUser);
+      // } on CacheException {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      // }
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<void>>> getVerifyCode(
+      {required GetVerifyCodeParams getVerifyCodeParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<void> remoteUser = await remoteDataSource
+            .getVerifyCode(getVerifyCodeParams: getVerifyCodeParams);
+
+        // localDataSource.cacheUser(UserToCache: remoteUser);
+
+        return Right(remoteUser);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:ctue_app/features/auth/business/entities/user_entity.dart';
+import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 
 class ContributionEntity {
   final int id;

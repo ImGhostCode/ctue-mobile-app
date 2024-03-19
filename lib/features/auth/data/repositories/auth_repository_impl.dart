@@ -1,15 +1,11 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/auth_params.dart';
 import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
-import 'package:ctue_app/features/auth/business/entities/user_entity.dart';
 import 'package:ctue_app/features/auth/data/models/account_model.dart';
-import 'package:ctue_app/features/auth/data/models/user_model.dart';
 import 'package:dartz/dartz.dart';
-
 import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/errors/failure.dart';
-import '../../../../../core/params/params.dart';
 import '../../business/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
@@ -58,31 +54,6 @@ class AuthRepositoryImpl implements AuthRepository {
       try {
         ResponseDataModel<AccountModel> remoteAuth =
             await remoteDataSource.signup(signupParams: signupParams);
-
-        // localDataSource.cacheAuth(AuthToCache: remoteAuth);
-
-        return Right(remoteAuth);
-      } on ServerException catch (e) {
-        return Left(ServerFailure(
-            errorMessage: e.errorMessage, statusCode: e.statusCode));
-      }
-    } else {
-      // try {
-      // AccessTokenModel localAuth = await localDataSource.getLastAuth();
-      //   return Right(localAuth);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
-    }
-  }
-
-  @override
-  Future<Either<Failure, ResponseDataModel<UserEntity>>> getUser(
-      {required GetUserParams getUserParams}) async {
-    if (await networkInfo.isConnected!) {
-      try {
-        ResponseDataModel<UserModel> remoteAuth =
-            await remoteDataSource.getUser(getUserParams: getUserParams);
 
         // localDataSource.cacheAuth(AuthToCache: remoteAuth);
 

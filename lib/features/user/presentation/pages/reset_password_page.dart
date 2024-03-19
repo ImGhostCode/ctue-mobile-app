@@ -1,4 +1,6 @@
+import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -14,6 +16,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   bool isButtonEnabled = false; // Add this variable
   bool isPasswordsMatch = false;
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   bool isEmailValid(String email) {
     return RegExp(r'^[\w-\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}$').hasMatch(email);
@@ -54,6 +57,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 height: 4,
               ),
               TextFormField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -71,7 +75,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   if (value == null || value.isEmpty) {
                     return 'Vui lòng nhập email của bạn';
                   } else if (!isEmailValid(value)) {
-                    return 'Email khong hop le';
+                    return 'Email không hợp lệ';
                   }
                   return null;
                 },
@@ -171,9 +175,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
-                  },
+                  onPressed: Provider.of<UserProvider>(context, listen: true)
+                          .isLoading
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            Provider.of<UserProvider>(context, listen: false)
+                                .eitherFailureOrGetVerifyCode(
+                                    _emailController.text);
+                            Navigator.pushNamed(context, '/verify-code',
+                                arguments: ResetPasswordArgs(
+                                    email: _emailController.text,
+                                    newPassword: _passwordController.text));
+                          }
+                        },
                   child: Text(
                     'Tiếp tục',
                     style: Theme.of(context)
@@ -189,4 +204,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       ),
     );
   }
+}
+
+class ResetPasswordArgs {
+  final String email;
+  final String newPassword;
+
+  ResetPasswordArgs({required this.email, required this.newPassword});
 }

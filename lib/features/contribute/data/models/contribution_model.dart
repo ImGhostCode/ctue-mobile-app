@@ -1,5 +1,5 @@
 import 'package:ctue_app/core/constants/constants.dart';
-import 'package:ctue_app/features/auth/data/models/user_model.dart';
+import 'package:ctue_app/features/user/data/models/user_model.dart';
 import 'package:ctue_app/features/contribute/business/entities/contribution_entity.dart';
 
 class ContributionModel extends ContributionEntity {

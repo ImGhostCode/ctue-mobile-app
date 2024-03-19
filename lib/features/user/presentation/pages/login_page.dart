@@ -25,10 +25,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    AccessTokenEntity? accessToken =
-        Provider.of<AuthProvider>(context).accessTokenEntity;
-    Failure? failure = Provider.of<AuthProvider>(context).failure;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

@@ -1,9 +1,10 @@
+import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
-import 'package:ctue_app/features/auth/presentation/pages/reset_password_page.dart';
+import 'package:ctue_app/features/user/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 // import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
 import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
@@ -21,6 +22,8 @@ import 'package:ctue_app/features/home/presentation/pages/welcome_page.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/com_phrase_detail.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
+import 'package:ctue_app/features/user/business/entities/user_entity.dart';
+import 'package:ctue_app/features/user/presentation/pages/verify_code_page.dart';
 import 'package:ctue_app/features/word/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
@@ -45,14 +48,10 @@ import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_s
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_sets_page.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_azure_tts/flutter_azure_tts.dart';
 import 'package:provider/provider.dart';
-// import 'features/pokemon/presentation/providers/pokemon_provider.dart';
-// import 'features/pokemon/presentation/providers/selected_pokemon_item_provider.dart';
 import 'features/skeleton/providers/selected_page_provider.dart';
 import 'features/skeleton/skeleton.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 // import 'package:rename/rename.dart';
 
@@ -62,10 +61,6 @@ void main() async {
   AudioService.init();
   SecureStorageService.init();
   SharedPrefService.init();
-  AzureTts.init(
-      subscriptionKey: dotenv.env['SPEECH_KEY']!,
-      region: dotenv.env['SPEECH_REGION']!,
-      withLogs: true); // enable logs
   runApp(const MyApp());
 }
 
@@ -211,7 +206,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => const Home(),
           '/welcome': (context) => const WelcomePage(),
-          // '/verify-code': (context) => const VerifyCodePage(),
+          '/verify-code': (context) => const VerifyCodePage(),
           '/login': (context) => const LoginPage(),
           '/reset-password': (context) => const ResetPasswordPage(),
           '/sign-up': (context) => const SignUpPage(),
@@ -241,7 +236,6 @@ class MyApp extends StatelessWidget {
               const StatisticLearnedWordPage(),
           '/pro-statistics-detail': (context) => const ProStatisticDetailPage(),
         },
-        // home: const Home(),
       ),
     );
   }
@@ -257,10 +251,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _checkLoggedInStatus(context);
   }
 
-  Future<void> _checkLoggedInStatus(context) async {
+  void _checkLoggedInStatus(context) async {
     final accessToken = await Provider.of<AuthProvider>(context, listen: false)
         .getAccessToken();
 
@@ -273,23 +266,35 @@ class _HomeState extends State<Home> {
         Navigator.pushNamedAndRemoveUntil(
             context, '/welcome', (route) => false);
       }
-
-      // Navigator.popUntil(context, (route) => false);
-      // ignore: use_build_context_synchronously
-
-      return;
-      // }
     } else {
-      // No token found, redirect to login
       // ignore: use_build_context_synchronously
       Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
     }
   }
 
-  final permissionCamera = Permission.camera;
-  final permissionLocation = Permission.location;
   @override
   Widget build(BuildContext context) {
-    return const Skeleton();
+    _checkLoggedInStatus(context);
+    return Consumer<UserProvider>(builder: (context, provider, child) {
+      UserEntity? userEntity = provider.userEntity;
+
+      bool isLoading = provider.isLoading;
+
+      Failure? failure = provider.failure;
+
+      if (failure != null) {
+        // Handle failure, for example, show an error message
+        return Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(child: Text(failure.errorMessage)));
+      } else if (isLoading || userEntity == null) {
+        // Handle the case where topics are empty
+        return const Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(child: CircularProgressIndicator()));
+      } else {
+        return const Skeleton();
+      }
+    });
   }
 }

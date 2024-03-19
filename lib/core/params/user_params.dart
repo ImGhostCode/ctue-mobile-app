@@ -15,3 +15,24 @@ class UpdateUserParams {
   UpdateUserParams(
       {required this.id, this.avt, this.name, required this.accessToken});
 }
+
+class ResetPasswordParams {
+  final int code;
+  final String email;
+  final String newPassword;
+  final String accessToken;
+
+  ResetPasswordParams(
+      {required this.code,
+      required this.email,
+      required this.newPassword,
+      required this.accessToken});
+}
+
+class GetVerifyCodeParams {
+  final String email;
+
+  GetVerifyCodeParams({
+    required this.email,
+  });
+}

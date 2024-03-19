@@ -11,6 +11,10 @@ abstract class UserRemoteDataSource {
 
   Future<ResponseDataModel<UserModel>> updateUser(
       {required UpdateUserParams updateUserParams});
+  Future<ResponseDataModel<void>> resetPassword(
+      {required ResetPasswordParams resetPasswordParams});
+  Future<ResponseDataModel<void>> getVerifyCode(
+      {required GetVerifyCodeParams getVerifyCodeParams});
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -71,6 +75,68 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       return ResponseDataModel<UserModel>.fromJson(
           json: response.data,
           fromJsonD: (json) => UserModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<void>> resetPassword(
+      {required ResetPasswordParams resetPasswordParams}) async {
+    try {
+      final response = await dio.patch('/users/reset/password',
+          queryParameters: {
+            'api_key': 'if needed',
+          },
+          data: {
+            'code': resetPasswordParams.code,
+            'email': resetPasswordParams.email,
+            'newPassword': resetPasswordParams.newPassword
+          },
+          options: Options(headers: {
+            // "authorization": "Bearer ${resetPasswordParams.accessToken}"
+          }));
+      return ResponseDataModel<void>.fromJson(
+          json: response.data, fromJsonD: (json) => json);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<void>> getVerifyCode(
+      {required GetVerifyCodeParams getVerifyCodeParams}) async {
+    try {
+      final response = await dio.post('/users/verify-code',
+          queryParameters: {
+            'api_key': 'if needed',
+          },
+          data: {
+            'email': getVerifyCodeParams.email,
+          },
+          options: Options(headers: {
+            // "authorization": "Bearer ${resetPasswordParams.accessToken}"
+          }));
+      return ResponseDataModel<void>.fromJson(
+          json: response.data, fromJsonD: (json) => json);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

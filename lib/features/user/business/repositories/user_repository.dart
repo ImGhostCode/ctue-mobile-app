@@ -11,4 +11,10 @@ abstract class UserRepository {
   Future<Either<Failure, ResponseDataModel<UserEntity>>> updateUser({
     required UpdateUserParams updateUserParams,
   });
+  Future<Either<Failure, ResponseDataModel<void>>> resetPassword({
+    required ResetPasswordParams resetPasswordParams,
+  });
+  Future<Either<Failure, ResponseDataModel<void>>> getVerifyCode({
+    required GetVerifyCodeParams getVerifyCodeParams,
+  });
 }

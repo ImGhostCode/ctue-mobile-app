@@ -172,53 +172,65 @@ class _LoginPageState extends State<LoginPage> {
                   //     },
                   //   ),
                   // ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save(); // Save the form data
+                  onPressed: Provider.of<AuthProvider>(context, listen: true)
+                          .isLoading
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save(); // Save the form data
 
-                      // Call your authentication method
-                      await Provider.of<AuthProvider>(context, listen: false)
-                          .eitherFailureOrLogin(
-                              email: _email, password: _password);
+                            // Call your authentication method
+                            await Provider.of<AuthProvider>(context,
+                                    listen: false)
+                                .eitherFailureOrLogin(
+                                    email: _email, password: _password);
 
-                      // Get the updated values
-                      if (!context.mounted) return;
+                            // Get the updated values
+                            if (!context.mounted) return;
 
-                      Failure? updatedFailure =
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .failure;
-                      AccessTokenEntity? updatedAccessToken =
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .accessTokenEntity;
+                            Failure? updatedFailure = Provider.of<AuthProvider>(
+                                    context,
+                                    listen: false)
+                                .failure;
+                            AccessTokenEntity? updatedAccessToken =
+                                Provider.of<AuthProvider>(context,
+                                        listen: false)
+                                    .accessTokenEntity;
 
-                      if (updatedFailure != null) {
-                        // Show a SnackBar with the failure message
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: const Duration(seconds: 1),
-                            content: Text(
-                              updatedFailure.errorMessage,
-                              style: const TextStyle(color: Colors.white),
+                            if (updatedFailure != null) {
+                              // Show a SnackBar with the failure message
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: const Duration(seconds: 1),
+                                  content: Text(
+                                    updatedFailure.errorMessage,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor:
+                                      Colors.red, // You can customize the color
+                                ),
+                              );
+                            } else if (updatedAccessToken?.accessToken !=
+                                null) {
+                              // Navigate to the next screen
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/', (_) => false);
+                            }
+                          }
+                        },
+
+                  child:
+                      Provider.of<AuthProvider>(context, listen: true).isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text(
+                              'Đăng nhập',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(color: Colors.white),
                             ),
-                            backgroundColor:
-                                Colors.red, // You can customize the color
-                          ),
-                        );
-                      } else if (updatedAccessToken?.accessToken != null) {
-                        // Navigate to the next screen
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/', (_) => false);
-                      }
-                    }
-                  },
-
-                  child: Text(
-                    'Đăng nhập',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(color: Colors.white),
-                  ),
                 ),
               ),
               Row(

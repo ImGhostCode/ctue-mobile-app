@@ -214,54 +214,81 @@ class _SignUpPageState extends State<SignUpPage> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save(); // Save the form data
+                  onPressed: Provider.of<AuthProvider>(context, listen: true)
+                          .isLoading
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save(); // Save the form data
 
-                      // Call your authentication method
-                      await Provider.of<AuthProvider>(context, listen: false)
-                          .eitherFailureOrSignup(
-                              name: _name,
-                              email: _email,
-                              password: _passwordController.text);
+                            // Call your authentication method
+                            await Provider.of<AuthProvider>(context,
+                                    listen: false)
+                                .eitherFailureOrSignup(
+                                    name: _name,
+                                    email: _email,
+                                    password: _passwordController.text);
 
-                      // Get the updated values
-                      if (!context.mounted) return;
+                            // // Get the updated values
+                            // if (!context.mounted) return;
 
-                      Failure? updatedFailure =
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .failure;
-                      AccountEntity? updatedAccount =
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .accountEntity;
+                            // ignore: use_build_context_synchronously
+                            Failure? updatedFailure = Provider.of<AuthProvider>(
+                                    context,
+                                    listen: false)
+                                .failure;
+                            AccountEntity? updatedAccount =
+                                // ignore: use_build_context_synchronously
+                                Provider.of<AuthProvider>(context,
+                                        listen: false)
+                                    .accountEntity;
 
-                      if (updatedFailure != null) {
-                        // Show a SnackBar with the failure message
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: const Duration(seconds: 1),
-                            content: Text(
-                              updatedFailure.errorMessage,
-                              style: const TextStyle(color: Colors.white),
+                            if (updatedFailure != null) {
+                              // Show a SnackBar with the failure message
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: const Duration(seconds: 1),
+                                  content: Text(
+                                    updatedFailure.errorMessage,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor:
+                                      Colors.red, // You can customize the color
+                                ),
+                              );
+                            } else if (updatedAccount != null) {
+                              // Navigate to the next screen
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 1),
+                                  content: Text(
+                                    'Đăng ký tài khoản thành công',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  backgroundColor:
+                                      Colors.red, // You can customize the color
+                                ),
+                              );
+                              // ignore: use_build_context_synchronously
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/login', (_) => false);
+                            }
+                          }
+                        },
+                  child:
+                      Provider.of<AuthProvider>(context, listen: true).isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text(
+                              'Đăng ký',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(color: Colors.white),
                             ),
-                            backgroundColor:
-                                Colors.red, // You can customize the color
-                          ),
-                        );
-                      } else if (updatedAccount != null) {
-                        // Navigate to the next screen
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/login', (_) => false);
-                      }
-                    }
-                  },
-                  child: Text(
-                    'Đăng ký',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(color: Colors.white),
-                  ),
                 ),
               ),
               Row(

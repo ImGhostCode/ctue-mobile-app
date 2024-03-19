@@ -1,4 +1,5 @@
 import 'package:app_settings/app_settings.dart';
+import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/speech/presentation/pages/voice_setting_page.dart';
 import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
 import 'package:flutter/material.dart';
@@ -189,8 +190,8 @@ class _SettingPageState extends State<SettingPage> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12)))),
                         onPressed: () async {
-                          const storage = FlutterSecureStorage();
-                          await storage.delete(key: 'accessToken');
+                          await SecureStorageService.secureStorage
+                              .delete(key: 'accessToken');
                           // ignore: use_build_context_synchronously
                           Provider.of<SelectedPageProvider>(context,
                                   listen: false)
