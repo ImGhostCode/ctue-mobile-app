@@ -29,16 +29,17 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
           'Tạo bộ từ mới',
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        // backgroundColor: Colors.transparent,
-        backgroundColor: Colors.grey.shade50,
-        // title: Text(
-        //   args.titleAppBar,
-        //   style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-        // ),
-        // centerTitle: true,
-        elevation: 2,
-        shadowColor: Colors.grey.shade100,
-        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(
+            Icons.chevron_left_rounded,
+            size: 30,
+          ),
+        ),
         actions: [
           if (_titleController.text.isNotEmpty && selectedWords.isNotEmpty)
             TextButton(

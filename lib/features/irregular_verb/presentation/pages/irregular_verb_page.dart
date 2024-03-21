@@ -16,13 +16,22 @@ class IrregularVerbPage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(
-            'Động từ bất quy tắc',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-          ),
-          centerTitle: true,
-        ),
+            backgroundColor: Colors.white,
+            scrolledUnderElevation: 0,
+            title: Text(
+              'Động từ bất quy tắc',
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                size: 30,
+              ),
+            )),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -96,6 +105,8 @@ class IrregularVerbPage extends StatelessWidget {
                       4: FlexColumnWidth(),
                     },
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    border: TableBorder.all(color: Colors.grey.shade200),
+
                     children: <TableRow>[
                       TableRow(
                         decoration: const BoxDecoration(
@@ -111,9 +122,10 @@ class IrregularVerbPage extends StatelessWidget {
                                   height: 45,
                                   child: Text(
                                     'Nguyên mẫu',
+                                    textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodySmall!
+                                        .bodyMedium!
                                         .copyWith(
                                             color: Colors.green,
                                             fontWeight: FontWeight.w600),
@@ -124,24 +136,24 @@ class IrregularVerbPage extends StatelessWidget {
                                   height: 45,
                                   child: Text(
                                     'Quá khứ đơn',
+                                    textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodySmall!
+                                        .bodyMedium!
                                         .copyWith(
                                             color: Colors.green,
                                             fontWeight: FontWeight.w600),
                                   ))),
                           TableCell(
-                              verticalAlignment:
-                                  TableCellVerticalAlignment.middle,
                               child: Container(
                                   alignment: Alignment.center,
                                   height: 45,
                                   child: Text(
                                     'Quá khứ phân từ',
+                                    textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodySmall!
+                                        .bodyMedium!
                                         .copyWith(
                                             color: Colors.green,
                                             fontWeight: FontWeight.w600),
@@ -154,7 +166,7 @@ class IrregularVerbPage extends StatelessWidget {
                                     'Nghĩa',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodySmall!
+                                        .bodyMedium!
                                         .copyWith(
                                             color: Colors.green,
                                             fontWeight: FontWeight.w600),
@@ -173,7 +185,7 @@ class IrregularVerbPage extends StatelessWidget {
                             TableCell(
                                 child: Container(
                                     alignment: Alignment.center,
-                                    height: 32,
+                                    height: 40,
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -183,9 +195,10 @@ class IrregularVerbPage extends StatelessWidget {
                                         ),
                                         Text(
                                           verb.v1,
+                                          textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodySmall!
+                                              .bodyMedium!
                                               .copyWith(color: Colors.black),
                                         ),
                                       ],
@@ -193,9 +206,10 @@ class IrregularVerbPage extends StatelessWidget {
                             TableCell(
                                 child: Container(
                                     alignment: Alignment.center,
-                                    height: 32,
+                                    height: 40,
                                     child: Text(
                                       verb.v2,
+                                      textAlign: TextAlign.center,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall!
@@ -204,23 +218,25 @@ class IrregularVerbPage extends StatelessWidget {
                             TableCell(
                                 child: Container(
                                     alignment: Alignment.center,
-                                    height: 32,
+                                    height: 40,
                                     child: Text(
                                       verb.v3,
+                                      textAlign: TextAlign.center,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodySmall!
+                                          .bodyMedium!
                                           .copyWith(color: Colors.black),
                                     ))),
                             TableCell(
                                 child: Container(
                                     alignment: Alignment.center,
-                                    height: 32,
+                                    height: 40,
                                     child: Text(
                                       verb.meaning,
+                                      textAlign: TextAlign.center,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodySmall!
+                                          .bodyMedium!
                                           .copyWith(color: Colors.black),
                                     ))),
                           ],

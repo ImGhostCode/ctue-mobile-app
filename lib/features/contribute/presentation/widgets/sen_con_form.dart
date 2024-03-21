@@ -282,7 +282,7 @@ class _SenConFormState extends State<SenConForm> {
   Consumer<TypeProvider> _buildTypesOfSen() {
     return Consumer<TypeProvider>(builder: (context, provider, child) {
       return DropdownButtonFormField<int>(
-        alignment: Alignment.center,
+        alignment: Alignment.centerLeft,
         focusColor: Colors.white,
         style: Theme.of(context).textTheme.bodyMedium!,
         value: _selectedType =

@@ -32,14 +32,23 @@ class _WordDetailState extends State<WordDetail> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(
-            'Chi tiết từ',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-          ),
-          centerTitle: true,
-          surfaceTintColor: Colors.white,
-        ),
+            backgroundColor: Colors.white,
+            scrolledUnderElevation: 0,
+            title: Text(
+              'Chi tiết từ',
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+            ),
+            centerTitle: true,
+            surfaceTintColor: Colors.white,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                size: 30,
+              ),
+            )),
         body: Consumer<WordProvider>(
           builder: (context, wordProvider, child) {
             WordEntity? wordDetail = wordProvider.wordEntity;
@@ -178,7 +187,7 @@ class _WordDetailState extends State<WordDetail> {
                                                     child: Image.network(
                                                       wordDetail
                                                           .pictures[index],
-                                                      fit: BoxFit.cover,
+                                                      fit: BoxFit.contain,
                                                       width: double.infinity,
                                                       height: double.infinity,
                                                     ),

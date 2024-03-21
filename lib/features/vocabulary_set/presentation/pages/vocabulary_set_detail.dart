@@ -54,15 +54,8 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                 provider.vocaSetEntity!.title,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              backgroundColor: Colors.grey.shade50,
-              // title: Text(
-              //   args.titleAppBar,
-              //   style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-              // ),
-              // centerTitle: true,
-              elevation: 2,
-              shadowColor: Colors.grey.shade100,
-              surfaceTintColor: Colors.white,
+              backgroundColor: Colors.white,
+              scrolledUnderElevation: 0,
               leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();

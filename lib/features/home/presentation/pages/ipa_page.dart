@@ -9,13 +9,22 @@ class IPA extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'IPA',
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-        ),
-        centerTitle: true,
-      ),
+          backgroundColor: Colors.white,
+          scrolledUnderElevation: 0,
+          title: Text(
+            'IPA',
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.chevron_left_rounded,
+              size: 30,
+            ),
+          )),
       body: SingleChildScrollView(
         child: Container(
             padding: EdgeInsets.all(16),

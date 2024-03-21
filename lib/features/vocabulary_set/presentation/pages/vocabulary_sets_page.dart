@@ -40,14 +40,22 @@ class _VocabularySetsState extends State<VocabularySets> {
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Các bộ từ vựng',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.white,
-      ),
+          centerTitle: true,
+          title: Text(
+            'Các bộ từ vựng',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          backgroundColor: Colors.white,
+          scrolledUnderElevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.chevron_left_rounded,
+              size: 30,
+            ),
+          )),
       body: Consumer<VocaSetProvider>(builder: (context, provider, child) {
         _userVocaSetIds = provider.userVocaSets.map((e) => e.id).toList();
         _publicVocaSets = provider.publicVocaSets;

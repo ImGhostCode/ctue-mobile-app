@@ -13,9 +13,18 @@ class ContributePage extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.white,
-            toolbarHeight: 50,
-          ),
+              backgroundColor: Colors.white,
+              scrolledUnderElevation: 0,
+              toolbarHeight: 50,
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(
+                  Icons.chevron_left_rounded,
+                  size: 30,
+                ),
+              )),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             child: Column(

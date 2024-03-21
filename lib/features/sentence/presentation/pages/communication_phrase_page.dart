@@ -29,13 +29,22 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
         .eitherFailureOrSentences([], null, 1, 'asc');
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Mẫu câu giao tiếp',
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-        ),
-        centerTitle: true,
-      ),
+          backgroundColor: Colors.white,
+          scrolledUnderElevation: 0,
+          title: Text(
+            'Mẫu câu giao tiếp',
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.chevron_left_rounded,
+              size: 30,
+            ),
+          )),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
         child: Column(children: [
@@ -50,10 +59,10 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
 
               if (failure != null) {
                 return Text(failure.errorMessage);
-              } else if (topics.isEmpty) {
-                return const Center(child: Text('null'));
               } else if (isLoading) {
                 return const CircularProgressIndicator(); // or show an empty state message
+              } else if (topics.isEmpty) {
+                return const Center(child: Text('Chưa có dữ liệu'));
               } else {
                 return SizedBox(
                   height: 35,

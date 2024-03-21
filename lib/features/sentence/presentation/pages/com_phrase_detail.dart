@@ -18,13 +18,22 @@ class CommunicationPhraseDetail extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(
-            'Chi tiết câu',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-          ),
-          centerTitle: true,
-        ),
+            backgroundColor: Colors.white,
+            scrolledUnderElevation: 0,
+            title: Text(
+              'Chi tiết câu',
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                size: 30,
+              ),
+            )),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Consumer<SentenceProvider>(

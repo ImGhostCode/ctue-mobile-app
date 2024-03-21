@@ -9,10 +9,19 @@ class SpacedRepetitionDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        bottomOpacity: 0,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+          bottomOpacity: 0,
+          backgroundColor: Colors.white,
+          scrolledUnderElevation: 0,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.chevron_left_rounded,
+              size: 30,
+            ),
+          )),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(

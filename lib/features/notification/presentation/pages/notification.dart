@@ -7,15 +7,22 @@ class NotificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            'Thông báo',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shadowColor: Colors.black,
-        ),
+            centerTitle: true,
+            title: Text(
+              'Thông báo',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            backgroundColor: Colors.white,
+            scrolledUnderElevation: 0,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                size: 30,
+              ),
+            )),
         body: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             itemBuilder: (context, index) {

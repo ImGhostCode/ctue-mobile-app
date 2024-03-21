@@ -117,7 +117,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                               borderRadius: BorderRadius.circular(12),
                               child: Image.network(
                                 widget.wordEntity!.pictures[index],
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
                                 width: double.infinity,
                                 height: double.infinity,
                               ),

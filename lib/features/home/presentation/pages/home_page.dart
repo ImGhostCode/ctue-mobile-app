@@ -3,9 +3,13 @@ import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   // bool isDark = false;
+  final List<Recommend> _listRecommends = [
+    Recommend(path: '/contribution', title: 'Đóng góp từ vựng'),
+    Recommend(path: '/setting', title: 'Cài đặt giọng đọc'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +87,7 @@ class HomePage extends StatelessWidget {
                   height: 10,
                 ),
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(16),
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +104,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  height: 8,
+                  height: 10,
                 ),
 
                 // Text(
@@ -137,19 +141,20 @@ class HomePage extends StatelessWidget {
                 //   ),
                 // ),
 
-                const Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Container(
+                  decoration: const BoxDecoration(color: Colors.white),
+                  padding: const EdgeInsets.all(16.0),
                   child: ActionBox(),
                 ),
 
                 const SizedBox(
-                  height: 8,
+                  height: 10,
                 ),
 
                 Container(
                   height: 240,
                   width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(16),
                   decoration: const BoxDecoration(color: Colors.white),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,9 +216,61 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(color: Colors.white),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Đề xuất cho bạn',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                leading: Icon(
+                                  Icons.recommend,
+                                  size: 40,
+                                  color: Colors.yellow.shade700,
+                                ),
+                                title: Text(_listRecommends[index].title),
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, _listRecommends[index].path);
+                                },
+                                trailing: const Icon(
+                                  Icons.chevron_right_rounded,
+                                  size: 28,
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                height: 2,
+                              );
+                            },
+                            itemCount: _listRecommends.length)
+                      ]),
+                )
               ]),
         )));
   }
+}
+
+class Recommend {
+  final String title;
+  final String path;
+
+  Recommend({required this.path, required this.title});
 }
 
 class LearningSource {

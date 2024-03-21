@@ -85,13 +85,22 @@ class _DictionaryPageState extends State<DictionaryPage> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(
-            'Từ điển CTUE',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-          ),
-          centerTitle: true,
-        ),
+            backgroundColor: Colors.white,
+            scrolledUnderElevation: 0,
+            title: Text(
+              'Từ điển CTUE',
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                size: 30,
+              ),
+            )),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: Column(
