@@ -2,8 +2,10 @@ import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/user_params.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
+import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
 
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
+import 'package:ctue_app/features/user/business/usecases/get_all_user_usecase.dart';
 import 'package:ctue_app/features/user/business/usecases/get_user_usecase.dart';
 import 'package:ctue_app/features/user/business/usecases/get_verify_code_usecase.dart';
 import 'package:ctue_app/features/user/business/usecases/reset_pwd_usecase.dart';
@@ -26,6 +28,7 @@ import '../../data/repositories/user_repository_impl.dart';
 class UserProvider extends ChangeNotifier {
   final secureStorage = SecureStorageService.secureStorage;
   UserEntity? userEntity;
+  List<AccountEntity> accounts = [];
   Failure? failure;
   String? message;
   int? statusCode;
@@ -68,6 +71,42 @@ class UserProvider extends ChangeNotifier {
       (ResponseDataModel<UserEntity> newUser) {
         isLoading = false;
         userEntity = newUser.data;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrGetAllUser(int page) async {
+    _isLoading = true;
+    UserRepositoryImpl repository = UserRepositoryImpl(
+      remoteDataSource: UserRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: UserLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrGetAllUser =
+        await GetAllUserUsecase(userRepository: repository).call(
+      getAllUserParams: GetAllUserParams(
+          page: page,
+          accessToken: await secureStorage.read(key: 'accessToken') ?? ''),
+    );
+    failureOrGetAllUser.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        accounts = [];
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<List<AccountEntity>> newUsers) {
+        _isLoading = false;
+        accounts = newUsers.data;
         failure = null;
         notifyListeners();
       },

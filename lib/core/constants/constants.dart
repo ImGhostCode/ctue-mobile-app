@@ -118,3 +118,14 @@ String defaultLocale = 'en-US';
 String defaultGender = 'Female';
 String defaultShortName = 'en-US-AvaNeural';
 String defaultVoiceType = 'Neural';
+
+class ContributionType {
+  static const String word = 'word';
+  static const String sentence = 'sentence';
+}
+
+class ContributionStatus {
+  static const int refused = -1;
+  static const int pending = 0;
+  static const int approved = 1;
+}

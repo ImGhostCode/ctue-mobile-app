@@ -29,6 +29,13 @@ class ResetPasswordParams {
       required this.accessToken});
 }
 
+class GetAllUserParams {
+  final int page;
+  final String accessToken;
+
+  GetAllUserParams({required this.page, required this.accessToken});
+}
+
 class GetVerifyCodeParams {
   final String email;
 

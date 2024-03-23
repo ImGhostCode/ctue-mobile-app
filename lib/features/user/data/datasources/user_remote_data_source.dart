@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/user_params.dart';
+import 'package:ctue_app/features/auth/data/models/account_model.dart';
 import 'package:ctue_app/features/user/data/models/user_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
@@ -8,6 +9,8 @@ import '../../../../../core/errors/exceptions.dart';
 abstract class UserRemoteDataSource {
   Future<ResponseDataModel<UserModel>> getUser(
       {required GetUserParams getUserParams});
+  Future<ResponseDataModel<List<AccountModel>>> getAllUser(
+      {required GetAllUserParams getAllUserParams});
 
   Future<ResponseDataModel<UserModel>> updateUser(
       {required UpdateUserParams updateUserParams});
@@ -147,6 +150,40 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
             statusCode: e.response!.statusCode!,
             errorMessage:
                 e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<List<AccountModel>>> getAllUser(
+      {required GetAllUserParams getAllUserParams}) async {
+    try {
+      final response = await dio.get('/users',
+          queryParameters: {
+            'page': getAllUserParams.page,
+          },
+          options: Options(headers: {
+            "authorization": "Bearer ${getAllUserParams.accessToken}"
+          }));
+      return ResponseDataModel<List<AccountModel>>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => json['accounts']
+              .map<AccountModel>(
+                  (account) => AccountModel.fromJson(json: account))
+              .toList());
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw ServerException(
+            statusCode: 500, errorMessage: 'Can\'t connect server');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response?.data['message'] ?? 'Unknown server error');
       }
     }
   }

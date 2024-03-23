@@ -38,6 +38,11 @@ class CustomBottomBarWidget extends StatelessWidget {
             icon: Icon(Icons.person_outline),
             label: 'Tài khoản',
           ),
+          BottomNavigationBarItem(
+            activeIcon: Icon(Icons.admin_panel_settings),
+            icon: Icon(Icons.admin_panel_settings_outlined),
+            label: 'Admin',
+          ),
         ],
         currentIndex: selectedPage,
         selectedItemColor: Theme.of(context).primaryColor,

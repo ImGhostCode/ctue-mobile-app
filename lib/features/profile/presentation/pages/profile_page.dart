@@ -39,7 +39,8 @@ class ProfilePage extends StatelessWidget {
               slivers: [
                 SliverAppBar(
                   // expandedHeight: 200,
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: Colors.white,
+                  scrolledUnderElevation: 0,
                   floating: false,
                   pinned: false,
                   leading: CircleAvatar(

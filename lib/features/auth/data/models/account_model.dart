@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
+import 'package:ctue_app/features/user/data/models/user_model.dart';
 
 class AccountModel extends AccountEntity {
   AccountModel(
@@ -9,7 +10,8 @@ class AccountModel extends AccountEntity {
       required super.accountType,
       required super.isBan,
       required super.feedback,
-      required super.isDeleted});
+      required super.isDeleted,
+      super.user});
 
   factory AccountModel.fromJson({required Map<String, dynamic> json}) {
     return AccountModel(
@@ -19,7 +21,8 @@ class AccountModel extends AccountEntity {
       accountType: json['accountType'],
       isBan: json['isBan'],
       feedback: json['feedback'],
-      isDeleted: json['isDeleted'],
+      isDeleted: json['isDeleted'] ?? false,
+      user: UserModel.fromJson(json: json[kUser]),
     );
   }
 
@@ -31,7 +34,8 @@ class AccountModel extends AccountEntity {
       kAccountType: accountType,
       kIsBan: isBan,
       kFeedback: feedback,
-      kIsDeleted: isDeleted
+      kIsDeleted: isDeleted,
+      kUser: user
     };
   }
 }

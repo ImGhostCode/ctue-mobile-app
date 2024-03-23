@@ -4,6 +4,11 @@ import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
+import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
+import 'package:ctue_app/features/manage/presentation/pages/contri_management_page.dart';
+import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
+import 'package:ctue_app/features/manage/presentation/pages/irre_verb_management_page.dart';
+import 'package:ctue_app/features/manage/presentation/pages/sen_management_page.dart';
 import 'package:ctue_app/features/user/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 // import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
@@ -235,6 +240,11 @@ class MyApp extends StatelessWidget {
           '/statistic-learned-words': (context) =>
               const StatisticLearnedWordPage(),
           '/pro-statistics-detail': (context) => const ProStatisticDetailPage(),
+          '/acc-management': (context) => const AccountManagementPage(),
+          '/contri-management': (context) => ContributionManagementPage(),
+          '/dict-management': (context) => const DictionaryManagementPage(),
+          '/sen-management': (context) => const SentenceManagementPage(),
+          '/irr-verb-management': (context) => const IrreVerbManagementPage(),
         },
       ),
     );

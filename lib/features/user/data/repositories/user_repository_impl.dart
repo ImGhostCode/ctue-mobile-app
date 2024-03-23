@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/user_params.dart';
+import 'package:ctue_app/features/auth/data/models/account_model.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/data/models/user_model.dart';
 import 'package:dartz/dartz.dart';
@@ -115,6 +116,32 @@ class UserRepositoryImpl implements UserRepository {
       }
     } else {
       return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<List<AccountModel>>>> getAllUser(
+      {required GetAllUserParams getAllUserParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<List<AccountModel>> remoteUser =
+            await remoteDataSource.getAllUser(
+                getAllUserParams: getAllUserParams);
+
+        // localDataSource.cacheUser(UserToCache: remoteUser);
+
+        return Right(remoteUser);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      // try {
+      // AccessTokenModel localUser = await localDataSource.getLastUser();
+      //   return Right(localUser);
+      // } on CacheException {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      // }
     }
   }
 }

@@ -9,6 +9,8 @@ abstract class ContributionRemoteDataSource {
       {required CreateWordConParams createWordConParams});
   Future<ResponseDataModel<ContributionModel>> createSenContribution(
       {required CreateSenConParams createSenConParams});
+  Future<ResponseDataModel<List<ContributionModel>>> getAllCon(
+      {required GetAllConParams getAllConParams});
 }
 
 class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
@@ -87,6 +89,38 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
       return ResponseDataModel<ContributionModel>.fromJson(
           json: response.data,
           fromJsonD: (json) => ContributionModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<List<ContributionModel>>> getAllCon(
+      {required GetAllConParams getAllConParams}) async {
+    try {
+      final response = await dio.get('/contribution/',
+          queryParameters: {
+            'type': getAllConParams.type,
+            'status': getAllConParams.status,
+          },
+          options: Options(headers: {
+            "authorization": "Bearer ${getAllConParams.accessToken}"
+          }));
+      return ResponseDataModel<List<ContributionModel>>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => json['results']
+              .map<ContributionModel>(
+                  (con) => ContributionModel.fromJson(json: con))
+              .toList());
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

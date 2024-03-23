@@ -46,14 +46,14 @@ class HomePage extends StatelessWidget {
           Navigator.pushNamed(context, '/irregular-verb');
         },
       ),
-      LearningSource(
-        icon: Icons.sports_esports,
-        title: 'Game',
-        bgColor: Colors.teal.shade400,
-        onTap: () {
-          Navigator.pushNamed(context, '/games');
-        },
-      ),
+      // LearningSource(
+      //   icon: Icons.sports_esports,
+      //   title: 'Game',
+      //   bgColor: Colors.teal.shade400,
+      //   onTap: () {
+      //     Navigator.pushNamed(context, '/games');
+      //   },
+      // ),
     ];
 
     return Scaffold(

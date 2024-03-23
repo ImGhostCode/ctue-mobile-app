@@ -13,4 +13,8 @@ abstract class ContributionRepository {
       createSenContribution({
     required CreateSenConParams createSenConParams,
   });
+  Future<Either<Failure, ResponseDataModel<List<ContributionEntity>>>>
+      getAllContributions({
+    required GetAllConParams getAllConParams,
+  });
 }
