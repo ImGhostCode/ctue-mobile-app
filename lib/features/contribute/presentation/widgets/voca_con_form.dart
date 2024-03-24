@@ -474,7 +474,9 @@ class _VocaConFormState extends State<VocaConForm> {
                                     synonyms: _synonymController.text.isNotEmpty
                                         ? _synonymController.text.split(',')
                                         : [],
-                                    note: _noteController.text,
+                                    note: _noteController.text.isNotEmpty
+                                        ? _noteController.text
+                                        : null,
                                     pictures: _selectedImages);
 
                                 if (_formKey.currentState!.validate() &&
@@ -525,8 +527,8 @@ class _VocaConFormState extends State<VocaConForm> {
                                       ),
                                     );
                                   }
+                                  Navigator.of(context).pop();
                                 }
-                                Navigator.of(context).pop();
                               },
                         child: Provider.of<ContributionProvider>(context,
                                     listen: true)

@@ -194,7 +194,9 @@ class _SenConFormState extends State<SenConForm> {
                                           typeId: _selectedType,
                                           content: _contentController.text,
                                           meaning: _meaningController.text,
-                                          note: _noteController.text,
+                                          note: _noteController.text.isNotEmpty
+                                              ? _noteController.text
+                                              : null,
                                         );
 
                                         if (_formKey.currentState!.validate() &&
@@ -252,8 +254,8 @@ class _SenConFormState extends State<SenConForm> {
                                               ),
                                             );
                                           }
+                                          Navigator.of(context).pop();
                                         }
-                                        Navigator.of(context).pop();
                                       },
                                 child: Provider.of<ContributionProvider>(
                                             context,
