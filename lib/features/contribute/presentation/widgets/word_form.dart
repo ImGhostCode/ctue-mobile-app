@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/core/params/contribution_params.dart';
-import 'package:ctue_app/features/contribute/presentation/providers/contribution_provider.dart';
 import 'package:ctue_app/features/contribute/presentation/widgets/ipa_keyboard.dart';
 import 'package:ctue_app/features/level/business/entities/level_entity.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
@@ -24,14 +23,22 @@ class WordDefinition {
   WordDefinition({this.wordTypeId, this.meaning});
 }
 
-class VocaConForm extends StatefulWidget {
-  const VocaConForm({Key? key}) : super(key: key);
+class WordForm extends StatefulWidget {
+  final String titleBtnSubmit;
+  final bool isLoading;
+  final void Function(dynamic) callback;
+  const WordForm(
+      {Key? key,
+      required this.titleBtnSubmit,
+      required this.callback,
+      required this.isLoading})
+      : super(key: key);
 
   @override
-  _VocaConFormState createState() => _VocaConFormState();
+  _WordFormState createState() => _WordFormState();
 }
 
-class _VocaConFormState extends State<VocaConForm> {
+class _WordFormState extends State<WordForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _pronunciationController =
       TextEditingController();
@@ -340,8 +347,7 @@ class _VocaConFormState extends State<VocaConForm> {
                 height: 5,
               ),
               SizedBox(
-                height: 40,
-                width: 125,
+                width: 150,
                 child: ElevatedButton(
                   onPressed: _pickImage,
                   child: const Row(
@@ -356,7 +362,7 @@ class _VocaConFormState extends State<VocaConForm> {
                 ),
               ),
               const SizedBox(
-                height: 5,
+                height: 10,
               ),
               if (_selectedImages.isNotEmpty)
                 SizedBox(
@@ -421,133 +427,65 @@ class _VocaConFormState extends State<VocaConForm> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SizedBox(
-                    height: 45,
-                    width: 150,
-                    child: ElevatedButton(
-                        onPressed: Provider.of<ContributionProvider>(context,
-                                    listen: true)
-                                .isLoading
-                            ? null
-                            : () async {
-                                setState(() {
-                                  _wordDefinitionError = null;
-                                  _levelError = null;
-                                  _specError = null;
-                                  _topicError = null;
-                                });
+                  ElevatedButton(
+                      onPressed: widget.isLoading
+                          ? null
+                          : () async {
+                              setState(() {
+                                _wordDefinitionError = null;
+                                _levelError = null;
+                                _specError = null;
+                                _topicError = null;
+                              });
 
-                                // print(_contentController.text);
-                                // print(_pronunciationController.text);
-                                // print(_wordDefinitions);
-                                // print(_selectedLevel);
-                                // print(_selectedSpecializaiton);
-                                // print(_examples);
-                                // print(_synonymController.text);
-                                // print(_antonymController.text);
-                                // print(_noteController.text);
-                                // print(_selectedImages);
-                                // print(
-                                //     Provider.of<TopicProvider>(context, listen: false)
-                                //         .getSelectedTopics());
-
-                                List<dynamic> selectedTopics =
-                                    Provider.of<TopicProvider>(context,
-                                            listen: false)
-                                        .getSelectedTopics();
-
-                                Content content = Content(
-                                    topicId: selectedTopics,
-                                    levelId: _selectedLevel!,
-                                    specializationId: _selectedSpecializaiton!,
-                                    content: _contentController.text,
-                                    meanings: _wordDefinitions
-                                        .map((item) => WordMeaning(
-                                            typeId: item.wordTypeId!,
-                                            meaning: item.meaning!))
-                                        .toList(),
-                                    phonetic: _pronunciationController.text,
-                                    examples: _examples,
-                                    antonyms: _antonymController.text.isNotEmpty
-                                        ? _antonymController.text.split(',')
-                                        : [],
-                                    synonyms: _synonymController.text.isNotEmpty
-                                        ? _synonymController.text.split(',')
-                                        : [],
-                                    note: _noteController.text.isNotEmpty
-                                        ? _noteController.text
-                                        : null,
-                                    pictures: _selectedImages);
-
-                                if (_formKey.currentState!.validate() &&
-                                    _validateForm()) {
-                                  await Provider.of<ContributionProvider>(
-                                          context,
+                              List<dynamic> selectedTopics =
+                                  Provider.of<TopicProvider>(context,
                                           listen: false)
-                                      .eitherFailureOrCreWordCon(
-                                          typeConWord, content);
+                                      .getSelectedTopics();
 
-                                  if (Provider.of<ContributionProvider>(context,
-                                              listen: false)
-                                          .contributionEntity !=
-                                      null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        duration: const Duration(seconds: 1),
-                                        content: Text(
-                                          Provider.of<ContributionProvider>(
-                                                  context,
-                                                  listen: false)
-                                              .message!,
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                        backgroundColor: Colors
-                                            .green, // You can customize the color
-                                      ),
-                                    );
-                                  } else if (Provider.of<ContributionProvider>(
-                                              context,
-                                              listen: false)
-                                          .failure !=
-                                      null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        duration: const Duration(seconds: 1),
-                                        content: Text(
-                                          Provider.of<ContributionProvider>(
-                                                  context,
-                                                  listen: false)
-                                              .message!,
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                        backgroundColor: Colors
-                                            .red, // You can customize the color
-                                      ),
-                                    );
-                                  }
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                        child: Provider.of<ContributionProvider>(context,
-                                    listen: true)
-                                .isLoading
-                            ? const SizedBox(
-                                height: 30,
-                                width: 30,
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                'Gửi đóng góp',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )),
-                  ),
+                              Content content = Content(
+                                  topicId: selectedTopics,
+                                  levelId: _selectedLevel!,
+                                  specializationId: _selectedSpecializaiton!,
+                                  content: _contentController.text,
+                                  meanings: _wordDefinitions
+                                      .map((item) => WordMeaning(
+                                          typeId: item.wordTypeId!,
+                                          meaning: item.meaning!))
+                                      .toList(),
+                                  phonetic: _pronunciationController.text,
+                                  examples: _examples,
+                                  antonyms: _antonymController.text.isNotEmpty
+                                      ? _antonymController.text.split(',')
+                                      : [],
+                                  synonyms: _synonymController.text.isNotEmpty
+                                      ? _synonymController.text.split(',')
+                                      : [],
+                                  note: _noteController.text.isNotEmpty
+                                      ? _noteController.text
+                                      : null,
+                                  pictures: _selectedImages);
+
+                              if (_formKey.currentState!.validate() &&
+                                  _validateForm()) {
+                                widget.callback({typeConWord, content});
+                              }
+                            },
+                      child: widget.isLoading
+                          ? const SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              widget.titleBtnSubmit,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: Colors.white),
+                            )),
                 ],
               ),
             ],

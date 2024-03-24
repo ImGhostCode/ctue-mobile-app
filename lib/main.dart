@@ -29,6 +29,8 @@ import 'package:ctue_app/features/sentence/presentation/pages/communication_phra
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/presentation/pages/verify_code_page.dart';
+import 'package:ctue_app/features/word/presentation/pages/add_word_page.dart';
+import 'package:ctue_app/features/word/presentation/pages/edit_word_page%20copy.dart';
 import 'package:ctue_app/features/word/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
@@ -199,6 +201,8 @@ class MyApp extends StatelessWidget {
                     .copyWith(fontWeight: FontWeight.normal)),
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ButtonStyle(
+                    padding: const MaterialStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 32, vertical: 16)),
                     shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15))),
                     backgroundColor:
@@ -245,6 +249,8 @@ class MyApp extends StatelessWidget {
           '/dict-management': (context) => const DictionaryManagementPage(),
           '/sen-management': (context) => const SentenceManagementPage(),
           '/irr-verb-management': (context) => const IrreVerbManagementPage(),
+          '/add-word': (context) => const AddWordPage(),
+          '/edit-word': (context) => const EditWordPage(),
         },
       ),
     );
