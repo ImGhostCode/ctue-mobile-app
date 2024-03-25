@@ -4,6 +4,8 @@ import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
+import 'package:ctue_app/features/irregular_verb/presentation/pages/add_irr_verb_page.dart';
+import 'package:ctue_app/features/irregular_verb/presentation/pages/edit_irr_verb_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/contri_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
@@ -250,11 +252,13 @@ class MyApp extends StatelessWidget {
           '/contri-management': (context) => ContributionManagementPage(),
           '/dict-management': (context) => const DictionaryManagementPage(),
           '/sen-management': (context) => const SentenceManagementPage(),
-          '/irr-verb-management': (context) => const IrreVerbManagementPage(),
+          '/irr-verb-management': (context) => IrreVerbManagementPage(),
           '/add-word': (context) => const AddWordPage(),
           '/edit-word': (context) => const EditWordPage(),
           '/add-sentence': (context) => const AddSentencePage(),
           '/edit-sentence': (context) => const EditSentencePage(),
+          '/add-irregular-verb': (context) => AddIrregularVerbPage(),
+          '/edit-irregular-verb': (context) => EditIrregularVerbPage(),
         },
       ),
     );

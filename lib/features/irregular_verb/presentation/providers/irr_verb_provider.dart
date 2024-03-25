@@ -17,7 +17,13 @@ import '../../data/repositories/irr_verb_repository_impl.dart';
 class IrrVerbProvider extends ChangeNotifier {
   List<IrrVerbEntity>? listIrrVerbs = [];
   Failure? failure;
-  bool isLoading = false;
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
   IrrVerbProvider({
     this.listIrrVerbs,
@@ -25,7 +31,7 @@ class IrrVerbProvider extends ChangeNotifier {
   });
 
   void eitherFailureOrIrrVerbs(int? page, String? sort, String? key) async {
-    isLoading = true;
+    _isLoading = true;
     IrrVerbRepositoryImpl repository = IrrVerbRepositoryImpl(
       remoteDataSource: IrrVerbRemoteDataSourceImpl(
         dio: ApiService.dio,
@@ -45,13 +51,13 @@ class IrrVerbProvider extends ChangeNotifier {
 
     failureOrIrrVerb.fold(
       (Failure newFailure) {
-        isLoading = false;
+        _isLoading = false;
         listIrrVerbs = null;
         failure = newFailure;
         notifyListeners();
       },
       (ResponseDataModel<List<IrrVerbEntity>> newIrrVerbs) {
-        isLoading = false;
+        _isLoading = false;
         listIrrVerbs = newIrrVerbs.data;
         failure = null;
         notifyListeners();
