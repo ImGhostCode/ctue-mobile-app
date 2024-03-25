@@ -314,7 +314,7 @@ class _WordStorePageState extends State<WordStorePage> {
                                             MaterialStatePropertyAll(
                                                 Colors.white)),
                                     onPressed: () async {
-                                      _showDialogInput(context, 'Đổi tên',
+                                      showDialogInput(context, 'Đổi tên',
                                           provider.userVocaSets[index]);
 
                                       // await provider.eitherFailureOrUpdateVocaSet(provider.userVocaSets[index].id, _ti, topicId, specId, oldPicture, picture, isPublic, words)
@@ -400,23 +400,23 @@ class _WordStorePageState extends State<WordStorePage> {
       );
     });
   }
+}
 
-  Future<String?> _showDialogInput(
-      BuildContext context, String title, dynamic data) {
-    return showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => DialogTextInput(
-            initialValue: data.title,
-            title: title,
-            callback: (title) async {
-              await Provider.of<VocaSetProvider>(context, listen: false)
-                  .eitherFailureOrUpdateVocaSet(
-                      data.id, title, null, null, null, null, null, null);
+Future<String?> showDialogInput(
+    BuildContext context, String title, dynamic data) {
+  return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => DialogTextInput(
+          initialValue: data.title,
+          title: title,
+          callback: (title) async {
+            await Provider.of<VocaSetProvider>(context, listen: false)
+                .eitherFailureOrUpdateVocaSet(
+                    data.id, title, null, null, null, null, null, null);
 
-              Navigator.pop(context);
-              Navigator.pop(context);
-            }));
-  }
+            Navigator.pop(context);
+            Navigator.pop(context);
+          }));
 }
 
 class VocabularySet {

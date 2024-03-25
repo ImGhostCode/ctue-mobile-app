@@ -16,6 +16,10 @@ abstract class VocaSetRepository {
   Future<Either<Failure, ResponseDataModel<List<VocaSetEntity>>>> getVocaSets({
     required GetVocaSetParams getVocaSetParams,
   });
+  Future<Either<Failure, ResponseDataModel<List<VocaSetEntity>>>>
+      getVocaSetsByAdmin({
+    required GetVocaSetParams getVocaSetParams,
+  });
   Future<Either<Failure, ResponseDataModel<VocaSetEntity>>> getVocaSetDetail({
     required GetVocaSetParams getVocaSetParams,
   });

@@ -186,4 +186,25 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
       return Left(CacheFailure(errorMessage: 'This is a network exception'));
     }
   }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<List<VocaSetEntity>>>>
+      getVocaSetsByAdmin({required GetVocaSetParams getVocaSetParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<List<VocaSetModel>> remoteVocaSet =
+            await remoteDataSource.getVocaSetsByAdmin(
+                getVocaSetParams: getVocaSetParams);
+
+        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+
+        return Right(remoteVocaSet);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
 }

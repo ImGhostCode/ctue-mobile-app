@@ -89,7 +89,7 @@ class ManagementPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.import_contacts,
+                    Icons.menu_book,
                     size: 70,
                   ),
                   SizedBox(
@@ -112,7 +112,7 @@ class ManagementPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.summarize,
+                    Icons.record_voice_over_outlined,
                     size: 70,
                   ),
                   SizedBox(
@@ -136,7 +136,7 @@ class ManagementPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.table_rows,
+                    Icons.article,
                     size: 70,
                   ),
                   SizedBox(
@@ -144,6 +144,30 @@ class ManagementPage extends StatelessWidget {
                   ),
                   Text(
                     'Quản lý động từ bất quy tắt',
+                    textAlign: TextAlign.center,
+                  )
+                ]),
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStatePropertyAll(Colors.teal.shade400)),
+            onPressed: () {
+              Navigator.pushNamed(context, '/voca-set-management');
+            },
+            child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.book,
+                    size: 70,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'Quản lý bộ từ vựng',
                     textAlign: TextAlign.center,
                   )
                 ]),

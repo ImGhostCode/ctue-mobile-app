@@ -11,6 +11,7 @@ import 'package:ctue_app/features/manage/presentation/pages/contri_management_pa
 import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/irre_verb_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/sen_management_page.dart';
+import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/add_sentence_page.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/edit_sentence_page%20copy.dart';
 import 'package:ctue_app/features/user/presentation/pages/reset_password_page.dart';
@@ -33,6 +34,7 @@ import 'package:ctue_app/features/sentence/presentation/pages/communication_phra
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/presentation/pages/verify_code_page.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/edit_voca_set_page.dart';
 import 'package:ctue_app/features/word/presentation/pages/add_word_page.dart';
 import 'package:ctue_app/features/word/presentation/pages/edit_word_page%20copy.dart';
 import 'package:ctue_app/features/word/presentation/pages/word_detail.dart';
@@ -249,16 +251,18 @@ class MyApp extends StatelessWidget {
               const StatisticLearnedWordPage(),
           '/pro-statistics-detail': (context) => const ProStatisticDetailPage(),
           '/acc-management': (context) => const AccountManagementPage(),
-          '/contri-management': (context) => ContributionManagementPage(),
+          '/contri-management': (context) => const ContributionManagementPage(),
           '/dict-management': (context) => const DictionaryManagementPage(),
           '/sen-management': (context) => const SentenceManagementPage(),
-          '/irr-verb-management': (context) => IrreVerbManagementPage(),
+          '/irr-verb-management': (context) => const IrreVerbManagementPage(),
           '/add-word': (context) => const AddWordPage(),
           '/edit-word': (context) => const EditWordPage(),
           '/add-sentence': (context) => const AddSentencePage(),
           '/edit-sentence': (context) => const EditSentencePage(),
           '/add-irregular-verb': (context) => AddIrregularVerbPage(),
-          '/edit-irregular-verb': (context) => EditIrregularVerbPage(),
+          '/edit-irregular-verb': (context) => const EditIrregularVerbPage(),
+          '/voca-set-management': (context) => const VocaSetManagementPage(),
+          '/edit-voca-set': (context) => const EditVocabularySet(),
         },
       ),
     );

@@ -13,14 +13,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multiple_search_selection/multiple_search_selection.dart';
 import 'package:provider/provider.dart';
 
-class CreateVocabularySet extends StatefulWidget {
-  const CreateVocabularySet({super.key});
+class EditVocabularySet extends StatefulWidget {
+  const EditVocabularySet({super.key});
 
   @override
-  State<CreateVocabularySet> createState() => _CreateVocabularySetState();
+  State<EditVocabularySet> createState() => _EditVocabularySetState();
 }
 
-class _CreateVocabularySetState extends State<CreateVocabularySet> {
+class _EditVocabularySetState extends State<EditVocabularySet> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -67,7 +67,7 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Tạo bộ từ mới',
+          'Chỉnh sửa bộ từ',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         backgroundColor: Colors.white,
