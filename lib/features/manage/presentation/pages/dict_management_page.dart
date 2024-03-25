@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
+import 'package:ctue_app/features/manage/presentation/widgets/action_dialog.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
@@ -187,7 +188,8 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
                         // trailing: IconButton(
                         //     icon: const Icon(Icons.more_vert),
                         //     onPressed: () => showActionDialog(context)),
-                        onLongPress: () => showActionDialog(context),
+                        onLongPress: () =>
+                            showActionDialog(context, true, () {}),
                         onTap: () {
                           Navigator.pushNamed(context, '/word-detail',
                               arguments:
@@ -206,125 +208,6 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
           ],
         ),
       )),
-    );
-  }
-
-  Future<String?> showActionDialog(BuildContext context) {
-    return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        // title: Text(
-        //   'AlertDialog Title $index',
-        // ),
-        buttonPadding: EdgeInsets.zero,
-        contentPadding: EdgeInsets.zero,
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-        content: SizedBox(
-            // height: 65,
-            width: MediaQuery.of(context).size.width - 100,
-            child: ListView(shrinkWrap: true, children: [
-              // provider.userVocaSets[index].userId ==
-              //         Provider.of<UserProvider>(context,
-              //                 listen: false)
-              //             .userEntity!
-              //             .id
-              //     ?
-              TextButton(
-                  style: const ButtonStyle(
-                      padding: MaterialStatePropertyAll(
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 18)),
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero)),
-                      backgroundColor: MaterialStatePropertyAll(Colors.white)),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/edit-word');
-                  },
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.edit),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(textAlign: TextAlign.left, 'Chỉnh sửa'),
-                    ],
-                  ))
-              // : const SizedBox.shrink()
-              ,
-              TextButton(
-                  style: const ButtonStyle(
-                      padding: MaterialStatePropertyAll(
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 18)),
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero)),
-                      backgroundColor: MaterialStatePropertyAll(Colors.white)),
-                  onPressed: () => showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                            backgroundColor: Colors.white,
-                            title: const Text(
-                              'Cảnh báo',
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            content: const Text(
-                                'Bạn có chắc chắn muốn xóa từ này không?'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'Xóa'),
-                                child: const Text('Trở lại'),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  // await provider
-                                  //     .eitherFailureOrRmVocaSet(
-                                  //         provider
-                                  //             .userVocaSets[index]
-                                  //             .id,
-                                  //         provider
-                                  //                 .userVocaSets[
-                                  //                     index]
-                                  //                 .userId !=
-                                  //             Provider.of<UserProvider>(
-                                  //                     context,
-                                  //                     listen: false)
-                                  //                 .userEntity!
-                                  //                 .id);
-                                  // if (provider.statusCode == 200) {
-                                  //   provider.userVocaSets
-                                  //       .removeAt(index);
-                                  // }
-                                  // Navigator.pop(context, 'OK');
-                                  // Navigator.pop(
-                                  //   context,
-                                  // );
-                                },
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          )),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        textAlign: TextAlign.right,
-                        'Xóa',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ],
-                  ))
-            ])),
-      ),
     );
   }
 }

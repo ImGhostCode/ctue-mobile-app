@@ -1,6 +1,6 @@
 import 'package:ctue_app/features/contribute/presentation/providers/contribution_provider.dart';
-import 'package:ctue_app/features/contribute/presentation/widgets/sen_con_form.dart';
-import 'package:ctue_app/features/contribute/presentation/widgets/word_form.dart';
+import 'package:ctue_app/features/sentence/presentation/widgets/sentence_form.dart';
+import 'package:ctue_app/features/word/presentation/widgets/word_form.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -121,7 +121,55 @@ class ContributePage extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                       ),
-                      SenConForm(),
+                      SentenceForm(
+                        titleBtnSubmit: 'Gửi đóng góp',
+                        isLoading: Provider.of<ContributionProvider>(context,
+                                listen: true)
+                            .isLoading,
+                        callback: (data) async {
+                          await Provider.of<ContributionProvider>(context,
+                                  listen: false)
+                              .eitherFailureOrCreSenCon(
+                                  data.elementAt(0), data.elementAt(1));
+
+                          if (Provider.of<ContributionProvider>(context,
+                                      listen: false)
+                                  .contributionEntity !=
+                              null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 1),
+                                content: Text(
+                                  Provider.of<ContributionProvider>(context,
+                                          listen: false)
+                                      .message!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor:
+                                    Colors.green, // You can customize the color
+                              ),
+                            );
+                          } else if (Provider.of<ContributionProvider>(context,
+                                      listen: false)
+                                  .failure !=
+                              null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 1),
+                                content: Text(
+                                  Provider.of<ContributionProvider>(context,
+                                          listen: false)
+                                      .message!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor:
+                                    Colors.red, // You can customize the color
+                              ),
+                            );
+                          }
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ],
                   ),
                 ),

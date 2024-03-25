@@ -1,7 +1,6 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/core/params/contribution_params.dart';
-import 'package:ctue_app/features/contribute/presentation/providers/contribution_provider.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/type/business/entities/type_entity.dart';
@@ -9,14 +8,21 @@ import 'package:ctue_app/features/type/presentation/providers/type_provider.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SenConForm extends StatefulWidget {
-  const SenConForm({super.key});
+class SentenceForm extends StatefulWidget {
+  final String titleBtnSubmit;
+  final bool isLoading;
+  final void Function(dynamic) callback;
+  const SentenceForm(
+      {super.key,
+      required this.titleBtnSubmit,
+      required this.isLoading,
+      required this.callback});
 
   @override
-  State<SenConForm> createState() => _SenConFormState();
+  State<SentenceForm> createState() => _SentenceFormState();
 }
 
-class _SenConFormState extends State<SenConForm> {
+class _SentenceFormState extends State<SentenceForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int? _selectedType;
   bool _isExpanded = false;
@@ -156,126 +162,63 @@ class _SenConFormState extends State<SenConForm> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          SizedBox(
-                            height: 45,
-                            width: 150,
-                            child: ElevatedButton(
-                                onPressed: Provider.of<ContributionProvider>(
-                                            context,
-                                            listen: true)
-                                        .isLoading
-                                    ? null
-                                    : () async {
-                                        setState(() {
-                                          _topicError = null;
-                                        });
+                          ElevatedButton(
+                              onPressed: widget.isLoading
+                                  ? null
+                                  : () async {
+                                      setState(() {
+                                        _topicError = null;
+                                      });
 
-                                        // print(_contentController.text);
-                                        // print(_pronunciationController.text);
-                                        // print(_wordDefinitions);
-                                        // print(_selectedLevel);
-                                        // print(_selectedSpecializaiton);
-                                        // print(_examples);
-                                        // print(_synonymController.text);
-                                        // print(_antonymController.text);
-                                        // print(_noteController.text);
-                                        // print(_selectedImages);
-                                        // print(
-                                        //     Provider.of<TopicProvider>(context, listen: false)
-                                        //         .getSelectedTopics());
+                                      // print(_contentController.text);
+                                      // print(_pronunciationController.text);
+                                      // print(_wordDefinitions);
+                                      // print(_selectedLevel);
+                                      // print(_selectedSpecializaiton);
+                                      // print(_examples);
+                                      // print(_synonymController.text);
+                                      // print(_antonymController.text);
+                                      // print(_noteController.text);
+                                      // print(_selectedImages);
+                                      // print(
+                                      //     Provider.of<TopicProvider>(context, listen: false)
+                                      //         .getSelectedTopics());
 
-                                        List<dynamic> selectedTopics =
-                                            Provider.of<TopicProvider>(context,
-                                                    listen: false)
-                                                .getSelectedTopics();
-
-                                        Content content = Content(
-                                          topicId: selectedTopics,
-                                          typeId: _selectedType,
-                                          content: _contentController.text,
-                                          meaning: _meaningController.text,
-                                          note: _noteController.text.isNotEmpty
-                                              ? _noteController.text
-                                              : null,
-                                        );
-
-                                        if (_formKey.currentState!.validate() &&
-                                            _validateForm()) {
-                                          await Provider.of<
-                                                      ContributionProvider>(
-                                                  context,
+                                      List<dynamic> selectedTopics =
+                                          Provider.of<TopicProvider>(context,
                                                   listen: false)
-                                              .eitherFailureOrCreSenCon(
-                                                  typeConSen, content);
+                                              .getSelectedTopics();
 
-                                          if (Provider.of<ContributionProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .contributionEntity !=
-                                              null) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                duration:
-                                                    const Duration(seconds: 1),
-                                                content: Text(
-                                                  Provider.of<ContributionProvider>(
-                                                          context,
-                                                          listen: false)
-                                                      .message!,
-                                                  style: const TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                                backgroundColor: Colors
-                                                    .green, // You can customize the color
-                                              ),
-                                            );
-                                          } else if (Provider.of<
-                                                          ContributionProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .failure !=
-                                              null) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                duration:
-                                                    const Duration(seconds: 1),
-                                                content: Text(
-                                                  Provider.of<ContributionProvider>(
-                                                          context,
-                                                          listen: false)
-                                                      .message!,
-                                                  style: const TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                                backgroundColor: Colors
-                                                    .red, // You can customize the color
-                                              ),
-                                            );
-                                          }
-                                          Navigator.of(context).pop();
-                                        }
-                                      },
-                                child: Provider.of<ContributionProvider>(
-                                            context,
-                                            listen: true)
-                                        .isLoading
-                                    ? const SizedBox(
-                                        height: 30,
-                                        width: 30,
-                                        child: CircularProgressIndicator(
-                                          backgroundColor: Colors.white,
-                                        ),
-                                      )
-                                    : Text(
-                                        'Gửi đóng góp',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(color: Colors.white),
-                                      )),
-                          ),
+                                      Content content = Content(
+                                        topicId: selectedTopics,
+                                        typeId: _selectedType,
+                                        content: _contentController.text,
+                                        meaning: _meaningController.text,
+                                        note: _noteController.text.isNotEmpty
+                                            ? _noteController.text
+                                            : null,
+                                      );
+
+                                      if (_formKey.currentState!.validate() &&
+                                          _validateForm()) {
+                                        widget.callback({typeConSen, content});
+                                      }
+                                    },
+                              child: widget.isLoading
+                                  ? const SizedBox(
+                                      height: 30,
+                                      width: 30,
+                                      child: CircularProgressIndicator(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                    )
+                                  : Text(
+                                      widget.titleBtnSubmit,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(color: Colors.white),
+                                    )),
                         ],
                       ),
                     ]))));

@@ -9,6 +9,8 @@ import 'package:ctue_app/features/manage/presentation/pages/contri_management_pa
 import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/irre_verb_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/sen_management_page.dart';
+import 'package:ctue_app/features/sentence/presentation/pages/add_sentence_page.dart';
+import 'package:ctue_app/features/sentence/presentation/pages/edit_sentence_page%20copy.dart';
 import 'package:ctue_app/features/user/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 // import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
@@ -202,7 +204,7 @@ class MyApp extends StatelessWidget {
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ButtonStyle(
                     padding: const MaterialStatePropertyAll(
-                        EdgeInsets.symmetric(horizontal: 32, vertical: 16)),
+                        EdgeInsets.symmetric(horizontal: 32, vertical: 14)),
                     shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15))),
                     backgroundColor:
@@ -251,6 +253,8 @@ class MyApp extends StatelessWidget {
           '/irr-verb-management': (context) => const IrreVerbManagementPage(),
           '/add-word': (context) => const AddWordPage(),
           '/edit-word': (context) => const EditWordPage(),
+          '/add-sentence': (context) => const AddSentencePage(),
+          '/edit-sentence': (context) => const EditSentencePage(),
         },
       ),
     );

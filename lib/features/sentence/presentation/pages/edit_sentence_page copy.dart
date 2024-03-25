@@ -1,8 +1,8 @@
-import 'package:ctue_app/features/word/presentation/widgets/word_form.dart';
+import 'package:ctue_app/features/sentence/presentation/widgets/sentence_form.dart';
 import 'package:flutter/material.dart';
 
-class AddWordPage extends StatelessWidget {
-  const AddWordPage({super.key});
+class EditSentencePage extends StatelessWidget {
+  const EditSentencePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class AddWordPage extends StatelessWidget {
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
           title: Text(
-            'Thêm từ',
+            'Chỉnh sửa câu',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(),
           ),
           centerTitle: true,
@@ -38,8 +38,8 @@ class AddWordPage extends StatelessWidget {
               size: 30,
             ),
           )),
-      body: WordForm(
-        titleBtnSubmit: "Xác nhận",
+      body: SentenceForm(
+        titleBtnSubmit: "Lưu thay đổi",
         callback: (data) {},
         isLoading: false,
       ),

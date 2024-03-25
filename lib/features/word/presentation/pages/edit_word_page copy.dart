@@ -1,4 +1,4 @@
-import 'package:ctue_app/features/contribute/presentation/widgets/word_form.dart';
+import 'package:ctue_app/features/word/presentation/widgets/word_form.dart';
 import 'package:flutter/material.dart';
 
 class EditWordPage extends StatelessWidget {
