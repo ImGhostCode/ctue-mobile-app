@@ -1,4 +1,5 @@
 import 'package:ctue_app/core/constants/constants.dart';
+import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/spaced_repetition_detail.dart';
@@ -139,13 +140,16 @@ class _WordStorePageState extends State<WordStorePage> {
             children: [
               Expanded(
                   child: Container(
-                height: 50,
+                // height: 50,
+                alignment: Alignment.center,
                 margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12)),
                 child: ElevatedButton(
                   style: ButtonStyle(
+                      padding: const MaterialStatePropertyAll(
+                          EdgeInsets.symmetric(horizontal: 12)),
                       shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                           side: BorderSide.none)),
@@ -153,7 +157,8 @@ class _WordStorePageState extends State<WordStorePage> {
                       backgroundColor:
                           const MaterialStatePropertyAll(Colors.white)),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/create-vocabulary-set');
+                    Navigator.pushNamed(context, '/create-vocabulary-set',
+                        arguments: CreateVocaSetArgument(isAdmin: false));
                   },
                   child: Row(children: [
                     const Icon(
@@ -175,8 +180,8 @@ class _WordStorePageState extends State<WordStorePage> {
               )),
               Expanded(
                   child: Container(
-                height: 50,
-                margin: const EdgeInsets.only(right: 10),
+                // height: 50,
+                // margin: const EdgeInsets.only(right: 5),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12)),
@@ -212,7 +217,7 @@ class _WordStorePageState extends State<WordStorePage> {
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 5,
           ),
           _buildListVocabularySets()
         ],

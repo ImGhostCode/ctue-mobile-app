@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/specialization/business/entities/specialization_entity.dart';
 import 'package:ctue_app/features/specialization/presentation/providers/spec_provider.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
@@ -63,6 +64,8 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as CreateVocaSetArgument;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -197,26 +200,33 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                 const SizedBox(
                   height: 15,
                 ),
-                Text(
-                  'Chuyên ngành',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                _buildSpecializaitons(context),
-                _specError != null
-                    ? Text(
-                        _specError!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: Colors.red),
+                args.isAdmin
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Chuyên ngành',
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          _buildSpecializaitons(context),
+                          _specError != null
+                              ? Text(
+                                  _specError!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: Colors.red),
+                                )
+                              : const SizedBox.shrink(),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                        ],
                       )
                     : const SizedBox.shrink(),
-                const SizedBox(
-                  height: 4,
-                ),
                 Text(
                   'Danh sách từ',
                   style: Theme.of(context).textTheme.labelMedium,
@@ -352,81 +362,93 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                 const SizedBox(
                   height: 8,
                 ),
-                _buildTopics(context),
-                const SizedBox(
-                  height: 5,
-                ),
-                _topicError != null
-                    ? Text(
-                        _topicError!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: Colors.red),
+                args.isAdmin
+                    ? Column(
+                        children: [
+                          _buildTopics(context),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          _topicError != null
+                              ? Text(
+                                  _topicError!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: Colors.red),
+                                )
+                              : const SizedBox.shrink(),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                        ],
                       )
                     : const SizedBox.shrink(),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'Thêm ảnh minh họa',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                if (_selectedImage != null)
-                  Container(
-                    height: 100,
-                    width: 100,
-                    margin: const EdgeInsets.only(right: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.teal),
-                    ),
-                    child: Stack(
-                      children: [
-                        Image.file(
-                          File(_selectedImage!.path),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.fill,
-                        ),
-                        Positioned(
-                          top: -10,
-                          right: -10,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.red,
-                                size: 20,
+                args.isAdmin
+                    ? Column(
+                        children: [
+                          Text(
+                            'Thêm ảnh minh họa',
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          if (_selectedImage != null)
+                            Container(
+                              height: 100,
+                              width: 100,
+                              margin: const EdgeInsets.only(right: 5),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.teal),
                               ),
-                              onPressed: () => _removeImage(),
+                              child: Stack(
+                                children: [
+                                  Image.file(
+                                    File(_selectedImage!.path),
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Positioned(
+                                    top: -10,
+                                    right: -10,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.red,
+                                          size: 20,
+                                        ),
+                                        onPressed: () => _removeImage(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: 150,
+                            child: ElevatedButton(
+                              onPressed: _pickImage,
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.upload),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text('Tải lên')
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: 150,
-                  child: ElevatedButton(
-                    onPressed: _pickImage,
-                    child: const Row(
-                      children: [
-                        Icon(Icons.upload),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text('Tải lên')
-                      ],
-                    ),
-                  ),
-                ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
               ],
             ),
           ),

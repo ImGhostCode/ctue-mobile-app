@@ -34,7 +34,8 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
           actions: [
             TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/create-vocabulary-set');
+                  Navigator.pushNamed(context, '/create-vocabulary-set',
+                      arguments: CreateVocaSetArgument(isAdmin: true));
                 },
                 child: Text(
                   'Thêm',
@@ -156,130 +157,9 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                               arguments: VocabularySetArguments(
                                   id: listVocaSets[index].id));
                         },
-                        onLongPress: () => showDialog<String>(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                // title: Text(
-                                //   'AlertDialog Title $index',
-                                // ),
-                                buttonPadding: EdgeInsets.zero,
-                                contentPadding: EdgeInsets.zero,
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(3)),
-                                content: SizedBox(
-                                  // height: 65,
-                                  width:
-                                      MediaQuery.of(context).size.width - 100,
-                                  child: ListView(shrinkWrap: true, children: [
-                                    TextButton(
-                                        style: const ButtonStyle(
-                                            padding: MaterialStatePropertyAll(
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 18)),
-                                            shape: MaterialStatePropertyAll(
-                                                RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.zero)),
-                                            backgroundColor:
-                                                MaterialStatePropertyAll(
-                                                    Colors.white)),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.pushNamed(
-                                              context, '/edit-voca-set');
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.edit,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            const Text(
-                                              textAlign: TextAlign.left,
-                                              'Chỉnh sửa',
-                                            ),
-                                          ],
-                                        )),
-                                    TextButton(
-                                        style: const ButtonStyle(
-                                            padding: MaterialStatePropertyAll(
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 18)),
-                                            shape: MaterialStatePropertyAll(
-                                                RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.zero)),
-                                            backgroundColor:
-                                                MaterialStatePropertyAll(
-                                                    Colors.white)),
-                                        onPressed: () => showDialog<String>(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  AlertDialog(
-                                                backgroundColor: Colors.white,
-                                                // title: const Text('Cảnh báo'),
-                                                content: const Text(
-                                                    'Bạn có chắc chắn muốn xóa bộ từ này không?'),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            context, 'Xóa'),
-                                                    child:
-                                                        const Text('Trở lại'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () async {},
-                                                    child: const Text('OK'),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                        child: const Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(
-                                                textAlign: TextAlign.right,
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                                'Xóa'),
-                                          ],
-                                        ))
-                                  ]),
-                                ),
-                                // actions: <Widget>[
-                                //   TextButton(
-                                //     onPressed: () =>
-                                //         Navigator.pop(context, 'Cancel'),
-                                //     child: const Text('Cancel'),
-                                //   ),
-                                //   TextButton(
-                                //     onPressed: () => Navigator.pop(context, 'OK'),
-                                //     child: const Text('OK'),
-                                //   ),
-                                // ],
-                              ),
-                            ),
+                        onLongPress: () => showActionDialog(context),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
+                            horizontal: 12, vertical: 10),
                         shape: RoundedRectangleBorder(
                             side: BorderSide(
                                 color: listVocaSets[index].isPublic
@@ -319,14 +199,22 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                                 ),
                               ),
                         title: Text(listVocaSets[index].title),
-                        trailing: Container(
-                          height: 8,
-                          width: 8,
-                          decoration: BoxDecoration(
-                              color: listVocaSets[index].isPublic
-                                  ? Colors.green
-                                  : Colors.yellow.shade700,
-                              shape: BoxShape.circle),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              height: 8,
+                              width: 8,
+                              decoration: BoxDecoration(
+                                  color: listVocaSets[index].isPublic
+                                      ? Colors.green
+                                      : Colors.yellow.shade700,
+                                  shape: BoxShape.circle),
+                            ),
+                            IconButton(
+                                onPressed: () => showActionDialog(context),
+                                icon: const Icon(Icons.more_vert))
+                          ],
                         ));
                   },
                 );
@@ -337,4 +225,110 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
       )),
     );
   }
+
+  Future<String?> showActionDialog(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        // title: Text(
+        //   'AlertDialog Title $index',
+        // ),
+        buttonPadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+        content: SizedBox(
+          // height: 65,
+          width: MediaQuery.of(context).size.width - 100,
+          child: ListView(shrinkWrap: true, children: [
+            TextButton(
+                style: const ButtonStyle(
+                    padding: MaterialStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 18)),
+                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero)),
+                    backgroundColor: MaterialStatePropertyAll(Colors.white)),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/edit-voca-set');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.edit,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    const Text(
+                      textAlign: TextAlign.left,
+                      'Chỉnh sửa',
+                    ),
+                  ],
+                )),
+            TextButton(
+                style: const ButtonStyle(
+                    padding: MaterialStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 18)),
+                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero)),
+                    backgroundColor: MaterialStatePropertyAll(Colors.white)),
+                onPressed: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        backgroundColor: Colors.white,
+                        // title: const Text('Cảnh báo'),
+                        content: const Text(
+                            'Bạn có chắc chắn muốn xóa bộ từ này không?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Xóa'),
+                            child: const Text('Trở lại'),
+                          ),
+                          TextButton(
+                            onPressed: () async {},
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                        textAlign: TextAlign.right,
+                        style: TextStyle(color: Colors.red),
+                        'Xóa'),
+                  ],
+                ))
+          ]),
+        ),
+        // actions: <Widget>[
+        //   TextButton(
+        //     onPressed: () =>
+        //         Navigator.pop(context, 'Cancel'),
+        //     child: const Text('Cancel'),
+        //   ),
+        //   TextButton(
+        //     onPressed: () => Navigator.pop(context, 'OK'),
+        //     child: const Text('OK'),
+        //   ),
+        // ],
+      ),
+    );
+  }
+}
+
+class CreateVocaSetArgument {
+  final bool isAdmin;
+  CreateVocaSetArgument({required this.isAdmin});
 }

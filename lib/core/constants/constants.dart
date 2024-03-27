@@ -124,6 +124,11 @@ class ContributionType {
   static const String sentence = 'sentence';
 }
 
+class AccountType {
+  static const String user = 'user';
+  static const String admin = 'admin';
+}
+
 class ContributionStatus {
   static const int refused = -1;
   static const int pending = 0;

@@ -180,7 +180,7 @@ class _SettingPageState extends State<SettingPage> {
                     height: 5,
                   ),
                   SizedBox(
-                    height: 50,
+                    // height: 50,
                     width: double.infinity,
                     child: ElevatedButton(
                         style: ButtonStyle(

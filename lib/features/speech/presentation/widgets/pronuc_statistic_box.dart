@@ -144,60 +144,65 @@ class PronuncStatisticBox extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                SizedBox(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: pronuncStatisticEntity.lablesDoWell.length > 3
-                        ? 3
-                        : pronuncStatisticEntity.lablesDoWell.length,
-                    itemBuilder: (context, index) {
-                      Color lineColor = scoreToColor(
-                          pronuncStatisticEntity.lablesDoWell[index].avg);
-                      return Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              textAlign: TextAlign.left,
-                              '/${pronuncStatisticEntity.lablesDoWell[index].label}/',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                      color: lineColor,
-                                      fontFamily: 'DoulosSIL'),
-                            ),
-                          ),
-                          Expanded(
-                              flex: 8,
-                              child: ColoredLine(
-                                  // length: 150,
-                                  percentLeft: pronuncStatisticEntity
-                                          .lablesDoWell[index].avg /
-                                      100,
-                                  percentRight: 1 -
-                                      (pronuncStatisticEntity
-                                              .lablesDoWell[index].avg /
-                                          100),
-                                  colorLeft: lineColor,
-                                  colorRight: lineColor.withOpacity(0.2))),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                                '${pronuncStatisticEntity.lablesDoWell[index].avg}%',
-                                textAlign: TextAlign.right,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: lineColor)),
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                ),
+                pronuncStatisticEntity.lablesDoWell.isNotEmpty
+                    ? SizedBox(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount:
+                              pronuncStatisticEntity.lablesDoWell.length > 3
+                                  ? 3
+                                  : pronuncStatisticEntity.lablesDoWell.length,
+                          itemBuilder: (context, index) {
+                            Color lineColor = scoreToColor(
+                                pronuncStatisticEntity.lablesDoWell[index].avg);
+                            return Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    textAlign: TextAlign.left,
+                                    '/${pronuncStatisticEntity.lablesDoWell[index].label}/',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            color: lineColor,
+                                            fontFamily: 'DoulosSIL'),
+                                  ),
+                                ),
+                                Expanded(
+                                    flex: 8,
+                                    child: ColoredLine(
+                                        // length: 150,
+                                        percentLeft: pronuncStatisticEntity
+                                                .lablesDoWell[index].avg /
+                                            100,
+                                        percentRight: 1 -
+                                            (pronuncStatisticEntity
+                                                    .lablesDoWell[index].avg /
+                                                100),
+                                        colorLeft: lineColor,
+                                        colorRight:
+                                            lineColor.withOpacity(0.2))),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                      '${pronuncStatisticEntity.lablesDoWell[index].avg}%',
+                                      textAlign: TextAlign.right,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(color: lineColor)),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      )
+                    : const Expanded(
+                        child: Center(child: Text('Chưa có dữ liệu'))),
                 const SizedBox(
                   height: 5,
                 ),
@@ -208,64 +213,72 @@ class PronuncStatisticBox extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                SizedBox(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount:
-                        pronuncStatisticEntity.lablesNeedToBeImprove.length > 3
-                            ? 3
-                            : pronuncStatisticEntity
-                                .lablesNeedToBeImprove.length,
-                    itemBuilder: (context, index) {
-                      Color lineColor = scoreToColor(pronuncStatisticEntity
-                          .lablesNeedToBeImprove[index].avg);
+                pronuncStatisticEntity.lablesNeedToBeImprove.isNotEmpty
+                    ? SizedBox(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: pronuncStatisticEntity
+                                      .lablesNeedToBeImprove.length >
+                                  3
+                              ? 3
+                              : pronuncStatisticEntity
+                                  .lablesNeedToBeImprove.length,
+                          itemBuilder: (context, index) {
+                            Color lineColor = scoreToColor(
+                                pronuncStatisticEntity
+                                    .lablesNeedToBeImprove[index].avg);
 
-                      return Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              textAlign: TextAlign.left,
-                              '/${pronuncStatisticEntity.lablesNeedToBeImprove[index].label}/',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                      color: lineColor,
-                                      fontFamily: 'DoulosSIL'),
-                            ),
-                          ),
-                          Expanded(
-                              flex: 8,
-                              child: ColoredLine(
-                                  // length: 150,
-                                  percentLeft: pronuncStatisticEntity
-                                          .lablesNeedToBeImprove[index].avg /
-                                      100,
-                                  percentRight: 1 -
-                                      (pronuncStatisticEntity
-                                              .lablesNeedToBeImprove[index]
-                                              .avg /
-                                          100),
-                                  colorLeft: lineColor,
-                                  colorRight: lineColor.withOpacity(0.2))),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                                '${pronuncStatisticEntity.lablesNeedToBeImprove[index].avg}%',
-                                textAlign: TextAlign.right,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: lineColor)),
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                ),
+                            return Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    textAlign: TextAlign.left,
+                                    '/${pronuncStatisticEntity.lablesNeedToBeImprove[index].label}/',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            color: lineColor,
+                                            fontFamily: 'DoulosSIL'),
+                                  ),
+                                ),
+                                Expanded(
+                                    flex: 8,
+                                    child: ColoredLine(
+                                        // length: 150,
+                                        percentLeft: pronuncStatisticEntity
+                                                .lablesNeedToBeImprove[index]
+                                                .avg /
+                                            100,
+                                        percentRight: 1 -
+                                            (pronuncStatisticEntity
+                                                    .lablesNeedToBeImprove[
+                                                        index]
+                                                    .avg /
+                                                100),
+                                        colorLeft: lineColor,
+                                        colorRight:
+                                            lineColor.withOpacity(0.2))),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                      '${pronuncStatisticEntity.lablesNeedToBeImprove[index].avg}%',
+                                      textAlign: TextAlign.right,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(color: lineColor)),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      )
+                    : const Expanded(
+                        child: Center(child: Text('Chưa có dữ liệu'))),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

@@ -182,29 +182,9 @@ class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
                                 '${irrVerbs[index].v2} / ${irrVerbs[index].v3}',
                               ),
                               trailing: IconButton(
-                                icon: Icon(
-                                  Icons.volume_up_rounded,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  size: 24,
-                                ),
-                                onPressed: isLoading
-                                    ? null
-                                    : () async {
-                                        VoiceEntity voice =
-                                            await provider.getSelectedVoice();
-                                        await provider.eitherFailureOrTts(
-                                            '${irrVerbs[index].v1}   ${irrVerbs[index].v2}   ${irrVerbs[index].v3}',
-                                            voice);
-                                        try {
-                                          await audioPlayer.play(BytesSource(
-                                              Uint8List.fromList(
-                                                  provider.audioBytes)));
-                                        } catch (e) {
-                                          print("Error playing audio: $e");
-                                        }
-                                      },
-                              ));
+                                  onPressed: () => showIrrVerbDetail(
+                                      context, irrVerbs[index], true),
+                                  icon: const Icon(Icons.more_vert)));
                         });
                       },
                       separatorBuilder: (context, index) {

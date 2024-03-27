@@ -152,7 +152,7 @@ class HomePage extends StatelessWidget {
                 ),
 
                 Container(
-                  height: 240,
+                  height: 200,
                   width: MediaQuery.of(context).size.width,
                   padding: const EdgeInsets.all(16),
                   decoration: const BoxDecoration(color: Colors.white),

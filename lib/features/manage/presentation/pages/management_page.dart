@@ -33,8 +33,9 @@ class ManagementPage extends StatelessWidget {
         crossAxisCount: 2,
         children: <Widget>[
           ElevatedButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.teal)),
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStatePropertyAll(Colors.blueAccent.shade200)),
             onPressed: () {
               Navigator.pushNamed(context, '/acc-management');
             },
@@ -51,6 +52,30 @@ class ManagementPage extends StatelessWidget {
                   ),
                   Text(
                     'Quản lý tài khoản người dùng',
+                    textAlign: TextAlign.center,
+                  )
+                ]),
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStatePropertyAll(Colors.yellowAccent.shade400)),
+            onPressed: () {
+              Navigator.pushNamed(context, '/dict-management');
+            },
+            child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.menu_book,
+                    size: 70,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'Quản lý từ điển',
                     textAlign: TextAlign.center,
                   )
                 ]),
@@ -74,29 +99,6 @@ class ManagementPage extends StatelessWidget {
                   ),
                   Text(
                     'Quản lý đóng góp',
-                    textAlign: TextAlign.center,
-                  )
-                ]),
-          ),
-          ElevatedButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.yellowAccent)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/dict-management');
-            },
-            child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.menu_book,
-                    size: 70,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Quản lý từ điển',
                     textAlign: TextAlign.center,
                   )
                 ]),

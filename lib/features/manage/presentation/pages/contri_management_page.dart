@@ -38,7 +38,7 @@ class _ContributionManagementPageState
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
-          elevation: 1,
+          elevation: 0,
           scrolledUnderElevation: 0,
           title: Text(
             'Quản lý đóng góp',
@@ -151,7 +151,7 @@ class _ContributionManagementPageState
                             height: 10,
                             width: 10,
                             decoration: BoxDecoration(
-                                color: getStatusColor(0),
+                                color: getStatusColor2(value),
                                 // : Colors.green,
                                 shape: BoxShape.circle),
                           ),
@@ -245,6 +245,19 @@ class _ContributionManagementPageState
       case 0:
         return Colors.yellow;
       case 1:
+        return Colors.green;
+      default:
+        return Colors.red;
+    }
+  }
+
+  Color getStatusColor2(String status) {
+    switch (status) {
+      case 'Đã từ chối':
+        return Colors.red;
+      case 'Chờ duyệt':
+        return Colors.yellow;
+      case 'Đã duyệt':
         return Colors.green;
       default:
         return Colors.red;

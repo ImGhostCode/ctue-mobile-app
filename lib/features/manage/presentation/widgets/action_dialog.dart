@@ -51,10 +51,11 @@ Future<String?> showActionDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
                           backgroundColor: Colors.white,
-                          title: const Text(
+                          title: Text(
                             'Cảnh báo',
                             style: TextStyle(
-                                color: Colors.red, fontWeight: FontWeight.bold),
+                                color: Colors.red.shade300,
+                                fontWeight: FontWeight.bold),
                           ),
                           content: Text(
                               'Bạn có chắc chắn muốn xóa ${isWord ? "từ" : 'câu'} này không?'),

@@ -28,7 +28,7 @@ class Skeleton extends StatelessWidget {
       //   title: const Text('CTUE'),
       // ),
       body: pages[selectedPage],
-      bottomNavigationBar: const CustomBottomBarWidget(),
+      bottomNavigationBar: CustomBottomBarWidget(),
     );
   }
 }

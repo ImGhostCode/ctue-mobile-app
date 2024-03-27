@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
               const Spacer(), // Add Spacer to push the button to the bottom
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                // height: 50,
                 child: ElevatedButton(
                   // style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                   //   backgroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -218,11 +218,14 @@ class _LoginPageState extends State<LoginPage> {
                             }
                           }
                         },
-
                   child:
                       Provider.of<AuthProvider>(context, listen: true).isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
+                          ? const SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
                             )
                           : Text(
                               'Đăng nhập',

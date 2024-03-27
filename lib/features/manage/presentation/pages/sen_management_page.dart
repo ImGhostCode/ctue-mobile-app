@@ -164,6 +164,14 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
                         sentences[index].mean,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
+                      trailing: IconButton(
+                        icon: const Icon(
+                          Icons.more_vert,
+                        ),
+                        onPressed: () {
+                          showActionDialog(context, false, () {});
+                        },
+                      ),
                       onTap: () {
                         Navigator.pushNamed(
                             context, '/communication-phrase-detail',

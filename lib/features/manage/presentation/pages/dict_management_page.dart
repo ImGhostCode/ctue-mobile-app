@@ -185,9 +185,10 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
                                   color: Colors.grey.shade500,
                                   fontWeight: FontWeight.w600),
                         ),
-                        // trailing: IconButton(
-                        //     icon: const Icon(Icons.more_vert),
-                        //     onPressed: () => showActionDialog(context)),
+                        trailing: IconButton(
+                            icon: const Icon(Icons.more_vert),
+                            onPressed: () =>
+                                showActionDialog(context, true, () {})),
                         onLongPress: () =>
                             showActionDialog(context, true, () {}),
                         onTap: () {
