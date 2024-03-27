@@ -220,7 +220,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const Home(),
-          '/welcome': (context) => const WelcomePage(),
+          '/welcome': (context) => WelcomePage(),
           '/verify-code': (context) => const VerifyCodePage(),
           '/login': (context) => const LoginPage(),
           '/reset-password': (context) => const ResetPasswordPage(),
