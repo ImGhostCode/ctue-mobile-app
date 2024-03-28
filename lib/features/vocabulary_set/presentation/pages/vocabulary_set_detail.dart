@@ -77,16 +77,17 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                     children: [
                       StatisticChart(
                           totalWords: vocaSetEntity.words.length,
-                          dataStatistics: vocaSetStatisticsEntity != null
-                              ? vocaSetStatisticsEntity
-                              : VocaSetStatisticsEntity(
+                          dataStatistics: vocaSetStatisticsEntity ??
+                              VocaSetStatisticsEntity(
                                   numberOfWords: 0,
                                   detailVocaSetStatisEntity:
                                       DetailVocaSetStatisEntity())),
                       const SizedBox(
                         height: 20,
                       ),
-                      const ActionBox(),
+                      ActionBox(
+                        words: vocaSetEntity.words,
+                      ),
 
                       const SizedBox(
                         height: 20,

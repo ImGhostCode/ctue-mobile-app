@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/colored_line.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_%20in_voca_set.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
+import 'dart:collection';
 
 class LearnPage extends StatefulWidget {
   const LearnPage({Key? key}) : super(key: key);
@@ -11,80 +15,107 @@ class LearnPage extends StatefulWidget {
 }
 
 class _LearnPageState extends State<LearnPage> {
-  int totalStep = 5;
+  int totalStep = 4;
   int currStep = 1;
   Widget? currQuestion;
-  // List<String> learnData = ['word1', 'word2', 'word3', 'word4', 'word5'];
-  List<LearnData> learnData = [
-    LearnData(word: 'word1', numOfMistakes: 0, currStep: 1),
-    LearnData(word: 'word2', numOfMistakes: 0, currStep: 1),
-  ];
+  List<LearnData> listLearningData = [];
   int currWordIndex = 0;
-  // dynamic currAnswer;
-  // int correctIndex = 0;
 
-  void _displayQuestion(LearnData learnData) {
-    // Logic to select the appropriate question type
-    // Update UI based on the selected question
-    switch (learnData.currStep) {
+  final TextEditingController _answerController = TextEditingController();
+  Queue<Widget> questionQueue = Queue();
+  Queue<int> indexStep = Queue();
+  Queue<int> indexWord = Queue();
+
+  Widget _buildQuestion(LearnData learnData, int step) {
+    switch (step) {
       case 1:
-        print('writting question: ${learnData.word}');
-        currQuestion = _buildWritingQuestion(context, learnData.word);
-        break;
+        // print('writting question: ${learnData.word}');
+        return _buildWritingQuestion(context, learnData.word);
+      // break;
       case 2:
-        print('choose meaning question: ${learnData.word}');
-        currQuestion = _buildChooseMeaningQuestion(context, learnData.word);
-        break;
+        // print('choose meaning question: ${learnData.word}');
+        return _buildChooseMeaningQuestion(context, learnData.word);
+      // break;
       case 3:
-        print('listening question: ${learnData.word}');
-        currQuestion = _buildListeningQuestion(context, learnData.word);
-        break;
+        // print('listening question: ${learnData.word}');
+        return _buildListeningQuestion(context, learnData.word);
+      // break;
       case 4:
-        print('choose word question: ${learnData.word}');
-        currQuestion = _buldChooseWordQuestion(context, learnData.word);
-        break;
-      case 5:
-        _displayResult();
-        // TODO check if any word is not at step 5 then show question this word
-        break;
+        // print('choose word question: ${learnData.word}');
+        return _buldChooseWordQuestion(context, learnData.word);
       default:
+        return const SizedBox();
     }
   }
 
   void _displayResult() {
-    print('Display result...');
+    // print('Display result...');
+    // setState(() {
+    //   currQuestion = const Center(
+    //     child: Text('result'),
+    //   );
+    // });
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/learning-result', (route) => false);
   }
 
   void _checkAnswer(dynamic userAnswer) {
     print(userAnswer);
-    print(learnData[currWordIndex].word);
-    bool isCorrect = learnData[currWordIndex].word == userAnswer;
-    print('Checking answer... ${isCorrect}');
+    bool isCorrect =
+        listLearningData[indexWord.first].word.content == userAnswer;
+    print(isCorrect);
+    _showAnswerResult(
+        context, listLearningData[indexWord.first].word, isCorrect);
     if (!isCorrect) {
-      learnData[currWordIndex].numOfMistakes++;
-      if (learnData[currWordIndex].numOfMistakes >= totalStep) {
+      if (++listLearningData[currWordIndex].numOfMistakes == 5) {
         _displayResult();
+        return;
       }
-    } else {
-      learnData[currWordIndex].currStep++;
+      questionQueue
+          .addLast(_buildQuestion(listLearningData[currWordIndex], currStep));
+      indexWord.addLast(currWordIndex);
+      indexStep.addLast(currStep);
     }
-    _next();
-    setState(() {});
+    currStep = indexStep.removeFirst();
+    currWordIndex = indexWord.removeFirst();
+    _displayNextQuestion();
   }
 
-  void _next() {
-    if (currWordIndex < (learnData.length - 1)) {
-      currWordIndex++;
+  void _displayNextQuestion() {
+    if (questionQueue.isNotEmpty) {
+      Widget nextQuestion = questionQueue.removeFirst();
+      currStep = indexStep.first;
+      currWordIndex = indexWord.first;
+      setState(() {
+        currQuestion = nextQuestion;
+      });
     } else {
-      // currStep = currStep + 1;
-      currWordIndex = 0;
+      _displayResult();
     }
   }
 
   List<LearnData> getShuffledAnswers() {
-    List<LearnData> temp = [...learnData];
+    List<LearnData> temp = [...listLearningData];
     temp.shuffle();
     return temp.sublist(0, temp.length > 4 ? 4 : temp.length);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args =
+        ModalRoute.of(context)!.settings.arguments as LearnringArguments;
+    listLearningData =
+        args.words.map((e) => LearnData(word: e, numOfMistakes: 0)).toList();
+
+    for (var step = 1; step <= totalStep; step++) {
+      for (var index = 0; index < listLearningData.length; index++) {
+        questionQueue.addLast(_buildQuestion(listLearningData[index], step));
+        indexWord.addLast(index);
+        indexStep.addLast(step);
+      }
+    }
+    _displayNextQuestion();
   }
 
   @override
@@ -94,8 +125,6 @@ class _LearnPageState extends State<LearnPage> {
 
   @override
   Widget build(BuildContext context) {
-    _displayQuestion(learnData[currWordIndex]);
-
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -133,8 +162,11 @@ class _LearnPageState extends State<LearnPage> {
                   // if (currStep > 5) {
                   //   currStep = 1;
                   // }
-                  _checkAnswer('userAnswer');
+                  // _checkAnswer('userAnswer');
                   // });
+
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/learning-result', (route) => false);
                 },
                 icon: const Icon(
                   Icons.settings_rounded,
@@ -148,7 +180,7 @@ class _LearnPageState extends State<LearnPage> {
         ));
   }
 
-  Column _buldChooseWordQuestion(BuildContext context, String word) {
+  Column _buldChooseWordQuestion(BuildContext context, WordEntity word) {
     List<LearnData> shuffledAnswers = getShuffledAnswers();
     return Column(children: [
       _buildQuoteRows(context, word),
@@ -172,19 +204,19 @@ class _LearnPageState extends State<LearnPage> {
                 onPressed: () {
                   _checkAnswer(shuffledAnswers[index].word);
                 },
-                child: Text(shuffledAnswers[index].word),
                 style: ButtonStyle(
                   // backgroundColor: MaterialStatePropertyAll(Colors.white),
                   // foregroundColor: MaterialStatePropertyAll(Colors.black),
                   // textStyle:,
-                  side:
-                      MaterialStateProperty.all(BorderSide(color: Colors.grey)),
+                  side: MaterialStateProperty.all(
+                      const BorderSide(color: Colors.grey)),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12))),
                   elevation:
                       MaterialStateProperty.all(2), // Set the elevation value
                   // You can also set other properties like shadowColor if needed
                 ),
+                child: Text(shuffledAnswers[index].word.content),
               ),
             );
           },
@@ -200,13 +232,11 @@ class _LearnPageState extends State<LearnPage> {
     ]);
   }
 
-  Column _buildQuoteRows(BuildContext context, String word) {
+  Column _buildQuoteRows(BuildContext context, WordEntity word) {
     return Column(
       children: [
-        // Test
-        Text(word),
-        //
         Container(
+          margin: const EdgeInsets.all(16),
           height: 100,
           width: 130,
           decoration: BoxDecoration(
@@ -215,8 +245,8 @@ class _LearnPageState extends State<LearnPage> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.network(
-              'https://cdn-blog.novoresume.com/articles/career-aptitude-test/bg.png',
-              fit: BoxFit.cover,
+              word.pictures[0],
+              fit: BoxFit.fill,
               width: double.infinity,
               height: double.infinity,
             ),
@@ -226,11 +256,11 @@ class _LearnPageState extends State<LearnPage> {
           height: 10,
         ),
         ...List.generate(
-            2,
+            word.meanings.length,
             (index) => Row(
                   children: [
                     Text(
-                      'Danh từ.',
+                      word.meanings[index].type!.name,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: Colors.black87, fontWeight: FontWeight.bold),
                     ),
@@ -238,7 +268,7 @@ class _LearnPageState extends State<LearnPage> {
                       width: 10,
                     ),
                     Text(
-                      '- thử nghiệm, thử, kiểm tra',
+                      '- ${word.meanings[index].meaning}',
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: Colors.black54, fontWeight: FontWeight.normal),
                     ),
@@ -248,7 +278,7 @@ class _LearnPageState extends State<LearnPage> {
           height: 10,
         ),
         ...List.generate(
-            2,
+            word.examples.length,
             (index) => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -261,7 +291,7 @@ class _LearnPageState extends State<LearnPage> {
                     ),
                     Flexible(
                       child: Text(
-                          'The class are doing/having a spelling ___ today. dddd ddd ddd dd',
+                          word.examples[index].replaceAll(word.content, '____'),
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -275,7 +305,7 @@ class _LearnPageState extends State<LearnPage> {
     );
   }
 
-  Column _buildListeningQuestion(BuildContext context, String word) {
+  Column _buildListeningQuestion(BuildContext context, WordEntity word) {
     return Column(children: [
       Expanded(
           child: Column(
@@ -319,7 +349,8 @@ class _LearnPageState extends State<LearnPage> {
                   style: ButtonStyle(
                       shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12))),
-                      padding: MaterialStatePropertyAll(EdgeInsets.all(4))),
+                      padding:
+                          const MaterialStatePropertyAll(EdgeInsets.all(4))),
                   child: const Icon(
                     Icons.slow_motion_video,
                     size: 30,
@@ -335,7 +366,7 @@ class _LearnPageState extends State<LearnPage> {
     ]);
   }
 
-  Column _buildChooseMeaningQuestion(BuildContext context, String word) {
+  Column _buildChooseMeaningQuestion(BuildContext context, WordEntity word) {
     List<LearnData> shuffledAnswers = getShuffledAnswers();
     return Column(
       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -346,7 +377,7 @@ class _LearnPageState extends State<LearnPage> {
             flex: 5,
             child: Center(
               child: Text(
-                word,
+                word.content,
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
@@ -367,19 +398,20 @@ class _LearnPageState extends State<LearnPage> {
                     onPressed: () {
                       _checkAnswer(shuffledAnswers[index].word);
                     },
-                    child: Text(shuffledAnswers[index].word),
                     style: ButtonStyle(
                       // backgroundColor: MaterialStatePropertyAll(Colors.white),
                       // foregroundColor: MaterialStatePropertyAll(Colors.black),
                       // textStyle:,
                       side: MaterialStateProperty.all(
-                          BorderSide(color: Colors.grey)),
+                          const BorderSide(color: Colors.grey)),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12))),
                       elevation: MaterialStateProperty.all(
                           2), // Set the elevation value
                       // You can also set other properties like shadowColor if needed
                     ),
+                    child:
+                        Text(shuffledAnswers[index].word.meanings[0].meaning),
                   ),
                 );
               },
@@ -394,7 +426,7 @@ class _LearnPageState extends State<LearnPage> {
     );
   }
 
-  Column _buildWritingQuestion(BuildContext context, String word) {
+  Column _buildWritingQuestion(BuildContext context, WordEntity word) {
     return Column(
       children: [
         _buildQuoteRows(context, word),
@@ -406,6 +438,7 @@ class _LearnPageState extends State<LearnPage> {
 
   TextField _buildAnswerInput(BuildContext context) {
     return TextField(
+      controller: _answerController,
       style: const TextStyle(fontWeight: FontWeight.normal),
       decoration: InputDecoration(
         contentPadding:
@@ -426,7 +459,7 @@ class _LearnPageState extends State<LearnPage> {
 
         prefixIcon: IconButton(
           icon: Icon(
-            Icons.mic,
+            Icons.send,
             color: Theme.of(context).colorScheme.primary,
           ),
           onPressed: () {},
@@ -436,70 +469,90 @@ class _LearnPageState extends State<LearnPage> {
             Icons.lightbulb,
             color: Theme.of(context).colorScheme.primary,
           ),
-          onPressed: () {},
+          onPressed: () {
+            _showAnswerResult(
+                context, listLearningData[indexWord.first].word, null);
+          },
         ),
       ),
       onSubmitted: (value) {
         _checkAnswer(value);
-        value = '';
+        setState(() {
+          _answerController.clear();
+        });
       },
     );
   }
 }
 
-void _showAnswerDialog(context, String word) {
-  showDialog<String>(
-    context: context,
-    builder: (BuildContext context) => Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          // Test
-          Text(word),
-          // Test
-          Container(
-            width: double.infinity,
-            // height: 30,
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-              color: Colors.green.shade400,
-            ),
-            child: Text(
-              'CHÍNH XÁC!',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(color: Colors.black87),
+void _showAnswerResult(context, WordEntity word, bool? isCorrect) {
+  setTimeout(callback, time) {
+    Duration timeDelay = Duration(milliseconds: time);
+    return Timer(timeDelay, callback);
+  }
+
+  setTimeout(
+      () => showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  isCorrect != null
+                      ? Container(
+                          width: double.infinity,
+                          // height: 30,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(12),
+                                topRight: Radius.circular(12)),
+                            color:
+                                isCorrect ? Colors.green.shade400 : Colors.red,
+                          ),
+                          child: Text(
+                            isCorrect ? 'CHÍNH XÁC!' : 'CHƯA CHÍNH XÁC',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    color: isCorrect
+                                        ? Colors.black87
+                                        : Colors.white),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Column(
+                      children: [
+                        WordDetailInVocaSet(
+                          wordEntity: word,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(isCorrect != null ? 'Tiếp tục' : "Đóng"),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Column(
-              children: [
-                WordDetailInVocaSet(),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Tiếp tục'),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    ),
-  );
+      200);
 }
 
 class LearnData {
-  final String word;
+  final WordEntity word;
   int numOfMistakes;
   int currStep;
   LearnData(

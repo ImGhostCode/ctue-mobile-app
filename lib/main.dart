@@ -6,6 +6,7 @@ import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/add_irr_verb_page.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/edit_irr_verb_page.dart';
+import 'package:ctue_app/features/learn/presentation/pages/learning_result.dart';
 import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/contri_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
@@ -232,8 +233,9 @@ class MyApp extends StatelessWidget {
           '/setting': (context) => SettingPage(),
           '/user-info': (context) => UserInfoPage(),
           '/api': (context) => const IPA(),
-          '/learn': (context) => const LearnPage(),
+          '/learn': (context) => LearnPage(),
           '/learn-setting': (context) => const LearnSettingPage(),
+          '/learning-result': (context) => const LearningResult(),
           '/dictionary': (context) => DictionaryPage(),
           '/look-up-result': (context) => LookUpResultPage(),
           '/word-detail': (context) => const WordDetail(),

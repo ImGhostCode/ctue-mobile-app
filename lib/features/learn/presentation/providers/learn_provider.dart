@@ -1,8 +1,32 @@
+import 'package:ctue_app/core/connection/network_info.dart';
+import 'package:ctue_app/core/constants/response.dart';
+import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/core/params/learn_params.dart';
+import 'package:ctue_app/core/services/api_service.dart';
+import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/core/services/shared_pref_service.dart';
+import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
+import 'package:ctue_app/features/learn/business/usecases/save_learned_res_usecase.dart';
+import 'package:ctue_app/features/learn/data/datasources/learn_local_data_source.dart';
+import 'package:ctue_app/features/learn/data/datasources/learn_remote_data_source.dart';
+import 'package:ctue_app/features/learn/data/repositories/learn_repository_impl.dart';
+import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LearnProvider extends ChangeNotifier {
   final prefs = SharedPrefService.prefs;
+  Failure? failure;
+  String? message = '';
+  int? statusCode;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  List<UserLearnedWordEntity> saveResults = [];
+
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
   int _nWMaxNumOfWords = 5;
   int _nWNumOfWritting = 1;
@@ -167,4 +191,51 @@ class LearnProvider extends ChangeNotifier {
   // int oWMaxNumOfListening = 5;
   // int oWNumOfChooseWord = 5;
   // int oWNumOfChooseMeaning = 5;
+  LearnProvider({
+    this.failure,
+  });
+
+  Future eitherFailureOrSaveLearnedResult(
+      List<int> wordIds, int vocabularySetId, List<int> memoryLevels) async {
+    _isLoading = true;
+    LearnRepositoryImpl repository = LearnRepositoryImpl(
+      remoteDataSource: LearnRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: LearnLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrSaveLearnedResult =
+        await SaveLearnedResultUsecase(learnRepository: repository).call(
+      saveLearnedResultParams: SaveLearnedResultParams(
+          wordIds: wordIds,
+          vocabularySetId: vocabularySetId,
+          memoryLevels: memoryLevels,
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
+    );
+
+    failureOrSaveLearnedResult.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        saveResults = [];
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<List<UserLearnedWordEntity>> newVocaSet) {
+        _isLoading = false;
+        saveResults = newVocaSet.data;
+        message = newVocaSet.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
 }

@@ -1,8 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
-import 'package:ctue_app/core/params/voca_set_params.dart';
-import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
-import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_model.dart';
-import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_statis_model.dart';
+import 'package:ctue_app/core/params/learn_params.dart';
+import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/connection/network_info.dart';
@@ -22,6 +20,28 @@ class LearnRepositoryImpl implements LearnRepository {
     required this.localDataSource,
     required this.networkInfo,
   });
+
+  @override
+  Future<Either<Failure, ResponseDataModel<List<UserLearnedWordModel>>>>
+      saveLearnedResult(
+          {required SaveLearnedResultParams saveLearnedResultParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<List<UserLearnedWordModel>> remoteVocaSet =
+            await remoteDataSource.saveLearnedResult(
+                saveLearnedResultParams: saveLearnedResultParams);
+
+        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+
+        return Right(remoteVocaSet);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
 
   // @override
   // Future<Either<Failure, ResponseDataModel<VocaSetStatisticsModel>>>

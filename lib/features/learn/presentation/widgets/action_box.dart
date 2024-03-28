@@ -1,7 +1,9 @@
+import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 
 class ActionBox extends StatelessWidget {
-  const ActionBox({super.key});
+  final List<WordEntity> words;
+  const ActionBox({super.key, this.words = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,8 @@ class ActionBox extends StatelessWidget {
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.blue.shade600)),
                         onPressed: () {
-                          Navigator.of(context).pushNamed('/learn');
+                          Navigator.of(context).pushNamed('/learn',
+                              arguments: LearnringArguments(words: words));
                         },
                         child: const Text(
                             // 'Ôn tập ngay'
@@ -84,4 +87,9 @@ class ActionBox extends StatelessWidget {
       ),
     );
   }
+}
+
+class LearnringArguments {
+  List<WordEntity> words = [];
+  LearnringArguments({required this.words});
 }
