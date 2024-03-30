@@ -1,4 +1,5 @@
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
+import 'package:ctue_app/features/learn/presentation/pages/learn_page.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,9 @@ class LearningResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as LearningResultArguments;
+
     return Scaffold(
       appBar: AppBar(
           // centerTitle: true,
@@ -37,59 +41,7 @@ class LearningResult extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: 30,
-                    width: 30,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.red),
-                    child: const Icon(
-                      Icons.south,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  const Text(
-                    '2 từ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Wrap(
-                spacing: 6,
-                children: [
-                  ...List.generate(
-                      5,
-                      (index) => SizedBox(
-                            child: Chip(
-                              backgroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              shape: RoundedRectangleBorder(
-                                  side: const BorderSide(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(20)),
-                              avatar: GradientBorderContainer(
-                                  diameter: level_1.diameter,
-                                  borderWidth: level_1.borderWidth,
-                                  borderColor1: level_1.borderColor1,
-                                  borderColor2: level_1.borderColor2,
-                                  stop1: level_1.stop1,
-                                  stop2: level_1.stop2,
-                                  percent: level_1.percent,
-                                  fontSize: level_1.fontSize),
-                              label: const Text('Aaron'),
-                            ),
-                          ))
-                ],
-              )
-            ],
-          ),
-          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -107,43 +59,116 @@ class LearningResult extends StatelessWidget {
                   const SizedBox(
                     width: 5,
                   ),
-                  const Text(
-                    '2 từ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Text(
+                    '${args.rememberedWords.length} từ',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   )
                 ],
               ),
               Wrap(
                 spacing: 6,
+                alignment: WrapAlignment.start,
                 children: [
-                  ...List.generate(
-                      5,
-                      (index) => SizedBox(
-                            child: Chip(
-                              backgroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              shape: RoundedRectangleBorder(
-                                  side: const BorderSide(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(20)),
-                              avatar: GradientBorderContainer(
-                                  diameter: level_1.diameter,
-                                  borderWidth: level_1.borderWidth,
-                                  borderColor1: level_1.borderColor1,
-                                  borderColor2: level_1.borderColor2,
-                                  stop1: level_1.stop1,
-                                  stop2: level_1.stop2,
-                                  percent: level_1.percent,
-                                  fontSize: level_1.fontSize),
-                              label: const Text('Aaron'),
-                            ),
-                          ))
+                  ...List.generate(args.rememberedWords.length, (index) {
+                    MemoryLevel level =
+                        getMemoryLevel(args.memoryLevels[index]);
+                    return Chip(
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(20)),
+                      avatar: GradientBorderContainer(
+                          diameter: level.diameter,
+                          borderWidth: level.borderWidth,
+                          borderColor1: level.borderColor1,
+                          borderColor2: level.borderColor2,
+                          stop1: level.stop1,
+                          stop2: level.stop2,
+                          percent: level.percent,
+                          fontSize: level.fontSize),
+                      label: Text(args.rememberedWords[index].content),
+                    );
+                  })
                 ],
               )
             ],
-          )
+          ),
+          // Column(
+          //   children: [
+          //     Row(
+          //       children: [
+          //         Container(
+          //           height: 30,
+          //           width: 30,
+          //           alignment: Alignment.center,
+          //           decoration: BoxDecoration(
+          //               shape: BoxShape.circle, color: Colors.red),
+          //           child: const Icon(
+          //             Icons.sourth,
+          //             color: Colors.white,
+          //           ),
+          //         ),
+          //         const SizedBox(
+          //           width: 5,
+          //         ),
+          //         const Text(
+          //           '2 từ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         )
+          //       ],
+          //     ),
+          //     Wrap(
+          //       spacing: 6,
+          //       children: [
+          //         ...List.generate(
+          //             5,
+          //             (index) => SizedBox(
+          //                   child: Chip(
+          //                     backgroundColor: Colors.white,
+          //                     padding: const EdgeInsets.symmetric(
+          //                         horizontal: 10, vertical: 6),
+          //                     shape: RoundedRectangleBorder(
+          //                         side: const BorderSide(color: Colors.grey),
+          //                         borderRadius: BorderRadius.circular(20)),
+          //                     avatar: GradientBorderContainer(
+          //                         diameter: level_1.diameter,
+          //                         borderWidth: level_1.borderWidth,
+          //                         borderColor1: level_1.borderColor1,
+          //                         borderColor2: level_1.borderColor2,
+          //                         stop1: level_1.stop1,
+          //                         stop2: level_1.stop2,
+          //                         percent: level_1.percent,
+          //                         fontSize: level_1.fontSize),
+          //                     label: const Text('Aaron'),
+          //                   ),
+          //                 ))
+          //       ],
+          //     )
+          //   ],
+          // )
         ]),
       ),
     );
+  }
+}
+
+MemoryLevel getMemoryLevel(int level) {
+  switch (level) {
+    case 1:
+      return level_1;
+    case 2:
+      return level_2;
+    case 3:
+      return level_3;
+    case 4:
+      return level_4;
+    case 5:
+      return level_5;
+    case 6:
+      return level_6;
+    default:
+      return level_1;
   }
 }

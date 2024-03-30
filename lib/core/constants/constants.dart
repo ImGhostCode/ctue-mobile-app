@@ -89,6 +89,8 @@ String kLevel_6 = 'level_6';
 
 String kVocaSetId = 'vocabularySetId';
 String kMemoryLevel = 'memoryLevel';
+String kIsDone = 'isDone';
+String kReviewAt = 'reviewAt';
 
 enum ResponseData { data, message, statusCode }
 

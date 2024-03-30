@@ -25,10 +25,10 @@ class DownloadVocaSetParams {
 }
 
 class GetVocaSetStatisParams {
-  final int id;
+  final int? id;
   final String accessToken;
 
-  GetVocaSetStatisParams({required this.accessToken, required this.id});
+  GetVocaSetStatisParams({required this.accessToken, this.id});
 }
 
 class GetVocaSetParams {

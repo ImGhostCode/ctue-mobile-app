@@ -1,11 +1,15 @@
 import 'dart:async';
 
+import 'package:ctue_app/core/params/learn_params.dart';
+import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/colored_line.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_%20in_voca_set.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_in_voca_set.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 import 'dart:collection';
+
+import 'package:provider/provider.dart';
 
 class LearnPage extends StatefulWidget {
   const LearnPage({Key? key}) : super(key: key);
@@ -20,6 +24,7 @@ class _LearnPageState extends State<LearnPage> {
   Widget? currQuestion;
   List<LearnData> listLearningData = [];
   int currWordIndex = 0;
+  int? vocabularySetId;
 
   final TextEditingController _answerController = TextEditingController();
   Queue<Widget> questionQueue = Queue();
@@ -48,22 +53,64 @@ class _LearnPageState extends State<LearnPage> {
     }
   }
 
+  DateTime getTimeToReview(int level, DateTime now) {
+    switch (level) {
+      case 1:
+        return now.add(const Duration(hours: 2));
+      case 2:
+        return now.add(const Duration(days: 1));
+      case 3:
+        return now.add(const Duration(days: 2));
+      case 4:
+        return now.add(const Duration(days: 3));
+      case 5:
+        return now.add(const Duration(days: 5));
+      case 6:
+        return now.add(const Duration(days: 8));
+      default:
+        return now;
+    }
+  }
+
   void _displayResult() {
-    // print('Display result...');
-    // setState(() {
-    //   currQuestion = const Center(
-    //     child: Text('result'),
-    //   );
-    // });
-    Navigator.pushNamedAndRemoveUntil(
-        context, '/learning-result', (route) => false);
+    DateTime now = DateTime.now();
+
+    List<WordEntity> rememberedWords = [];
+    List<int> memoryLevels = [];
+    for (var data in listLearningData) {
+      if (data.currStep == 4) {
+        rememberedWords.add(data.word);
+        memoryLevels.add(1);
+      }
+    }
+    // print(rememberedWords);
+    // print(memoryLevels);
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrSaveLearnedResult(
+            rememberedWords.map((e) => e.id).toList(),
+            vocabularySetId!,
+            memoryLevels);
+
+    List<DataRemindParams> dataRemind = [];
+    for (var i = 0; i < rememberedWords.length; i++) {
+      dataRemind.add(DataRemindParams(
+          wordId: rememberedWords[i].id,
+          reviewAt: getTimeToReview(memoryLevels[i], now)));
+    }
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrCreReviewReminder(vocabularySetId!, dataRemind);
+
+    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, '/learning-result',
+        arguments: LearningResultArguments(
+            rememberedWords: rememberedWords, memoryLevels: memoryLevels));
   }
 
   void _checkAnswer(dynamic userAnswer) {
-    print(userAnswer);
+    // print(userAnswer);
     bool isCorrect =
         listLearningData[indexWord.first].word.content == userAnswer;
-    print(isCorrect);
+    // print(isCorrect);
     _showAnswerResult(
         context, listLearningData[indexWord.first].word, isCorrect);
     if (!isCorrect) {
@@ -75,6 +122,8 @@ class _LearnPageState extends State<LearnPage> {
           .addLast(_buildQuestion(listLearningData[currWordIndex], currStep));
       indexWord.addLast(currWordIndex);
       indexStep.addLast(currStep);
+    } else {
+      listLearningData[currWordIndex].currStep++;
     }
     currStep = indexStep.removeFirst();
     currWordIndex = indexWord.removeFirst();
@@ -107,7 +156,7 @@ class _LearnPageState extends State<LearnPage> {
         ModalRoute.of(context)!.settings.arguments as LearnringArguments;
     listLearningData =
         args.words.map((e) => LearnData(word: e, numOfMistakes: 0)).toList();
-
+    vocabularySetId = args.vocabularySetId;
     for (var step = 1; step <= totalStep; step++) {
       for (var index = 0; index < listLearningData.length; index++) {
         questionQueue.addLast(_buildQuestion(listLearningData[index], step));
@@ -164,9 +213,10 @@ class _LearnPageState extends State<LearnPage> {
                   // }
                   // _checkAnswer('userAnswer');
                   // });
-
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/learning-result', (route) => false);
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/learning-result',
+                      arguments: LearningResultArguments(
+                          rememberedWords: [], memoryLevels: []));
                 },
                 icon: const Icon(
                   Icons.settings_rounded,
@@ -202,7 +252,7 @@ class _LearnPageState extends State<LearnPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  _checkAnswer(shuffledAnswers[index].word);
+                  _checkAnswer(shuffledAnswers[index].word.content);
                 },
                 style: ButtonStyle(
                   // backgroundColor: MaterialStatePropertyAll(Colors.white),
@@ -396,7 +446,7 @@ class _LearnPageState extends State<LearnPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      _checkAnswer(shuffledAnswers[index].word);
+                      _checkAnswer(shuffledAnswers[index].word.content);
                     },
                     style: ButtonStyle(
                       // backgroundColor: MaterialStatePropertyAll(Colors.white),
@@ -557,4 +607,12 @@ class LearnData {
   int currStep;
   LearnData(
       {required this.word, required this.numOfMistakes, this.currStep = 0});
+}
+
+class LearningResultArguments {
+  List<WordEntity> rememberedWords = [];
+  List<int> memoryLevels = [];
+
+  LearningResultArguments(
+      {required this.rememberedWords, required this.memoryLevels});
 }

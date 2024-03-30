@@ -8,7 +8,7 @@ class UserLearnedWordModel extends UserLearnedWordEntity {
       required super.wordId,
       required super.vocabularySetId,
       required super.memoryLevel,
-      required super.word});
+      super.word});
 
   factory UserLearnedWordModel.fromJson({required Map<String, dynamic> json}) {
     return UserLearnedWordModel(
@@ -16,7 +16,8 @@ class UserLearnedWordModel extends UserLearnedWordEntity {
         wordId: json[kWordId],
         vocabularySetId: json[kVocaSetId],
         memoryLevel: json[kMemoryLevel],
-        word: WordModel.fromJson(json: json[kWord]));
+        word:
+            json[kWord] != null ? WordModel.fromJson(json: json[kWord]) : null);
   }
 
   Map<String, dynamic> toJson() {

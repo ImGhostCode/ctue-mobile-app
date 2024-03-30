@@ -16,7 +16,7 @@ class UserModel extends UserEntity {
       id: json['User'] != null ? json['User']['id'] : json['id'],
       name: json['User'] != null ? json['User']['name'] : json['name'],
       avt: json['User'] != null ? json['User']['avt'] : json['avt'],
-      accountType: json['accountType'] ?? json['accountType'],
+      accountType: json['accountType'],
       isDeleted:
           json['User'] != null ? json['User']['isDeleted'] : json['isDeleted'],
       createdAt: json['User'] != null

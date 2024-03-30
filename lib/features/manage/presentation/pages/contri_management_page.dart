@@ -69,10 +69,14 @@ class _ContributionManagementPageState
                       // This is called when the user selects an item.
                       setState(() {
                         selectedType = value!;
-                        print(value);
-                        // Provider.of<ContributionProvider>(context, listen: false)
-                        //     .eitherFailureOrGetAllCons(
-                        //         value, ContributionStatus.pending);
+                        print(value == 'Từ');
+                        Provider.of<ContributionProvider>(context,
+                                listen: false)
+                            .eitherFailureOrGetAllCons(
+                                value == 'Từ'
+                                    ? ContributionType.word
+                                    : ContributionType.sentence,
+                                ContributionStatus.pending);
                       });
                     },
                     textStyle: Theme.of(context).textTheme.bodyMedium,
@@ -211,7 +215,9 @@ class _ContributionManagementPageState
                                       fit: BoxFit.cover,
                                     )
                                   : Image.asset(
-                                      'assets/images/default-avatar-icon-of-social-media-user-vector.jpg'),
+                                      'assets/images/default-user3.png',
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ),
                           title: Text(listCons[index].content['content']),

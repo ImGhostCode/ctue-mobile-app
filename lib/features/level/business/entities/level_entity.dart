@@ -1,6 +1,6 @@
 class LevelEntity {
-  final int id;
+  final int? id;
   final String name;
 
-  LevelEntity({required this.id, required this.name});
+  LevelEntity({this.id, required this.name});
 }

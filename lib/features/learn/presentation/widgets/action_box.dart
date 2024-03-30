@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class ActionBox extends StatelessWidget {
   final List<WordEntity> words;
-  const ActionBox({super.key, this.words = const []});
+  final int vocabularySetId;
+  const ActionBox(
+      {super.key, this.words = const [], required this.vocabularySetId});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,9 @@ class ActionBox extends StatelessWidget {
                                 MaterialStatePropertyAll(Colors.blue.shade600)),
                         onPressed: () {
                           Navigator.of(context).pushNamed('/learn',
-                              arguments: LearnringArguments(words: words));
+                              arguments: LearnringArguments(
+                                  words: words,
+                                  vocabularySetId: vocabularySetId));
                         },
                         child: const Text(
                             // 'Ôn tập ngay'
@@ -91,5 +95,6 @@ class ActionBox extends StatelessWidget {
 
 class LearnringArguments {
   List<WordEntity> words = [];
-  LearnringArguments({required this.words});
+  int vocabularySetId;
+  LearnringArguments({required this.words, required this.vocabularySetId});
 }

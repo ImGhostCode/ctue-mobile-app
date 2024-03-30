@@ -1,6 +1,6 @@
 class SpecializationEntity {
-  final int id;
+  final int? id;
   final String name;
 
-  SpecializationEntity({required this.id, required this.name});
+  SpecializationEntity({this.id, required this.name});
 }

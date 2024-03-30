@@ -1,7 +1,8 @@
 import 'package:ctue_app/core/constants/constants.dart';
+import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
-import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
+import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/spaced_repetition_detail.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/dialog_text_input.dart';
@@ -18,10 +19,19 @@ class WordStorePage extends StatefulWidget {
 }
 
 class _WordStorePageState extends State<WordStorePage> {
+  // int totalWords = 0;
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerUsrVocaSets();
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerVocaSetStatistics(null);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(
       slivers: [
@@ -92,22 +102,33 @@ class _WordStorePageState extends State<WordStorePage> {
                   height: 390,
                 ),
                 Positioned(
-                    top: 60, // Center vertically
-                    left: 16,
-                    child: StatisticChart(
-                      totalWords: 5,
-                      dataStatistics: VocaSetStatisticsEntity(
-                          numberOfWords: 0,
-                          detailVocaSetStatisEntity:
-                              DetailVocaSetStatisEntity()),
-                    ))
+                  top: 60, // Center vertically
+                  left: 16,
+                  child: Consumer<VocaSetProvider>(
+                    builder: (context, provider, child) {
+                      bool isLoading = provider.isLoading;
+
+                      if (isLoading) {
+                        return const Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ));
+                      } else {
+                        return StatisticChart(
+                            dataStatistics: provider.vocaSetStatisticsEntity!);
+                      }
+                    },
+                  ),
+                )
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             color: Colors.grey.shade200,
-            child: ActionBox(),
+            child: const ActionBox(
+              vocabularySetId: 0,
+            ),
           ),
           _buildVocabularySetManagement(context),
           const SizedBox(
@@ -227,182 +248,206 @@ class _WordStorePageState extends State<WordStorePage> {
 
   Consumer _buildListVocabularySets() {
     return Consumer<VocaSetProvider>(builder: (context, provider, child) {
-      return ListView.separated(
-        shrinkWrap: true,
-        separatorBuilder: (context, index) {
-          return const SizedBox(
-            height: 3,
-          );
-        },
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: provider.userVocaSets.length,
-        itemBuilder: (context, index) {
-          return Card(
-              color: Colors.white, // Set the background color here
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/vocabulary-set-detail',
-                      arguments: VocabularySetArguments(
-                          id: provider.userVocaSets[index].id));
-                },
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  tileColor: Colors.white,
-                  leading: provider.userVocaSets[index].picture == null
-                      ? Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            // color: const Color(0xff7c94b6),
+      List<VocaSetEntity> listUsrVocaSets = provider.userVocaSets;
 
-                            color: Colors.blue.shade50,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.folder,
-                            color: Colors.blue,
-                            size: 30,
-                          ),
-                        )
-                      : Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            // color: const Color(0xff7c94b6),
-                            // border: Border.all(color: Colors.blue, width: 2),
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                  provider.userVocaSets[index].picture!),
-                              fit: BoxFit.cover,
+      bool isLoading = provider.isLoading;
+
+      // Access the failure from the provider
+      Failure? failure = provider.failure;
+
+      if (failure != null) {
+        // Handle failure, for example, show an error message
+        return Text(failure.errorMessage);
+      } else if (isLoading) {
+        // Handle the case where topics are empty
+        return const Center(
+            child:
+                CircularProgressIndicator()); // or show an empty state message
+      } else if (listUsrVocaSets.isEmpty) {
+        // Handle the case where topics are empty
+        return const Center(
+            child: Text('Không có dữ liệu')); // or show an empty state message
+      } else {
+        return ListView.separated(
+          shrinkWrap: true,
+          separatorBuilder: (context, index) {
+            return const SizedBox(
+              height: 3,
+            );
+          },
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: listUsrVocaSets.length,
+          itemBuilder: (context, index) {
+            return Card(
+                color: Colors.white, // Set the background color here
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/vocabulary-set-detail',
+                        arguments: VocabularySetArguments(
+                            id: listUsrVocaSets[index].id));
+                  },
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    tileColor: Colors.white,
+                    leading: listUsrVocaSets[index].picture == null
+                        ? Container(
+                            height: 55,
+                            width: 55,
+                            decoration: BoxDecoration(
+                              // color: const Color(0xff7c94b6),
+
+                              color: Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            borderRadius: BorderRadius.circular(12),
+                            child: const Icon(
+                              Icons.folder,
+                              color: Colors.blue,
+                              size: 30,
+                            ),
+                          )
+                        : Container(
+                            height: 55,
+                            width: 55,
+                            decoration: BoxDecoration(
+                              // color: const Color(0xff7c94b6),
+                              // border: Border.all(color: Colors.blue, width: 2),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    listUsrVocaSets[index].picture!),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                        ),
-                  title: Text(provider.userVocaSets[index].title),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.more_vert),
-                    onPressed: () => showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        // title: Text(
-                        //   'AlertDialog Title $index',
-                        // ),
-                        buttonPadding: EdgeInsets.zero,
-                        contentPadding: EdgeInsets.zero,
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3)),
-                        content: SizedBox(
-                          // height: 65,
-                          width: MediaQuery.of(context).size.width - 100,
-                          child: ListView(shrinkWrap: true, children: [
-                            provider.userVocaSets[index].userId ==
-                                    Provider.of<UserProvider>(context,
-                                            listen: false)
-                                        .userEntity!
-                                        .id
-                                ? TextButton(
-                                    style: const ButtonStyle(
-                                        padding: MaterialStatePropertyAll(
-                                            EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 18)),
-                                        shape: MaterialStatePropertyAll(
-                                            RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.zero)),
-                                        backgroundColor:
-                                            MaterialStatePropertyAll(
-                                                Colors.white)),
-                                    onPressed: () async {
-                                      showDialogInput(context, 'Đổi tên',
-                                          provider.userVocaSets[index]);
+                    title: Text(listUsrVocaSets[index].title),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.more_vert),
+                      onPressed: () => showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          // title: Text(
+                          //   'AlertDialog Title $index',
+                          // ),
+                          buttonPadding: EdgeInsets.zero,
+                          contentPadding: EdgeInsets.zero,
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3)),
+                          content: SizedBox(
+                            // height: 65,
+                            width: MediaQuery.of(context).size.width - 100,
+                            child: ListView(shrinkWrap: true, children: [
+                              listUsrVocaSets[index].userId ==
+                                      Provider.of<UserProvider>(context,
+                                              listen: false)
+                                          .userEntity!
+                                          .id
+                                  ? TextButton(
+                                      style: const ButtonStyle(
+                                          padding: MaterialStatePropertyAll(
+                                              EdgeInsets.symmetric(
+                                                  horizontal: 16,
+                                                  vertical: 18)),
+                                          shape: MaterialStatePropertyAll(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.zero)),
+                                          backgroundColor:
+                                              MaterialStatePropertyAll(
+                                                  Colors.white)),
+                                      onPressed: () async {
+                                        showDialogInput(context, 'Đổi tên',
+                                            listUsrVocaSets[index]);
 
-                                      // await provider.eitherFailureOrUpdateVocaSet(provider.userVocaSets[index].id, _ti, topicId, specId, oldPicture, picture, isPublic, words)
-                                    },
-                                    child: const Text(
-                                        textAlign: TextAlign.left, 'Đổi tên'))
-                                : const SizedBox.shrink(),
-                            TextButton(
-                                style: const ButtonStyle(
-                                    padding: MaterialStatePropertyAll(
-                                        EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 18)),
-                                    shape: MaterialStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.zero)),
-                                    backgroundColor:
-                                        MaterialStatePropertyAll(Colors.white)),
-                                onPressed: () => showDialog<String>(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                        backgroundColor: Colors.white,
-                                        // title: const Text('Cảnh báo'),
-                                        content: const Text(
-                                            'Bạn có chắc chắn muốn xóa bộ từ này không?'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, 'Xóa'),
-                                            child: const Text('Trở lại'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              await provider
-                                                  .eitherFailureOrRmVocaSet(
-                                                      provider
-                                                          .userVocaSets[index]
-                                                          .id,
-                                                      provider
-                                                              .userVocaSets[
-                                                                  index]
-                                                              .userId !=
-                                                          Provider.of<UserProvider>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .userEntity!
-                                                              .id);
-                                              if (provider.statusCode == 200) {
-                                                provider.userVocaSets
-                                                    .removeAt(index);
-                                              }
-                                              Navigator.pop(context, 'OK');
-                                              Navigator.pop(
-                                                context,
-                                              );
-                                            },
-                                            child: const Text('OK'),
-                                          ),
-                                        ],
+                                        // await provider.eitherFailureOrUpdateVocaSet(listUsrVocaSets[index].id, _ti, topicId, specId, oldPicture, picture, isPublic, words)
+                                      },
+                                      child: const Text(
+                                          textAlign: TextAlign.left, 'Đổi tên'))
+                                  : const SizedBox.shrink(),
+                              TextButton(
+                                  style: const ButtonStyle(
+                                      padding: MaterialStatePropertyAll(
+                                          EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 18)),
+                                      shape: MaterialStatePropertyAll(
+                                          RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.zero)),
+                                      backgroundColor: MaterialStatePropertyAll(
+                                          Colors.white)),
+                                  onPressed: () => showDialog<String>(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                          backgroundColor: Colors.white,
+                                          // title: const Text('Cảnh báo'),
+                                          content: const Text(
+                                              'Bạn có chắc chắn muốn xóa bộ từ này không?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, 'Xóa'),
+                                              child: const Text('Trở lại'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                await provider
+                                                    .eitherFailureOrRmVocaSet(
+                                                        provider
+                                                            .userVocaSets[index]
+                                                            .id,
+                                                        provider
+                                                                .userVocaSets[
+                                                                    index]
+                                                                .userId !=
+                                                            Provider.of<UserProvider>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .userEntity!
+                                                                .id);
+                                                if (provider.statusCode ==
+                                                    200) {
+                                                  listUsrVocaSets
+                                                      .removeAt(index);
+                                                }
+                                                Navigator.pop(context, 'OK');
+                                                Navigator.pop(
+                                                  context,
+                                                );
+                                              },
+                                              child: const Text('OK'),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                child: const Text(
-                                    textAlign: TextAlign.right, 'Xóa'))
-                          ]),
+                                  child: const Text(
+                                      textAlign: TextAlign.right, 'Xóa'))
+                            ]),
+                          ),
+                          // actions: <Widget>[
+                          //   TextButton(
+                          //     onPressed: () =>
+                          //         Navigator.pop(context, 'Cancel'),
+                          //     child: const Text('Cancel'),
+                          //   ),
+                          //   TextButton(
+                          //     onPressed: () => Navigator.pop(context, 'OK'),
+                          //     child: const Text('OK'),
+                          //   ),
+                          // ],
                         ),
-                        // actions: <Widget>[
-                        //   TextButton(
-                        //     onPressed: () =>
-                        //         Navigator.pop(context, 'Cancel'),
-                        //     child: const Text('Cancel'),
-                        //   ),
-                        //   TextButton(
-                        //     onPressed: () => Navigator.pop(context, 'OK'),
-                        //     child: const Text('OK'),
-                        //   ),
-                        // ],
                       ),
                     ),
                   ),
-                ),
-              ));
-        },
-      );
+                ));
+          },
+        );
+      }
     });
   }
 }

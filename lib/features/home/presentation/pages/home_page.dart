@@ -144,7 +144,9 @@ class HomePage extends StatelessWidget {
                 Container(
                   decoration: const BoxDecoration(color: Colors.white),
                   padding: const EdgeInsets.all(16.0),
-                  child: ActionBox(),
+                  child: ActionBox(
+                    vocabularySetId: 0,
+                  ),
                 ),
 
                 const SizedBox(

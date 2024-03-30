@@ -9,14 +9,14 @@ class UserLearnedWordEntity {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final UserEntity? user;
-  final WordEntity word;
+  final WordEntity? word;
 
   UserLearnedWordEntity({
     required this.userId,
     required this.wordId,
     required this.vocabularySetId,
     required this.memoryLevel,
-    required this.word,
+    this.word,
     this.createdAt,
     this.updatedAt,
     this.user,

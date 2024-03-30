@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/learn_params.dart';
+import 'package:ctue_app/features/learn/data/models/review_reminder_model.dart';
 import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
 import 'package:dartz/dartz.dart';
 
@@ -30,6 +31,28 @@ class LearnRepositoryImpl implements LearnRepository {
         ResponseDataModel<List<UserLearnedWordModel>> remoteVocaSet =
             await remoteDataSource.saveLearnedResult(
                 saveLearnedResultParams: saveLearnedResultParams);
+
+        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+
+        return Right(remoteVocaSet);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<ReviewReminderModel>>>
+      creReviewReminder(
+          {required CreReviewReminderParams creReviewReminderParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<ReviewReminderModel> remoteVocaSet =
+            await remoteDataSource.creReviewReminder(
+                creReviewReminderParams: creReviewReminderParams);
 
         // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
 

@@ -174,7 +174,10 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                                       listAccounts[index].user!.avt!,
                                       fit: BoxFit.cover,
                                     )
-                                  : const FlutterLogo(),
+                                  : Image.asset(
+                                      'assets/images/default-user3.png',
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ),
                           title: Text(listAccounts[index].user!.name),

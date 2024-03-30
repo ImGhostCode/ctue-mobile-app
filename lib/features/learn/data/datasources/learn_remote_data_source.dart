@@ -1,15 +1,15 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/learn_params.dart';
-import 'package:ctue_app/core/params/voca_set_params.dart';
+import 'package:ctue_app/features/learn/data/models/review_reminder_model.dart';
 import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
-import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_model.dart';
-import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_statis_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
 
 abstract class LearnRemoteDataSource {
   Future<ResponseDataModel<List<UserLearnedWordModel>>> saveLearnedResult(
       {required SaveLearnedResultParams saveLearnedResultParams});
+  Future<ResponseDataModel<ReviewReminderModel>> creReviewReminder(
+      {required CreReviewReminderParams creReviewReminderParams});
 }
 
 class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
@@ -66,6 +66,36 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
               .map<UserLearnedWordModel>(
                   (e) => UserLearnedWordModel.fromJson(json: e))
               .toList());
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<ReviewReminderModel>> creReviewReminder(
+      {required CreReviewReminderParams creReviewReminderParams}) async {
+    try {
+      final response = await dio.post('/learn/review-reminder',
+          data: {
+            'vocabularySetId': creReviewReminderParams.vocabularySetId,
+            'data': creReviewReminderParams.data,
+          },
+          // queryParameters: {"setId": getVocaSetStatisParams.id},
+          options: Options(headers: {
+            "authorization": "Bearer ${creReviewReminderParams.accessToken}"
+          }));
+      return ResponseDataModel<ReviewReminderModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => ReviewReminderModel.fromJson(json: json[0]));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

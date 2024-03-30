@@ -270,8 +270,13 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
   Future<ResponseDataModel<VocaSetStatisticsModel>> getVocaSetStatistics(
       {required GetVocaSetStatisParams getVocaSetStatisParams}) async {
     try {
+      final queryParameters = <String, dynamic>{};
+
+      if (getVocaSetStatisParams.id != null) {
+        queryParameters['setId'] = getVocaSetStatisParams.id;
+      }
       final response = await dio.get('/learn/statistics',
-          queryParameters: {"setId": getVocaSetStatisParams.id},
+          queryParameters: queryParameters,
           options: Options(headers: {
             "authorization": "Bearer ${getVocaSetStatisParams.accessToken}"
           }));

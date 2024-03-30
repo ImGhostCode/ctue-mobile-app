@@ -7,7 +7,7 @@ class UserEntity {
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String accountType;
+  final String? accountType;
   const UserEntity(
       {required this.id,
       required this.name,

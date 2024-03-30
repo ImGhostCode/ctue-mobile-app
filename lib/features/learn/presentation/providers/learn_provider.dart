@@ -5,7 +5,9 @@ import 'package:ctue_app/core/params/learn_params.dart';
 import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/core/services/shared_pref_service.dart';
+import 'package:ctue_app/features/learn/business/entities/review_reminder_entity.dart';
 import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
+import 'package:ctue_app/features/learn/business/usecases/cre_review_reminder_usecase.dart';
 import 'package:ctue_app/features/learn/business/usecases/save_learned_res_usecase.dart';
 import 'package:ctue_app/features/learn/data/datasources/learn_local_data_source.dart';
 import 'package:ctue_app/features/learn/data/datasources/learn_remote_data_source.dart';
@@ -22,6 +24,7 @@ class LearnProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   List<UserLearnedWordEntity> saveResults = [];
+  ReviewReminderEntity? createdReviewReminder;
 
   set isLoading(bool value) {
     _isLoading = value;
@@ -233,6 +236,49 @@ class LearnProvider extends ChangeNotifier {
         _isLoading = false;
         saveResults = newVocaSet.data;
         message = newVocaSet.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrCreReviewReminder(
+      int vocabularySetId, List<DataRemindParams> data) async {
+    _isLoading = true;
+    LearnRepositoryImpl repository = LearnRepositoryImpl(
+      remoteDataSource: LearnRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: LearnLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrCreReviewReminder =
+        await CreReviewReminderUsecase(learnRepository: repository).call(
+      creReviewReminderParams: CreReviewReminderParams(
+          vocabularySetId: vocabularySetId,
+          data: data,
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
+    );
+
+    failureOrCreReviewReminder.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        createdReviewReminder = null;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<ReviewReminderEntity> newReviewReminder) {
+        _isLoading = false;
+        createdReviewReminder = newReviewReminder.data;
+        message = newReviewReminder.message;
         failure = null;
         notifyListeners();
       },

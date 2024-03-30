@@ -1,4 +1,5 @@
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
+import 'package:ctue_app/features/learn/presentation/pages/learning_result.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +8,13 @@ class WordDetailInVocaSet extends StatefulWidget {
   final bool showLevel;
   final bool showMore;
   final WordEntity? wordEntity;
+  final int? memoryLevel;
 
   const WordDetailInVocaSet(
       {super.key,
       this.showLevel = false,
       this.showMore = false,
+      this.memoryLevel,
       this.wordEntity});
 
   @override
@@ -21,8 +24,9 @@ class WordDetailInVocaSet extends StatefulWidget {
 class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
   @override
   Widget build(BuildContext context) {
+    final MemoryLevel level = getMemoryLevel(widget.memoryLevel ?? 1);
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -39,17 +43,18 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                   children: [
                     if (widget.showLevel)
                       GradientBorderContainer(
-                          diameter: level_1.diameter,
-                          borderWidth: level_1.borderWidth,
-                          borderColor1: level_1.borderColor1,
-                          borderColor2: level_1.borderColor2,
-                          stop1: level_1.stop1,
-                          stop2: level_1.stop2,
-                          percent: level_1.percent,
-                          fontSize: level_1.fontSize),
-                    const SizedBox(
-                      width: 5,
-                    ),
+                          diameter: level.diameter,
+                          borderWidth: level.borderWidth,
+                          borderColor1: level.borderColor1,
+                          borderColor2: level.borderColor2,
+                          stop1: level.stop1,
+                          stop2: level.stop2,
+                          percent: level.percent,
+                          fontSize: level.fontSize),
+                    if (widget.showLevel)
+                      const SizedBox(
+                        width: 5,
+                      ),
                     Text(
                       widget.wordEntity!.content,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class StatisticChart extends StatefulWidget {
-  final int totalWords;
+  final int? totalWords;
   final VocaSetStatisticsEntity dataStatistics;
   const StatisticChart(
-      {super.key, required this.totalWords, required this.dataStatistics});
+      {super.key, this.totalWords, required this.dataStatistics});
 
   @override
   State<StatisticChart> createState() => _StatisticChartState();
@@ -14,7 +14,7 @@ class StatisticChart extends StatefulWidget {
 
 class _StatisticChartState extends State<StatisticChart> {
   late List<_ChartData> data;
-  late TooltipBehavior _tooltip;
+  // late TooltipBehavior _tooltip;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _StatisticChartState extends State<StatisticChart> {
           widget.dataStatistics.detailVocaSetStatisEntity.level_6.length,
           Colors.blue.shade900)
     ];
-    _tooltip = TooltipBehavior(enable: true);
+    // _tooltip = TooltipBehavior(enable: true);
     super.initState();
   }
 
@@ -74,14 +74,16 @@ class _StatisticChartState extends State<StatisticChart> {
               text: '${widget.dataStatistics.numberOfWords}',
               style: Theme.of(context).textTheme.titleLarge,
               children: <TextSpan>[
-                TextSpan(
-                  text: '/',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                TextSpan(
-                  text: '${widget.totalWords}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                if (widget.totalWords != null)
+                  TextSpan(
+                    text: '/',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                if (widget.totalWords != null)
+                  TextSpan(
+                    text: '${widget.totalWords}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
               ],
             ),
           ),
@@ -92,7 +94,9 @@ class _StatisticChartState extends State<StatisticChart> {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/statistic-learned-words');
+                Navigator.pushNamed(context, '/statistic-learned-words',
+                    arguments: StatisLearnedWordArgument(
+                        dataStatistics: widget.dataStatistics));
               },
               child: SfCartesianChart(
                   primaryXAxis: const CategoryAxis(),
@@ -136,4 +140,9 @@ class _ChartData {
   final String x;
   final int? y;
   final Color? color;
+}
+
+class StatisLearnedWordArgument {
+  final VocaSetStatisticsEntity dataStatistics;
+  StatisLearnedWordArgument({required this.dataStatistics});
 }

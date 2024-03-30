@@ -5,7 +5,7 @@ import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statisti
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/statistic_chart.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_%20in_voca_set.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_in_voca_set.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -87,6 +87,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       ),
                       ActionBox(
                         words: vocaSetEntity.words,
+                        vocabularySetId: vocaSetEntity.id,
                       ),
 
                       const SizedBox(

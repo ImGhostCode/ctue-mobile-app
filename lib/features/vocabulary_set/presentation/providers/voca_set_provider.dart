@@ -223,7 +223,7 @@ class VocaSetProvider extends ChangeNotifier {
     );
   }
 
-  Future eitherFailureOrGerVocaSetStatistics(int id) async {
+  Future eitherFailureOrGerVocaSetStatistics(int? id) async {
     _isLoading = true;
     VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
       remoteDataSource: VocaSetRemoteDataSourceImpl(
