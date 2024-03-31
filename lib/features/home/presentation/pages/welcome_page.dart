@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class WelcomePage extends StatefulWidget {
   WelcomePage({super.key});
@@ -20,9 +21,29 @@ class _WelcomePageState extends State<WelcomePage>
 
   @override
   void initState() {
+    super.initState();
+    _requestPermission();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(_printTabIndex);
-    super.initState();
+  }
+
+  void _requestPermission() async {
+    var status = await Permission.notification.status;
+    var alarmStatus = await Permission.scheduleExactAlarm.status;
+
+    if (status.isPermanentlyDenied) {
+      return;
+    }
+    if (status.isDenied) {
+      await Permission.notification.request();
+    }
+
+    if (alarmStatus.isPermanentlyDenied) {
+      return;
+    }
+    if (alarmStatus.isDenied) {
+      await Permission.scheduleExactAlarm.request();
+    }
   }
 
   @override

@@ -26,6 +26,39 @@ class LearnProvider extends ChangeNotifier {
   List<UserLearnedWordEntity> saveResults = [];
   ReviewReminderEntity? createdReviewReminder;
 
+  TimeOfDay? _remindTime;
+  bool? _isRemind = true;
+
+  bool get isRemind {
+    return prefs.getBool('is_remind') ?? _isRemind!;
+  }
+
+  set isRemind(bool value) {
+    _isRemind = value;
+    prefs.setBool('is_remind', value);
+    notifyListeners();
+  }
+
+  TimeOfDay get remindTime {
+    if (_remindTime != null) {
+      return _remindTime!; // Return cached value if available
+    }
+
+    final storedRemindTime = prefs.getString('remind_time');
+    if (storedRemindTime != null) {
+      final parts = storedRemindTime.split(':'); // Split into hours and minutes
+      return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+    } else {
+      return const TimeOfDay(hour: 21, minute: 00); // Default value
+    }
+  }
+
+  set remindTime(TimeOfDay value) {
+    _remindTime = value; // Update cached value
+    prefs.setString('remind_time', "${value.hour}:${value.minute}");
+    notifyListeners();
+  }
+
   set isLoading(bool value) {
     _isLoading = value;
     notifyListeners();

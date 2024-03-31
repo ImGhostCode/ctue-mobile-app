@@ -136,3 +136,7 @@ class ContributionStatus {
   static const int pending = 0;
   static const int approved = 1;
 }
+
+const String channelId = 'CTUE';
+const String channelName = 'ctue_learning_english_app';
+const String channelDescription = 'Learning English application';

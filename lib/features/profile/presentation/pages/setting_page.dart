@@ -1,22 +1,28 @@
 import 'package:app_settings/app_settings.dart';
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
+import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/speech/presentation/pages/voice_setting_page.dart';
 import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_all.dart' as tz; // For timezone support
+import 'package:timezone/timezone.dart' as tz;
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class SettingPage extends StatefulWidget {
-  SettingPage({super.key});
+  const SettingPage({super.key});
 
   @override
   State<SettingPage> createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
-  bool isRemind = true;
-  TimeOfDay remindTime = TimeOfDay(hour: 21, minute: 00);
-
   @override
   Widget build(BuildContext context) {
     final List<Setting> _settings = [
@@ -30,8 +36,13 @@ class _SettingPageState extends State<SettingPage> {
       Setting(
           icon: Icons.notifications_rounded,
           title: 'Thông báo',
-          onTap: () {
-            AppSettings.openAppSettings(type: AppSettingsType.notification);
+          onTap: () async {
+            if (!await Permission.notification.isGranted) {
+              AppSettings.openAppSettings(type: AppSettingsType.notification);
+            } else {
+              // Show an informative message or snackbar prompting the user
+              // to re-enable notifications from settings.
+            }
           }),
       Setting(
           icon: Icons.headphones,
@@ -39,7 +50,7 @@ class _SettingPageState extends State<SettingPage> {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => VoiceSettingPage(),
+                builder: (context) => const VoiceSettingPage(),
               ),
             );
           }),
@@ -92,80 +103,93 @@ class _SettingPageState extends State<SettingPage> {
               height: 10,
             ),
             SizedBox(
-                height: 120,
+                // height: 120,
                 child: ListView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  children: [
-                    ListTile(
-                      tileColor: Colors.white,
-                      leading: const Icon(Icons.timer),
-                      title: const Text('Nhắc nhở'),
-                      trailing: Switch(
-                        // This bool value toggles the switch.
-                        value: isRemind,
-                        activeColor: Colors.blue,
-                        onChanged: (bool value) {
-                          // This is called when the user toggles the switch.
-                          setState(() {
-                            isRemind = value;
-                          });
-                        },
-                      ),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(12),
-                              topRight: Radius.circular(12))),
-                    ),
-                    ListTile(
-                      tileColor: Colors.white,
-                      leading: null,
-                      title: Text(
-                        'Đặt giờ',
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              children: [
+                ListTile(
+                  tileColor: Colors.white,
+                  leading: const Icon(Icons.timer),
+                  title: const Text('Nhắc nhở'),
+                  trailing: Switch(
+                    // This bool value toggles the switch.
+                    value: Provider.of<LearnProvider>(context, listen: true)
+                        .isRemind,
+                    activeColor: Colors.blue,
+                    onChanged: (bool value) {
+                      // This is called when the user toggles the switch.
+                      Provider.of<LearnProvider>(context, listen: false)
+                          .isRemind = value;
+                    },
+                  ),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12))),
+                ),
+                ListTile(
+                  tileColor: Colors.white,
+                  leading: null,
+                  title: Text(
+                    'Đặt giờ',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${Provider.of<LearnProvider>(context, listen: true).remindTime.hour}:${Provider.of<LearnProvider>(context, listen: true).remindTime.minute.toString().padLeft(2, '0')}',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '21:00',
-                            style: Theme.of(context).textTheme.bodyMedium,
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Colors.grey,
+                        size: 30,
+                      )
+                    ],
+                  ),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12))),
+                  onTap: () async {
+                    TimeOfDay? selectedTime24Hour = await showTimePicker(
+                      context: context,
+                      initialTime:
+                          Provider.of<LearnProvider>(context, listen: false)
+                              .remindTime,
+                      builder: (BuildContext context, Widget? child) {
+                        return Theme(
+                          data: ThemeData.light(),
+                          child: MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: true),
+                            child: child!,
                           ),
-                          const Icon(
-                            Icons.chevron_right_rounded,
-                            color: Colors.grey,
-                            size: 30,
-                          )
-                        ],
-                      ),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(12),
-                              bottomRight: Radius.circular(12))),
-                      onTap: () async {
-                        TimeOfDay? selectedTime24Hour = await showTimePicker(
-                          context: context,
-                          initialTime: const TimeOfDay(hour: 21, minute: 00),
-                          builder: (BuildContext context, Widget? child) {
-                            return Theme(
-                              data: ThemeData.light(),
-                              child: MediaQuery(
-                                data: MediaQuery.of(context)
-                                    .copyWith(alwaysUse24HourFormat: true),
-                                child: child!,
-                              ),
-                            );
-                          },
                         );
-                        if (selectedTime24Hour != null) {
-                          setState(() {
-                            remindTime = selectedTime24Hour;
-                          });
-                        }
                       },
-                    ),
-                  ],
-                )),
+                    );
+                    if (selectedTime24Hour != null) {
+                      // ignore: use_build_context_synchronously
+                      Provider.of<LearnProvider>(context, listen: false)
+                          .remindTime = selectedTime24Hour;
+                      final now = DateTime.now();
+                      final scheduledTime = DateTime(
+                          now.year,
+                          now.month,
+                          now.day,
+                          selectedTime24Hour.hour,
+                          selectedTime24Hour.minute);
+                      await flutterLocalNotificationsPlugin.cancel(0);
+                      // Schedule the notification
+                      await scheduleNotification('Nhắc nhở',
+                          'Đã đến giờ học tập cùng CTUE!', scheduledTime);
+                    }
+                  },
+                ),
+              ],
+            )),
             const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -224,4 +248,81 @@ class Setting {
   final VoidCallback onTap;
 
   Setting({required this.icon, required this.title, required this.onTap});
+}
+
+Future<void> scheduleNotification(
+    String title, String body, DateTime scheduledTime) async {
+  // Configure Android-specific details
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+    channelId,
+    channelName,
+    channelDescription: channelDescription,
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+
+  // Configure iOS-specific details
+  const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+      DarwinNotificationDetails();
+
+  // Configure common platform details
+  const NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  // Schedule the notification using timezone support
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      title,
+      body,
+      tz.TZDateTime.from(scheduledTime, tz.local), // Use the local timezone
+      platformChannelSpecifics,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime);
+}
+
+// Add in a suitable place in your project
+Future<void> showDailyReminderNotification(TimeOfDay time) async {
+  // ... Initialization of flutter_local_notifications (check existing code)
+
+  var scheduledNotificationDateTime = tz.TZDateTime.now(tz.local)
+      .add(Duration(hours: time.hour, minutes: time.minute))
+      .subtract(Duration(
+          hours: DateTime.now().hour,
+          minutes: DateTime.now().minute)); // Time for today
+
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+    'channelId',
+    'channelName',
+    channelDescription: 'channelDescription',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+
+  // Configure iOS-specific details
+  const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+      DarwinNotificationDetails();
+
+  // Configure common platform details
+  const NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+      0, // Unique ID
+      'Daily Reminder',
+      'Your daily reminder message',
+      scheduledNotificationDateTime,
+      platformChannelSpecifics,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents:
+          DateTimeComponents.time // Repeat *at* the time, daily
+      );
 }
