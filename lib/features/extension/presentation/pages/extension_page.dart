@@ -25,6 +25,13 @@ class ExtentionPage extends StatelessWidget {
           onTap: () {
             Navigator.pushNamed(context, '/favorite-vocabulary');
           }),
+      Feature(
+          imagePath: 'assets/images/icons/speech-icon.png',
+          title: 'Cải thiện phát âm',
+          subtitle: 'Nâng cao trình độ nói tiếng Anh của bạn',
+          onTap: () {
+            Navigator.pushNamed(context, '/improve-pronunciation');
+          }),
     ];
 
     return Scaffold(

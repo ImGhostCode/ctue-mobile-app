@@ -3,6 +3,7 @@ import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
+import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/spaced_repetition_detail.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/dialog_text_input.dart';
@@ -113,6 +114,12 @@ class _WordStorePageState extends State<WordStorePage> {
                             child: CircularProgressIndicator(
                           color: Colors.white,
                         ));
+                      } else if (provider.vocaSetStatisticsEntity == null) {
+                        return StatisticChart(
+                            dataStatistics: VocaSetStatisticsEntity(
+                                detailVocaSetStatisEntity:
+                                    DetailVocaSetStatisEntity(),
+                                numberOfWords: 0));
                       } else {
                         return StatisticChart(
                             dataStatistics: provider.vocaSetStatisticsEntity!);

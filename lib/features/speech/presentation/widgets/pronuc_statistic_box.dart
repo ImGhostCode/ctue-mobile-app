@@ -279,6 +279,7 @@ class PronuncStatisticBox extends StatelessWidget {
                       )
                     : const Expanded(
                         child: Center(child: Text('Chưa có dữ liệu'))),
+                const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

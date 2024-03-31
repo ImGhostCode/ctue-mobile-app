@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest_all.dart' as tz; // For timezone support
+// import 'package:timezone/data/latest_all.dart' as tz; // For timezone support
 import 'package:timezone/timezone.dart' as tz;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -214,6 +214,7 @@ class _SettingPageState extends State<SettingPage> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12)))),
                         onPressed: () async {
+                          await flutterLocalNotificationsPlugin.cancel(0);
                           await SecureStorageService.secureStorage
                               .delete(key: 'accessToken');
                           // ignore: use_build_context_synchronously

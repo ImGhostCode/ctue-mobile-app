@@ -91,6 +91,7 @@ class _RecordButtonState extends State<RecordButton> {
           await _stopRecording();
           // _playRecording();
           if (_filePath != null) {
+            phonemeResults.clear();
             await Provider.of<SpeechProvider>(context, listen: false)
                 .eitherFailureEvaluateSP(widget.text, File(_filePath!));
             showAssessmentResult(

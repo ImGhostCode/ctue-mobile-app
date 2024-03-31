@@ -26,6 +26,7 @@ class MyFeatureListTile extends StatelessWidget {
         imagePath,
         height: 40,
         width: 40,
+        fit: BoxFit.fill,
       ),
       title: Text(
         title,

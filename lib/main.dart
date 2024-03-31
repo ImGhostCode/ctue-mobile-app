@@ -15,6 +15,7 @@ import 'package:ctue_app/features/manage/presentation/pages/sen_management_page.
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/add_sentence_page.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/edit_sentence_page%20copy.dart';
+import 'package:ctue_app/features/speech/presentation/pages/improve_pronunciation_page.dart';
 import 'package:ctue_app/features/user/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 // import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
@@ -298,6 +299,8 @@ class MyApp extends StatelessWidget {
           '/statistic-learned-words': (context) =>
               const StatisticLearnedWordPage(),
           '/pro-statistics-detail': (context) => const ProStatisticDetailPage(),
+          '/improve-pronunciation': (context) =>
+              const ImprovePronunciationPage(),
           '/acc-management': (context) => const AccountManagementPage(),
           '/contri-management': (context) => const ContributionManagementPage(),
           '/dict-management': (context) => const DictionaryManagementPage(),
