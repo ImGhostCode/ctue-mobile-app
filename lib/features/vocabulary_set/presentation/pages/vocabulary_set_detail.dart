@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
@@ -18,6 +19,14 @@ class VocabularySetDetail extends StatefulWidget {
 
 class _VocabularySetDetailState extends State<VocabularySetDetail> {
   String sortBy = 'Mới nhất';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUpcomingReminder();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +94,46 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       const SizedBox(
                         height: 20,
                       ),
-                      ActionBox(
-                        words: vocaSetEntity.words,
-                        vocabularySetId: vocaSetEntity.id,
-                      ),
+                      vocaSetEntity.words.isNotEmpty
+                          ? Consumer<LearnProvider>(
+                              builder: (context, learnProvider, child) {
+                              bool isLoading = learnProvider.isLoading;
+
+                              Failure? failure = learnProvider.failure;
+
+                              if (failure != null) {
+                                // Handle failure, for example, show an error message
+                                return Text(failure.errorMessage);
+                              } else if (isLoading) {
+                                // Handle the case where topics are empty
+                                return const Center(
+                                    child:
+                                        CircularProgressIndicator()); // or show an empty state message
+                              } else if (learnProvider.upcomingReminder !=
+                                  null) {
+                                if (learnProvider
+                                        .upcomingReminder!.vocabularySetId ==
+                                    provider.vocaSetEntity!.id) {
+                                  return ActionBox(
+                                    words: vocaSetEntity.words,
+                                    vocabularySetId: vocaSetEntity.id,
+                                    reviewAt: learnProvider
+                                        .upcomingReminder!.reviewAt,
+                                  );
+                                } else {
+                                  return ActionBox(
+                                    words: vocaSetEntity.words,
+                                    vocabularySetId: vocaSetEntity.id,
+                                  );
+                                }
+                              } else {
+                                return ActionBox(
+                                  words: vocaSetEntity.words,
+                                  vocabularySetId: vocaSetEntity.id,
+                                );
+                              }
+                            })
+                          : const SizedBox.shrink(),
 
                       const SizedBox(
                         height: 20,

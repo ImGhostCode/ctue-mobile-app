@@ -174,6 +174,7 @@ class HomePage extends StatelessWidget {
                           vocabularySetId:
                               provider.currReminder!.vocabularySetId,
                           words: provider.currReminder!.words,
+                          reviewAt: provider.currReminder!.reviewAt,
                         ),
                       );
                     } else if (provider.upcomingReminder != null) {
@@ -184,6 +185,7 @@ class HomePage extends StatelessWidget {
                           vocabularySetId:
                               provider.upcomingReminder!.vocabularySetId,
                           words: provider.upcomingReminder!.words,
+                          reviewAt: provider.upcomingReminder!.reviewAt,
                         ),
                       );
                     } else {

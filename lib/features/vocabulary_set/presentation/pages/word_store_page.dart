@@ -29,6 +29,13 @@ class _WordStorePageState extends State<WordStorePage> {
         .eitherFailureOrGerUsrVocaSets();
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(null);
+    if (Provider.of<LearnProvider>(context, listen: false).upcomingReminder ==
+            null ||
+        Provider.of<LearnProvider>(context, listen: false).currReminder ==
+            null) {
+      Provider.of<LearnProvider>(context, listen: false)
+          .eitherFailureOrGetUpcomingReminder();
+    }
     super.initState();
   }
 
@@ -153,6 +160,7 @@ class _WordStorePageState extends State<WordStorePage> {
                   child: ActionBox(
                     vocabularySetId: provider.currReminder!.vocabularySetId,
                     words: provider.currReminder!.words,
+                    reviewAt: provider.currReminder!.reviewAt,
                   ),
                 );
               } else if (provider.upcomingReminder != null) {
@@ -163,19 +171,20 @@ class _WordStorePageState extends State<WordStorePage> {
                   child: ActionBox(
                     vocabularySetId: provider.upcomingReminder!.vocabularySetId,
                     words: provider.upcomingReminder!.words,
+                    reviewAt: provider.upcomingReminder!.reviewAt,
                   ),
                 );
               } else {
-                // return Container(
-                //   padding:
-                //       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                //   color: Colors.grey.shade200,
-                //   child: const ActionBox(
-                //     vocabularySetId: -1,
-                //     words: [],
-                //   ),
-                // );
-                return const SizedBox.shrink();
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  color: Colors.grey.shade200,
+                  child: const ActionBox(
+                    vocabularySetId: -1,
+                    words: [],
+                  ),
+                );
+                // return const SizedBox.shrink();
               }
             },
           ),
