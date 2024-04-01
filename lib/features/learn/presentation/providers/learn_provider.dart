@@ -8,6 +8,7 @@ import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/learn/business/entities/review_reminder_entity.dart';
 import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
 import 'package:ctue_app/features/learn/business/usecases/cre_review_reminder_usecase.dart';
+import 'package:ctue_app/features/learn/business/usecases/get_upcoming_reminder_usecase.dart';
 import 'package:ctue_app/features/learn/business/usecases/save_learned_res_usecase.dart';
 import 'package:ctue_app/features/learn/data/datasources/learn_local_data_source.dart';
 import 'package:ctue_app/features/learn/data/datasources/learn_remote_data_source.dart';
@@ -25,6 +26,8 @@ class LearnProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   List<UserLearnedWordEntity> saveResults = [];
   ReviewReminderEntity? createdReviewReminder;
+  ReviewReminderEntity? currReminder;
+  ReviewReminderEntity? upcomingReminder;
 
   TimeOfDay? _remindTime;
   bool? _isRemind = true;
@@ -304,6 +307,7 @@ class LearnProvider extends ChangeNotifier {
       (Failure newFailure) {
         _isLoading = false;
         createdReviewReminder = null;
+        currReminder = null;
         failure = newFailure;
         message = newFailure.errorMessage;
         notifyListeners();
@@ -311,6 +315,48 @@ class LearnProvider extends ChangeNotifier {
       (ResponseDataModel<ReviewReminderEntity> newReviewReminder) {
         _isLoading = false;
         createdReviewReminder = newReviewReminder.data;
+        currReminder = newReviewReminder.data;
+        message = newReviewReminder.message;
+
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrGetUpcomingReminder() async {
+    _isLoading = true;
+    LearnRepositoryImpl repository = LearnRepositoryImpl(
+      remoteDataSource: LearnRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: LearnLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrUpcomingReminder =
+        await GetUpcomingReminderUsecase(learnRepository: repository).call(
+      getUpcomingReminderParams: GetUpcomingReminderParams(
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
+    );
+
+    failureOrUpcomingReminder.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        upcomingReminder = null;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<ReviewReminderEntity?> newReviewReminder) {
+        _isLoading = false;
+        upcomingReminder = newReviewReminder.data;
         message = newReviewReminder.message;
         failure = null;
         notifyListeners();

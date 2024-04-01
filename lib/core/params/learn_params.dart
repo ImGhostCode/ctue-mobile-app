@@ -37,3 +37,10 @@ class DataRemindParams {
     };
   }
 }
+
+class GetUpcomingReminderParams {
+  final String accessToken;
+  // final int userId;
+
+  GetUpcomingReminderParams({required this.accessToken});
+}

@@ -1,5 +1,7 @@
+import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ActionBox extends StatelessWidget {
   final List<WordEntity> words;
@@ -34,7 +36,9 @@ class ActionBox extends StatelessWidget {
                       ),
                       Flexible(
                         child: Text(
-                          'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé',
+                          vocabularySetId == -1
+                              ? 'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé'
+                              : 'Bạn đang có ${words.length} từ vựng cần ôn tập',
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -63,15 +67,21 @@ class ActionBox extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8))),
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.blue.shade600)),
-                        onPressed: () {
-                          Navigator.of(context).pushNamed('/learn',
-                              arguments: LearnringArguments(
-                                  words: words,
-                                  vocabularySetId: vocabularySetId));
-                        },
-                        child: const Text(
-                            // 'Ôn tập ngay'
-                            'Học ngay')),
+                        onPressed: words.isEmpty
+                            ? () {
+                                Provider.of<SelectedPageProvider>(context,
+                                        listen: false)
+                                    .selectedPage = 1;
+                              }
+                            : () {
+                                Navigator.of(context).pushNamed('/learn',
+                                    arguments: LearnringArguments(
+                                        words: words,
+                                        vocabularySetId: vocabularySetId));
+                              },
+                        child: Text(
+                            // ''
+                            words.isEmpty ? 'Học từ vựng' : 'Ôn tập ngay')),
                   )
                 ],
               )),

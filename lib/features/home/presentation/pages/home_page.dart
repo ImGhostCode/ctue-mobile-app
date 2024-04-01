@@ -1,6 +1,9 @@
+import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -13,7 +16,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<LearningSource> _learningSources = [
+    final List<LearningSource> learningSources = [
       LearningSource(
         icon: Icons.abc,
         title: 'Bảng phiên âm IPA',
@@ -55,6 +58,14 @@ class HomePage extends StatelessWidget {
       //   },
       // ),
     ];
+
+    if (Provider.of<LearnProvider>(context, listen: false).upcomingReminder ==
+            null ||
+        Provider.of<LearnProvider>(context, listen: false).currReminder ==
+            null) {
+      Provider.of<LearnProvider>(context, listen: false)
+          .eitherFailureOrGetUpcomingReminder();
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -99,7 +110,7 @@ class HomePage extends StatelessWidget {
                       const SizedBox(
                         height: 5,
                       ),
-                      LookUpDicBar()
+                      const LookUpDicBar()
                     ],
                   ),
                 ),
@@ -141,13 +152,58 @@ class HomePage extends StatelessWidget {
                 //   ),
                 // ),
 
-                Container(
-                  decoration: const BoxDecoration(color: Colors.white),
-                  padding: const EdgeInsets.all(16.0),
-                  child: ActionBox(
-                    vocabularySetId: 0,
-                  ),
+                Consumer<LearnProvider>(
+                  builder: (context, provider, child) {
+                    bool isLoading = provider.isLoading;
+
+                    Failure? failure = provider.failure;
+
+                    if (failure != null) {
+                      // Handle failure, for example, show an error message
+                      return Text(failure.errorMessage);
+                    } else if (isLoading) {
+                      // Handle the case where topics are empty
+                      return const Center(
+                          child:
+                              CircularProgressIndicator()); // or show an empty state message
+                    } else if (provider.currReminder != null) {
+                      return Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        padding: const EdgeInsets.all(16.0),
+                        child: ActionBox(
+                          vocabularySetId:
+                              provider.currReminder!.vocabularySetId,
+                          words: provider.currReminder!.words,
+                        ),
+                      );
+                    } else if (provider.upcomingReminder != null) {
+                      return Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        padding: const EdgeInsets.all(16.0),
+                        child: ActionBox(
+                          vocabularySetId:
+                              provider.upcomingReminder!.vocabularySetId,
+                          words: provider.upcomingReminder!.words,
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        padding: const EdgeInsets.all(16.0),
+                        child: const ActionBox(
+                          vocabularySetId: -1,
+                          words: [],
+                        ),
+                      );
+                    }
+                  },
                 ),
+
+                /*
+                 return const Center(
+                          child: Text(
+                              'Không có dữ liệu'));
+                */
 
                 const SizedBox(
                   height: 10,
@@ -170,7 +226,7 @@ class HomePage extends StatelessWidget {
                       ),
                       Expanded(
                         child: GridView.builder(
-                          itemCount: _learningSources.length,
+                          itemCount: learningSources.length,
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -182,24 +238,24 @@ class HomePage extends StatelessWidget {
                           // padding: const EdgeInsets.all(8),
                           itemBuilder: (context, index) {
                             return InkWell(
-                              onTap: _learningSources[index].onTap,
+                              onTap: learningSources[index].onTap,
                               child: Column(
                                 children: [
                                   Container(
                                     margin: const EdgeInsets.only(bottom: 5),
                                     padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
-                                      color: _learningSources[index].bgColor,
+                                      color: learningSources[index].bgColor,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Icon(
-                                      _learningSources[index].icon,
+                                      learningSources[index].icon,
                                       size: 26,
                                       color: Colors.white,
                                     ),
                                   ),
                                   Text(
-                                    _learningSources[index].title,
+                                    learningSources[index].title,
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme

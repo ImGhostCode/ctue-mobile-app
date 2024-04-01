@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
@@ -130,12 +131,53 @@ class _WordStorePageState extends State<WordStorePage> {
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            color: Colors.grey.shade200,
-            child: const ActionBox(
-              vocabularySetId: 0,
-            ),
+          Consumer<LearnProvider>(
+            builder: (context, provider, child) {
+              bool isLoading = provider.isLoading;
+
+              Failure? failure = provider.failure;
+
+              if (failure != null) {
+                // Handle failure, for example, show an error message
+                return Text(failure.errorMessage);
+              } else if (isLoading) {
+                // Handle the case where topics are empty
+                return const Center(
+                    child:
+                        CircularProgressIndicator()); // or show an empty state message
+              } else if (provider.currReminder != null) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  color: Colors.grey.shade200,
+                  child: ActionBox(
+                    vocabularySetId: provider.currReminder!.vocabularySetId,
+                    words: provider.currReminder!.words,
+                  ),
+                );
+              } else if (provider.upcomingReminder != null) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  color: Colors.grey.shade200,
+                  child: ActionBox(
+                    vocabularySetId: provider.upcomingReminder!.vocabularySetId,
+                    words: provider.upcomingReminder!.words,
+                  ),
+                );
+              } else {
+                // return Container(
+                //   padding:
+                //       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                //   color: Colors.grey.shade200,
+                //   child: const ActionBox(
+                //     vocabularySetId: -1,
+                //     words: [],
+                //   ),
+                // );
+                return const SizedBox.shrink();
+              }
+            },
           ),
           _buildVocabularySetManagement(context),
           const SizedBox(

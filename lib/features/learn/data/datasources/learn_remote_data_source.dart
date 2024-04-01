@@ -10,6 +10,8 @@ abstract class LearnRemoteDataSource {
       {required SaveLearnedResultParams saveLearnedResultParams});
   Future<ResponseDataModel<ReviewReminderModel>> creReviewReminder(
       {required CreReviewReminderParams creReviewReminderParams});
+  Future<ResponseDataModel<ReviewReminderModel?>> getUpcomingReminder(
+      {required GetUpcomingReminderParams getUpcomingReminderParams});
 }
 
 class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
@@ -96,6 +98,34 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
       return ResponseDataModel<ReviewReminderModel>.fromJson(
           json: response.data,
           fromJsonD: (json) => ReviewReminderModel.fromJson(json: json[0]));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<ReviewReminderModel?>> getUpcomingReminder(
+      {required GetUpcomingReminderParams getUpcomingReminderParams}) async {
+    try {
+      final response = await dio.get('/learn/upcoming-reminder',
+
+          // queryParameters: {"setId": getVocaSetStatisParams.id},
+          options: Options(headers: {
+            "authorization": "Bearer ${getUpcomingReminderParams.accessToken}"
+          }));
+      return ResponseDataModel<ReviewReminderModel?>.fromJson(
+          json: response.data,
+          fromJsonD: (json) =>
+              json != null ? ReviewReminderModel.fromJson(json: json) : null);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

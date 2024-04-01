@@ -14,4 +14,8 @@ abstract class LearnRepository {
       creReviewReminder({
     required CreReviewReminderParams creReviewReminderParams,
   });
+  Future<Either<Failure, ResponseDataModel<ReviewReminderEntity?>>>
+      getUpcomingReminder({
+    required GetUpcomingReminderParams getUpcomingReminderParams,
+  });
 }

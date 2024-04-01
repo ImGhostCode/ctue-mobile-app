@@ -100,7 +100,7 @@ class _LearnPageState extends State<LearnPage> {
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrCreReviewReminder(vocabularySetId!, dataRemind);
 
-    Navigator.pop(context);
+    // Navigator.pop(context);
     Navigator.pushReplacementNamed(context, '/learning-result',
         arguments: LearningResultArguments(
             rememberedWords: rememberedWords, memoryLevels: memoryLevels));
