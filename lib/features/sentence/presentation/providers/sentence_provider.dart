@@ -2,6 +2,7 @@ import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/sentence_params.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
+import 'package:ctue_app/features/sentence/business/entities/sen_response_entity.dart';
 import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
 import 'package:ctue_app/features/sentence/business/usecases/get_sen_detail_usecase.dart';
 import 'package:ctue_app/features/sentence/business/usecases/get_senteces_usecase.dart';
@@ -21,6 +22,7 @@ class SentenceProvider extends ChangeNotifier {
   Failure? failure;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  SentenceResEntity? sentenceResEntity;
 
   set isLoading(bool value) {
     _isLoading = value;
@@ -32,19 +34,19 @@ class SentenceProvider extends ChangeNotifier {
     this.failure,
   });
 
-  List<SentenceEntity?> filteredSentences(List<int?> selectedTopics) {
+  List<SentenceEntity> filteredSentences(List<int?> selectedTopics) {
     // Filter the list of sentences based on selected topic IDs
     if (selectedTopics.isNotEmpty ? selectedTopics[0] == 0 : false) {
-      return listSentenceEntity;
+      return sentenceResEntity!.data;
     }
 
-    return listSentenceEntity
+    return sentenceResEntity!.data
         .where((sentence) =>
             sentence.topics!.any((topic) => selectedTopics.contains(topic.id)))
         .toList();
   }
 
-  void eitherFailureOrSentences(
+  Future eitherFailureOrSentences(
       List<int> topics, int? type, int page, String sort) async {
     _isLoading = true;
     SentenceRepositoryImpl repository = SentenceRepositoryImpl(
@@ -69,13 +71,13 @@ class SentenceProvider extends ChangeNotifier {
       (Failure newFailure) {
         _isLoading = false;
 
-        listSentenceEntity = [];
+        sentenceResEntity = null;
         failure = newFailure;
         notifyListeners();
       },
-      (ResponseDataModel<List<SentenceEntity>> newSentences) {
+      (ResponseDataModel<SentenceResEntity> newSentences) {
         _isLoading = false;
-        listSentenceEntity = newSentences.data;
+        sentenceResEntity = newSentences.data;
         failure = null;
         notifyListeners();
       },

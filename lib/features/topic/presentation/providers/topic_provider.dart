@@ -50,7 +50,7 @@ class TopicProvider extends ChangeNotifier {
         .toList();
   }
 
-  void eitherFailureOrTopics(int? id, bool? isWord, TopicEntity? init) async {
+  Future eitherFailureOrTopics(int? id, bool? isWord, TopicEntity? init) async {
     _isLoading = true;
 
     TopicRepositoryImpl repository = TopicRepositoryImpl(

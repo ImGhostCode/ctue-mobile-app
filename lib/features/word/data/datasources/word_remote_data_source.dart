@@ -4,12 +4,13 @@ import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/word_pararms.dart';
 import 'package:ctue_app/features/word/data/models/object_model.dart';
 import 'package:ctue_app/features/word/data/models/word_model.dart';
+import 'package:ctue_app/features/word/data/models/word_response_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../../../core/errors/exceptions.dart';
 
 abstract class WordRemoteDataSource {
-  Future<ResponseDataModel<List<WordModel>>> getWords(
+  Future<ResponseDataModel<WordResModel>> getWords(
       {required GetWordParams getWordParams});
   Future<ResponseDataModel<WordModel>> getWordDetail(
       {required GetWordParams getWordParams});
@@ -25,7 +26,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
   WordRemoteDataSourceImpl({required this.dio});
 
   @override
-  Future<ResponseDataModel<List<WordModel>>> getWords(
+  Future<ResponseDataModel<WordResModel>> getWords(
       {required GetWordParams getWordParams}) async {
     try {
       final response = await dio.get('/word',
@@ -42,11 +43,9 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
             // "authorization": "Bearer ${getUserParams.accessToken}"
           }));
 
-      return ResponseDataModel<List<WordModel>>.fromJson(
+      return ResponseDataModel<WordResModel>.fromJson(
         json: response.data,
-        fromJsonD: (jsonWords) => jsonWords['results']
-            ?.map<WordModel>((json) => WordModel.fromJson(json: json))
-            .toList(),
+        fromJsonD: (json) => WordResModel.fromJson(json: json),
       );
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||

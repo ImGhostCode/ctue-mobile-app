@@ -1,8 +1,8 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/user_params.dart';
-import 'package:ctue_app/features/auth/data/models/account_model.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/data/models/user_model.dart';
+import 'package:ctue_app/features/user/data/models/user_response_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/connection/network_info.dart';
@@ -120,13 +120,12 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseDataModel<List<AccountModel>>>> getAllUser(
+  Future<Either<Failure, ResponseDataModel<UserResModel>>> getAllUser(
       {required GetAllUserParams getAllUserParams}) async {
     if (await networkInfo.isConnected!) {
       try {
-        ResponseDataModel<List<AccountModel>> remoteUser =
-            await remoteDataSource.getAllUser(
-                getAllUserParams: getAllUserParams);
+        ResponseDataModel<UserResModel> remoteUser = await remoteDataSource
+            .getAllUser(getAllUserParams: getAllUserParams);
 
         // localDataSource.cacheUser(UserToCache: remoteUser);
 

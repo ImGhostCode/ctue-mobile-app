@@ -92,6 +92,9 @@ String kMemoryLevel = 'memoryLevel';
 String kIsDone = 'isDone';
 String kReviewAt = 'reviewAt';
 
+String kTotal = 'total';
+String kTotalPages = 'totalPages';
+
 enum ResponseData { data, message, statusCode }
 
 String localeUS = 'en-US';

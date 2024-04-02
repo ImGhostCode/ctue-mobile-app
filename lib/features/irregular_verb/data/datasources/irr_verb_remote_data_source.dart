@@ -1,11 +1,11 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/irr_verb_params.dart';
+import 'package:ctue_app/features/irregular_verb/data/models/irr_verb_response_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
-import '../models/irr_verb_model.dart';
 
 abstract class IrrVerbRemoteDataSource {
-  Future<ResponseDataModel<List<IrrVerbModel>>> getIrrVerbs(
+  Future<ResponseDataModel<IrrVerbResModel>> getIrrVerbs(
       {required IrrVerbParams irrVerbParams});
 }
 
@@ -15,7 +15,7 @@ class IrrVerbRemoteDataSourceImpl implements IrrVerbRemoteDataSource {
   IrrVerbRemoteDataSourceImpl({required this.dio});
 
   @override
-  Future<ResponseDataModel<List<IrrVerbModel>>> getIrrVerbs(
+  Future<ResponseDataModel<IrrVerbResModel>> getIrrVerbs(
       {required IrrVerbParams irrVerbParams}) async {
     try {
       final response = await dio.get('/irregular-verb/',
@@ -28,11 +28,9 @@ class IrrVerbRemoteDataSourceImpl implements IrrVerbRemoteDataSource {
             // "authorization": "Bearer ${getUserParams.accessToken}"
           }));
 
-      return ResponseDataModel<List<IrrVerbModel>>.fromJson(
+      return ResponseDataModel<IrrVerbResModel>.fromJson(
           json: response.data,
-          fromJsonD: (jsonIrrVerbs) => jsonIrrVerbs['results']
-              ?.map<IrrVerbModel>((json) => IrrVerbModel.fromJson(json: json))
-              .toList());
+          fromJsonD: (json) => IrrVerbResModel.fromJson(json: json));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

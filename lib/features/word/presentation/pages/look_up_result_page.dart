@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 class LookUpResultPage extends StatelessWidget {
   LookUpResultPage({super.key});
 
-  List<WordEntity> lookUpResults = [];
+  final List<WordEntity> lookUpResults = [];
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/word_pararms.dart';
-import 'package:ctue_app/features/word/business/entities/word_entity.dart';
+import 'package:ctue_app/features/word/business/entities/word_response_entity.dart';
 
 import 'package:ctue_app/features/word/business/repositories/word_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -12,7 +12,7 @@ class GetWordUsecase {
 
   GetWordUsecase({required this.wordRepository});
 
-  Future<Either<Failure, ResponseDataModel<List<WordEntity>>>> call({
+  Future<Either<Failure, ResponseDataModel<WordResEntity>>> call({
     required GetWordParams getWordParams,
   }) async {
     return await wordRepository.getWords(getWordParams: getWordParams);

@@ -5,6 +5,7 @@ import 'package:ctue_app/features/word/business/repositories/word_repository.dar
 import 'package:ctue_app/features/word/data/datasources/word_remote_data_source.dart';
 import 'package:ctue_app/features/word/data/models/object_model.dart';
 import 'package:ctue_app/features/word/data/models/word_model.dart';
+import 'package:ctue_app/features/word/data/models/word_response_model.dart';
 
 import 'package:dartz/dartz.dart';
 
@@ -24,11 +25,11 @@ class WordRepositoryImpl implements WordRepository {
   });
 
   @override
-  Future<Either<Failure, ResponseDataModel<List<WordModel>>>> getWords(
+  Future<Either<Failure, ResponseDataModel<WordResModel>>> getWords(
       {required GetWordParams getWordParams}) async {
     if (await networkInfo.isConnected!) {
       try {
-        ResponseDataModel<List<WordModel>> remoteWord =
+        ResponseDataModel<WordResModel> remoteWord =
             await remoteDataSource.getWords(getWordParams: getWordParams);
 
         // localDataSource.cacheAuth(AuthToCache: remoteWord);

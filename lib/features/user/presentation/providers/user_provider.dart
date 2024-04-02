@@ -5,6 +5,7 @@ import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
 
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
+import 'package:ctue_app/features/user/business/entities/user_response_entity.dart';
 import 'package:ctue_app/features/user/business/usecases/get_all_user_usecase.dart';
 import 'package:ctue_app/features/user/business/usecases/get_user_usecase.dart';
 import 'package:ctue_app/features/user/business/usecases/get_verify_code_usecase.dart';
@@ -34,6 +35,7 @@ class UserProvider extends ChangeNotifier {
   int? statusCode;
   bool _isLoading = false;
   bool get isLoading => _isLoading; // Getter to access the private property
+  UserResEntity? userResEntity;
 
   UserProvider({this.failure, this.message});
 
@@ -100,13 +102,13 @@ class UserProvider extends ChangeNotifier {
     failureOrGetAllUser.fold(
       (Failure newFailure) {
         _isLoading = false;
-        accounts = [];
+        userResEntity = null;
         failure = newFailure;
         notifyListeners();
       },
-      (ResponseDataModel<List<AccountEntity>> newUsers) {
+      (ResponseDataModel<UserResEntity> responseDataModel) {
         _isLoading = false;
-        accounts = newUsers.data;
+        userResEntity = responseDataModel.data;
         failure = null;
         notifyListeners();
       },

@@ -1,11 +1,12 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/sentence_params.dart';
 import 'package:ctue_app/features/sentence/data/models/sentence_model.dart';
+import 'package:ctue_app/features/sentence/data/models/word_response_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
 
 abstract class SentenceRemoteDataSource {
-  Future<ResponseDataModel<List<SentenceModel>>> getSentences(
+  Future<ResponseDataModel<SentenceResModel>> getSentences(
       {required GetSentenceParams getSentenceParams});
   Future<ResponseDataModel<SentenceModel>> getSentenceDetail(
       {required GetSentenceParams getSentenceParams});
@@ -17,7 +18,7 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
   SentenceRemoteDataSourceImpl({required this.dio});
 
   @override
-  Future<ResponseDataModel<List<SentenceModel>>> getSentences(
+  Future<ResponseDataModel<SentenceResModel>> getSentences(
       {required GetSentenceParams getSentenceParams}) async {
     try {
       final response = await dio.get('/sentence',
@@ -40,11 +41,9 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
 
       // return listSentenceModel;
 
-      return ResponseDataModel<List<SentenceModel>>.fromJson(
+      return ResponseDataModel<SentenceResModel>.fromJson(
         json: response.data,
-        fromJsonD: (jsonSentences) => jsonSentences['results']
-            ?.map<SentenceModel>((json) => SentenceModel.fromJson(json: json))
-            .toList(),
+        fromJsonD: (json) => SentenceResModel.fromJson(json: json),
       );
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||

@@ -6,6 +6,7 @@ import 'package:ctue_app/core/params/word_pararms.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
+import 'package:ctue_app/features/word/business/entities/word_response_entity.dart';
 import 'package:ctue_app/features/word/business/usecases/get_word_detail_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/get_word_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/look_up_by_image_usecase%20copy.dart';
@@ -28,6 +29,7 @@ class WordProvider extends ChangeNotifier {
   WordEntity? wordEntity;
   Failure? failure;
   bool _isLoading = false;
+  WordResEntity? wordResEntity;
 
   bool get isLoading => _isLoading;
 
@@ -54,7 +56,7 @@ class WordProvider extends ChangeNotifier {
   //       .toList();
   // }
 
-  void eitherFailureOrWords(List<int> topic, List<int> type, int page,
+  Future eitherFailureOrWords(List<int> topic, List<int> type, int page,
       String sort, String key) async {
     _isLoading = true;
     WordRepositoryImpl repository = WordRepositoryImpl(
@@ -78,13 +80,13 @@ class WordProvider extends ChangeNotifier {
       (Failure newFailure) {
         _isLoading = false;
 
-        listWordEntity = [];
+        wordResEntity = null;
         failure = newFailure;
         notifyListeners();
       },
-      (ResponseDataModel<List<WordEntity>> newWords) {
+      (ResponseDataModel<WordResEntity> newWords) {
         _isLoading = false;
-        listWordEntity = newWords.data;
+        wordResEntity = newWords.data;
         failure = null;
         notifyListeners();
       },
