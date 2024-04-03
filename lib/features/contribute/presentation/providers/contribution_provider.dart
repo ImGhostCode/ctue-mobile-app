@@ -2,9 +2,11 @@ import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/contribution_params.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
+import 'package:ctue_app/features/contribute/business/entities/contri_response_entity.dart';
 import 'package:ctue_app/features/contribute/business/entities/contribution_entity.dart';
 import 'package:ctue_app/features/contribute/business/usecases/create_sen_contribution.dart';
 import 'package:ctue_app/features/contribute/business/usecases/create_word_contribution.dart';
+import 'package:ctue_app/features/contribute/business/usecases/get_all_con_by_user_usecase.dart';
 import 'package:ctue_app/features/contribute/business/usecases/get_all_con_usecase.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 
@@ -25,6 +27,7 @@ class ContributionProvider extends ChangeNotifier {
   String? message = '';
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  ContributionResEntity? contributionResEntity;
 
   set isLoading(bool value) {
     _isLoading = value;
@@ -116,7 +119,7 @@ class ContributionProvider extends ChangeNotifier {
     );
   }
 
-  Future eitherFailureOrGetAllCons(String type, int status) async {
+  Future eitherFailureOrGetAllCons(String type, int status, int page) async {
     _isLoading = true;
     ContributionRepositoryImpl repository = ContributionRepositoryImpl(
       remoteDataSource: ContributionRemoteDataSourceImpl(
@@ -135,20 +138,61 @@ class ContributionProvider extends ChangeNotifier {
       getAllConParams: GetAllConParams(
           type: type,
           status: status,
+          page: page,
           accessToken: await storage.read(key: 'accessToken') ?? ''),
     );
 
     failureOrGetAllCons.fold(
       (Failure newFailure) {
         _isLoading = false;
-        listCons = [];
+        contributionResEntity = null;
         failure = newFailure;
         message = newFailure.errorMessage;
         notifyListeners();
       },
-      (ResponseDataModel<List<ContributionEntity>> newContributions) {
+      (ResponseDataModel<ContributionResEntity> newContributions) {
         _isLoading = false;
-        listCons = newContributions.data;
+        contributionResEntity = newContributions.data;
+        message = newContributions.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrGetAllConByUser(int userId, int page) async {
+    _isLoading = true;
+    ContributionRepositoryImpl repository = ContributionRepositoryImpl(
+      remoteDataSource: ContributionRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrGetAllCons =
+        await GetAllConByUserUsecase(contributionRepository: repository).call(
+      getAllConByUserParams: GetAllConByUserParams(
+          userId: userId,
+          page: page,
+          accessToken: await storage.read(key: 'accessToken') ?? ''),
+    );
+
+    failureOrGetAllCons.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        contributionResEntity = null;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<ContributionResEntity> newContributions) {
+        _isLoading = false;
+        contributionResEntity = newContributions.data;
         message = newContributions.message;
         failure = null;
         notifyListeners();

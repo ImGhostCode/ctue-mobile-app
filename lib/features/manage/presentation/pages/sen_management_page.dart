@@ -155,7 +155,7 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Tổng cộng: ${Provider.of<SentenceProvider>(context, listen: true).sentenceResEntity?.total}',
+                'Tổng cộng: ${Provider.of<SentenceProvider>(context, listen: true).sentenceResEntity?.total ?? 'Đang tải...'}',
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
@@ -192,7 +192,7 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
                         ),
                         minLeadingWidth: 15,
                         contentPadding: const EdgeInsets.only(
-                            left: 0, top: 0, bottom: 0, right: 0),
+                            left: 4, top: 0, bottom: 0, right: 0),
                         title: Text(item.content),
                         subtitle: Text(
                           item.mean,

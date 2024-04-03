@@ -1,7 +1,9 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/contribution_params.dart';
+import 'package:ctue_app/features/contribute/business/entities/contri_response_entity.dart';
 import 'package:ctue_app/features/contribute/business/entities/contribution_entity.dart';
 import 'package:ctue_app/features/contribute/business/repositories/contribution_repositoty.dart';
+import 'package:ctue_app/features/contribute/data/models/contri_response_model.dart';
 import 'package:ctue_app/features/contribute/data/models/contribution_model.dart';
 import 'package:dartz/dartz.dart';
 
@@ -67,12 +69,34 @@ class ContributionRepositoryImpl implements ContributionRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseDataModel<List<ContributionModel>>>>
+  Future<Either<Failure, ResponseDataModel<ContributionResModel>>>
       getAllContributions({required GetAllConParams getAllConParams}) async {
     if (await networkInfo.isConnected!) {
       try {
-        ResponseDataModel<List<ContributionModel>> remoteContribution =
+        ResponseDataModel<ContributionResModel> remoteContribution =
             await remoteDataSource.getAllCon(getAllConParams: getAllConParams);
+
+        // localDataSource.cacheContribution(ContributionToCache: remoteContribution);
+
+        return Right(remoteContribution);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<ContributionResEntity>>>
+      getAllConByUser(
+          {required GetAllConByUserParams getAllConByUserParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<ContributionResModel> remoteContribution =
+            await remoteDataSource.getAllConByUser(
+                getAllConByUserParams: getAllConByUserParams);
 
         // localDataSource.cacheContribution(ContributionToCache: remoteContribution);
 

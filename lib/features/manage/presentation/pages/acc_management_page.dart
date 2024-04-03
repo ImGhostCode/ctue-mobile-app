@@ -1,4 +1,5 @@
 import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
+import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -139,7 +140,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Text(
-                  'Tổng cộng: ${Provider.of<UserProvider>(context, listen: true).userResEntity?.total}',
+                  'Tổng cộng: ${Provider.of<UserProvider>(context, listen: true).userResEntity?.total ?? 'Đang tải...'}',
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -175,7 +176,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                       ],
                     ),
                   ],
-                )
+                ),
               ]),
               const SizedBox(
                 height: 10,
@@ -306,6 +307,14 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                   Text(account.isBan ? 'Đã khóa' : 'Đang hoạt động'),
                 ],
               ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/contribution-history',
+                        arguments: ContriHistoryArguments(user: account.user));
+                  },
+                  child: const Text(
+                    'Lịch sử đóng góp',
+                  ))
             ]),
         actionsAlignment: MainAxisAlignment.spaceBetween,
         actions: <Widget>[
@@ -346,9 +355,16 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                     'Xóa',
                   ),
                 ],
-              ))
+              )),
         ],
       ),
     );
   }
+}
+
+class ContriHistoryArguments {
+  UserEntity? user;
+  // List<ContributionEntity> contributions = [];
+
+  ContriHistoryArguments({this.user});
 }

@@ -1,8 +1,8 @@
 import 'package:ctue_app/core/constants/constants.dart';
-import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
 class VocaSetManagementPage extends StatefulWidget {
@@ -13,11 +13,48 @@ class VocaSetManagementPage extends StatefulWidget {
 }
 
 class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
+  final PagingController<int, VocaSetEntity> _pagingController =
+      PagingController(firstPageKey: 1);
+
   @override
   void initState() {
-    Provider.of<VocaSetProvider>(context, listen: false)
-        .eitherFailureOrGetVocaSetsByAdmin(null, null, '');
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
     super.initState();
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      await Provider.of<VocaSetProvider>(context, listen: false)
+          .eitherFailureOrGetVocaSetsByAdmin(null, null, '', pageKey);
+      final newItems =
+          // ignore: use_build_context_synchronously
+          Provider.of<VocaSetProvider>(context, listen: false)
+              .vocabularySetResEntity!
+              .data;
+
+      final isLastPage =
+          // ignore: use_build_context_synchronously
+          Provider.of<VocaSetProvider>(context, listen: false)
+                  .vocabularySetResEntity!
+                  .totalPages! <=
+              pageKey;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + newItems.length;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,8 +94,7 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
               size: 30,
             ),
           )),
-      body: SingleChildScrollView(
-          child: Padding(
+      body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
@@ -109,66 +145,59 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
               height: 10,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.filter_alt_outlined)),
+                Text(
+                  'Tổng cộng: ${Provider.of<VocaSetProvider>(context, listen: true).vocabularySetResEntity?.total ?? 'Đang tải...'}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Colors.blue),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.filter_alt_outlined)),
+                  ],
+                ),
               ],
             ),
             // const SizedBox(
             //   height: 5,
             // ),
             // const Divider(),
-            Consumer<VocaSetProvider>(builder: (context, provider, child) {
-              List<VocaSetEntity> listVocaSets = provider.listVocaSets;
-
-              bool isLoading = provider.isLoading;
-
-              // Access the failure from the provider
-              Failure? failure = provider.failure;
-
-              if (failure != null) {
-                // Handle failure, for example, show an error message
-                return Text(failure.errorMessage);
-              } else if (isLoading) {
-                // Handle the case where topics are empty
-                return const Center(
-                    child:
-                        CircularProgressIndicator()); // or show an empty state message
-              } else if (listVocaSets.isEmpty) {
-                // Handle the case where topics are empty
-                return const Center(child: Text('Không có dữ liệu'));
-              } else {
-                return ListView.separated(
-                  shrinkWrap: true,
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(
-                      height: 5,
-                    );
-                  },
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: listVocaSets.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
+            Expanded(
+              child: PagedListView<int, VocaSetEntity>.separated(
+                pagingController: _pagingController,
+                shrinkWrap: true,
+                // physics: const NeverScrollableScrollPhysics(),
+                separatorBuilder: (context, index) {
+                  return const SizedBox(
+                    height: 5,
+                  );
+                },
+                builderDelegate: PagedChildBuilderDelegate<VocaSetEntity>(
+                    itemBuilder: (context, item, index) => ListTile(
+                        minVerticalPadding: 4,
                         onTap: () {
                           Navigator.pushNamed(context, '/vocabulary-set-detail',
-                              arguments: VocabularySetArguments(
-                                  id: listVocaSets[index].id));
+                              arguments: VocabularySetArguments(id: item.id));
                         },
                         onLongPress: () => showActionDialog(context),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 10),
                         shape: RoundedRectangleBorder(
                             side: BorderSide(
-                                color: listVocaSets[index].isPublic
+                                color: item.isPublic
                                     ? Colors.green
                                     : Colors.yellow.shade700,
                                 width: 1.5),
                             borderRadius: BorderRadius.circular(12)),
                         tileColor: Colors.white,
-                        leading: listVocaSets[index].picture == null
+                        leading: item.picture == null
                             ? Container(
                                 height: 55,
                                 width: 55,
@@ -191,14 +220,13 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                                   // color: const Color(0xff7c94b6),
                                   // border: Border.all(color: Colors.blue, width: 2),
                                   image: DecorationImage(
-                                    image: NetworkImage(
-                                        listVocaSets[index].picture!),
+                                    image: NetworkImage(item.picture!),
                                     fit: BoxFit.cover,
                                   ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                        title: Text(listVocaSets[index].title),
+                        title: Text(item.title),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -206,7 +234,7 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                               height: 8,
                               width: 8,
                               decoration: BoxDecoration(
-                                  color: listVocaSets[index].isPublic
+                                  color: item.isPublic
                                       ? Colors.green
                                       : Colors.yellow.shade700,
                                   shape: BoxShape.circle),
@@ -215,14 +243,12 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                                 onPressed: () => showActionDialog(context),
                                 icon: const Icon(Icons.more_vert))
                           ],
-                        ));
-                  },
-                );
-              }
-            })
+                        ))),
+              ),
+            ),
           ],
         ),
-      )),
+      ),
     );
   }
 

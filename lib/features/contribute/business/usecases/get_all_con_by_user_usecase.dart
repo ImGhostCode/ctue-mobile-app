@@ -6,15 +6,15 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
 
-class GetAllConUsecase {
+class GetAllConByUserUsecase {
   final ContributionRepository contributionRepository;
 
-  GetAllConUsecase({required this.contributionRepository});
+  GetAllConByUserUsecase({required this.contributionRepository});
 
   Future<Either<Failure, ResponseDataModel<ContributionResEntity>>> call({
-    required GetAllConParams getAllConParams,
+    required GetAllConByUserParams getAllConByUserParams,
   }) async {
-    return await contributionRepository.getAllContributions(
-        getAllConParams: getAllConParams);
+    return await contributionRepository.getAllConByUser(
+        getAllConByUserParams: getAllConByUserParams);
   }
 }

@@ -1,8 +1,6 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
-import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_model.dart';
-import 'package:ctue_app/features/word/data/models/word_model.dart';
 
 class VocaSetStatisticsModel extends VocaSetStatisticsEntity {
   VocaSetStatisticsModel(

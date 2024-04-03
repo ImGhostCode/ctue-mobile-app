@@ -153,7 +153,7 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Tổng cộng: ${Provider.of<WordProvider>(context, listen: true).wordResEntity?.total}',
+                'Tổng cộng: ${Provider.of<WordProvider>(context, listen: true).wordResEntity?.total ?? 'Đang tải...'}',
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!

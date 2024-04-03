@@ -3,6 +3,7 @@ import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/voca_set_params.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
+import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_response_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/download_voca_set%20copy.dart';
 import 'package:ctue_app/features/vocabulary_set/business/usecases/get_usr_voca_sets.dart';
@@ -32,6 +33,7 @@ class VocaSetProvider extends ChangeNotifier {
   List<VocaSetEntity> listVocaSets = [];
   List<VocaSetEntity> searchResults = [];
   VocaSetStatisticsEntity? vocaSetStatisticsEntity;
+  VocabularySetResEntity? vocabularySetResEntity;
 
   Failure? failure;
   String? message = '';
@@ -180,7 +182,7 @@ class VocaSetProvider extends ChangeNotifier {
   }
 
   Future eitherFailureOrGetVocaSetsByAdmin(
-      int? specId, int? topicId, String? key) async {
+      int? specId, int? topicId, String? key, int page) async {
     _isLoading = true;
     VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
       remoteDataSource: VocaSetRemoteDataSourceImpl(
@@ -200,6 +202,7 @@ class VocaSetProvider extends ChangeNotifier {
           specId: specId,
           topicId: topicId,
           key: key,
+          page: page,
           accessToken: await SecureStorageService.secureStorage
                   .read(key: 'accessToken') ??
               ''),
@@ -208,14 +211,14 @@ class VocaSetProvider extends ChangeNotifier {
     failureOrGetVocaSets.fold(
       (Failure newFailure) {
         _isLoading = false;
-        listVocaSets = [];
+        vocabularySetResEntity = null;
         failure = newFailure;
         message = newFailure.errorMessage;
         notifyListeners();
       },
-      (ResponseDataModel<List<VocaSetEntity>> newVocaSets) {
+      (ResponseDataModel<VocabularySetResEntity> newVocaSets) {
         _isLoading = false;
-        listVocaSets = newVocaSets.data;
+        vocabularySetResEntity = newVocaSets.data;
         message = newVocaSets.message;
         failure = null;
         notifyListeners();

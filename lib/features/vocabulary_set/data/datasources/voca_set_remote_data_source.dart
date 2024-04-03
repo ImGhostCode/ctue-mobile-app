@@ -1,6 +1,7 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/voca_set_params.dart';
 import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_model.dart';
+import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_response_model.dart';
 import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_statis_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
@@ -12,7 +13,7 @@ abstract class VocaSetRemoteDataSource {
       {required GetVocaSetParams getVocaSetParams});
   Future<ResponseDataModel<List<VocaSetModel>>> getVocaSets(
       {required GetVocaSetParams getVocaSetParams});
-  Future<ResponseDataModel<List<VocaSetModel>>> getVocaSetsByAdmin(
+  Future<ResponseDataModel<VocabularySetResModel>> getVocaSetsByAdmin(
       {required GetVocaSetParams getVocaSetParams});
   Future<ResponseDataModel<VocaSetModel>> getVocaSetDetail(
       {required GetVocaSetParams getVocaSetParams});
@@ -298,7 +299,7 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
   }
 
   @override
-  Future<ResponseDataModel<List<VocaSetModel>>> getVocaSetsByAdmin(
+  Future<ResponseDataModel<VocabularySetResModel>> getVocaSetsByAdmin(
       {required GetVocaSetParams getVocaSetParams}) async {
     try {
       final response = await dio.get('/vocabulary-set/admin',
@@ -306,15 +307,14 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
             "spec": getVocaSetParams.specId,
             "topic": getVocaSetParams.topicId,
             "key": getVocaSetParams.key,
+            'page': getVocaSetParams.page
           },
           options: Options(headers: {
             "authorization": "Bearer ${getVocaSetParams.accessToken}"
           }));
-      return ResponseDataModel<List<VocaSetModel>>.fromJson(
+      return ResponseDataModel<VocabularySetResModel>.fromJson(
           json: response.data,
-          fromJsonD: (jsonWords) => jsonWords['results']
-              ?.map<VocaSetModel>((json) => VocaSetModel.fromJson(json: json))
-              .toList());
+          fromJsonD: (json) => VocabularySetResModel.fromJson(json: json));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

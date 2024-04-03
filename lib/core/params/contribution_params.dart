@@ -57,7 +57,20 @@ class WordMeaning {
 class GetAllConParams {
   final String type;
   final int status;
+  final int page;
   final String accessToken;
   GetAllConParams(
-      {required this.type, required this.status, required this.accessToken});
+      {required this.type,
+      required this.status,
+      required this.page,
+      required this.accessToken});
+}
+
+class GetAllConByUserParams {
+  final int userId;
+  final int? page;
+  final String accessToken;
+
+  GetAllConByUserParams(
+      {required this.userId, required this.accessToken, this.page});
 }

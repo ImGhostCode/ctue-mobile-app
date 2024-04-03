@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/contribution_params.dart';
+import 'package:ctue_app/features/contribute/data/models/contri_response_model.dart';
 import 'package:ctue_app/features/contribute/data/models/contribution_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
@@ -9,8 +10,10 @@ abstract class ContributionRemoteDataSource {
       {required CreateWordConParams createWordConParams});
   Future<ResponseDataModel<ContributionModel>> createSenContribution(
       {required CreateSenConParams createSenConParams});
-  Future<ResponseDataModel<List<ContributionModel>>> getAllCon(
+  Future<ResponseDataModel<ContributionResModel>> getAllCon(
       {required GetAllConParams getAllConParams});
+  Future<ResponseDataModel<ContributionResModel>> getAllConByUser(
+      {required GetAllConByUserParams getAllConByUserParams});
 }
 
 class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
@@ -104,7 +107,7 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
   }
 
   @override
-  Future<ResponseDataModel<List<ContributionModel>>> getAllCon(
+  Future<ResponseDataModel<ContributionResModel>> getAllCon(
       {required GetAllConParams getAllConParams}) async {
     try {
       final response = await dio.get('/contribution/',
@@ -115,12 +118,36 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
           options: Options(headers: {
             "authorization": "Bearer ${getAllConParams.accessToken}"
           }));
-      return ResponseDataModel<List<ContributionModel>>.fromJson(
+      return ResponseDataModel<ContributionResModel>.fromJson(
           json: response.data,
-          fromJsonD: (json) => json['results']
-              .map<ContributionModel>(
-                  (con) => ContributionModel.fromJson(json: con))
-              .toList());
+          fromJsonD: (json) => ContributionResModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<ContributionResModel>> getAllConByUser(
+      {required GetAllConByUserParams getAllConByUserParams}) async {
+    try {
+      final response = await dio.get(
+          '/contribution/user/${getAllConByUserParams.userId}',
+          queryParameters: {'page': getAllConByUserParams.page},
+          options: Options(headers: {
+            "authorization": "Bearer ${getAllConByUserParams.accessToken}"
+          }));
+      return ResponseDataModel<ContributionResModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => ContributionResModel.fromJson(json: json));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

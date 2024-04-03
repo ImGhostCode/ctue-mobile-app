@@ -37,12 +37,14 @@ class GetVocaSetParams {
   final int? topicId;
   final int? specId;
   final String accessToken;
+  final int? page;
 
   GetVocaSetParams(
       {required this.accessToken,
       this.key,
       this.specId,
       this.topicId,
+      this.page,
       this.id});
 }
 
