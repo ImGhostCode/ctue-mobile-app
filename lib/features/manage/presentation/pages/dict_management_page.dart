@@ -82,7 +82,7 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
                   Navigator.pushNamed(context, '/add-word');
                 },
                 child: Text(
-                  'Thêm',
+                  'Thêm từ',
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -212,10 +212,34 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
                         ),
                         trailing: IconButton(
                             icon: const Icon(Icons.more_vert),
-                            onPressed: () =>
-                                showActionDialog(context, true, () {})),
+                            onPressed: () => showActionDialog(
+                                  context,
+                                  true,
+                                  () async {
+                                    await Provider.of<WordProvider>(context,
+                                            listen: false)
+                                        .eitherFailureOrDelWord(item.id);
+
+                                    Navigator.of(context).pop();
+                                    if (Provider.of<WordProvider>(context,
+                                                listen: false)
+                                            .statusCode ==
+                                        200) {
+                                      setState(() {
+                                        _pagingController.itemList!
+                                            .remove(item);
+                                      });
+                                    }
+                                  },
+                                  () async {
+                                    Navigator.pop(context);
+                                    Navigator.pushNamed(context, '/edit-word',
+                                        arguments: EditWordArguments(
+                                            wordEntity: item));
+                                  },
+                                )),
                         onLongPress: () =>
-                            showActionDialog(context, true, () {}),
+                            showActionDialog(context, true, () {}, () {}),
                         onTap: () {
                           Navigator.pushNamed(context, '/word-detail',
                               arguments: WordDetailAgrument(id: item.id));
@@ -227,4 +251,10 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
       ),
     );
   }
+}
+
+class EditWordArguments {
+  WordEntity wordEntity;
+
+  EditWordArguments({required this.wordEntity});
 }

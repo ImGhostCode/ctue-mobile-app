@@ -12,6 +12,7 @@ import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/type/business/entities/type_entity.dart';
 import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
+import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -24,11 +25,13 @@ class WordDefinition {
 }
 
 class WordForm extends StatefulWidget {
+  final WordEntity? initData;
   final String titleBtnSubmit;
   final bool isLoading;
   final void Function(dynamic) callback;
   const WordForm(
       {Key? key,
+      this.initData,
       required this.titleBtnSubmit,
       required this.callback,
       required this.isLoading})
@@ -40,8 +43,7 @@ class WordForm extends StatefulWidget {
 
 class _WordFormState extends State<WordForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _pronunciationController =
-      TextEditingController();
+  final TextEditingController _phoneticController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   // final TextEditingController _meaningController = TextEditingController();
   final TextEditingController _synonymController = TextEditingController();
@@ -51,6 +53,7 @@ class _WordFormState extends State<WordForm> {
   final List<WordDefinition> _wordDefinitions = [];
   final List<String> _examples = [];
   List<XFile> _selectedImages = [];
+  final List<String> _oldImages = []; // image urls
 
   int? _selectedLevel;
   int? _selectedSpecializaiton;
@@ -78,14 +81,20 @@ class _WordFormState extends State<WordForm> {
     });
   }
 
+  void _removeOldImage(int index) {
+    setState(() {
+      _oldImages.removeAt(index);
+    });
+  }
+
   void _handleButtonPress(String label) {
     if (label == 'Backspace') {
-      if (_pronunciationController.text.isNotEmpty) {
-        _pronunciationController.text = _pronunciationController.text
-            .substring(0, _pronunciationController.text.length - 1);
+      if (_phoneticController.text.isNotEmpty) {
+        _phoneticController.text = _phoneticController.text
+            .substring(0, _phoneticController.text.length - 1);
       }
     } else {
-      _pronunciationController.text += label;
+      _phoneticController.text += label;
     }
   }
 
@@ -99,6 +108,24 @@ class _WordFormState extends State<WordForm> {
         .eitherFailureOrGetLevels();
     Provider.of<TopicProvider>(context, listen: false)
         .eitherFailureOrTopics(null, true, null);
+
+    if (widget.initData != null) {
+      _contentController.text = widget.initData!.content;
+      _phoneticController.text = widget.initData!.phonetic!;
+      for (var element in widget.initData!.meanings) {
+        _wordDefinitions.add(WordDefinition(
+            wordTypeId: element.typeId, meaning: element.meaning));
+      }
+      _selectedLevel = widget.initData!.levelId;
+      _selectedSpecializaiton = widget.initData!.specializationId;
+      _examples.addAll(widget.initData!.examples);
+      _synonymController.text = widget.initData!.synonyms.join(', ');
+      _antonymController.text = widget.initData!.antonyms.join(', ');
+      _noteController.text = widget.initData!.note ?? '';
+      _oldImages.addAll(widget.initData!.pictures);
+      // widget.initData!.topics
+    }
+
     super.initState();
   }
 
@@ -154,7 +181,7 @@ class _WordFormState extends State<WordForm> {
                     ),
                 readOnly: true,
                 // showCursor: true,
-                controller: _pronunciationController,
+                controller: _phoneticController,
                 onTap: () {
                   _showPronunciationDialog(context);
                 },
@@ -364,22 +391,59 @@ class _WordFormState extends State<WordForm> {
               const SizedBox(
                 height: 10,
               ),
-              if (_selectedImages.isNotEmpty)
+              if (_selectedImages.isNotEmpty || _oldImages.isNotEmpty)
                 SizedBox(
                   height: 100,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: _selectedImages.length,
+                    itemCount: _selectedImages.length +
+                        _oldImages.length, // Combined length
                     itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.only(right: 5),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.teal),
-                        ),
-                        child: Stack(
-                          children: [
-                            Image.file(
-                              File(_selectedImages[index].path),
+                      if (index < _selectedImages.length) {
+                        // Display selected images
+                        return Container(
+                          margin: const EdgeInsets.only(right: 5),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.teal),
+                          ),
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                File(_selectedImages[index].path),
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.fill,
+                              ),
+                              Positioned(
+                                top: -10,
+                                right: -10,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.close,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
+                                    onPressed: () => _removeImage(index),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        // Display old images
+                        final oldImageUrl =
+                            _oldImages[index - _selectedImages.length];
+                        return Container(
+                          margin: const EdgeInsets.only(right: 5),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.teal),
+                          ),
+                          child: Stack(children: [
+                            Image.network(
+                              oldImageUrl,
                               width: 100,
                               height: 100,
                               fit: BoxFit.fill,
@@ -395,18 +459,18 @@ class _WordFormState extends State<WordForm> {
                                     color: Colors.red,
                                     size: 20,
                                   ),
-                                  onPressed: () => _removeImage(index),
+                                  onPressed: () => _removeOldImage(index),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      );
+                          ]),
+                        );
+                      }
                     },
                   ),
                 ),
               const SizedBox(
-                height: 5,
+                height: 10,
               ),
               _buildTopics(context),
               const SizedBox(
@@ -438,36 +502,35 @@ class _WordFormState extends State<WordForm> {
                                 _topicError = null;
                               });
 
-                              List<dynamic> selectedTopics =
-                                  Provider.of<TopicProvider>(context,
-                                          listen: false)
-                                      .getSelectedTopics();
-
-                              Content content = Content(
-                                  topicId: selectedTopics,
-                                  levelId: _selectedLevel!,
-                                  specializationId: _selectedSpecializaiton!,
-                                  content: _contentController.text,
-                                  meanings: _wordDefinitions
-                                      .map((item) => WordMeaning(
-                                          typeId: item.wordTypeId!,
-                                          meaning: item.meaning!))
-                                      .toList(),
-                                  phonetic: _pronunciationController.text,
-                                  examples: _examples,
-                                  antonyms: _antonymController.text.isNotEmpty
-                                      ? _antonymController.text.split(',')
-                                      : [],
-                                  synonyms: _synonymController.text.isNotEmpty
-                                      ? _synonymController.text.split(',')
-                                      : [],
-                                  note: _noteController.text.isNotEmpty
-                                      ? _noteController.text
-                                      : null,
-                                  pictures: _selectedImages);
-
                               if (_formKey.currentState!.validate() &&
                                   _validateForm()) {
+                                List<dynamic> selectedTopics =
+                                    Provider.of<TopicProvider>(context,
+                                            listen: false)
+                                        .getSelectedTopics();
+                                Content content = Content(
+                                    topicId: selectedTopics,
+                                    levelId: _selectedLevel!,
+                                    specializationId: _selectedSpecializaiton!,
+                                    content: _contentController.text,
+                                    meanings: _wordDefinitions
+                                        .map((item) => WordMeaning(
+                                            typeId: item.wordTypeId!,
+                                            meaning: item.meaning!))
+                                        .toList(),
+                                    phonetic: _phoneticController.text,
+                                    examples: _examples,
+                                    antonyms: _antonymController.text.isNotEmpty
+                                        ? _antonymController.text.split(',')
+                                        : [],
+                                    synonyms: _synonymController.text.isNotEmpty
+                                        ? _synonymController.text.split(',')
+                                        : [],
+                                    note: _noteController.text.isNotEmpty
+                                        ? _noteController.text
+                                        : null,
+                                    pictures: _selectedImages,
+                                    oldPictures: _oldImages);
                                 widget.callback({typeConWord, content});
                               }
                             },
@@ -525,6 +588,16 @@ class _WordFormState extends State<WordForm> {
             padding: const EdgeInsets.all(5),
             child: Consumer<TopicProvider>(builder: (context, provider, child) {
               List<TopicEntity> listTopics = provider.listTopicEntity;
+
+              if (widget.initData != null) {
+                List<int> selectedId =
+                    widget.initData!.topics!.map((e) => e.id).toList();
+                for (var element in listTopics) {
+                  if (selectedId.contains(element.id)) {
+                    element.isSelected = true;
+                  }
+                }
+              }
 
               bool isLoading = provider.isLoading;
 
@@ -703,7 +776,7 @@ class _WordFormState extends State<WordForm> {
                     ),
                 readOnly: true,
                 showCursor: true,
-                controller: _pronunciationController,
+                controller: _phoneticController,
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 18),
@@ -772,6 +845,7 @@ class _WordFormState extends State<WordForm> {
           Expanded(
               child: TextFormField(
             // controller: TextEditingController(text: wordDefinition.meaning),
+            initialValue: _examples[index],
             style: Theme.of(context).textTheme.bodyMedium,
 
             decoration: InputDecoration(
@@ -853,6 +927,7 @@ class _WordFormState extends State<WordForm> {
               child: TextFormField(
             // controller: TextEditingController(text: wordDefinition.meaning),
             style: Theme.of(context).textTheme.bodyMedium,
+            initialValue: wordDefinition.meaning,
             decoration: InputDecoration(
               // hintText: 'Nhập nghĩa của từ',
               // helperText: 'Nghĩa của từ',

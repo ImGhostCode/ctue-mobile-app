@@ -1,5 +1,7 @@
+import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:ctue_app/features/word/presentation/widgets/word_form.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddWordPage extends StatelessWidget {
   const AddWordPage({super.key});
@@ -40,8 +42,25 @@ class AddWordPage extends StatelessWidget {
           )),
       body: WordForm(
         titleBtnSubmit: "Xác nhận",
-        callback: (data) {},
-        isLoading: false,
+        callback: (data) async {
+          final wordData = data.elementAt(1);
+
+          await Provider.of<WordProvider>(context, listen: false)
+              .eitherFailureOrCreWord(
+                  wordData.topicId,
+                  wordData.levelId,
+                  wordData.specializationId,
+                  wordData.content,
+                  wordData.meanings,
+                  wordData.note,
+                  wordData.phonetic,
+                  wordData.examples,
+                  wordData.synonyms,
+                  wordData.antonyms,
+                  wordData.pictures);
+          Navigator.of(context).pop();
+        },
+        isLoading: Provider.of<WordProvider>(context, listen: true).isLoading,
       ),
     );
   }

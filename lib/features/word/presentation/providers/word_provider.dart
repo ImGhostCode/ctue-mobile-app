@@ -1,16 +1,21 @@
 import 'dart:async';
 
+import 'package:ctue_app/core/params/contribution_params.dart';
 import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/word_pararms.dart';
+import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/business/entities/word_response_entity.dart';
+import 'package:ctue_app/features/word/business/usecases/cre_word_usecase.dart';
+import 'package:ctue_app/features/word/business/usecases/del_word_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/get_word_detail_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/get_word_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/look_up_by_image_usecase%20copy.dart';
 import 'package:ctue_app/features/word/business/usecases/look_up_dic_usecase.dart';
+import 'package:ctue_app/features/word/business/usecases/upd_word_usecase.dart';
 import 'package:ctue_app/features/word/data/datasources/word_remote_data_source.dart';
 import 'package:ctue_app/features/word/data/repositories/word_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
@@ -23,6 +28,7 @@ import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/failure.dart';
 
 class WordProvider extends ChangeNotifier {
+  final secureStorage = SecureStorageService.secureStorage;
   List<WordEntity>? listWordEntity = [];
   List<WordEntity> lookUpResults = [];
   List<ObjectEntity> lookUpByImageResults = [];
@@ -30,6 +36,8 @@ class WordProvider extends ChangeNotifier {
   Failure? failure;
   bool _isLoading = false;
   WordResEntity? wordResEntity;
+  String? message;
+  int? statusCode;
 
   bool get isLoading => _isLoading;
 
@@ -197,6 +205,171 @@ class WordProvider extends ChangeNotifier {
         _isLoading = false;
 
         wordEntity = newWord.data;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrCreWord(
+      List<dynamic> topicId,
+      int levelId,
+      int specializationId,
+      String content,
+      List<WordMeaning> meanings,
+      String? note,
+      String phonetic,
+      List<String> examples,
+      List<String> synonyms,
+      List<String> antonyms,
+      List<XFile> pictures) async {
+    isLoading = true;
+    WordRepositoryImpl repository = WordRepositoryImpl(
+      remoteDataSource: WordRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrWord =
+        await CreateWordUsecase(wordRepository: repository).call(
+      createWordParams: CreateWordParams(
+          topicId: topicId,
+          levelId: levelId,
+          specializationId: specializationId,
+          content: content,
+          meanings: meanings,
+          note: note,
+          phonetic: phonetic,
+          examples: examples,
+          synonyms: synonyms,
+          antonyms: antonyms,
+          pictures: pictures,
+          accessToken: await secureStorage.read(key: 'accessToken') ?? ''),
+    );
+
+    failureOrWord.fold(
+      (Failure newFailure) {
+        isLoading = false;
+        statusCode = 400;
+        message = newFailure.errorMessage;
+
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<WordEntity> newWords) {
+        isLoading = false;
+        statusCode = newWords.statusCode;
+        message = newWords.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrUpdateWord(
+      int wordId,
+      List<dynamic> topicId,
+      int levelId,
+      int specializationId,
+      String content,
+      List<WordMeaning> meanings,
+      String? note,
+      String phonetic,
+      List<String> examples,
+      List<String> synonyms,
+      List<String> antonyms,
+      List<String> oldPictures,
+      List<XFile> pictures) async {
+    isLoading = true;
+    WordRepositoryImpl repository = WordRepositoryImpl(
+      remoteDataSource: WordRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrWord =
+        await UpdateWordUsecase(wordRepository: repository).call(
+      updateWordParams: UpdateWordParams(
+          wordId: wordId,
+          topicId: topicId,
+          levelId: levelId,
+          specializationId: specializationId,
+          content: content,
+          meanings: meanings,
+          note: note,
+          phonetic: phonetic,
+          examples: examples,
+          synonyms: synonyms,
+          antonyms: antonyms,
+          oldPictures: oldPictures,
+          pictures: pictures,
+          accessToken: await secureStorage.read(key: 'accessToken') ?? ''),
+    );
+
+    failureOrWord.fold(
+      (Failure newFailure) {
+        isLoading = false;
+        statusCode = 400;
+        message = newFailure.errorMessage;
+
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<WordEntity> newWords) {
+        isLoading = false;
+        statusCode = newWords.statusCode;
+        message = newWords.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrDelWord(int wordId) async {
+    isLoading = true;
+    WordRepositoryImpl repository = WordRepositoryImpl(
+      remoteDataSource: WordRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrDeleteWord =
+        await DeleteWordUsecase(wordRepository: repository).call(
+      deleteWordParams: DeleteWordParams(
+        accessToken: await secureStorage.read(key: 'accessToken') ?? '',
+        wordId: wordId,
+      ),
+    );
+    failureOrDeleteWord.fold(
+      (Failure newFailure) {
+        isLoading = false;
+        statusCode = 400;
+        message = newFailure.errorMessage;
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<void> result) {
+        isLoading = false;
+        statusCode = result.statusCode;
+        message = result.message;
         failure = null;
         notifyListeners();
       },

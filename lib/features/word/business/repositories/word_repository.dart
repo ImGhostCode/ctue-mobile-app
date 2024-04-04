@@ -14,6 +14,15 @@ abstract class WordRepository {
   Future<Either<Failure, ResponseDataModel<WordEntity>>> getWordDetail({
     required GetWordParams getWordParams,
   });
+  Future<Either<Failure, ResponseDataModel<WordEntity>>> createWord({
+    required CreateWordParams createWordParams,
+  });
+  Future<Either<Failure, ResponseDataModel<WordEntity>>> updateWord({
+    required UpdateWordParams updateWordParams,
+  });
+  Future<Either<Failure, ResponseDataModel<void>>> deleteWord({
+    required DeleteWordParams deleteWordParams,
+  });
 
   Future<Either<Failure, ResponseDataModel<List<WordEntity>>>>
       lookupDictionary({

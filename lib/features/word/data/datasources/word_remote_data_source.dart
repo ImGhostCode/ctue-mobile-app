@@ -14,6 +14,12 @@ abstract class WordRemoteDataSource {
       {required GetWordParams getWordParams});
   Future<ResponseDataModel<WordModel>> getWordDetail(
       {required GetWordParams getWordParams});
+  Future<ResponseDataModel<WordModel>> createWord(
+      {required CreateWordParams createWordParams});
+  Future<ResponseDataModel<WordModel>> updateWord(
+      {required UpdateWordParams updateWordParams});
+  Future<ResponseDataModel<void>> deleteWord(
+      {required DeleteWordParams deleteWordParams});
   Future<ResponseDataModel<List<WordModel>>> lookUpDictionary(
       {required LookUpDictionaryParams lookUpDictionaryParams});
   Future<ResponseDataModel<List<ObjectModel>>> lookUpByImage(
@@ -171,6 +177,164 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
             statusCode: e.response!.statusCode!,
             errorMessage:
                 e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<WordModel>> createWord(
+      {required CreateWordParams createWordParams}) async {
+    try {
+      final formData = FormData.fromMap({
+        "topicId": createWordParams.topicId.length > 1
+            ? createWordParams.topicId
+            : [createWordParams.topicId],
+        "levelId": createWordParams.levelId,
+        "specializationId": createWordParams.specializationId,
+        "content": createWordParams.content,
+        "meanings": createWordParams.meanings.length > 1
+            ? createWordParams.meanings
+                .map((meaning) => {
+                      'typeId': meaning.typeId,
+                      'meaning': meaning.meaning,
+                    })
+                .toList()
+            : [
+                createWordParams.meanings
+                    .map((meaning) => {
+                          'typeId': meaning.typeId,
+                          'meaning': meaning.meaning,
+                        })
+                    .toList()
+              ],
+        "note": createWordParams.note,
+        "phonetic": createWordParams.phonetic,
+        "examples": createWordParams.examples.length > 1
+            ? createWordParams.examples
+            : [createWordParams.examples],
+        "synonyms": createWordParams.synonyms.length > 1
+            ? createWordParams.synonyms
+            : [createWordParams.synonyms],
+        "antonyms": createWordParams.antonyms.length > 1
+            ? createWordParams.antonyms
+            : [createWordParams.antonyms],
+        "pictures": createWordParams.pictures
+            .map((e) => MultipartFile.fromFileSync(e.path, filename: e.name))
+            .toList(),
+      });
+
+      final response = await dio.post('/word',
+          data: formData,
+          options: Options(headers: {
+            "authorization": "Bearer ${createWordParams.accessToken}"
+          }));
+      return ResponseDataModel<WordModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => WordModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<WordModel>> updateWord(
+      {required UpdateWordParams updateWordParams}) async {
+    try {
+      final formData = FormData.fromMap({
+        "topicId": updateWordParams.topicId.length > 1
+            ? updateWordParams.topicId
+            : [updateWordParams.topicId],
+        "levelId": updateWordParams.levelId,
+        "specializationId": updateWordParams.specializationId,
+        "content": updateWordParams.content,
+        "meanings": updateWordParams.meanings.length > 1
+            ? updateWordParams.meanings
+                .map((meaning) => {
+                      'typeId': meaning.typeId,
+                      'meaning': meaning.meaning,
+                    })
+                .toList()
+            : [
+                updateWordParams.meanings
+                    .map((meaning) => {
+                          'typeId': meaning.typeId,
+                          'meaning': meaning.meaning,
+                        })
+                    .toList()
+              ],
+        "note": updateWordParams.note,
+        "phonetic": updateWordParams.phonetic,
+        "examples": updateWordParams.examples.length > 1
+            ? updateWordParams.examples
+            : [updateWordParams.examples],
+        "synonyms": updateWordParams.synonyms.length > 1
+            ? updateWordParams.synonyms
+            : [updateWordParams.synonyms],
+        "antonyms": updateWordParams.antonyms.length > 1
+            ? updateWordParams.antonyms
+            : [updateWordParams.antonyms],
+        "oldPictures": updateWordParams.oldPictures.length > 1
+            ? updateWordParams.oldPictures
+            : [updateWordParams.oldPictures],
+        "new_pictures": updateWordParams.pictures
+            .map((e) => MultipartFile.fromFileSync(e.path, filename: e.name))
+            .toList(),
+      });
+
+      final response = await dio.patch('/word/${updateWordParams.wordId}',
+          data: formData,
+          options: Options(headers: {
+            "authorization": "Bearer ${updateWordParams.accessToken}"
+          }));
+      return ResponseDataModel<WordModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => WordModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<void>> deleteWord(
+      {required DeleteWordParams deleteWordParams}) async {
+    try {
+      final response = await dio.delete('/word/${deleteWordParams.wordId}',
+          options: Options(headers: {
+            "authorization": "Bearer ${deleteWordParams.accessToken}"
+          }));
+      return ResponseDataModel<void>.fromJson(
+          json: response.data, fromJsonD: (json) {});
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw ServerException(
+            statusCode: 500, errorMessage: 'Can\'t connect server');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response?.data['message'] ?? 'Unknown server error');
       }
     }
   }

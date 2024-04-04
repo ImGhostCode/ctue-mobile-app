@@ -184,7 +184,7 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
               builderDelegate: PagedChildBuilderDelegate<SentenceEntity>(
                   itemBuilder: (context, item, index) => ListTile(
                         onLongPress: () =>
-                            showActionDialog(context, false, () {}),
+                            showActionDialog(context, false, () {}, () {}),
                         minVerticalPadding: 0,
                         leading: Text(
                           '${index + 1}',
@@ -203,7 +203,7 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
                             Icons.more_vert,
                           ),
                           onPressed: () {
-                            showActionDialog(context, false, () {});
+                            showActionDialog(context, false, () {}, () {});
                           },
                         ),
                         onTap: () {

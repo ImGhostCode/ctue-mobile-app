@@ -30,6 +30,7 @@ class Content {
   List<String>? synonyms = [];
   List<String>? antonyms = [];
   List<XFile>? pictures = [];
+  List<String>? oldPictures = [];
 
   Content(
       {required this.topicId,
@@ -44,7 +45,8 @@ class Content {
       this.antonyms,
       this.synonyms,
       this.note,
-      this.pictures});
+      this.pictures,
+      this.oldPictures});
 }
 
 class WordMeaning {

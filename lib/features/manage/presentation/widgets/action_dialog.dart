@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-Future<String?> showActionDialog(
-    BuildContext context, bool isWord, VoidCallback deleteCallback) {
+Future<String?> showActionDialog(BuildContext context, bool isWord,
+    VoidCallback deleteCallback, VoidCallback editCallback) {
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -23,11 +23,7 @@ Future<String?> showActionDialog(
                     shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero)),
                     backgroundColor: MaterialStatePropertyAll(Colors.white)),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(
-                      context, '/edit-${isWord ? 'word' : 'sentence'}');
-                },
+                onPressed: editCallback,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -47,29 +43,47 @@ Future<String?> showActionDialog(
                     shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero)),
                     backgroundColor: MaterialStatePropertyAll(Colors.white)),
-                onPressed: () => showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                          backgroundColor: Colors.white,
-                          title: Text(
-                            'Cảnh báo',
-                            style: TextStyle(
-                                color: Colors.red.shade300,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          content: Text(
-                              'Bạn có chắc chắn muốn xóa ${isWord ? "từ" : 'câu'} này không?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, 'back'),
-                              child: const Text('Trở lại'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+
+                  showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                            backgroundColor: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            shadowColor: Colors.white,
+                            title: Text(
+                              'Cảnh báo',
+                              style: TextStyle(
+                                  color: Colors.red.shade400,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            TextButton(
-                              onPressed: deleteCallback,
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        )),
+                            content: Text(
+                                'Bạn có chắc chắn muốn xóa ${isWord ? "từ" : 'câu'} này không?'),
+                            actionsAlignment: MainAxisAlignment.spaceBetween,
+                            actions: <Widget>[
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey.shade400,
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: const Text('Trở về'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                onPressed: deleteCallback,
+                                child: const Text('Đồng ý'),
+                              ),
+                            ],
+                          ));
+                },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
