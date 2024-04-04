@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 final audioPlayer = AudioService.player;
 
 class IrregularVerbPage extends StatefulWidget {
-  IrregularVerbPage({Key? key}) : super(key: key);
+  const IrregularVerbPage({Key? key}) : super(key: key);
 
   @override
   State<IrregularVerbPage> createState() => _IrregularVerbPageState();
@@ -321,8 +321,8 @@ class _IrregularVerbPageState extends State<IrregularVerbPage> {
                           bool isLoading = provider.isLoading;
 
                           return ListTile(
-                              onTap: () =>
-                                  showIrrVerbDetail(context, item, false),
+                              onTap: () => showIrrVerbDetail(
+                                  context, item, false, () {}, () {}),
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 0),
                               horizontalTitleGap: 4,
@@ -370,8 +370,8 @@ class _IrregularVerbPageState extends State<IrregularVerbPage> {
   }
 }
 
-Future<String?> showIrrVerbDetail(
-    BuildContext context, IrrVerbEntity irrVerb, bool isAdmin) {
+Future<String?> showIrrVerbDetail(BuildContext context, IrrVerbEntity irrVerb,
+    bool isAdmin, VoidCallback editCallback, VoidCallback deleteCallback) {
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -458,10 +458,7 @@ Future<String?> showIrrVerbDetail(
                       backgroundColor: MaterialStatePropertyAll(Colors.blue),
                       padding: MaterialStatePropertyAll(
                           EdgeInsets.symmetric(horizontal: 16, vertical: 16))),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/edit-irregular-verb');
-                  },
+                  onPressed: editCallback,
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -479,7 +476,51 @@ Future<String?> showIrrVerbDetail(
                           EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
                       backgroundColor:
                           MaterialStatePropertyAll(Colors.red.shade500)),
-                  onPressed: () {},
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              backgroundColor: Colors.white,
+                              surfaceTintColor: Colors.white,
+                              shadowColor: Colors.white,
+                              title: Text(
+                                'Cảnh báo',
+                                style: TextStyle(
+                                    color: Colors.red.shade400,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              content: const Text(
+                                  'Bạn có chắc chắn muốn xóa động từ này không?'),
+                              actionsAlignment: MainAxisAlignment.spaceBetween,
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey.shade400,
+                                    textStyle:
+                                        Theme.of(context).textTheme.labelLarge,
+                                  ),
+                                  child: const Text('Trở về'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    textStyle:
+                                        Theme.of(context).textTheme.labelLarge,
+                                  ),
+                                  onPressed: Provider.of<IrrVerbProvider>(
+                                              context,
+                                              listen: true)
+                                          .isLoading
+                                      ? null
+                                      : deleteCallback,
+                                  child: const Text('Đồng ý'),
+                                ),
+                              ],
+                            ));
+                  },
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

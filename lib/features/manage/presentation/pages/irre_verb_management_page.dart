@@ -88,7 +88,7 @@ class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
                   Navigator.pushNamed(context, '/add-irregular-verb');
                 },
                 child: Text(
-                  'Thêm',
+                  'Thêm động từ',
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -192,28 +192,52 @@ class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
               // physics: const NeverScrollableScrollPhysics(),
               builderDelegate: PagedChildBuilderDelegate<IrrVerbEntity>(
                   itemBuilder: (context, item, index) => ListTile(
-                      onTap: () => showIrrVerbDetail(context, item, true),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 0),
-                      horizontalTitleGap: 4,
-                      leading: Container(
-                          height: 8,
-                          width: 8,
-                          decoration: BoxDecoration(
-                              color: Colors.green.shade500,
-                              shape: BoxShape.circle)),
-                      title: Text(item.v1),
-                      subtitle: Text(
-                        '${item.v2} / ${item.v3}',
-                      ),
-                      trailing: IconButton(
-                          onPressed: () =>
-                              showIrrVerbDetail(context, item, true),
-                          icon: const Icon(Icons.more_vert)))),
+                        onTap: () => showIrrVerbDetail(
+                          context,
+                          item,
+                          true,
+                          () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, '/edit-irregular-verb',
+                                arguments:
+                                    EditIrrVerbArguments(irrVerbEntity: item));
+                          },
+                          () async {
+                            await Provider.of<IrrVerbProvider>(context,
+                                    listen: false)
+                                .eitherFailureOrDelIrrVerb(item.id);
+                            _pagingController.itemList!.remove(item);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 0),
+                        horizontalTitleGap: 4,
+                        leading: Container(
+                            height: 8,
+                            width: 8,
+                            decoration: BoxDecoration(
+                                color: Colors.green.shade500,
+                                shape: BoxShape.circle)),
+                        title: Text(item.v1),
+                        subtitle: Text(
+                          '${item.v2} / ${item.v3}',
+                        ),
+                        // trailing: IconButton(
+                        //     onPressed: () =>
+                        //         showIrrVerbDetail(context, item, true, ),
+                        //     icon: const Icon(Icons.more_vert))
+                      )),
             ),
           ),
         ]),
       ),
     );
   }
+}
+
+class EditIrrVerbArguments {
+  final IrrVerbEntity irrVerbEntity;
+
+  EditIrrVerbArguments({required this.irrVerbEntity});
 }

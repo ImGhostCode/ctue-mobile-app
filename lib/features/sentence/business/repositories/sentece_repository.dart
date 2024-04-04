@@ -13,4 +13,14 @@ abstract class SentenceRepository {
   Future<Either<Failure, ResponseDataModel<SentenceEntity>>> getSentenceDetail({
     required GetSentenceParams getSentenceParams,
   });
+
+  Future<Either<Failure, ResponseDataModel<SentenceEntity>>> createSentence({
+    required CreateSentenceParams createSentenceParams,
+  });
+  Future<Either<Failure, ResponseDataModel<SentenceEntity>>> updateSentence({
+    required EditSentenceParams editSentenceParams,
+  });
+  Future<Either<Failure, ResponseDataModel<void>>> deleteSentence({
+    required DeleteSentenceParams deleteSentenceParams,
+  });
 }

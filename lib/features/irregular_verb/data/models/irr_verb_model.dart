@@ -7,15 +7,17 @@ class IrrVerbModel extends IrrVerbEntity {
       required super.v2,
       required super.v3,
       required super.meaning,
-      super.isDeleted});
+      super.isDeleted,
+      required super.id});
 
   factory IrrVerbModel.fromJson({required Map<String, dynamic> json}) {
     return IrrVerbModel(
-      v1: json['v1'],
-      v2: json['v2'],
-      v3: json['v3'],
-      meaning: json['meaning'],
-      isDeleted: json['isDeleted'],
+      v1: json[kV1],
+      v2: json[kV2],
+      v3: json[kV3],
+      meaning: json[kMeaning],
+      isDeleted: json[kIsDeleted],
+      id: json[kId],
     );
   }
 

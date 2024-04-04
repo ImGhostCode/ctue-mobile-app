@@ -1,5 +1,7 @@
+import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
 import 'package:ctue_app/features/sentence/presentation/widgets/sentence_form.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddSentencePage extends StatelessWidget {
   const AddSentencePage({super.key});
@@ -45,8 +47,21 @@ class AddSentencePage extends StatelessWidget {
         // ),
         body: SentenceForm(
           titleBtnSubmit: 'Xác nhận',
-          isLoading: false,
-          callback: (p0) {},
+          callback: (data) async {
+            final sentenceData = data.elementAt(1);
+
+            await Provider.of<SentenceProvider>(context, listen: false)
+                .eitherFailureOrCreSentence(
+              sentenceData.topicId,
+              sentenceData.typeId,
+              sentenceData.content,
+              sentenceData.meaning,
+              sentenceData.note,
+            );
+            Navigator.of(context).pop();
+          },
+          isLoading:
+              Provider.of<SentenceProvider>(context, listen: true).isLoading,
         ));
   }
 }

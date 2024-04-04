@@ -1,4 +1,7 @@
+import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
+import 'package:ctue_app/features/manage/presentation/pages/irre_verb_management_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditIrregularVerbPage extends StatefulWidget {
   const EditIrregularVerbPage({super.key});
@@ -13,6 +16,22 @@ class _EditIrregularVerbPageState extends State<EditIrregularVerbPage> {
   final TextEditingController _v2Controller = TextEditingController();
   final TextEditingController _v3Controller = TextEditingController();
   final TextEditingController _meaningController = TextEditingController();
+  dynamic args;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    args = ModalRoute.of(context)!.settings.arguments as EditIrrVerbArguments;
+    _v1Controller.text = args!.irrVerbEntity.v1;
+    _v2Controller.text = args!.irrVerbEntity.v2;
+    _v3Controller.text = args!.irrVerbEntity.v3;
+    _meaningController.text = args!.irrVerbEntity.meaning;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,12 +199,36 @@ class _EditIrregularVerbPageState extends State<EditIrregularVerbPage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // Process data.
-                          }
-                        },
-                        child: const Text('Lưu thay đổi'),
+                        onPressed:
+                            Provider.of<IrrVerbProvider>(context, listen: true)
+                                    .isLoading
+                                ? null
+                                : () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      // Process data.
+                                      await Provider.of<IrrVerbProvider>(
+                                              context,
+                                              listen: false)
+                                          .eitherFailureOrUpdateIrrVerb(
+                                              args!.irrVerbEntity.id,
+                                              _v1Controller.text,
+                                              _v2Controller.text,
+                                              _v3Controller.text,
+                                              _meaningController.text);
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                        child:
+                            Provider.of<IrrVerbProvider>(context, listen: true)
+                                    .isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text('Lưu thay đổi'),
                       ),
                     ],
                   ),

@@ -1,6 +1,7 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/core/params/contribution_params.dart';
+import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/type/business/entities/type_entity.dart';
@@ -9,11 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SentenceForm extends StatefulWidget {
+  final SentenceEntity? initData;
   final String titleBtnSubmit;
   final bool isLoading;
   final void Function(dynamic) callback;
   const SentenceForm(
       {super.key,
+      this.initData,
       required this.titleBtnSubmit,
       required this.isLoading,
       required this.callback});
@@ -37,6 +40,13 @@ class _SentenceFormState extends State<SentenceForm> {
         .eitherFailureOrGetTypes(false);
     Provider.of<TopicProvider>(context, listen: false)
         .eitherFailureOrTopics(null, false, null);
+
+    if (widget.initData != null) {
+      _contentController.text = widget.initData!.content;
+      _meaningController.text = widget.initData!.meaning;
+      _selectedType = widget.initData!.typeId;
+      _noteController.text = widget.initData!.note ?? '';
+    }
     super.initState();
   }
 
@@ -195,7 +205,7 @@ class _SentenceFormState extends State<SentenceForm> {
                                         content: _contentController.text,
                                         meaning: _meaningController.text,
                                         note: _noteController.text.isNotEmpty
-                                            ? _noteController.text
+                                            ? _noteController.text.trim()
                                             : null,
                                       );
 
@@ -292,6 +302,16 @@ class _SentenceFormState extends State<SentenceForm> {
             padding: const EdgeInsets.all(5),
             child: Consumer<TopicProvider>(builder: (context, provider, child) {
               List<TopicEntity> listTopics = provider.listTopicEntity;
+
+              if (widget.initData != null) {
+                List<int> selectedId =
+                    widget.initData!.topics!.map((e) => e.id).toList();
+                for (var element in listTopics) {
+                  if (selectedId.contains(element.id)) {
+                    element.isSelected = true;
+                  }
+                }
+              }
 
               bool isLoading = provider.isLoading;
 

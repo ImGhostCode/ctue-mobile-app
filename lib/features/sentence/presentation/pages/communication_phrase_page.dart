@@ -313,7 +313,7 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
                             left: 0, top: 0, bottom: 0, right: 0),
                         title: Text(item.content),
                         subtitle: Text(
-                          item.mean,
+                          item.meaning,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         onTap: () {

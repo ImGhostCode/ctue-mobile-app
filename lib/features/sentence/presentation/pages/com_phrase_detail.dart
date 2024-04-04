@@ -72,7 +72,7 @@ class CommunicationPhraseDetail extends StatelessWidget {
                     ),
                     Center(
                         child: Text(
-                      sentenceDetail.mean,
+                      sentenceDetail.meaning,
                       style: Theme.of(context).textTheme.bodyMedium,
                     )),
                     const SizedBox(

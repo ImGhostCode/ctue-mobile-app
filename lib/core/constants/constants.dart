@@ -30,7 +30,7 @@ String kisWord = 'isWord';
 
 String kTypeId = 'typeId';
 String kContent = 'content';
-String kMean = 'mean';
+String kMean = 'meaning';
 
 String kNote = 'note';
 

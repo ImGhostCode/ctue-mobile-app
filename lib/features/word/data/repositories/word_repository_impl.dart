@@ -1,7 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/word_pararms.dart';
 import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
-import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/business/repositories/word_repository.dart';
 import 'package:ctue_app/features/word/data/datasources/word_remote_data_source.dart';
 import 'package:ctue_app/features/word/data/models/object_model.dart';
@@ -126,7 +125,7 @@ class WordRepositoryImpl implements WordRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseDataModel<WordEntity>>> updateWord(
+  Future<Either<Failure, ResponseDataModel<WordModel>>> updateWord(
       {required UpdateWordParams updateWordParams}) async {
     if (await networkInfo.isConnected!) {
       try {

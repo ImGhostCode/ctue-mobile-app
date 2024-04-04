@@ -1,4 +1,6 @@
+import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddIrregularVerbPage extends StatefulWidget {
   AddIrregularVerbPage({super.key});
@@ -180,12 +182,34 @@ class _AddIrregularVerbPageState extends State<AddIrregularVerbPage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // Process data.
-                          }
-                        },
-                        child: const Text('Hoàn tất'),
+                        onPressed:
+                            Provider.of<IrrVerbProvider>(context, listen: true)
+                                    .isLoading
+                                ? null
+                                : () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      // Process data.
+                                      await Provider.of<IrrVerbProvider>(
+                                              context,
+                                              listen: false)
+                                          .eitherFailureOrCreIrrVerb(
+                                              _v1Controller.text,
+                                              _v2Controller.text,
+                                              _v3Controller.text,
+                                              _meaningController.text);
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                        child:
+                            Provider.of<IrrVerbProvider>(context, listen: true)
+                                    .isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ))
+                                : const Text('Hoàn tất'),
                       ),
                     ],
                   ),

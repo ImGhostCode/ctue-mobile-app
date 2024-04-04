@@ -6,7 +6,7 @@ class SentenceEntity {
   final int typeId;
   final int? userId;
   final String content;
-  final String mean;
+  final String meaning;
   final String? note;
   final bool isDeleted;
   final List<TopicEntity>? topics;
@@ -17,7 +17,7 @@ class SentenceEntity {
       required this.typeId,
       this.userId,
       required this.content,
-      required this.mean,
+      required this.meaning,
       this.note,
       this.isDeleted = false,
       this.topics,

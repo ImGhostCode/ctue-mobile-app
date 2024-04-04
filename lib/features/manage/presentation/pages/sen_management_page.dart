@@ -195,7 +195,7 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
                             left: 4, top: 0, bottom: 0, right: 0),
                         title: Text(item.content),
                         subtitle: Text(
-                          item.mean,
+                          item.meaning,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         trailing: IconButton(
@@ -203,7 +203,33 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
                             Icons.more_vert,
                           ),
                           onPressed: () {
-                            showActionDialog(context, false, () {}, () {});
+                            showActionDialog(
+                              context,
+                              false,
+                              () async {
+                                await Provider.of<SentenceProvider>(context,
+                                        listen: false)
+                                    .eitherFailureOrDelSentence(item.id);
+
+                                // ignore: use_build_context_synchronously
+                                Navigator.of(context).pop();
+                                // ignore: use_build_context_synchronously
+                                if (Provider.of<SentenceProvider>(context,
+                                            listen: false)
+                                        .statusCode ==
+                                    200) {
+                                  setState(() {
+                                    _pagingController.itemList!.remove(item);
+                                  });
+                                }
+                              },
+                              () async {
+                                Navigator.pop(context);
+                                Navigator.pushNamed(context, '/edit-sentence',
+                                    arguments: EditSentenceArguments(
+                                        sentenceEntity: item));
+                              },
+                            );
                           },
                         ),
                         onTap: () {
@@ -218,4 +244,10 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
       ),
     );
   }
+}
+
+class EditSentenceArguments {
+  SentenceEntity sentenceEntity;
+
+  EditSentenceArguments({required this.sentenceEntity});
 }

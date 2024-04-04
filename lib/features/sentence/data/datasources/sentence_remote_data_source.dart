@@ -10,6 +10,12 @@ abstract class SentenceRemoteDataSource {
       {required GetSentenceParams getSentenceParams});
   Future<ResponseDataModel<SentenceModel>> getSentenceDetail(
       {required GetSentenceParams getSentenceParams});
+  Future<ResponseDataModel<SentenceModel>> createSentence(
+      {required CreateSentenceParams createSentenceParams});
+  Future<ResponseDataModel<SentenceModel>> editSentence(
+      {required EditSentenceParams editSentenceParams});
+  Future<ResponseDataModel<void>> deleteSentence(
+      {required DeleteSentenceParams deleteSentenceParams});
 }
 
 class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
@@ -31,15 +37,6 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
           options: Options(headers: {
             // "authorization": "Bearer ${getUserParams.accessToken}"
           }));
-
-      // ResponseDataModel<List<SentenceModel>> listSentenceModel =
-      //     response.data['data'].map((topic) => {
-      //           topic.fromJson(
-      //               json: response.data,
-      //               fromJsonD: (json) => SentenceModel.fromJson(json: json)).toList();
-      // });
-
-      // return listSentenceModel;
 
       return ResponseDataModel<SentenceResModel>.fromJson(
         json: response.data,
@@ -82,6 +79,103 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
             statusCode: e.response!.statusCode!,
             errorMessage:
                 e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<SentenceModel>> createSentence(
+      {required CreateSentenceParams createSentenceParams}) async {
+    try {
+      final response = await dio.post('/sentence',
+          data: {
+            "topicId": createSentenceParams.topicId.length > 1
+                ? createSentenceParams.topicId
+                : [createSentenceParams.topicId],
+            "content": createSentenceParams.content,
+            "typeId": createSentenceParams.typeId,
+            "meaning": createSentenceParams.meaning,
+            "note": createSentenceParams.note,
+          },
+          options: Options(headers: {
+            "authorization": "Bearer ${createSentenceParams.accessToken}"
+          }));
+      return ResponseDataModel<SentenceModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => SentenceModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<SentenceModel>> editSentence(
+      {required EditSentenceParams editSentenceParams}) async {
+    try {
+      final response = await dio.patch(
+          '/sentence/${editSentenceParams.sentenceId}',
+          data: {
+            "topicId": editSentenceParams.topicId.length > 1
+                ? editSentenceParams.topicId
+                : [editSentenceParams.topicId],
+            "typeId": editSentenceParams.typeId,
+            "content": editSentenceParams.content,
+            "meaning": editSentenceParams.meaning,
+            "note": editSentenceParams.note,
+          },
+          options: Options(headers: {
+            "authorization": "Bearer ${editSentenceParams.accessToken}"
+          }));
+      return ResponseDataModel<SentenceModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => SentenceModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<void>> deleteSentence(
+      {required DeleteSentenceParams deleteSentenceParams}) async {
+    try {
+      final response = await dio.delete(
+          '/sentence/${deleteSentenceParams.sentenceId}',
+          options: Options(headers: {
+            "authorization": "Bearer ${deleteSentenceParams.accessToken}"
+          }));
+      return ResponseDataModel<void>.fromJson(
+          json: response.data, fromJsonD: (json) {});
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw ServerException(
+            statusCode: 500, errorMessage: 'Can\'t connect server');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response?.data['message'] ?? 'Unknown server error');
       }
     }
   }
