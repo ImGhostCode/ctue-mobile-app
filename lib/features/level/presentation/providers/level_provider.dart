@@ -30,7 +30,7 @@ class LevelProvider extends ChangeNotifier {
     this.failure,
   });
 
-  void eitherFailureOrGetLevels() async {
+  Future eitherFailureOrGetLevels() async {
     _isLoading = true;
     LevelRepositoryImpl repository = LevelRepositoryImpl(
       remoteDataSource: LevelRemoteDataSourceImpl(

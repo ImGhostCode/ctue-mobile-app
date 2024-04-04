@@ -473,7 +473,9 @@ class _WordStorePageState extends State<WordStorePage> {
                                                   listUsrVocaSets
                                                       .removeAt(index);
                                                 }
+                                                // ignore: use_build_context_synchronously
                                                 Navigator.pop(context, 'OK');
+                                                // ignore: use_build_context_synchronously
                                                 Navigator.pop(
                                                   context,
                                                 );

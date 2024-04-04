@@ -826,13 +826,13 @@ class _WordFormState extends State<WordForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Consumer<TypeProvider>(builder: (context, provider, child) {
+            wordDefinition.wordTypeId ??=
+                provider.listTypes.isNotEmpty ? provider.listTypes[0].id : null;
             return DropdownButton<int>(
               alignment: Alignment.center,
               focusColor: Colors.white,
               style: Theme.of(context).textTheme.bodyMedium!,
-              value: wordDefinition.wordTypeId = provider.listTypes.isNotEmpty
-                  ? provider.listTypes[0].id
-                  : null,
+              value: _wordDefinitions[index].wordTypeId,
               items: provider.listTypes
                   .map<DropdownMenuItem<int>>(
                       (TypeEntity type) => DropdownMenuItem<int>(

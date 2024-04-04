@@ -25,156 +25,198 @@ class ManagementPage extends StatelessWidget {
               ))
         ],
       ),
-      body: GridView.count(
-        primary: false,
-        padding: const EdgeInsets.all(16),
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
-        crossAxisCount: 2,
-        children: <Widget>[
-          ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStatePropertyAll(Colors.blueAccent.shade200)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/acc-management');
-            },
-            child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.manage_accounts,
-                    size: 70,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStatePropertyAll(Colors.blueAccent.shade200)),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/admin-overview');
+                  },
+                  child: const Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.dashboard,
+                          size: 70,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          'Tổng quan',
+                          textAlign: TextAlign.center,
+                        )
+                      ]),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                primary: false,
+                // padding: const EdgeInsets.all(16),
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                crossAxisCount: 2,
+                children: <Widget>[
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Colors.blueAccent.shade200)),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/acc-management');
+                    },
+                    child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.manage_accounts,
+                            size: 70,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Quản lý tài khoản người dùng',
+                            textAlign: TextAlign.center,
+                          )
+                        ]),
                   ),
-                  SizedBox(
-                    height: 5,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Colors.yellowAccent.shade400)),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/dict-management');
+                    },
+                    child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.menu_book,
+                            size: 70,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Quản lý từ điển',
+                            textAlign: TextAlign.center,
+                          )
+                        ]),
                   ),
-                  Text(
-                    'Quản lý tài khoản người dùng',
-                    textAlign: TextAlign.center,
-                  )
-                ]),
+                  ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.green)),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/contri-management');
+                    },
+                    child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.extension,
+                            size: 70,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Quản lý đóng góp',
+                            textAlign: TextAlign.center,
+                          )
+                        ]),
+                  ),
+                  ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Colors.blue)),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/sen-management');
+                    },
+                    child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.record_voice_over_outlined,
+                            size: 70,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Quản lý câu tiếng Anh',
+                            textAlign: TextAlign.center,
+                          )
+                        ]),
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.yellow.shade800)),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/irr-verb-management');
+                    },
+                    child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.article,
+                            size: 70,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Quản lý động từ bất quy tắt',
+                            textAlign: TextAlign.center,
+                          )
+                        ]),
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.teal.shade400)),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/voca-set-management');
+                    },
+                    child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.book,
+                            size: 70,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Quản lý bộ từ vựng',
+                            textAlign: TextAlign.center,
+                          )
+                        ]),
+                  ),
+                ],
+              ),
+            ],
           ),
-          ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStatePropertyAll(Colors.yellowAccent.shade400)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/dict-management');
-            },
-            child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.menu_book,
-                    size: 70,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Quản lý từ điển',
-                    textAlign: TextAlign.center,
-                  )
-                ]),
-          ),
-          ElevatedButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.green)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/contri-management');
-            },
-            child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.extension,
-                    size: 70,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Quản lý đóng góp',
-                    textAlign: TextAlign.center,
-                  )
-                ]),
-          ),
-          ElevatedButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.blue)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/sen-management');
-            },
-            child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.record_voice_over_outlined,
-                    size: 70,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Quản lý câu tiếng Anh',
-                    textAlign: TextAlign.center,
-                  )
-                ]),
-          ),
-          ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStatePropertyAll(Colors.yellow.shade800)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/irr-verb-management');
-            },
-            child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.article,
-                    size: 70,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Quản lý động từ bất quy tắt',
-                    textAlign: TextAlign.center,
-                  )
-                ]),
-          ),
-          ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStatePropertyAll(Colors.teal.shade400)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/voca-set-management');
-            },
-            child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.book,
-                    size: 70,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Quản lý bộ từ vựng',
-                    textAlign: TextAlign.center,
-                  )
-                ]),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -36,8 +36,13 @@ class _ContributionHistoryState extends State<ContributionHistory> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      await Provider.of<ContributionProvider>(context, listen: false)
-          .eitherFailureOrGetAllConByUser(args!.user!.id, pageKey);
+      if (args?.user != null) {
+        await Provider.of<ContributionProvider>(context, listen: false)
+            .eitherFailureOrGetAllConByUser(args!.user!.id, pageKey);
+      } else {
+        await Provider.of<ContributionProvider>(context, listen: false)
+            .eitherFailureOrGetAllConByUser(args!.userId!, pageKey);
+      }
       final newItems =
           // ignore: use_build_context_synchronously
           Provider.of<ContributionProvider>(context, listen: false)
@@ -180,9 +185,9 @@ class _ContributionHistoryState extends State<ContributionHistory> {
                 itemBuilder: (context, item, index) => ListTile(
                     onTap: () => item.type == ContributionType.word
                         ? showWordConDetail(
-                            context, item.user!.name, item.content)
+                            context, item.user!.name, item.content, false)
                         : showSentenceConDetail(
-                            context, item.user!.name, item.content),
+                            context, item.user!.name, item.content, false),
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                     // leading: ClipOval(

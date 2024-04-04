@@ -237,9 +237,9 @@ class _ContributionManagementPageState
                 itemBuilder: (context, item, index) => ListTile(
                     onTap: () => item.type == ContributionType.word
                         ? showWordConDetail(
-                            context, item.user!.name, item.content)
+                            context, item.user!.name, item.content, true)
                         : showSentenceConDetail(
-                            context, item.user!.name, item.content),
+                            context, item.user!.name, item.content, true),
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                     leading: ClipOval(
@@ -304,7 +304,7 @@ Color getStatusColor(int status) {
 }
 
 Future<String?> showWordConDetail(BuildContext context, String name,
-    Map<String, dynamic> contributionDetail) {
+    Map<String, dynamic> contributionDetail, bool isAdmin) {
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -516,55 +516,78 @@ Future<String?> showWordConDetail(BuildContext context, String name,
                       ],
                     )
                   : const SizedBox.shrink(),
+              contributionDetail['feedback'] != null
+                  ? RichText(
+                      text: TextSpan(
+                        text: 'Nhận xét: ',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold, color: Colors.blue),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '${contributionDetail['feedback']}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.blue),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ]),
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: <Widget>[
-        ElevatedButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.green),
-                padding: MaterialStatePropertyAll(
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16))),
-            onPressed: () {},
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.check),
-                SizedBox(
-                  width: 3,
-                ),
-                Text('Chấp nhận'),
-              ],
-            )),
-        ElevatedButton(
-            style: ButtonStyle(
-                padding: const MaterialStatePropertyAll(
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
-                backgroundColor: MaterialStatePropertyAll(Colors.red.shade500)),
-            onPressed: () {},
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.close,
-                  size: 28,
-                ),
-                SizedBox(
-                  width: 3,
-                ),
-                Text(
-                  'Từ chối',
-                ),
-              ],
-            ))
-      ],
+      actions: isAdmin
+          ? <Widget>[
+              ElevatedButton(
+                  style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(Colors.green),
+                      padding: MaterialStatePropertyAll(
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 16))),
+                  onPressed: () {},
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.check),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text('Chấp nhận'),
+                    ],
+                  )),
+              ElevatedButton(
+                  style: ButtonStyle(
+                      padding: const MaterialStatePropertyAll(
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
+                      backgroundColor:
+                          MaterialStatePropertyAll(Colors.red.shade500)),
+                  onPressed: () {},
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.close,
+                        size: 28,
+                      ),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text(
+                        'Từ chối',
+                      ),
+                    ],
+                  ))
+            ]
+          : [],
     ),
   );
 }
 
 Future<String?> showSentenceConDetail(BuildContext context, String name,
-    Map<String, dynamic> contributionDetail) {
+    Map<String, dynamic> contributionDetail, bool isAdmin) {
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -673,49 +696,72 @@ Future<String?> showSentenceConDetail(BuildContext context, String name,
                       ],
                     )
                   : const SizedBox.shrink(),
+              contributionDetail['feedback'] != null
+                  ? RichText(
+                      text: TextSpan(
+                        text: 'Nhận xét: ',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold, color: Colors.blue),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '${contributionDetail['feedback']}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.blue),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ]),
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: <Widget>[
-        ElevatedButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.green),
-                padding: MaterialStatePropertyAll(
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16))),
-            onPressed: () {},
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.check),
-                SizedBox(
-                  width: 3,
-                ),
-                Text('Chấp nhận'),
-              ],
-            )),
-        ElevatedButton(
-            style: ButtonStyle(
-                padding: const MaterialStatePropertyAll(
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
-                backgroundColor: MaterialStatePropertyAll(Colors.red.shade500)),
-            onPressed: () {},
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.close,
-                  size: 28,
-                ),
-                SizedBox(
-                  width: 3,
-                ),
-                Text(
-                  'Từ chối',
-                ),
-              ],
-            ))
-      ],
+      actions: isAdmin
+          ? <Widget>[
+              ElevatedButton(
+                  style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(Colors.green),
+                      padding: MaterialStatePropertyAll(
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 16))),
+                  onPressed: () {},
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.check),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text('Chấp nhận'),
+                    ],
+                  )),
+              ElevatedButton(
+                  style: ButtonStyle(
+                      padding: const MaterialStatePropertyAll(
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
+                      backgroundColor:
+                          MaterialStatePropertyAll(Colors.red.shade500)),
+                  onPressed: () {},
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.close,
+                        size: 28,
+                      ),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text(
+                        'Từ chối',
+                      ),
+                    ],
+                  ))
+            ]
+          : [],
     ),
   );
 }

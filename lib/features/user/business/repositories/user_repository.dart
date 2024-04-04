@@ -21,4 +21,10 @@ abstract class UserRepository {
   Future<Either<Failure, ResponseDataModel<UserResEntity>>> getAllUser({
     required GetAllUserParams getAllUserParams,
   });
+  Future<Either<Failure, ResponseDataModel<void>>> toggleBanUser({
+    required ToggleBanUserParams toggleBanUserParams,
+  });
+  Future<Either<Failure, ResponseDataModel<void>>> deleteUser({
+    required DeleteUserParams deleteUserParams,
+  });
 }

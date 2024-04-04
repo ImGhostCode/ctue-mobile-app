@@ -30,7 +30,7 @@ class SpecializationProvider extends ChangeNotifier {
     this.failure,
   });
 
-  void eitherFailureOrGetSpecializations() async {
+  Future eitherFailureOrGetSpecializations() async {
     _isLoading = true;
     SpecRepositoryImpl repository = SpecRepositoryImpl(
       remoteDataSource: SpecRemoteDataSourceImpl(

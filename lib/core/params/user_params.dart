@@ -36,6 +36,22 @@ class GetAllUserParams {
   GetAllUserParams({required this.page, required this.accessToken});
 }
 
+class ToggleBanUserParams {
+  final int userId;
+  final String accessToken;
+  final String? feedback;
+
+  ToggleBanUserParams(
+      {required this.userId, required this.accessToken, this.feedback});
+}
+
+class DeleteUserParams {
+  final int userId;
+  final String accessToken;
+
+  DeleteUserParams({required this.userId, required this.accessToken});
+}
+
 class GetVerifyCodeParams {
   final String email;
 

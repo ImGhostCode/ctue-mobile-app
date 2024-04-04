@@ -5,7 +5,7 @@ class AccountEntity {
   final int userId;
   final String authType;
   final String accountType;
-  final bool isBan;
+  bool isBan;
   final String? feedback;
   final bool isDeleted;
   final UserEntity? user;

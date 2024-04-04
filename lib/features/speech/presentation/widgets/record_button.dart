@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -25,7 +26,7 @@ class _RecordButtonState extends State<RecordButton> {
   String? _filePath;
   int? score;
   List<Text> phonemeResults = [];
-
+  Timer? _recordingTimer;
   @override
   void initState() {
     super.initState();
@@ -61,6 +62,10 @@ class _RecordButtonState extends State<RecordButton> {
     setState(() {
       _isRecording = true;
     });
+    _recordingTimer = Timer(const Duration(seconds: 5), () async {
+      await _stopRecording();
+      // ... (Additional handling after recording stops) ...
+    });
   }
 
   Future<void> _stopRecording() async {
@@ -68,6 +73,7 @@ class _RecordButtonState extends State<RecordButton> {
     setState(() {
       _isRecording = false;
     });
+    _recordingTimer?.cancel();
   }
 
   void _playRecording() async {

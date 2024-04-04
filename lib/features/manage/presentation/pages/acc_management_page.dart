@@ -322,16 +322,21 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
               style: const ButtonStyle(
                   padding: MaterialStatePropertyAll(
                       EdgeInsets.symmetric(horizontal: 28, vertical: 16))),
-              onPressed: () {},
-              child: const Row(
+              onPressed: () {
+                Navigator.pop(context);
+                _dialogBanUserBuilder(context, account);
+              },
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.lock_outline),
-                  SizedBox(
+                  Icon(account.isBan
+                      ? Icons.lock_open_rounded
+                      : Icons.lock_outline_rounded),
+                  const SizedBox(
                     width: 3,
                   ),
-                  Text('Khóa'),
+                  Text(account.isBan ? 'Mở khóa' : 'Khóa'),
                 ],
               )),
           ElevatedButton(
@@ -340,12 +345,15 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                       EdgeInsets.symmetric(horizontal: 28, vertical: 16)),
                   backgroundColor:
                       MaterialStatePropertyAll(Colors.red.shade500)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+                _dialogDeleteUserBuilder(context, account);
+              },
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.close,
+                    Icons.delete,
                     size: 28,
                   ),
                   SizedBox(
@@ -360,11 +368,133 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
       ),
     );
   }
+
+  Future<void> _dialogBanUserBuilder(
+      BuildContext context, AccountEntity accountEntity) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        final TextEditingController reasonController = TextEditingController();
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          shadowColor: Colors.white,
+          title: Text(
+            'Khóa/Mở khóa tài khoản',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: TextField(
+              controller: reasonController,
+              maxLines: 4,
+              decoration: const InputDecoration(
+                  hintText: 'Lý do', border: OutlineInputBorder()),
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey.shade400,
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Trở về'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              onPressed: Provider.of<UserProvider>(context, listen: true)
+                      .isLoading
+                  ? null
+                  : () async {
+                      await Provider.of<UserProvider>(context, listen: false)
+                          .eitherFailureOrToggleBanUsr(
+                              accountEntity.userId, reasonController.text);
+                      Navigator.of(context).pop();
+
+                      if (Provider.of<UserProvider>(context, listen: false)
+                              .statusCode ==
+                          200) {
+                        setState(() {
+                          accountEntity.isBan = !accountEntity.isBan;
+                        });
+                      }
+                    },
+              child: const Text('Đồng ý'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _dialogDeleteUserBuilder(
+      BuildContext context, AccountEntity accountEntity) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          shadowColor: Colors.white,
+          title: Text(
+            'Bạn có chắc chắn?',
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+          ),
+          // content: const Text(
+          //   'A dialog is a type of modal window that\n'
+          //   'appears in front of app content to\n'
+          //   'provide critical information, or prompt\n'
+          //   'for a decision to be made.',
+          // ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey.shade400,
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Trở về'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              onPressed: Provider.of<UserProvider>(context, listen: true)
+                      .isLoading
+                  ? null
+                  : () async {
+                      await Provider.of<UserProvider>(context, listen: false)
+                          .eitherFailureOrDelUser(accountEntity.userId);
+
+                      Navigator.of(context).pop();
+                      if (Provider.of<UserProvider>(context, listen: false)
+                              .statusCode ==
+                          200) {
+                        setState(() {
+                          _pagingController.itemList!.remove(accountEntity);
+                        });
+                      }
+                    },
+              child: const Text('Đồng ý'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class ContriHistoryArguments {
   UserEntity? user;
+  int? userId;
   // List<ContributionEntity> contributions = [];
 
-  ContriHistoryArguments({this.user});
+  ContriHistoryArguments({this.user, this.userId});
 }

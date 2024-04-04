@@ -18,6 +18,10 @@ abstract class UserRemoteDataSource {
       {required ResetPasswordParams resetPasswordParams});
   Future<ResponseDataModel<void>> getVerifyCode(
       {required GetVerifyCodeParams getVerifyCodeParams});
+  Future<ResponseDataModel<void>> toggleBanUser(
+      {required ToggleBanUserParams toggleBanUserParams});
+  Future<ResponseDataModel<void>> deleteUser(
+      {required DeleteUserParams deleteUserParams});
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -168,6 +172,62 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       return ResponseDataModel<UserResModel>.fromJson(
           json: response.data,
           fromJsonD: (json) => UserResModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw ServerException(
+            statusCode: 500, errorMessage: 'Can\'t connect server');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response?.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<void>> toggleBanUser(
+      {required ToggleBanUserParams toggleBanUserParams}) async {
+    try {
+      final response = await dio.patch(
+          '/users/toggle-ban/${toggleBanUserParams.userId}',
+          data: {'feedback': toggleBanUserParams.feedback},
+          options: Options(headers: {
+            "authorization": "Bearer ${toggleBanUserParams.accessToken}"
+          }));
+      return ResponseDataModel<void>.fromJson(
+          json: response.data, fromJsonD: (json) {});
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw ServerException(
+            statusCode: 500, errorMessage: 'Can\'t connect server');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response?.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<void>> deleteUser(
+      {required DeleteUserParams deleteUserParams}) async {
+    try {
+      final response = await dio.delete('/users/${deleteUserParams.userId}',
+          options: Options(headers: {
+            "authorization": "Bearer ${deleteUserParams.accessToken}"
+          }));
+      return ResponseDataModel<void>.fromJson(
+          json: response.data, fromJsonD: (json) {});
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

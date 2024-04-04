@@ -31,7 +31,7 @@ class TypeProvider extends ChangeNotifier {
     this.failure,
   });
 
-  void eitherFailureOrGetTypes(bool isWord) async {
+  Future eitherFailureOrGetTypes(bool isWord) async {
     _isLoading = true;
     TypeRepositoryImpl repository = TypeRepositoryImpl(
       remoteDataSource: TypeRemoteDataSourceImpl(
