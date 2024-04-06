@@ -351,7 +351,7 @@ class VocaSetProvider extends ChangeNotifier {
   }
 
   Future eitherFailureOrRmVocaSet(int id, bool isDownloaded) async {
-    _isLoading = true;
+    isLoading = true;
     VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
       remoteDataSource: VocaSetRemoteDataSourceImpl(
         dio: ApiService.dio,
@@ -376,7 +376,7 @@ class VocaSetProvider extends ChangeNotifier {
 
     failureOrRmVocaSet.fold(
       (Failure newFailure) {
-        _isLoading = false;
+        isLoading = false;
         vocaSetEntity = null;
         failure = newFailure;
         message = newFailure.errorMessage;
@@ -384,7 +384,7 @@ class VocaSetProvider extends ChangeNotifier {
         notifyListeners();
       },
       (ResponseDataModel<VocaSetEntity> newVocaSet) {
-        _isLoading = false;
+        isLoading = false;
         vocaSetEntity = newVocaSet.data;
         message = newVocaSet.message;
         statusCode = newVocaSet.statusCode;
@@ -450,7 +450,7 @@ class VocaSetProvider extends ChangeNotifier {
     bool? isPublic,
     List<int>? words,
   ) async {
-    _isLoading = true;
+    isLoading = true;
     VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
       remoteDataSource: VocaSetRemoteDataSourceImpl(
         dio: ApiService.dio,
@@ -482,15 +482,17 @@ class VocaSetProvider extends ChangeNotifier {
 
     failureOrCreVocaSet.fold(
       (Failure newFailure) {
-        _isLoading = false;
+        isLoading = false;
         vocaSetEntity = null;
         failure = newFailure;
+        statusCode = 400;
         message = newFailure.errorMessage;
         notifyListeners();
       },
       (ResponseDataModel<VocaSetEntity> newVocaSet) {
-        _isLoading = false;
+        isLoading = false;
         vocaSetEntity = newVocaSet.data;
+        statusCode = newVocaSet.statusCode;
         message = newVocaSet.message;
         failure = null;
         notifyListeners();

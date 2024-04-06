@@ -19,24 +19,27 @@ class VocabularySetDetail extends StatefulWidget {
 
 class _VocabularySetDetailState extends State<VocabularySetDetail> {
   String sortBy = 'Mới nhất';
+  dynamic args;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Provider.of<LearnProvider>(context, listen: false)
-        .eitherFailureOrGetUpcomingReminder();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as VocabularySetArguments;
+  void didChangeDependencies() {
+    args = ModalRoute.of(context)!.settings.arguments as VocabularySetArguments;
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUpcomingReminder();
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetDetail(args.id);
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(args.id);
+    super.didChangeDependencies();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Consumer<VocaSetProvider>(builder: (context, provider, child) {
       VocaSetEntity? vocaSetEntity = provider.vocaSetEntity;
       VocaSetStatisticsEntity? vocaSetStatisticsEntity =
@@ -218,7 +221,9 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       ]),
 
                       ...List.generate(
-                          provider.isDownloaded(provider.vocaSetEntity!.id)
+                          args.isAdmin ||
+                                  provider
+                                      .isDownloaded(provider.vocaSetEntity!.id)
                               ? provider.vocaSetEntity!.words.length
                               : provider.vocaSetEntity!.words.length >
                                       maxDisplayedWords
@@ -246,7 +251,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                   ),
                 ),
               ),
-              provider.isDownloaded(provider.vocaSetEntity!.id)
+              args.isAdmin || provider.isDownloaded(provider.vocaSetEntity!.id)
                   ? const SizedBox.shrink()
                   : Positioned(
                       bottom: 0,

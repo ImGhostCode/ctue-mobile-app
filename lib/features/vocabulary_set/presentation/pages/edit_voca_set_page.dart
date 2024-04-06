@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/specialization/business/entities/specialization_entity.dart';
 import 'package:ctue_app/features/specialization/presentation/providers/spec_provider.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
@@ -30,7 +31,12 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
   int? _selectedSpecializaiton;
   String? _specError = '';
   String? _topicError = '';
+  String? _pictureError = '';
   XFile? _selectedImage;
+  String? oldPicture;
+  dynamic args;
+  int? selectedTopic;
+  bool? _isPublic;
 
   bool _isExpanded = false;
 
@@ -41,6 +47,7 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
     if (pickedFile != null) {
       setState(() {
         _selectedImage = pickedFile;
+        oldPicture = null;
         // print(_selectedImages);
       });
     }
@@ -52,6 +59,12 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
     });
   }
 
+  void _removeOldImage() {
+    setState(() {
+      oldPicture = null;
+    });
+  }
+
   @override
   void initState() {
     Provider.of<SpecializationProvider>(context, listen: false)
@@ -59,6 +72,21 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
     Provider.of<TopicProvider>(context, listen: false)
         .eitherFailureOrTopics(null, true, null);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    args = ModalRoute.of(context)!.settings.arguments as EditVocaSetArguments;
+    _titleController.text = args.vocaSetEntity.title;
+    oldPicture = args.vocaSetEntity.picture;
+    _selectedSpecializaiton = args.vocaSetEntity.specId;
+
+    selectedWords.clear();
+    selectedWords.addAll(args.vocaSetEntity.words);
+
+    _isPublic ??= args.vocaSetEntity.isPublic;
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -88,6 +116,7 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                 setState(() {
                   _specError = null;
                   _topicError = null;
+                  _pictureError = null;
                 });
 
                 // List<dynamic> selectedTopics =
@@ -102,16 +131,28 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                   List<int> wordIds = selectedWords.map((e) => e.id).toList();
 
                   await Provider.of<VocaSetProvider>(context, listen: false)
-                      .eitherFailureOrCreVocaSet(
-                          _titleController.text, null, null, null, wordIds);
+                      .eitherFailureOrUpdateVocaSet(
+                          args.vocaSetEntity.id,
+                          _titleController.text,
+                          selectedTopic,
+                          _selectedSpecializaiton,
+                          oldPicture,
+                          _selectedImage,
+                          _isPublic,
+                          wordIds);
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pop();
 
+                  // ignore: use_build_context_synchronously
                   if (Provider.of<VocaSetProvider>(context, listen: false)
-                          .vocaSetEntity !=
-                      null) {
+                          .statusCode ==
+                      200) {
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         duration: const Duration(seconds: 1),
                         content: Text(
+                          // ignore: use_build_context_synchronously
                           Provider.of<VocaSetProvider>(context, listen: false)
                               .message!,
                           style: const TextStyle(color: Colors.white),
@@ -120,14 +161,17 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                             Colors.green, // You can customize the color
                       ),
                     );
+                    // ignore: use_build_context_synchronously
                   } else if (Provider.of<VocaSetProvider>(context,
                               listen: false)
                           .failure !=
                       null) {
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         duration: const Duration(seconds: 1),
                         content: Text(
+                          // ignore: use_build_context_synchronously
                           Provider.of<VocaSetProvider>(context, listen: false)
                               .message!,
                           style: const TextStyle(color: Colors.white),
@@ -138,7 +182,6 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                     );
                   }
                 }
-                // Navigator.of(context).pop();
               },
               child: Provider.of<VocaSetProvider>(context, listen: true)
                       .isLoading
@@ -375,6 +418,40 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                 const SizedBox(
                   height: 10,
                 ),
+                if (oldPicture != null && _selectedImage == null)
+                  Container(
+                    height: 100,
+                    width: 100,
+                    margin: const EdgeInsets.only(right: 5),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.teal),
+                    ),
+                    child: Stack(
+                      children: [
+                        Image.network(
+                          oldPicture!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fill,
+                        ),
+                        Positioned(
+                          top: -10,
+                          right: -10,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.red,
+                                size: 20,
+                              ),
+                              onPressed: () => _removeOldImage(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 if (_selectedImage != null)
                   Container(
                     height: 100,
@@ -427,6 +504,34 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                _pictureError != null
+                    ? Text(
+                        _pictureError!,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: Colors.red),
+                      )
+                    : const SizedBox.shrink(),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Chế độ công khai',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                Switch(
+                  value: _isPublic!,
+                  activeColor: Colors.blue,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _isPublic = value;
+                    });
+                  },
+                )
               ],
             ),
           ),
@@ -439,7 +544,13 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
     bool isValid = true;
     if (_selectedSpecializaiton == null) {
       setState(() {
-        _specError = 'Vui lòng chọn chuyên ngành của từ';
+        _specError = 'Vui lòng chọn chuyên ngành';
+      });
+      isValid = false;
+    }
+    if (_selectedImage == null && oldPicture == null) {
+      setState(() {
+        _pictureError = 'Vui lòng chọn ảnh minh họa';
       });
       isValid = false;
     }
@@ -448,7 +559,7 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
         .getSelectedTopics()
         .isEmpty) {
       setState(() {
-        _topicError = 'Vui lòng chọn ít nhất 1 chủ đề';
+        _topicError = 'Vui lòng chọn chủ đề';
       });
       isValid = false;
     }
@@ -462,10 +573,7 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
           Consumer<SpecializationProvider>(builder: (context, provider, child) {
         return DropdownButtonFormField<int>(
           style: Theme.of(context).textTheme.bodyMedium,
-          value: _selectedSpecializaiton =
-              provider.listSpecializations.isNotEmpty
-                  ? provider.listSpecializations[0].id
-                  : null,
+          value: _selectedSpecializaiton,
           validator: (int? value) {
             if (value == null) {
               return "Vui lòng chọn chuyên ngành";
@@ -527,6 +635,15 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
             child: Consumer<TopicProvider>(builder: (context, provider, child) {
               List<TopicEntity> listTopics = provider.listTopicEntity;
 
+              if (args.vocaSetEntity != null && selectedTopic == null) {
+                int selectedId = args.vocaSetEntity.topicId;
+                for (var element in listTopics) {
+                  if (selectedId == element.id) {
+                    element.isSelected = true;
+                  }
+                }
+              }
+
               bool isLoading = provider.isLoading;
 
               // Access the failure from the provider
@@ -583,9 +700,19 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                                         : Colors.black),
                           ),
                           onPressed: () {
-                            setState(() {
-                              topic.isSelected = !topic.isSelected;
-                            });
+                            for (var element in listTopics) {
+                              if (element.id != topic.id) {
+                                element.isSelected = false;
+                              } else {
+                                topic.isSelected = !topic.isSelected;
+                                if (topic.isSelected) {
+                                  selectedTopic = topic.id;
+                                } else {
+                                  selectedTopic = null;
+                                }
+                              }
+                            }
+                            setState(() {});
                           }),
                     );
                   }).toList(),

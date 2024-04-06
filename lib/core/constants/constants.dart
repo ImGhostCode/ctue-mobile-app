@@ -104,8 +104,9 @@ int maxDisplayedWords = 5;
 
 class VocabularySetArguments {
   final int id;
+  final bool isAdmin;
 
-  VocabularySetArguments({required this.id});
+  VocabularySetArguments({required this.id, this.isAdmin = false});
 }
 
 String accNotFound = 'Tài khoản không tồn tại';

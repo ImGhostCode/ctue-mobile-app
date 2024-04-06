@@ -40,7 +40,9 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
         "title": creVocaSetParams.title,
         "topicId": creVocaSetParams.topicId,
         "specId": creVocaSetParams.specId,
-        "words": creVocaSetParams.words,
+        "words": creVocaSetParams.words.length > 1
+            ? creVocaSetParams.words
+            : [creVocaSetParams.words],
         "picture": creVocaSetParams.picture != null
             ? MultipartFile.fromFileSync(creVocaSetParams.picture!.path,
                 filename: creVocaSetParams.picture!.name)
@@ -186,20 +188,20 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
   Future<ResponseDataModel<VocaSetModel>> updateVocaSet(
       {required UpdateVocaSetParams updateVocaSetParams}) async {
     try {
-      final dataUpdate = {
-        "title": updateVocaSetParams.title,
-        "topicId": updateVocaSetParams.topicId,
-        "specId": updateVocaSetParams.specId,
-        "oldPicture": updateVocaSetParams.oldPicture,
-        "picture": updateVocaSetParams.picture != null
-            ? MultipartFile.fromFileSync(updateVocaSetParams.picture!.path,
-                filename: updateVocaSetParams.picture!.name)
-            : null
-      };
+      // final dataUpdate = {
+      //   "title": updateVocaSetParams.title,
+      //   "topicId": updateVocaSetParams.topicId,
+      //   "specId": updateVocaSetParams.specId,
+      //   "oldPicture": updateVocaSetParams.oldPicture,
+      //   "picture": updateVocaSetParams.picture != null
+      //       ? MultipartFile.fromFileSync(updateVocaSetParams.picture!.path,
+      //           filename: updateVocaSetParams.picture!.name)
+      //       : null
+      // };
 
-      if (updateVocaSetParams.words != null) {
-        dataUpdate['words'] = updateVocaSetParams.words;
-      }
+      // if (updateVocaSetParams.words != null) {
+      //   dataUpdate['words'] = updateVocaSetParams.words;
+      // }
 
       final formData = FormData.fromMap({
         "title": updateVocaSetParams.title,
@@ -207,6 +209,11 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
         "specId": updateVocaSetParams.specId,
         "isPublic": updateVocaSetParams.isPublic,
         "oldPicture": updateVocaSetParams.oldPicture,
+        'words': updateVocaSetParams.words == null
+            ? null
+            : updateVocaSetParams.words!.length > 1
+                ? updateVocaSetParams.words
+                : [updateVocaSetParams.words],
         "picture": updateVocaSetParams.picture != null
             ? MultipartFile.fromFileSync(updateVocaSetParams.picture!.path,
                 filename: updateVocaSetParams.picture!.name)

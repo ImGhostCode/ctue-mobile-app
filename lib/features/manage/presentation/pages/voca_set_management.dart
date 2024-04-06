@@ -184,9 +184,10 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                         minVerticalPadding: 4,
                         onTap: () {
                           Navigator.pushNamed(context, '/vocabulary-set-detail',
-                              arguments: VocabularySetArguments(id: item.id));
+                              arguments: VocabularySetArguments(
+                                  id: item.id, isAdmin: true));
                         },
-                        onLongPress: () => showActionDialog(context),
+                        onLongPress: () => showActionDialog(context, item),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 10),
                         shape: RoundedRectangleBorder(
@@ -240,7 +241,8 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                                   shape: BoxShape.circle),
                             ),
                             IconButton(
-                                onPressed: () => showActionDialog(context),
+                                onPressed: () =>
+                                    showActionDialog(context, item),
                                 icon: const Icon(Icons.more_vert))
                           ],
                         ))),
@@ -252,7 +254,8 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
     );
   }
 
-  Future<String?> showActionDialog(BuildContext context) {
+  Future<String?> showActionDialog(
+      BuildContext context, VocaSetEntity vocaSetEntity) {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -276,7 +279,10 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                     backgroundColor: MaterialStatePropertyAll(Colors.white)),
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/edit-voca-set');
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/edit-voca-set',
+                      arguments:
+                          EditVocaSetArguments(vocaSetEntity: vocaSetEntity));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -301,25 +307,69 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                     shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero)),
                     backgroundColor: MaterialStatePropertyAll(Colors.white)),
-                onPressed: () => showDialog<String>(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
-                        backgroundColor: Colors.white,
-                        // title: const Text('Cảnh báo'),
-                        content: const Text(
-                            'Bạn có chắc chắn muốn xóa bộ từ này không?'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Xóa'),
-                            child: const Text('Trở lại'),
-                          ),
-                          TextButton(
-                            onPressed: () async {},
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    ),
+                            backgroundColor: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            shadowColor: Colors.white,
+                            title: Text(
+                              'Cảnh báo',
+                              style: TextStyle(
+                                  color: Colors.red.shade400,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            content: const Text(
+                                'Bạn có chắc chắn muốn xóa bộ từ này không?'),
+                            actionsAlignment: MainAxisAlignment.spaceBetween,
+                            actions: <Widget>[
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey.shade400,
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: const Text('Trở về'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                onPressed: Provider.of<VocaSetProvider>(context,
+                                            listen: true)
+                                        .isLoading
+                                    ? null
+                                    : () async {
+                                        await Provider.of<VocaSetProvider>(
+                                                context,
+                                                listen: false)
+                                            .eitherFailureOrRmVocaSet(
+                                                vocaSetEntity.id, false);
+                                        _pagingController.itemList!
+                                            .remove(vocaSetEntity);
+                                        Navigator.of(context).pop();
+                                      },
+                                child: Provider.of<VocaSetProvider>(context,
+                                            listen: true)
+                                        .isLoading
+                                    ? const SizedBox(
+                                        height: 25,
+                                        width: 25,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Text('Đồng ý'),
+                              ),
+                            ],
+                          ));
+                },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -357,4 +407,10 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
 class CreateVocaSetArgument {
   final bool isAdmin;
   CreateVocaSetArgument({required this.isAdmin});
+}
+
+class EditVocaSetArguments {
+  VocaSetEntity vocaSetEntity;
+
+  EditVocaSetArguments({required this.vocaSetEntity});
 }

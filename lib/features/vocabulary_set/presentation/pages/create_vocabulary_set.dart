@@ -31,7 +31,9 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
   int? _selectedSpecializaiton;
   String? _specError = '';
   String? _topicError = '';
+  String? _imageError = '';
   XFile? _selectedImage;
+  int? selectedTopic;
 
   bool _isExpanded = false;
 
@@ -91,6 +93,7 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                 setState(() {
                   _specError = null;
                   _topicError = null;
+                  _imageError = null;
                 });
 
                 // List<dynamic> selectedTopics =
@@ -104,17 +107,30 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                   // );
                   List<int> wordIds = selectedWords.map((e) => e.id).toList();
 
-                  await Provider.of<VocaSetProvider>(context, listen: false)
-                      .eitherFailureOrCreVocaSet(
-                          _titleController.text, null, null, null, wordIds);
+                  if (args.isAdmin) {
+                    await Provider.of<VocaSetProvider>(context, listen: false)
+                        .eitherFailureOrCreVocaSet(
+                            _titleController.text,
+                            selectedTopic,
+                            _selectedSpecializaiton,
+                            _selectedImage,
+                            wordIds);
+                  } else {
+                    await Provider.of<VocaSetProvider>(context, listen: false)
+                        .eitherFailureOrCreVocaSet(
+                            _titleController.text, null, null, null, wordIds);
+                  }
 
+                  // ignore: use_build_context_synchronously
                   if (Provider.of<VocaSetProvider>(context, listen: false)
-                          .vocaSetEntity !=
-                      null) {
+                          .statusCode ==
+                      201) {
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         duration: const Duration(seconds: 1),
                         content: Text(
+                          // ignore: use_build_context_synchronously
                           Provider.of<VocaSetProvider>(context, listen: false)
                               .message!,
                           style: const TextStyle(color: Colors.white),
@@ -123,14 +139,17 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                             Colors.green, // You can customize the color
                       ),
                     );
+                    // ignore: use_build_context_synchronously
                   } else if (Provider.of<VocaSetProvider>(context,
                               listen: false)
                           .failure !=
                       null) {
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         duration: const Duration(seconds: 1),
                         content: Text(
+                          // ignore: use_build_context_synchronously
                           Provider.of<VocaSetProvider>(context, listen: false)
                               .message!,
                           style: const TextStyle(color: Colors.white),
@@ -141,7 +160,8 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                     );
                   }
                 }
-                // Navigator.of(context).pop();
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
               },
               child: Provider.of<VocaSetProvider>(context, listen: true)
                       .isLoading
@@ -364,10 +384,11 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                 ),
                 args.isAdmin
                     ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildTopics(context),
                           const SizedBox(
-                            height: 5,
+                            height: 8,
                           ),
                           _topicError != null
                               ? Text(
@@ -386,6 +407,7 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                     : const SizedBox.shrink(),
                 args.isAdmin
                     ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Thêm ảnh minh họa',
@@ -446,6 +468,18 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                               ),
                             ),
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          _imageError != null
+                              ? Text(
+                                  _imageError!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: Colors.red),
+                                )
+                              : const SizedBox.shrink(),
                         ],
                       )
                     : const SizedBox.shrink(),
@@ -466,11 +500,18 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
       isValid = false;
     }
 
+    if (_selectedImage == null) {
+      setState(() {
+        _imageError = 'Vui lòng thêm hình ảnh minh họa';
+      });
+      isValid = false;
+    }
+
     if (Provider.of<TopicProvider>(context, listen: false)
         .getSelectedTopics()
         .isEmpty) {
       setState(() {
-        _topicError = 'Vui lòng chọn ít nhất 1 chủ đề';
+        _topicError = 'Vui lòng chọn chủ đề';
       });
       isValid = false;
     }
@@ -605,9 +646,19 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                                         : Colors.black),
                           ),
                           onPressed: () {
-                            setState(() {
-                              topic.isSelected = !topic.isSelected;
-                            });
+                            for (var element in listTopics) {
+                              if (element.id != topic.id) {
+                                element.isSelected = false;
+                              } else {
+                                topic.isSelected = !topic.isSelected;
+                                if (topic.isSelected) {
+                                  selectedTopic = topic.id;
+                                } else {
+                                  selectedTopic = null;
+                                }
+                              }
+                            }
+                            setState(() {});
                           }),
                     );
                   }).toList(),

@@ -183,7 +183,7 @@ class ManagementPage extends StatelessWidget {
                             height: 5,
                           ),
                           Text(
-                            'Quản lý động từ bất quy tắt',
+                            'Quản lý động từ bất quy tắc',
                             textAlign: TextAlign.center,
                           )
                         ]),
