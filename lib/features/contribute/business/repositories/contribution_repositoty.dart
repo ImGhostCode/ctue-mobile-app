@@ -22,4 +22,8 @@ abstract class ContributionRepository {
       getAllConByUser({
     required GetAllConByUserParams getAllConByUserParams,
   });
+
+  Future<Either<Failure, ResponseDataModel<void>>> verifyContribution({
+    required VerifyConParams verifyConParams,
+  });
 }

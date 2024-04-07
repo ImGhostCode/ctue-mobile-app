@@ -8,6 +8,7 @@ import 'package:ctue_app/features/contribute/business/usecases/create_sen_contri
 import 'package:ctue_app/features/contribute/business/usecases/create_word_contribution.dart';
 import 'package:ctue_app/features/contribute/business/usecases/get_all_con_by_user_usecase.dart';
 import 'package:ctue_app/features/contribute/business/usecases/get_all_con_usecase.dart';
+import 'package:ctue_app/features/contribute/business/usecases/verify_con_usecase.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 
 import 'package:flutter/material.dart';
@@ -24,7 +25,8 @@ class ContributionProvider extends ChangeNotifier {
   ContributionEntity? contributionEntity;
   List<ContributionEntity> listCons = [];
   Failure? failure;
-  String? message = '';
+  String? message;
+  int? statusCode;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   ContributionResEntity? contributionResEntity;
@@ -194,6 +196,50 @@ class ContributionProvider extends ChangeNotifier {
         _isLoading = false;
         contributionResEntity = newContributions.data;
         message = newContributions.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrVerifyCon(
+      int contributionId, int status, String? feedback, bool isWord) async {
+    isLoading = true;
+    ContributionRepositoryImpl repository = ContributionRepositoryImpl(
+      remoteDataSource: ContributionRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: TemplateLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrVerifyCon =
+        await VerifyContributionUsecase(contributionRepository: repository)
+            .call(
+      verifyConParams: VerifyConParams(
+          contributionId: contributionId,
+          status: status,
+          feedback: feedback,
+          accessToken: await storage.read(key: 'accessToken') ?? '',
+          isWord: isWord),
+    );
+
+    failureOrVerifyCon.fold(
+      (Failure newFailure) {
+        isLoading = false;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        statusCode = 400;
+        notifyListeners();
+      },
+      (ResponseDataModel<void> result) {
+        isLoading = false;
+        statusCode = result.statusCode;
+        message = result.message;
         failure = null;
         notifyListeners();
       },

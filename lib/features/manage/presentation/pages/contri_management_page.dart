@@ -237,9 +237,27 @@ class _ContributionManagementPageState
                 itemBuilder: (context, item, index) => ListTile(
                     onTap: () => item.type == ContributionType.word
                         ? showWordConDetail(
-                            context, item.user!.name, item.content, true)
+                            context,
+                            item,
+                            item.user!.name,
+                            item.content,
+                            item.feedback,
+                            true,
+                            () {
+                              setState(() {});
+                            },
+                          )
                         : showSentenceConDetail(
-                            context, item.user!.name, item.content, true),
+                            context,
+                            item,
+                            item.user!.name,
+                            item.content,
+                            item.feedback,
+                            true,
+                            () {
+                              setState(() {});
+                            },
+                          ),
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                     leading: ClipOval(
@@ -277,34 +295,129 @@ class _ContributionManagementPageState
   }
 }
 
-Color getStatusColor2(String status) {
-  switch (status) {
-    case 'Đã từ chối':
-      return Colors.red;
-    case 'Chờ duyệt':
-      return Colors.yellow;
-    case 'Đã duyệt':
-      return Colors.green;
-    default:
-      return Colors.red;
-  }
+Future<void> _dialogRefuseConBuilder(BuildContext context,
+    ContributionEntity contribution, VoidCallback callback, bool isWord) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      final TextEditingController reasonController = TextEditingController();
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        shadowColor: Colors.white,
+        title: Text(
+          'Từ chối đóng góp',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: TextField(
+            controller: reasonController,
+            maxLines: 4,
+            decoration: const InputDecoration(
+                hintText: 'Lý do', border: OutlineInputBorder()),
+          ),
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey.shade400,
+              textStyle: Theme.of(context).textTheme.labelLarge,
+            ),
+            child: const Text('Trở về'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              textStyle: Theme.of(context).textTheme.labelLarge,
+            ),
+            onPressed: Provider.of<ContributionProvider>(context, listen: true)
+                    .isLoading
+                ? null
+                : () async {
+                    await Provider.of<ContributionProvider>(context,
+                            listen: false)
+                        .eitherFailureOrVerifyCon(
+                            contribution.id,
+                            ContributionStatus.refused,
+                            reasonController.text,
+                            isWord);
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context);
+
+                    // ignore: use_build_context_synchronously
+                    if (Provider.of<ContributionProvider>(context,
+                                listen: false)
+                            .statusCode ==
+                        200) {
+                      contribution.feedback = reasonController.text;
+                      contribution.status = ContributionStatus.refused;
+                      callback();
+
+                      // ignore: use_build_context_synchronously
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: const Duration(seconds: 1),
+                          content: Text(
+                            // ignore: use_build_context_synchronously
+                            Provider.of<ContributionProvider>(context,
+                                    listen: false)
+                                .message!,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor:
+                              Colors.green, // You can customize the color
+                        ),
+                      );
+                      // ignore: use_build_context_synchronously
+                    } else if (Provider.of<ContributionProvider>(context,
+                                listen: false)
+                            .failure !=
+                        null) {
+                      // ignore: use_build_context_synchronously
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: const Duration(seconds: 1),
+                          content: Text(
+                            // ignore: use_build_context_synchronously
+                            Provider.of<ContributionProvider>(context,
+                                    listen: false)
+                                .message!,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor:
+                              Colors.red, // You can customize the color
+                        ),
+                      );
+                    }
+                  },
+            child: Provider.of<ContributionProvider>(context, listen: true)
+                    .isLoading
+                ? const SizedBox(
+                    height: 25,
+                    width: 25,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
+                : const Text('Đồng ý'),
+          ),
+        ],
+      );
+    },
+  );
 }
 
-Color getStatusColor(int status) {
-  switch (status) {
-    case ContributionStatus.refused:
-      return Colors.red;
-    case 0:
-      return Colors.yellow;
-    case 1:
-      return Colors.green;
-    default:
-      return Colors.red;
-  }
-}
-
-Future<String?> showWordConDetail(BuildContext context, String name,
-    Map<String, dynamic> contributionDetail, bool isAdmin) {
+Future<String?> showWordConDetail(
+    BuildContext context,
+    ContributionEntity contribution,
+    String name,
+    Map<String, dynamic> contributionDetail,
+    String? feedback,
+    bool isAdmin,
+    VoidCallback? callback) {
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -516,7 +629,33 @@ Future<String?> showWordConDetail(BuildContext context, String name,
                       ],
                     )
                   : const SizedBox.shrink(),
-              contributionDetail['feedback'] != null
+              Row(
+                children: [
+                  Text(
+                    'Trạng thái: ',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Container(
+                    height: 10,
+                    width: 10,
+                    decoration: BoxDecoration(
+                        color: getStatusColor(contribution.status),
+                        // : Colors.green,
+                        shape: BoxShape.circle),
+                  ),
+                  const SizedBox(
+                    width: 3,
+                  ),
+                  Text(getStatusString(contribution.status)),
+                ],
+              ),
+              feedback!.isNotEmpty
                   ? RichText(
                       text: TextSpan(
                         text: 'Nhận xét: ',
@@ -524,7 +663,7 @@ Future<String?> showWordConDetail(BuildContext context, String name,
                             fontWeight: FontWeight.bold, color: Colors.blue),
                         children: <TextSpan>[
                           TextSpan(
-                            text: '${contributionDetail['feedback']}',
+                            text: feedback,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge!
@@ -539,32 +678,100 @@ Future<String?> showWordConDetail(BuildContext context, String name,
             ]),
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: isAdmin
+      actions: isAdmin && contribution.status == ContributionStatus.pending
           ? <Widget>[
               ElevatedButton(
                   style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(Colors.green),
                       padding: MaterialStatePropertyAll(
                           EdgeInsets.symmetric(horizontal: 16, vertical: 16))),
-                  onPressed: () {},
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.check),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text('Chấp nhận'),
-                    ],
-                  )),
+                  onPressed: Provider.of<ContributionProvider>(context,
+                              listen: true)
+                          .isLoading
+                      ? null
+                      : () async {
+                          await Provider.of<ContributionProvider>(context,
+                                  listen: false)
+                              .eitherFailureOrVerifyCon(contribution.id,
+                                  ContributionStatus.approved, null, true);
+
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context);
+                          // ignore: use_build_context_synchronously
+                          if (Provider.of<ContributionProvider>(context,
+                                      listen: false)
+                                  .statusCode ==
+                              200) {
+                            contribution.status = ContributionStatus.approved;
+                            callback!();
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 1),
+                                content: Text(
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<ContributionProvider>(context,
+                                          listen: false)
+                                      .message!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor:
+                                    Colors.green, // You can customize the color
+                              ),
+                            );
+                            // ignore: use_build_context_synchronously
+                          } else if (Provider.of<ContributionProvider>(context,
+                                      listen: false)
+                                  .failure !=
+                              null) {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 1),
+                                content: Text(
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<ContributionProvider>(context,
+                                          listen: false)
+                                      .message!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor:
+                                    Colors.red, // You can customize the color
+                              ),
+                            );
+                          }
+                        },
+                  child:
+                      Provider.of<ContributionProvider>(context, listen: true)
+                              .isLoading
+                          ? const SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ))
+                          : const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.check),
+                                SizedBox(
+                                  width: 3,
+                                ),
+                                Text('Chấp nhận'),
+                              ],
+                            )),
               ElevatedButton(
                   style: ButtonStyle(
                       padding: const MaterialStatePropertyAll(
                           EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
                       backgroundColor:
                           MaterialStatePropertyAll(Colors.red.shade500)),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _dialogRefuseConBuilder(
+                        context, contribution, callback!, true);
+                  },
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -586,8 +793,14 @@ Future<String?> showWordConDetail(BuildContext context, String name,
   );
 }
 
-Future<String?> showSentenceConDetail(BuildContext context, String name,
-    Map<String, dynamic> contributionDetail, bool isAdmin) {
+Future<String?> showSentenceConDetail(
+    BuildContext context,
+    ContributionEntity contribution,
+    String name,
+    Map<String, dynamic> contributionDetail,
+    String? feedback,
+    bool isAdmin,
+    VoidCallback? callback) {
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -696,7 +909,33 @@ Future<String?> showSentenceConDetail(BuildContext context, String name,
                       ],
                     )
                   : const SizedBox.shrink(),
-              contributionDetail['feedback'] != null
+              Row(
+                children: [
+                  Text(
+                    'Trạng thái: ',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Container(
+                    height: 10,
+                    width: 10,
+                    decoration: BoxDecoration(
+                        color: getStatusColor(contribution.status),
+                        // : Colors.green,
+                        shape: BoxShape.circle),
+                  ),
+                  const SizedBox(
+                    width: 3,
+                  ),
+                  Text(getStatusString(contribution.status)),
+                ],
+              ),
+              feedback!.isNotEmpty
                   ? RichText(
                       text: TextSpan(
                         text: 'Nhận xét: ',
@@ -704,7 +943,7 @@ Future<String?> showSentenceConDetail(BuildContext context, String name,
                             fontWeight: FontWeight.bold, color: Colors.blue),
                         children: <TextSpan>[
                           TextSpan(
-                            text: '${contributionDetail['feedback']}',
+                            text: feedback,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge!
@@ -719,32 +958,100 @@ Future<String?> showSentenceConDetail(BuildContext context, String name,
             ]),
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: isAdmin
+      actions: isAdmin && contribution.status == ContributionStatus.pending
           ? <Widget>[
               ElevatedButton(
                   style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(Colors.green),
                       padding: MaterialStatePropertyAll(
                           EdgeInsets.symmetric(horizontal: 16, vertical: 16))),
-                  onPressed: () {},
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.check),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text('Chấp nhận'),
-                    ],
-                  )),
+                  onPressed: Provider.of<ContributionProvider>(context,
+                              listen: true)
+                          .isLoading
+                      ? null
+                      : () async {
+                          await Provider.of<ContributionProvider>(context,
+                                  listen: false)
+                              .eitherFailureOrVerifyCon(contribution.id,
+                                  ContributionStatus.approved, null, false);
+
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context);
+                          // ignore: use_build_context_synchronously
+                          if (Provider.of<ContributionProvider>(context,
+                                      listen: false)
+                                  .statusCode ==
+                              200) {
+                            contribution.status = ContributionStatus.approved;
+                            callback!();
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 1),
+                                content: Text(
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<ContributionProvider>(context,
+                                          listen: false)
+                                      .message!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor:
+                                    Colors.green, // You can customize the color
+                              ),
+                            );
+                            // ignore: use_build_context_synchronously
+                          } else if (Provider.of<ContributionProvider>(context,
+                                      listen: false)
+                                  .failure !=
+                              null) {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 1),
+                                content: Text(
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<ContributionProvider>(context,
+                                          listen: false)
+                                      .message!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor:
+                                    Colors.red, // You can customize the color
+                              ),
+                            );
+                          }
+                        },
+                  child:
+                      Provider.of<ContributionProvider>(context, listen: true)
+                              .isLoading
+                          ? const SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ))
+                          : const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.check),
+                                SizedBox(
+                                  width: 3,
+                                ),
+                                Text('Chấp nhận'),
+                              ],
+                            )),
               ElevatedButton(
                   style: ButtonStyle(
                       padding: const MaterialStatePropertyAll(
                           EdgeInsets.symmetric(horizontal: 16, vertical: 16)),
                       backgroundColor:
                           MaterialStatePropertyAll(Colors.red.shade500)),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _dialogRefuseConBuilder(
+                        context, contribution, callback!, true);
+                  },
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -764,6 +1071,45 @@ Future<String?> showSentenceConDetail(BuildContext context, String name,
           : [],
     ),
   );
+}
+
+Color getStatusColor2(String status) {
+  switch (status) {
+    case 'Đã từ chối':
+      return Colors.red;
+    case 'Chờ duyệt':
+      return Colors.yellow;
+    case 'Đã duyệt':
+      return Colors.green;
+    default:
+      return Colors.red;
+  }
+}
+
+Color getStatusColor(int status) {
+  switch (status) {
+    case ContributionStatus.refused:
+      return Colors.red;
+    case ContributionStatus.pending:
+      return Colors.yellow;
+    case ContributionStatus.approved:
+      return Colors.green;
+    default:
+      return Colors.red;
+  }
+}
+
+String getStatusString(int status) {
+  switch (status) {
+    case ContributionStatus.refused:
+      return 'Đã từ chối';
+    case ContributionStatus.pending:
+      return 'Chờ duyệt';
+    case ContributionStatus.approved:
+      return 'Đã duyệt';
+    default:
+      return 'Chờ duyệt';
+  }
 }
 
 class ContributeType {

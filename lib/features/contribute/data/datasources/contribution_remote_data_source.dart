@@ -14,6 +14,8 @@ abstract class ContributionRemoteDataSource {
       {required GetAllConParams getAllConParams});
   Future<ResponseDataModel<ContributionResModel>> getAllConByUser(
       {required GetAllConByUserParams getAllConByUserParams});
+  Future<ResponseDataModel<void>> verifyContribution(
+      {required VerifyConParams verifyConParams});
 }
 
 class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
@@ -28,7 +30,9 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
       final formData = FormData.fromMap({
         'type': createWordConParams.type,
         'content': {
-          "topicId": [createWordConParams.content.topicId],
+          "topicId": createWordConParams.content.topicId.length > 1
+              ? createWordConParams.content.topicId
+              : [createWordConParams.content.topicId],
           "levelId": createWordConParams.content.levelId,
           "specializationId": createWordConParams.content.specializationId,
           "content": createWordConParams.content.content,
@@ -40,9 +44,15 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
               .toList(),
           "note": createWordConParams.content.note,
           "phonetic": createWordConParams.content.phonetic,
-          "examples": createWordConParams.content.examples,
-          "synonyms": createWordConParams.content.synonyms,
-          "antonyms": createWordConParams.content.antonyms,
+          "examples": createWordConParams.content.examples!.length > 1
+              ? createWordConParams.content.examples
+              : [createWordConParams.content.examples],
+          "synonyms": createWordConParams.content.synonyms!.length > 1
+              ? createWordConParams.content.synonyms
+              : [createWordConParams.content.synonyms],
+          "antonyms": createWordConParams.content.antonyms!.length > 1
+              ? createWordConParams.content.antonyms
+              : [createWordConParams.content.antonyms],
         },
         "pictures": createWordConParams.content.pictures!
             .map((e) => MultipartFile.fromFileSync(e.path, filename: e.name))
@@ -148,6 +158,35 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
       return ResponseDataModel<ContributionResModel>.fromJson(
           json: response.data,
           fromJsonD: (json) => ContributionResModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<void>> verifyContribution(
+      {required VerifyConParams verifyConParams}) async {
+    try {
+      final response = await dio.patch(
+          '/contribution/verify/${verifyConParams.isWord ? 'word' : 'sentence'}/${verifyConParams.contributionId}',
+          data: {
+            'status': verifyConParams.status,
+            'feedback': verifyConParams.feedback
+          },
+          options: Options(headers: {
+            "authorization": "Bearer ${verifyConParams.accessToken}"
+          }));
+      return ResponseDataModel<void>.fromJson(
+          json: response.data, fromJsonD: (json) => json);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

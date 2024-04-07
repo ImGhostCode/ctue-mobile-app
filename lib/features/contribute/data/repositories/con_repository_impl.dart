@@ -109,4 +109,24 @@ class ContributionRepositoryImpl implements ContributionRepository {
       return Left(CacheFailure(errorMessage: 'This is a network exception'));
     }
   }
+
+  @override
+  Future<Either<Failure, ResponseDataModel<void>>> verifyContribution(
+      {required VerifyConParams verifyConParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<void> remoteContribution = await remoteDataSource
+            .verifyContribution(verifyConParams: verifyConParams);
+
+        // localDataSource.cacheContribution(ContributionToCache: remoteContribution);
+
+        return Right(remoteContribution);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+    }
+  }
 }

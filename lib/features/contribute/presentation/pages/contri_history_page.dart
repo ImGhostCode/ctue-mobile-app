@@ -184,10 +184,10 @@ class _ContributionHistoryState extends State<ContributionHistory> {
               builderDelegate: PagedChildBuilderDelegate<ContributionEntity>(
                 itemBuilder: (context, item, index) => ListTile(
                     onTap: () => item.type == ContributionType.word
-                        ? showWordConDetail(
-                            context, item.user!.name, item.content, false)
-                        : showSentenceConDetail(
-                            context, item.user!.name, item.content, false),
+                        ? showWordConDetail(context, item, item.user!.name,
+                            item.content, item.feedback, false, null)
+                        : showSentenceConDetail(context, item, item.user!.name,
+                            item.content, item.feedback, false, null),
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                     // leading: ClipOval(

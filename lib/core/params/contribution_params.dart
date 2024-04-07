@@ -76,3 +76,18 @@ class GetAllConByUserParams {
   GetAllConByUserParams(
       {required this.userId, required this.accessToken, this.page});
 }
+
+class VerifyConParams {
+  final int contributionId;
+  final bool isWord;
+  final int status;
+  final String? feedback;
+  final String accessToken;
+
+  VerifyConParams(
+      {required this.contributionId,
+      required this.accessToken,
+      required this.isWord,
+      required this.status,
+      this.feedback});
+}

@@ -5,8 +5,8 @@ class ContributionEntity {
   final int userId;
   final String type;
   final Map<String, dynamic> content;
-  final int status;
-  final String? feedback;
+  int status;
+  String? feedback;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isDeleted;
