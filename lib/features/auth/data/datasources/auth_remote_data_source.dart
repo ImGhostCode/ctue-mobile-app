@@ -1,17 +1,15 @@
-import 'dart:io';
-
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/auth_params.dart';
 import 'package:ctue_app/features/auth/data/models/account_model.dart';
-import 'package:ctue_app/features/user/data/models/user_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
 // import '../../../../../core/params/params.dart';
-import '../models/access_token_model.dart';
+import '../models/login_model.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<ResponseDataModel<AccessTokenModel>> login(
+  Future<ResponseDataModel<LoginModel>> login(
       {required LoginParams loginParams});
+  Future<ResponseDataModel<void>> logout({required LogoutParams logoutParams});
   Future<ResponseDataModel<AccountModel>> signup(
       {required SignupParams signupParams});
 }
@@ -22,7 +20,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl({required this.dio});
 
   @override
-  Future<ResponseDataModel<AccessTokenModel>> login(
+  Future<ResponseDataModel<LoginModel>> login(
       {required LoginParams loginParams}) async {
     try {
       final response = await dio.post(
@@ -33,13 +31,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: {
           'email': loginParams.email,
           'password': loginParams.password,
+          'fcmToken': loginParams.fcmToken
         },
       );
 
       // Handle successful response by returning the parsed ResponseDataModel
-      return ResponseDataModel<AccessTokenModel>.fromJson(
+      return ResponseDataModel<LoginModel>.fromJson(
           json: response.data,
-          fromJsonD: (json) => AccessTokenModel.fromJson(json: json));
+          fromJsonD: (json) => LoginModel.fromJson(json: json));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {
@@ -72,6 +71,34 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return ResponseDataModel<AccountModel>.fromJson(
           json: response.data,
           fromJsonD: (json) => AccountModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<void>> logout(
+      {required LogoutParams logoutParams}) async {
+    try {
+      final response = await dio.post('/auth/logout',
+          queryParameters: {
+            'api_key': 'if needed',
+          },
+          data: {},
+          options: Options(headers: {
+            "authorization": "Bearer ${logoutParams.accessToken}"
+          }));
+      return ResponseDataModel<void>.fromJson(
+          json: response.data, fromJsonD: (json) => json);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

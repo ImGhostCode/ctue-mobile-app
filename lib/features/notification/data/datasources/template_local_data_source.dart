@@ -1,38 +1,38 @@
 import 'dart:convert';
 
+import 'package:ctue_app/features/notification/data/models/notification_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/errors/exceptions.dart';
-import '../models/template_model.dart';
 
-abstract class TemplateLocalDataSource {
-  Future<void> cacheTemplate({required TemplateModel? templateToCache});
-  Future<TemplateModel> getLastTemplate();
+abstract class NotiLocalDataSource {
+  Future<void> cacheNoti({required NotificationModel? templateToCache});
+  Future<NotificationModel> getLastNoti();
 }
 
-const cachedTemplate = 'CACHED_TEMPLATE';
+const cachedNoti = 'CACHED_TEMPLATE';
 
-class TemplateLocalDataSourceImpl implements TemplateLocalDataSource {
+class NotiLocalDataSourceImpl implements NotiLocalDataSource {
   final SharedPreferences sharedPreferences;
 
-  TemplateLocalDataSourceImpl({required this.sharedPreferences});
+  NotiLocalDataSourceImpl({required this.sharedPreferences});
 
   @override
-  Future<TemplateModel> getLastTemplate() {
-    final jsonString = sharedPreferences.getString(cachedTemplate);
+  Future<NotificationModel> getLastNoti() {
+    final jsonString = sharedPreferences.getString(cachedNoti);
 
     if (jsonString != null) {
       return Future.value(
-          TemplateModel.fromJson(json: json.decode(jsonString)));
+          NotificationModel.fromJson(json: json.decode(jsonString)));
     } else {
       throw CacheException();
     }
   }
 
   @override
-  Future<void> cacheTemplate({required TemplateModel? templateToCache}) async {
+  Future<void> cacheNoti({required NotificationModel? templateToCache}) async {
     if (templateToCache != null) {
       sharedPreferences.setString(
-        cachedTemplate,
+        cachedNoti,
         json.encode(
           templateToCache.toJson(),
         ),

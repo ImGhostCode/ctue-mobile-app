@@ -1,8 +1,10 @@
 import 'package:ctue_app/core/errors/failure.dart';
-import 'package:ctue_app/features/auth/business/entities/access_token_entity.dart';
+import 'package:ctue_app/features/auth/business/entities/login_entity.dart';
 import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -25,8 +27,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    Failure? failure = Provider.of<AuthProvider>(context).failure;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -177,13 +177,19 @@ class _LoginPageState extends State<LoginPage> {
                       ? null
                       : () async {
                           if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save(); // Save the form data
+                            _formKey.currentState!.save();
+
+                            final messaging = FirebaseMessaging.instance;
+                            String? token = await messaging.getToken();
 
                             // Call your authentication method
+                            // ignore: use_build_context_synchronously
                             await Provider.of<AuthProvider>(context,
                                     listen: false)
                                 .eitherFailureOrLogin(
-                                    email: _email, password: _password);
+                                    email: _email,
+                                    password: _password,
+                                    fcmToken: token ?? '');
 
                             // Get the updated values
                             if (!context.mounted) return;
@@ -192,10 +198,10 @@ class _LoginPageState extends State<LoginPage> {
                                     context,
                                     listen: false)
                                 .failure;
-                            AccessTokenEntity? updatedAccessToken =
+                            LoginEntity? loginEntity =
                                 Provider.of<AuthProvider>(context,
                                         listen: false)
-                                    .accessTokenEntity;
+                                    .loginEntity;
 
                             if (updatedFailure != null) {
                               // Show a SnackBar with the failure message
@@ -210,8 +216,9 @@ class _LoginPageState extends State<LoginPage> {
                                       Colors.red, // You can customize the color
                                 ),
                               );
-                            } else if (updatedAccessToken?.accessToken !=
-                                null) {
+                            } else if (loginEntity?.feedback != null) {
+                              _dialogBuilder(context, loginEntity?.feedback);
+                            } else if (loginEntity?.accessToken != null) {
                               // Navigate to the next screen
                               Navigator.pushNamedAndRemoveUntil(
                                   context, '/', (_) => false);
@@ -268,6 +275,60 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _dialogBuilder(BuildContext context, feedback) {
+    final String supportEmail = dotenv.env['SUPPORT_EMAIL']!;
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          shadowColor: Colors.white,
+          title: Text(
+            'Đăng nhập thất bại',
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(color: Colors.red.shade400),
+          ),
+          content: Text(
+            'Tài khoản của bạn đã bị vô hiệu hóa\n'
+            'Lý do: $feedback'
+            ' \n'
+            'Vui lòng liên hệ chúng tôi qua $supportEmail'
+            ' để được hỗ trợ.\n'
+            'Cảm ơn bạn!',
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.blue),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey.shade400,
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Đóng'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            // TextButton(
+            //   style: TextButton.styleFrom(
+            //     textStyle: Theme.of(context).textTheme.labelLarge,
+            //   ),
+            //   child: const Text('Enable'),
+            //   onPressed: () {
+            //     Navigator.of(context).pop();
+            //   },
+            // ),
+          ],
+        );
+      },
     );
   }
 }

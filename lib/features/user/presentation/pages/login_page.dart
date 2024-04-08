@@ -1,5 +1,5 @@
 import 'package:ctue_app/core/errors/failure.dart';
-import 'package:ctue_app/features/auth/business/entities/access_token_entity.dart';
+import 'package:ctue_app/features/auth/business/entities/login_entity.dart';
 import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -177,7 +177,9 @@ class _LoginPageState extends State<LoginPage> {
                       // Call your authentication method
                       await Provider.of<AuthProvider>(context, listen: false)
                           .eitherFailureOrLogin(
-                              email: _email, password: _password);
+                              email: _email,
+                              password: _password,
+                              fcmToken: 'test');
 
                       // Get the updated values
                       if (!context.mounted) return;
@@ -185,9 +187,9 @@ class _LoginPageState extends State<LoginPage> {
                       Failure? updatedFailure =
                           Provider.of<AuthProvider>(context, listen: false)
                               .failure;
-                      AccessTokenEntity? updatedAccessToken =
+                      LoginEntity? loginEntity =
                           Provider.of<AuthProvider>(context, listen: false)
-                              .accessTokenEntity;
+                              .loginEntity;
 
                       if (updatedFailure != null) {
                         // Show a SnackBar with the failure message
@@ -202,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Colors.red, // You can customize the color
                           ),
                         );
-                      } else if (updatedAccessToken?.accessToken != null) {
+                      } else if (loginEntity?.accessToken != null) {
                         // Navigate to the next screen
                         Navigator.pushNamedAndRemoveUntil(
                             context, '/', (_) => false);

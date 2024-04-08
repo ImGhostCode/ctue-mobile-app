@@ -12,6 +12,7 @@ String kFrontShiny = 'front_shiny';
 
 String kAccessToken = 'accessToken';
 String kData = 'data';
+String kBody = 'body';
 String kMessage = 'message';
 String kEmail = 'email';
 String kUserId = 'userId';

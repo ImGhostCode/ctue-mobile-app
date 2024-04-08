@@ -4,6 +4,7 @@ import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
+import 'package:ctue_app/features/contribute/presentation/pages/contri_history_page.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/add_irr_verb_page.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/edit_irr_verb_page.dart';
 import 'package:ctue_app/features/learn/presentation/pages/learning_result.dart';
@@ -11,8 +12,10 @@ import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.
 import 'package:ctue_app/features/manage/presentation/pages/contri_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/irre_verb_management_page.dart';
+import 'package:ctue_app/features/manage/presentation/pages/overivew_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/sen_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
+import 'package:ctue_app/features/notification/presentation/providers/notification_provider.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/add_sentence_page.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/edit_sentence_page%20copy.dart';
 import 'package:ctue_app/features/speech/presentation/pages/improve_pronunciation_page.dart';
@@ -38,7 +41,7 @@ import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/presentation/pages/verify_code_page.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/edit_voca_set_page.dart';
 import 'package:ctue_app/features/word/presentation/pages/add_word_page.dart';
-import 'package:ctue_app/features/word/presentation/pages/edit_word_page%20copy.dart';
+import 'package:ctue_app/features/word/presentation/pages/edit_word_page.dart';
 import 'package:ctue_app/features/word/presentation/pages/word_detail.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/providers/irr_verb_provider.dart';
 import 'package:ctue_app/features/level/presentation/providers/level_provider.dart';
@@ -62,6 +65,7 @@ import 'package:ctue_app/features/learn/presentation/pages/statistic_learned_wor
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_set_detail.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_sets_page.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'features/skeleton/providers/selected_page_provider.dart';
@@ -73,16 +77,76 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz; // For timezone support
 // import 'package:timezone/timezone.dart' as tz;
 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:rxdart/rxdart.dart';
+
+// used to pass messages from event handler to the UI
+final _messageStreamController = BehaviorSubject<RemoteMessage>();
+
+// TODO: Define the background message handler
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  if (kDebugMode) {
+    print("Handling a background message: ${message.messageId}");
+    print('Message data: ${message.data}');
+    print('Message notification: ${message.notification?.title}');
+    print('Message notification: ${message.notification?.body}');
+  }
+}
+
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-void main() async {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure plugin initialization
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  final messaging = FirebaseMessaging.instance;
+
+  final settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  if (kDebugMode) {
+    print('Permission granted: ${settings.authorizationStatus}');
+  }
+
+  // It requests a registration token for sending messages to users from your App server or other trusted server environment.
+  // String? token = await messaging.getToken();
+
+  // if (kDebugMode) {
+  //   print('Registration Token=$token');
+  // }
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if (kDebugMode) {
+      print('Handling a foreground message: ${message.messageId}');
+      print('Message data: ${message.data}');
+      print('Message notification: ${message.notification?.title}');
+      print('Message notification: ${message.notification?.body}');
+    }
+
+    _messageStreamController.sink.add(message);
+  });
+
+  // TODO: Set up background message handler
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   await dotenv.load(fileName: "lib/.env");
   ApiService.init();
   AudioService.init();
   SecureStorageService.init();
   SharedPrefService.init();
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure plugin initialization
   await _initializeNotifications();
   runApp(const MyApp());
 }
@@ -109,20 +173,6 @@ Future<void> _initializeNotifications() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   tz.initializeTimeZones();
   // tz.setLocalLocation(tz.getLocation(timeZoneName));
-
-  // await flutterLocalNotificationsPlugin.zonedSchedule(
-  //     0,
-  //     'scheduled title',
-  //     'scheduled body',
-  //     tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-  //     const NotificationDetails(
-  //         android: AndroidNotificationDetails(
-  //             'your channel id', 'your channel name',
-  //             channelDescription: 'your channel description')),
-  //     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-  //      matchDateTimeComponents: DateTimeComponents.time ,
-  //     uiLocalNotificationDateInterpretation:
-  //         UILocalNotificationDateInterpretation.absoluteTime);
 }
 
 class MyApp extends StatelessWidget {
@@ -195,6 +245,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => LearnProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => NotificationProvider(),
           // builder: (context, child) {},
         ),
       ],
@@ -276,11 +330,12 @@ class MyApp extends StatelessWidget {
           '/correct-word': (context) => const CorrectWordPage(),
           '/word-match': (context) => const WordMatchPage(),
           '/contribution': (context) => const ContributePage(),
+          '/contribution-history': (context) => const ContributionHistory(),
           '/games': (context) => GamePage(),
-          '/setting': (context) => SettingPage(),
+          '/setting': (context) => const SettingPage(),
           '/user-info': (context) => UserInfoPage(),
           '/api': (context) => const IPA(),
-          '/learn': (context) => LearnPage(),
+          '/learn': (context) => const LearnPage(),
           '/learn-setting': (context) => const LearnSettingPage(),
           '/learning-result': (context) => const LearningResult(),
           '/dictionary': (context) => DictionaryPage(),
@@ -292,7 +347,7 @@ class MyApp extends StatelessWidget {
           '/communication-phrase-detail': (context) =>
               const CommunicationPhraseDetail(),
           '/notification': (context) => const NotificationPage(),
-          '/create-vocabulary-set': (context) => CreateVocabularySet(),
+          '/create-vocabulary-set': (context) => const CreateVocabularySet(),
           '/vocabulary-sets': (context) => const VocabularySets(),
           '/search-voca-set': (context) => SearchVocaSetPage(),
           '/vocabulary-set-detail': (context) => const VocabularySetDetail(),
@@ -314,6 +369,7 @@ class MyApp extends StatelessWidget {
           '/edit-irregular-verb': (context) => const EditIrregularVerbPage(),
           '/voca-set-management': (context) => const VocaSetManagementPage(),
           '/edit-voca-set': (context) => const EditVocabularySet(),
+          '/admin-overview': (context) => const OverviewPage(),
         },
       ),
     );
@@ -327,6 +383,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String _lastMessage = "";
+
+  _HomeState() {
+    _messageStreamController.listen((message) {
+      setState(() {
+        if (message.notification != null) {
+          _lastMessage = 'Received a notification message:'
+              '\nTitle=${message.notification?.title},'
+              '\nBody=${message.notification?.body},'
+              '\nData=${message.data}';
+        } else {
+          _lastMessage = 'Received a data message: ${message.data}';
+        }
+      });
+      if (kDebugMode) {
+        print(_lastMessage);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();

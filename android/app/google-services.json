@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857454768302",
+    "project_id": "ctue-mobile-app",
+    "storage_bucket": "ctue-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857454768302:android:e4be79fbe165ab6c6bbd3f",
+        "android_client_info": {
+          "package_name": "com.example.flutter_mapp_clean_architecture"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiliZVwjArRP8sl8U8P2Ow5Q04Yp5RE2I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

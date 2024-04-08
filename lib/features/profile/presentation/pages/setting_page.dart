@@ -1,12 +1,14 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
+import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/speech/presentation/pages/voice_setting_page.dart';
 import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:timezone/data/latest_all.dart' as tz; // For timezone support
@@ -213,18 +215,40 @@ class _SettingPageState extends State<SettingPage> {
                             shape: MaterialStatePropertyAll(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12)))),
-                        onPressed: () async {
-                          await flutterLocalNotificationsPlugin.cancel(0);
-                          await SecureStorageService.secureStorage
-                              .delete(key: 'accessToken');
-                          // ignore: use_build_context_synchronously
-                          Provider.of<SelectedPageProvider>(context,
-                                  listen: false)
-                              .selectedPage = 0;
-                          // ignore: use_build_context_synchronously
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, '/welcome', (route) => false);
-                        },
+                        onPressed: Provider.of<AuthProvider>(context,
+                                    listen: true)
+                                .isLoading
+                            ? null
+                            : () async {
+                                await Provider.of<AuthProvider>(context,
+                                        listen: false)
+                                    .eitherFailureOrLogout();
+
+                                // ignore: use_build_context_synchronously
+                                if (Provider.of<AuthProvider>(context,
+                                            listen: false)
+                                        .statusCode ==
+                                    200) {
+                                  await flutterLocalNotificationsPlugin
+                                      .cancel(0);
+
+                                  await SecureStorageService.secureStorage
+                                      .delete(key: 'accessToken');
+
+                                  // ignore: use_build_context_synchronously
+                                  Provider.of<SelectedPageProvider>(context,
+                                          listen: false)
+                                      .selectedPage = 0;
+
+                                  FirebaseMessaging.instance
+                                      .unsubscribeFromTopic('all');
+                                  FirebaseMessaging.instance.deleteToken();
+
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context, '/welcome', (route) => false);
+                                }
+                              },
                         child: Text(
                           'Đăng xuất',
                           style: Theme.of(context)

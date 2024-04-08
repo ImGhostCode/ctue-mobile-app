@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
+import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
 import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
@@ -74,17 +75,7 @@ class HomePage extends StatelessWidget {
               'assets/images/ctue-high-resolution-logo-transparent2.png',
               width: 150),
 
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/notification');
-                },
-                icon: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                  size: 28,
-                ))
-          ],
+          actions: const [NotificationIcon()],
         ),
         body: SingleChildScrollView(
             child: Container(
