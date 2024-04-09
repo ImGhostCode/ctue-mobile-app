@@ -136,6 +136,10 @@ class AccountType {
   static const String admin = 'admin';
 }
 
+class NotificationType {
+  static const String contribution = 'contribution';
+}
+
 class ContributionStatus {
   static const int refused = -1;
   static const int pending = 0;

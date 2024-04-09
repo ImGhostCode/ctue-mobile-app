@@ -2,6 +2,7 @@ import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
+import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
@@ -49,17 +50,7 @@ class _WordStorePageState extends State<WordStorePage> {
               'assets/images/ctue-high-resolution-logo-transparent2.png',
               fit: BoxFit.fill,
               width: 150),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/notification');
-                },
-                icon: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                  size: 28,
-                ))
-          ],
+          actions: const [NotificationIcon()],
         ),
         SliverList(
             delegate: SliverChildListDelegate([

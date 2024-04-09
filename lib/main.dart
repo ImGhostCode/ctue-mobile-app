@@ -80,10 +80,10 @@ import 'package:timezone/data/latest_all.dart' as tz; // For timezone support
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:rxdart/rxdart.dart';
+// import 'package:rxdart/rxdart.dart';
 
 // used to pass messages from event handler to the UI
-final _messageStreamController = BehaviorSubject<RemoteMessage>();
+// final _messageStreamController = BehaviorSubject<RemoteMessage>();
 
 // TODO: Define the background message handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -128,16 +128,16 @@ Future<void> main() async {
   //   print('Registration Token=$token');
   // }
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    if (kDebugMode) {
-      print('Handling a foreground message: ${message.messageId}');
-      print('Message data: ${message.data}');
-      print('Message notification: ${message.notification?.title}');
-      print('Message notification: ${message.notification?.body}');
-    }
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   if (kDebugMode) {
+  //     print('Handling a foreground message: ${message.messageId}');
+  //     print('Message data: ${message.data}');
+  //     print('Message notification: ${message.notification?.title}');
+  //     print('Message notification: ${message.notification?.body}');
+  //   }
 
-    _messageStreamController.sink.add(message);
-  });
+  //   _messageStreamController.sink.add(message);
+  // });
 
   // TODO: Set up background message handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -338,12 +338,12 @@ class MyApp extends StatelessWidget {
           '/learn': (context) => const LearnPage(),
           '/learn-setting': (context) => const LearnSettingPage(),
           '/learning-result': (context) => const LearningResult(),
-          '/dictionary': (context) => DictionaryPage(),
+          '/dictionary': (context) => const DictionaryPage(),
           '/look-up-result': (context) => LookUpResultPage(),
           '/word-detail': (context) => const WordDetail(),
-          '/irregular-verb': (context) => IrregularVerbPage(),
+          '/irregular-verb': (context) => const IrregularVerbPage(),
           '/favorite-vocabulary': (context) => FavoriteVocabulary(),
-          '/communication-phrases': (context) => ComPhrasePage(),
+          '/communication-phrases': (context) => const ComPhrasePage(),
           '/communication-phrase-detail': (context) =>
               const CommunicationPhraseDetail(),
           '/notification': (context) => const NotificationPage(),
@@ -383,29 +383,45 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String _lastMessage = "";
+  // String _lastMessage = "";
 
   _HomeState() {
-    _messageStreamController.listen((message) {
-      setState(() {
-        if (message.notification != null) {
-          _lastMessage = 'Received a notification message:'
-              '\nTitle=${message.notification?.title},'
-              '\nBody=${message.notification?.body},'
-              '\nData=${message.data}';
-        } else {
-          _lastMessage = 'Received a data message: ${message.data}';
-        }
-      });
-      if (kDebugMode) {
-        print(_lastMessage);
-      }
-    });
+    // _messageStreamController.listen((message) {
+    //   setState(() {
+    //     if (message.notification != null) {
+    //       _lastMessage = 'Received a notification message:'
+    //           '\nTitle=${message.notification?.title},'
+    //           '\nBody=${message.notification?.body},'
+    //           '\nData=${message.data}';
+    //     } else {
+    //       _lastMessage = 'Received a data message: ${message.data}';
+    //     }
+    //   });
+    //   if (kDebugMode) {
+    //     print(_lastMessage);
+    //   }
+    // });
   }
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (kDebugMode) {
+        print('Handling a foreground message: ${message.messageId}');
+        print('Message data: ${message.data}');
+        print('Message notification: ${message.notification?.title}');
+        print('Message notification: ${message.notification?.body}');
+      }
+      Provider.of<NotificationProvider>(context, listen: false).hasNewNoti =
+          true;
+      // _messageStreamController.sink.add(message);/
+    });
+    super.didChangeDependencies();
   }
 
   void _checkLoggedInStatus(context) async {

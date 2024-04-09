@@ -2,6 +2,7 @@ import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/notification_params.dart';
 import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
+import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/notification/business/entities/noti_response_entity.dart';
 import 'package:ctue_app/features/notification/business/entities/notification_entity.dart';
 import 'package:ctue_app/features/notification/business/usecases/get_all_user_noti_usecase.dart';
@@ -18,6 +19,7 @@ import '../../data/repositories/noti_repository_impl.dart';
 
 class NotificationProvider extends ChangeNotifier {
   final secureStorage = SecureStorageService.secureStorage;
+  final prefs = SharedPrefService.prefs;
   NotificationEntity? notificationEntity;
   List<NotificationEntity> notifications = [];
   Failure? failure;
@@ -26,17 +28,29 @@ class NotificationProvider extends ChangeNotifier {
   bool _isLoading = false;
   NotiResEntity? notiResEntity;
   // bool? numOfNotifications;
-  bool _hasNewNofi = false;
+  bool _hasNewNoti = false;
 
-  bool get isLoading => _isLoading; // Getter to access the private property
+  bool get isLoading => _isLoading;
+
   set isLoading(bool value) {
     _isLoading = value;
+
     notifyListeners(); // Trigger a rebuild when the isLoading changes
   }
 
-  bool get hasNewNofi => _hasNewNofi;
-  set hasNewNofi(bool value) {
-    _hasNewNofi = value;
+  bool get hasNewNoti {
+    bool? hasNewNoti = prefs.getBool('hasNewNoti');
+    if (hasNewNoti == null || !hasNewNoti) {
+      _hasNewNoti = false;
+      return _hasNewNoti;
+    }
+    _hasNewNoti = true;
+    return _hasNewNoti;
+  }
+
+  set hasNewNoti(bool value) {
+    prefs.setBool('hasNewNoti', value);
+    _hasNewNoti = value;
     notifyListeners();
   }
 

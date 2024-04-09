@@ -1,4 +1,5 @@
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
 import 'package:ctue_app/features/speech/presentation/widgets/pronuc_statistic_box.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 
@@ -71,15 +72,8 @@ class ProfilePage extends StatelessWidget {
                   ),
                   title: Text(userEntity.name),
                   actions: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/notification');
-                      },
-                      icon: Icon(
-                        Icons.notifications_rounded,
-                        color: Colors.grey.shade400,
-                        size: 26,
-                      ),
+                    NotificationIcon(
+                      color: Colors.grey.shade400,
                     ),
                     IconButton(
                       onPressed: () {

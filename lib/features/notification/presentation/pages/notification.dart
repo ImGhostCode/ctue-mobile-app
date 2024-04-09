@@ -1,5 +1,8 @@
+import 'package:ctue_app/core/constants/constants.dart';
+import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
 import 'package:ctue_app/features/notification/business/entities/notification_entity.dart';
 import 'package:ctue_app/features/notification/presentation/providers/notification_provider.dart';
+import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -154,6 +157,50 @@ class _NotificationPageState extends State<NotificationPage> {
                         Text(
                           item.body,
                         ),
+                        if (item.data?['type'] ==
+                                NotificationType.contribution &&
+                            item.data?['data']['reason'] != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: 'Lý do: ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: item.data?['data']['reason'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.blue),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, '/contribution-history',
+                                        arguments: ContriHistoryArguments(
+                                            userId: Provider.of<UserProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .userEntity!
+                                                .id));
+                                  },
+                                  child: const Text(
+                                    'Xem lịch sử đóng góp',
+                                  ))
+                            ],
+                          )
                       ]),
                 )),
       ),

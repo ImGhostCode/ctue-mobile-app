@@ -1,4 +1,5 @@
 import 'package:ctue_app/features/contribute/presentation/widgets/MyFeatureListTile.dart';
+import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
 import 'package:flutter/material.dart';
 
 class ExtentionPage extends StatelessWidget {
@@ -40,17 +41,7 @@ class ExtentionPage extends StatelessWidget {
           title: Image.asset(
               'assets/images/ctue-high-resolution-logo-transparent2.png',
               width: 150),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/notification');
-                },
-                icon: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                  size: 28,
-                ))
-          ],
+          actions: const [NotificationIcon()],
         ),
         body: SingleChildScrollView(
             child: Container(
