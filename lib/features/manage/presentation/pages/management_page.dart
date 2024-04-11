@@ -26,9 +26,9 @@ class ManagementPage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ButtonStyle(
+                  style: const ButtonStyle(
                       backgroundColor:
-                          MaterialStatePropertyAll(Colors.blueAccent.shade200)),
+                          MaterialStatePropertyAll(Colors.indigoAccent)),
                   onPressed: () {
                     Navigator.pushNamed(context, '/admin-overview');
                   },

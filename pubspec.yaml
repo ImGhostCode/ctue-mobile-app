@@ -26,8 +26,8 @@ dependencies:
   multiple_search_selection: ^2.6.3
   flutter_dotenv: ^5.1.0
   # flutter_azure_tts: ^0.1.6
-  just_audio: ^0.9.36
-  just_audio_mpv: any # substitute version number
+  # just_audio: ^0.9.36
+  # just_audio_mpv: any # substitute version number
   permission_handler: ^11.3.0
   # audioplayers_linux: ^3.1.0
   flutter_sound:

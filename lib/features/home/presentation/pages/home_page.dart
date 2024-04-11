@@ -5,6 +5,7 @@ import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -152,12 +153,7 @@ class HomePage extends StatelessWidget {
                     if (failure != null) {
                       // Handle failure, for example, show an error message
                       return Text(failure.errorMessage);
-                    } else if (isLoading) {
-                      // Handle the case where topics are empty
-                      return const Center(
-                          child:
-                              CircularProgressIndicator()); // or show an empty state message
-                    } else if (provider.currReminder != null) {
+                    } else if (!isLoading && provider.currReminder != null) {
                       return Container(
                         decoration: const BoxDecoration(color: Colors.white),
                         padding: const EdgeInsets.all(16.0),
@@ -168,7 +164,8 @@ class HomePage extends StatelessWidget {
                           reviewAt: provider.currReminder!.reviewAt,
                         ),
                       );
-                    } else if (provider.upcomingReminder != null) {
+                    } else if (!isLoading &&
+                        provider.upcomingReminder != null) {
                       return Container(
                         decoration: const BoxDecoration(color: Colors.white),
                         padding: const EdgeInsets.all(16.0),
@@ -180,14 +177,17 @@ class HomePage extends StatelessWidget {
                         ),
                       );
                     } else {
-                      return Container(
-                        decoration: const BoxDecoration(color: Colors.white),
-                        padding: const EdgeInsets.all(16.0),
-                        child: const ActionBox(
-                          vocabularySetId: -1,
-                          words: [],
-                        ),
-                      );
+                      return Skeletonizer(
+                          enabled: isLoading,
+                          child: Container(
+                            decoration:
+                                const BoxDecoration(color: Colors.white),
+                            padding: const EdgeInsets.all(16.0),
+                            child: const ActionBox(
+                              vocabularySetId: -1,
+                              words: [],
+                            ),
+                          ));
                     }
                   },
                 ),

@@ -35,7 +35,9 @@ class _OverviewPageState extends State<OverviewPage> {
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       if (args.value is DateTime) {
-        selectedMonth = args.value;
+        if (calendarView == Calendar.month) {
+          selectedMonth = args.value;
+        }
         selectedYear = args.value.year;
       } else if (args.value is PickerDateRange) {
         selectedRange = args.value;
@@ -109,7 +111,7 @@ class _OverviewPageState extends State<OverviewPage> {
                         EdgeInsets.symmetric(horizontal: 8, vertical: 0)),
                     side: MaterialStatePropertyAll(
                         BorderSide(color: Colors.teal))),
-                segments: const <ButtonSegment<Calendar>>[
+                segments: <ButtonSegment<Calendar>>[
                   // ButtonSegment<Calendar>(
                   //     value: Calendar.day,
                   //     label: Text('Day'),
@@ -119,23 +121,32 @@ class _OverviewPageState extends State<OverviewPage> {
                   //     label: Text('Week'),
                   //     icon: Icon(Icons.calendar_view_week)),
                   ButtonSegment<Calendar>(
+                      enabled: !Provider.of<StatisticsProvider>(context,
+                              listen: true)
+                          .isLoading,
                       value: Calendar.month,
-                      label: Text('Theo tháng'),
-                      icon: Icon(
+                      label: const Text('Theo tháng'),
+                      icon: const Icon(
                         Icons.calendar_view_month,
                         color: Colors.teal,
                       )),
                   ButtonSegment<Calendar>(
+                      enabled: !Provider.of<StatisticsProvider>(context,
+                              listen: true)
+                          .isLoading,
                       value: Calendar.year,
-                      label: Text('Theo năm'),
-                      icon: Icon(
+                      label: const Text('Theo năm'),
+                      icon: const Icon(
                         Icons.calendar_today,
                         color: Colors.teal,
                       )),
                   ButtonSegment<Calendar>(
+                      enabled: !Provider.of<StatisticsProvider>(context,
+                              listen: true)
+                          .isLoading,
                       value: Calendar.custom,
-                      label: Text('Tùy chỉnh'),
-                      icon: Icon(
+                      label: const Text('Tùy chỉnh'),
+                      icon: const Icon(
                         Icons.tune,
                         color: Colors.teal,
                       )),
@@ -144,8 +155,24 @@ class _OverviewPageState extends State<OverviewPage> {
                 onSelectionChanged: (Set<Calendar> newSelection) {
                   setState(() {
                     calendarView = newSelection.first;
-                    _fecthStatistic();
+
+                    // Assign appropriately based on view
+                    if (calendarView == Calendar.custom) {
+                      startDate =
+                          DateTime(selectedYear, selectedMonth.month, 1);
+                      endDate =
+                          DateTime(selectedYear, selectedMonth.month + 1, 0);
+                    } else if (calendarView == Calendar.month) {
+                      startDate = selectedMonth;
+                      endDate = DateTime(
+                          selectedMonth.year, selectedMonth.month + 1, 0);
+                    } else {
+                      startDate = DateTime(selectedYear, 1, 1);
+                      endDate =
+                          DateTime(selectedYear, 12, 31); // End of the year
+                    }
                   });
+                  _fecthStatistic();
                 },
               ),
               const SizedBox(
@@ -163,7 +190,11 @@ class _OverviewPageState extends State<OverviewPage> {
                               padding: MaterialStatePropertyAll(
                                   EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 10))),
-                          onPressed: () => _dialogPickerBuilder(context),
+                          onPressed: Provider.of<StatisticsProvider>(context,
+                                      listen: true)
+                                  .isLoading
+                              ? null
+                              : () => _dialogPickerBuilder(context),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -200,7 +231,7 @@ class _OverviewPageState extends State<OverviewPage> {
 
                     if (failure != null) {
                       return Text(failure.errorMessage);
-                    } else if (userStatisticsEntity == null) {
+                    } else if (!isLoading && userStatisticsEntity == null) {
                       return const Center(child: Text('Không có dữ liệu'));
                     } else {
                       return Skeletonizer(
@@ -234,7 +265,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                   ],
                                 ),
                                 Text(
-                                  'Tổng cộng: ${userStatisticsEntity.total}',
+                                  'Tổng cộng: ${userStatisticsEntity?.total}',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                                 const SizedBox(
@@ -248,8 +279,10 @@ class _OverviewPageState extends State<OverviewPage> {
                                         aspectRatio: 1.6,
                                         child: ColumnChartWidget(
                                           chartData: [
-                                            ColumnChartData('Đang hoạt động',
-                                                userStatisticsEntity.active, 1),
+                                            ColumnChartData(
+                                                'Đang hoạt động',
+                                                userStatisticsEntity!.active,
+                                                1),
                                             ColumnChartData('Đã khóa',
                                                 userStatisticsEntity.banned, 0),
                                             ColumnChartData(
@@ -279,7 +312,7 @@ class _OverviewPageState extends State<OverviewPage> {
 
                     if (failure != null) {
                       return Text(failure.errorMessage);
-                    } else if (contriStatisticsEntity == null) {
+                    } else if (!isLoading && contriStatisticsEntity == null) {
                       return const Center(child: Text('Không có dữ liệu'));
                     } else {
                       return Skeletonizer(
@@ -313,7 +346,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                   ],
                                 ),
                                 Text(
-                                  'Tổng cộng: ${contriStatisticsEntity.total}',
+                                  'Tổng cộng: ${contriStatisticsEntity?.total}',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                                 const SizedBox(
@@ -328,7 +361,8 @@ class _OverviewPageState extends State<OverviewPage> {
                                           chartData: [
                                             ColumnChartData(
                                                 'Đã duyệt',
-                                                contriStatisticsEntity.approved,
+                                                contriStatisticsEntity!
+                                                    .approved,
                                                 1),
                                             ColumnChartData(
                                                 'Đang chờ',
@@ -361,7 +395,7 @@ class _OverviewPageState extends State<OverviewPage> {
 
                     if (failure != null) {
                       return Text(failure.errorMessage);
-                    } else if (wordStatisticsEntity == null) {
+                    } else if (!isLoading && wordStatisticsEntity == null) {
                       return const Center(child: Text('Không có dữ liệu'));
                     } else {
                       return Skeletonizer(
@@ -395,7 +429,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     ],
                                   ),
                                   Text(
-                                    'Tổng cộng: ${wordStatisticsEntity.total}',
+                                    'Tổng cộng: ${wordStatisticsEntity?.total}',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -419,7 +453,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                           child: AspectRatio(
                                           aspectRatio: 1.6,
                                           child: BarChartWidget(
-                                            chartData: wordStatisticsEntity
+                                            chartData: wordStatisticsEntity!
                                                 .bySpecialization
                                                 .map((e) => BarChartData(
                                                     e.specializationName,
@@ -447,7 +481,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                           child: AspectRatio(
                                           aspectRatio: 1.6,
                                           child: BarChartWidget(
-                                            chartData: wordStatisticsEntity
+                                            chartData: wordStatisticsEntity!
                                                 .byLevel
                                                 .map((e) => BarChartData(
                                                     e.levelName, e.count))
@@ -474,7 +508,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                           child: AspectRatio(
                                           aspectRatio: 1.6,
                                           child: BarChartWidget(
-                                            chartData: wordStatisticsEntity
+                                            chartData: wordStatisticsEntity!
                                                 .byTopic
                                                 .map((e) => BarChartData(
                                                     e.topicName, e.count))
@@ -500,7 +534,7 @@ class _OverviewPageState extends State<OverviewPage> {
 
                     if (failure != null) {
                       return Text(failure.errorMessage);
-                    } else if (senStatisticsEntity == null) {
+                    } else if (!isLoading && senStatisticsEntity == null) {
                       return const Center(child: Text('Không có dữ liệu'));
                     } else {
                       return Skeletonizer(
@@ -534,7 +568,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     ],
                                   ),
                                   Text(
-                                    'Tổng cộng: ${senStatisticsEntity.total}',
+                                    'Tổng cộng: ${senStatisticsEntity?.total}',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -558,7 +592,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                           child: AspectRatio(
                                           aspectRatio: 1.6,
                                           child: BarChartWidget(
-                                            chartData: senStatisticsEntity
+                                            chartData: senStatisticsEntity!
                                                 .byType
                                                 .map((e) => BarChartData(
                                                     e.typeName, e.count))
@@ -585,7 +619,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                           child: AspectRatio(
                                           aspectRatio: 1.6,
                                           child: BarChartWidget(
-                                            chartData: senStatisticsEntity
+                                            chartData: senStatisticsEntity!
                                                 .byTopic
                                                 .map((e) => BarChartData(
                                                     e.topicName, e.count))
@@ -611,7 +645,7 @@ class _OverviewPageState extends State<OverviewPage> {
 
                     if (failure != null) {
                       return Text(failure.errorMessage);
-                    } else if (irrVerbStatisticsEntity == null) {
+                    } else if (!isLoading && irrVerbStatisticsEntity == null) {
                       return const Center(child: Text('Không có dữ liệu'));
                     } else {
                       return Skeletonizer(
@@ -645,23 +679,26 @@ class _OverviewPageState extends State<OverviewPage> {
                                     ],
                                   ),
                                   Text(
-                                    'Tổng cộng: ${irrVerbStatisticsEntity.total}',
+                                    'Tổng cộng: ${irrVerbStatisticsEntity?.total}',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  Text(
-                                    'Hiện có: ${irrVerbStatisticsEntity.total - irrVerbStatisticsEntity.deleted}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
+                                  irrVerbStatisticsEntity?.total != null
+                                      ? Text(
+                                          'Hiện có: ${irrVerbStatisticsEntity!.total - irrVerbStatisticsEntity.deleted}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        )
+                                      : const SizedBox(),
                                   const SizedBox(
                                     height: 5,
                                   ),
                                   Text(
-                                    'Đã xóa: ${irrVerbStatisticsEntity.deleted}',
+                                    'Đã xóa: ${irrVerbStatisticsEntity?.deleted}',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -684,7 +721,7 @@ class _OverviewPageState extends State<OverviewPage> {
 
                     if (failure != null) {
                       return Text(failure.errorMessage);
-                    } else if (vocaSetStatisticsEntity == null) {
+                    } else if (!isLoading && vocaSetStatisticsEntity == null) {
                       return const Center(child: Text('Không có dữ liệu'));
                     } else {
                       return Skeletonizer(
@@ -718,7 +755,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     ],
                                   ),
                                   Text(
-                                    'Tổng cộng: ${vocaSetStatisticsEntity.total}',
+                                    'Tổng cộng: ${vocaSetStatisticsEntity?.total}',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -726,7 +763,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    'Bộ từ công khai: ${vocaSetStatisticsEntity.totalPublic}',
+                                    'Bộ từ công khai: ${vocaSetStatisticsEntity?.totalPublic}',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -734,7 +771,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    'Bộ từ do người dùng tạo: ${vocaSetStatisticsEntity.totalPrivate}',
+                                    'Bộ từ do người dùng tạo: ${vocaSetStatisticsEntity?.totalPrivate}',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -758,7 +795,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                           child: AspectRatio(
                                           aspectRatio: 1.6,
                                           child: BarChartWidget(
-                                            chartData: vocaSetStatisticsEntity
+                                            chartData: vocaSetStatisticsEntity!
                                                 .byTopic
                                                 .map((e) => BarChartData(
                                                     e.topicName, e.count))
@@ -785,7 +822,7 @@ class _OverviewPageState extends State<OverviewPage> {
                                           child: AspectRatio(
                                           aspectRatio: 1.6,
                                           child: BarChartWidget(
-                                            chartData: vocaSetStatisticsEntity
+                                            chartData: vocaSetStatisticsEntity!
                                                 .byTopic
                                                 .map((e) => BarChartData(
                                                     e.topicName, e.count))
@@ -859,14 +896,15 @@ class _OverviewPageState extends State<OverviewPage> {
                 setState(() {
                   // Assign appropriately based on view
                   if (calendarView == Calendar.custom) {
-                    startDate = selectedRange.startDate!;
-                    endDate = selectedRange.endDate ?? startDate;
+                    startDate = DateTime(selectedYear, selectedMonth.month, 1);
+                    endDate =
+                        DateTime(selectedYear, selectedMonth.month + 1, 0);
                   } else if (calendarView == Calendar.month) {
                     startDate = selectedMonth;
                     endDate = DateTime(
                         selectedMonth.year, selectedMonth.month + 1, 0);
                   } else {
-                    startDate = DateTime(selectedYear);
+                    startDate = DateTime(selectedYear, 1, 1);
                     endDate = DateTime(selectedYear, 12, 31); // End of the year
                   }
                 });

@@ -39,7 +39,7 @@ class StatisticsRemoteDataSourceImpl implements StatisticsRemoteDataSource {
             "endDate": statisticsParams.endDate,
           },
           options: Options(headers: {
-            // "authorization": "Bearer ${getUserParams.accessToken}"
+            "authorization": "Bearer ${statisticsParams.accessToken}"
           }));
 
       return ResponseDataModel<UserStatisticsModel>.fromJson(
@@ -70,7 +70,7 @@ class StatisticsRemoteDataSourceImpl implements StatisticsRemoteDataSource {
             "endDate": statisticsParams.endDate,
           },
           options: Options(headers: {
-            // "authorization": "Bearer ${getUserParams.accessToken}"
+            "authorization": "Bearer ${statisticsParams.accessToken}"
           }));
 
       return ResponseDataModel<ContriStatisticsModel>.fromJson(
@@ -101,7 +101,7 @@ class StatisticsRemoteDataSourceImpl implements StatisticsRemoteDataSource {
             "endDate": statisticsParams.endDate,
           },
           options: Options(headers: {
-            // "authorization": "Bearer ${getUserParams.accessToken}"
+            "authorization": "Bearer ${statisticsParams.accessToken}"
           }));
 
       return ResponseDataModel<WordStatisticsModel>.fromJson(
@@ -132,7 +132,7 @@ class StatisticsRemoteDataSourceImpl implements StatisticsRemoteDataSource {
             "endDate": statisticsParams.endDate,
           },
           options: Options(headers: {
-            // "authorization": "Bearer ${getUserParams.accessToken}"
+            "authorization": "Bearer ${statisticsParams.accessToken}"
           }));
 
       return ResponseDataModel<IrrVerbStatisticsModel>.fromJson(
@@ -163,7 +163,7 @@ class StatisticsRemoteDataSourceImpl implements StatisticsRemoteDataSource {
             "endDate": statisticsParams.endDate,
           },
           options: Options(headers: {
-            // "authorization": "Bearer ${getUserParams.accessToken}"
+            "authorization": "Bearer ${statisticsParams.accessToken}"
           }));
 
       return ResponseDataModel<SenStatisticsModel>.fromJson(
@@ -188,13 +188,15 @@ class StatisticsRemoteDataSourceImpl implements StatisticsRemoteDataSource {
   Future<ResponseDataModel<VocaSetStatisticsModel>> getVocaSetStatistics(
       {required StatisticsParams statisticsParams}) async {
     try {
+      print("start date ${statisticsParams.startDate}");
+      print("end date ${statisticsParams.endDate}");
       final response = await dio.get('/statistics/vocabulary-set',
           queryParameters: {
             'startDate': statisticsParams.startDate,
             "endDate": statisticsParams.endDate,
           },
           options: Options(headers: {
-            // "authorization": "Bearer ${getUserParams.accessToken}"
+            "authorization": "Bearer ${statisticsParams.accessToken}"
           }));
 
       return ResponseDataModel<VocaSetStatisticsModel>.fromJson(
