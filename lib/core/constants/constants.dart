@@ -149,3 +149,24 @@ class ContributionStatus {
 const String channelId = 'CTUE';
 const String channelName = 'ctue_learning_english_app';
 const String channelDescription = 'Learning English application';
+
+const String kActive = 'active';
+const String kBanned = 'banned';
+const String kDeleted = 'deleted';
+
+const String kPending = 'pending';
+const String kRefused = 'refused';
+const String kApproved = 'approved';
+const String kSpecializationName = 'specializationName';
+const String kLevelName = 'levelName';
+const String kTopicName = 'topicName';
+const String kTypeName = 'typeName';
+const String kCount = 'count';
+
+const String kBySpecialization = 'bySpecialization';
+const String kByLevel = 'byLevel';
+const String kByTopic = 'byTopic';
+const String kByType = 'byType';
+
+const String kTotalPublic = 'totalPublic';
+const String kTotalPrivate = 'totalPrivate';

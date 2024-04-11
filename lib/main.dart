@@ -12,13 +12,14 @@ import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.
 import 'package:ctue_app/features/manage/presentation/pages/contri_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/irre_verb_management_page.dart';
-import 'package:ctue_app/features/manage/presentation/pages/overivew_page.dart';
+import 'package:ctue_app/features/statistics/presentation/pages/overivew_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/sen_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/notification/presentation/providers/notification_provider.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/add_sentence_page.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/edit_sentence_page%20copy.dart';
 import 'package:ctue_app/features/speech/presentation/pages/improve_pronunciation_page.dart';
+import 'package:ctue_app/features/statistics/presentation/providers/statistics_provider.dart';
 import 'package:ctue_app/features/user/presentation/pages/reset_password_page.dart';
 import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
 // import 'package:ctue_app/features/auth/presentation/pages/verify_code_page.dart';
@@ -249,6 +250,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => NotificationProvider(),
+          // builder: (context, child) {},
+        ),
+        ChangeNotifierProvider(
+          create: (context) => StatisticsProvider(),
           // builder: (context, child) {},
         ),
       ],
