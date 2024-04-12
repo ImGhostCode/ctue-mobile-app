@@ -1,6 +1,7 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
+import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
@@ -55,28 +56,48 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
       } else if (isLoading) {
         // Handle the case where topics are empty
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
-      } else if (vocaSetEntity == null) {
-        // Handle the case where topics are empty
-        return const Scaffold(body: Center(child: Text('Không có dữ liệu')));
-      } else {
+      } else if (!isLoading && vocaSetEntity != null) {
         return Scaffold(
           appBar: AppBar(
-              centerTitle: true,
-              title: Text(
-                provider.vocaSetEntity!.title,
-                style: Theme.of(context).textTheme.titleMedium,
+            centerTitle: true,
+            title: Text(
+              provider.vocaSetEntity!.title,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            backgroundColor: Colors.white,
+            scrolledUnderElevation: 0,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                size: 30,
               ),
-              backgroundColor: Colors.white,
-              scrolledUnderElevation: 0,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(
-                  Icons.chevron_left_rounded,
-                  size: 30,
-                ),
-              )),
+            ),
+            actions: [
+              args.isAdmin
+                  ? const SizedBox.shrink()
+                  : IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/edit-voca-set',
+                            arguments: EditVocaSetArguments(
+                              vocaSetEntity: vocaSetEntity,
+                              isAdmin: false,
+                              callback: () {
+                                Provider.of<VocaSetProvider>(context,
+                                        listen: false)
+                                    .eitherFailureOrGerUsrVocaSets();
+                                Navigator.pop(context);
+                              },
+                            ));
+                      },
+                      icon: const Icon(
+                        Icons.add_circle_outline_rounded,
+                        color: Colors.blue,
+                      ))
+            ],
+          ),
           body: Stack(
             children: [
               SingleChildScrollView(
@@ -320,6 +341,9 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
             ],
           ),
         );
+      } else {
+        // Handle the case where topics are empty
+        return const Scaffold(body: Center(child: Text('Không có dữ liệu')));
       }
     });
   }

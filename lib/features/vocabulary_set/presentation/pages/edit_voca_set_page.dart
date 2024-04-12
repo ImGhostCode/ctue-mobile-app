@@ -78,13 +78,15 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
   void didChangeDependencies() {
     args = ModalRoute.of(context)!.settings.arguments as EditVocaSetArguments;
     _titleController.text = args.vocaSetEntity.title;
-    oldPicture = args.vocaSetEntity.picture;
-    _selectedSpecializaiton = args.vocaSetEntity.specId;
+
+    if (args.isAdmin) {
+      oldPicture = args.vocaSetEntity.picture;
+      _selectedSpecializaiton = args.vocaSetEntity.specId;
+      _isPublic ??= args.vocaSetEntity.isPublic;
+    }
 
     selectedWords.clear();
     selectedWords.addAll(args.vocaSetEntity.words);
-
-    _isPublic ??= args.vocaSetEntity.isPublic;
 
     super.didChangeDependencies();
   }
@@ -123,23 +125,33 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                 //     Provider.of<TopicProvider>(context, listen: false)
                 //         .getSelectedTopics();
 
-                // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate() && _validateForm()) {
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   const SnackBar(content: Text('Processing Data')),
-                  // );
+                if (_formKey.currentState!.validate()) {
                   List<int> wordIds = selectedWords.map((e) => e.id).toList();
 
-                  await Provider.of<VocaSetProvider>(context, listen: false)
-                      .eitherFailureOrUpdateVocaSet(
-                          args.vocaSetEntity.id,
-                          _titleController.text,
-                          selectedTopic,
-                          _selectedSpecializaiton,
-                          oldPicture,
-                          _selectedImage,
-                          _isPublic,
-                          wordIds);
+                  if (args.isAdmin && _validateForm()) {
+                    await Provider.of<VocaSetProvider>(context, listen: false)
+                        .eitherFailureOrUpdateVocaSet(
+                            args.vocaSetEntity.id,
+                            _titleController.text,
+                            selectedTopic,
+                            _selectedSpecializaiton,
+                            oldPicture,
+                            _selectedImage,
+                            _isPublic,
+                            wordIds);
+                  } else if (!args.isAdmin) {
+                    await Provider.of<VocaSetProvider>(context, listen: false)
+                        .eitherFailureOrUpdateVocaSet(
+                            args.vocaSetEntity.id,
+                            _titleController.text,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            wordIds);
+                  }
+
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
 
@@ -147,6 +159,7 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                   if (Provider.of<VocaSetProvider>(context, listen: false)
                           .statusCode ==
                       200) {
+                    args.callback();
                     // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -239,26 +252,6 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                 ),
                 const SizedBox(
                   height: 15,
-                ),
-                Text(
-                  'Chuyên ngành',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                _buildSpecializaitons(context),
-                _specError != null
-                    ? Text(
-                        _specError!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: Colors.red),
-                      )
-                    : const SizedBox.shrink(),
-                const SizedBox(
-                  height: 4,
                 ),
                 Text(
                   'Danh sách từ',
@@ -395,143 +388,170 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                 const SizedBox(
                   height: 8,
                 ),
-                _buildTopics(context),
-                const SizedBox(
-                  height: 5,
-                ),
-                _topicError != null
-                    ? Text(
-                        _topicError!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: Colors.red),
-                      )
-                    : const SizedBox.shrink(),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'Thêm ảnh minh họa',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                if (oldPicture != null && _selectedImage == null)
-                  Container(
-                    height: 100,
-                    width: 100,
-                    margin: const EdgeInsets.only(right: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.teal),
-                    ),
-                    child: Stack(
-                      children: [
-                        Image.network(
-                          oldPicture!,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.fill,
-                        ),
-                        Positioned(
-                          top: -10,
-                          right: -10,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.red,
-                                size: 20,
+                args.isAdmin
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Chuyên ngành',
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          _buildSpecializaitons(context),
+                          _specError != null
+                              ? Text(
+                                  _specError!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: Colors.red),
+                                )
+                              : const SizedBox.shrink(),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          _buildTopics(context),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          _topicError != null
+                              ? Text(
+                                  _topicError!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: Colors.red),
+                                )
+                              : const SizedBox.shrink(),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Thêm ảnh minh họa',
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          if (oldPicture != null && _selectedImage == null)
+                            Container(
+                              height: 100,
+                              width: 100,
+                              margin: const EdgeInsets.only(right: 5),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.teal),
                               ),
-                              onPressed: () => _removeOldImage(),
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    oldPicture!,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Positioned(
+                                    top: -10,
+                                    right: -10,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.red,
+                                          size: 20,
+                                        ),
+                                        onPressed: () => _removeOldImage(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (_selectedImage != null)
+                            Container(
+                              height: 100,
+                              width: 100,
+                              margin: const EdgeInsets.only(right: 5),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.teal),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Image.file(
+                                    File(_selectedImage!.path),
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Positioned(
+                                    top: -10,
+                                    right: -10,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.red,
+                                          size: 20,
+                                        ),
+                                        onPressed: () => _removeImage(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: 150,
+                            child: ElevatedButton(
+                              onPressed: _pickImage,
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.upload),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text('Tải lên')
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (_selectedImage != null)
-                  Container(
-                    height: 100,
-                    width: 100,
-                    margin: const EdgeInsets.only(right: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.teal),
-                    ),
-                    child: Stack(
-                      children: [
-                        Image.file(
-                          File(_selectedImage!.path),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.fill,
-                        ),
-                        Positioned(
-                          top: -10,
-                          right: -10,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.red,
-                                size: 20,
-                              ),
-                              onPressed: () => _removeImage(),
-                            ),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: 150,
-                  child: ElevatedButton(
-                    onPressed: _pickImage,
-                    child: const Row(
-                      children: [
-                        Icon(Icons.upload),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text('Tải lên')
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                _pictureError != null
-                    ? Text(
-                        _pictureError!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: Colors.red),
+                          _pictureError != null
+                              ? Text(
+                                  _pictureError!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: Colors.red),
+                                )
+                              : const SizedBox.shrink(),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            'Chế độ công khai',
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          Switch(
+                            value: _isPublic!,
+                            activeColor: Colors.blue,
+                            onChanged: (bool value) {
+                              setState(() {
+                                _isPublic = value;
+                              });
+                            },
+                          )
+                        ],
                       )
-                    : const SizedBox.shrink(),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Chế độ công khai',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                Switch(
-                  value: _isPublic!,
-                  activeColor: Colors.blue,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _isPublic = value;
-                    });
-                  },
-                )
+                    : const SizedBox.shrink()
               ],
             ),
           ),
@@ -635,8 +655,10 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
             child: Consumer<TopicProvider>(builder: (context, provider, child) {
               List<TopicEntity> listTopics = provider.listTopicEntity;
 
-              if (args.vocaSetEntity != null && selectedTopic == null) {
-                int selectedId = args.vocaSetEntity.topicId;
+              if (args.isAdmin &&
+                  args.vocaSetEntity != null &&
+                  selectedTopic == null) {
+                int? selectedId = args.vocaSetEntity.topicId;
                 for (var element in listTopics) {
                   if (selectedId == element.id) {
                     element.isSelected = true;

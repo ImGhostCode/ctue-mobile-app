@@ -188,27 +188,16 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
   Future<ResponseDataModel<VocaSetModel>> updateVocaSet(
       {required UpdateVocaSetParams updateVocaSetParams}) async {
     try {
-      // final dataUpdate = {
-      //   "title": updateVocaSetParams.title,
-      //   "topicId": updateVocaSetParams.topicId,
-      //   "specId": updateVocaSetParams.specId,
-      //   "oldPicture": updateVocaSetParams.oldPicture,
-      //   "picture": updateVocaSetParams.picture != null
-      //       ? MultipartFile.fromFileSync(updateVocaSetParams.picture!.path,
-      //           filename: updateVocaSetParams.picture!.name)
-      //       : null
-      // };
-
-      // if (updateVocaSetParams.words != null) {
-      //   dataUpdate['words'] = updateVocaSetParams.words;
-      // }
-
       final formData = FormData.fromMap({
         "title": updateVocaSetParams.title,
-        "topicId": updateVocaSetParams.topicId,
-        "specId": updateVocaSetParams.specId,
-        "isPublic": updateVocaSetParams.isPublic,
-        "oldPicture": updateVocaSetParams.oldPicture,
+        if (updateVocaSetParams.topicId != null)
+          "topicId": updateVocaSetParams.topicId,
+        if (updateVocaSetParams.specId != null)
+          "specId": updateVocaSetParams.specId,
+        if (updateVocaSetParams.isPublic != null)
+          "isPublic": updateVocaSetParams.isPublic,
+        if (updateVocaSetParams.oldPicture != null)
+          'oldPicture': updateVocaSetParams.oldPicture,
         'words': updateVocaSetParams.words == null
             ? null
             : updateVocaSetParams.words!.length > 1
@@ -219,10 +208,6 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
                 filename: updateVocaSetParams.picture!.name)
             : null
       });
-
-      // if (updateVocaSetParams.words != null) {
-      //   formData.fields.add(MapEntry('words', updateVocaSetParams.words));
-      // }
 
       final response = await dio.patch(
           '/vocabulary-set/${updateVocaSetParams.id}',

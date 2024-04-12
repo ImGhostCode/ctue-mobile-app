@@ -278,11 +278,15 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                         borderRadius: BorderRadius.zero)),
                     backgroundColor: MaterialStatePropertyAll(Colors.white)),
                 onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/edit-voca-set',
-                      arguments:
-                          EditVocaSetArguments(vocaSetEntity: vocaSetEntity));
+                      arguments: EditVocaSetArguments(
+                        vocaSetEntity: vocaSetEntity,
+                        isAdmin: true,
+                        callback: () {
+                          Navigator.pop(context);
+                          _pagingController.refresh();
+                        },
+                      ));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -411,6 +415,11 @@ class CreateVocaSetArgument {
 
 class EditVocaSetArguments {
   VocaSetEntity vocaSetEntity;
+  bool isAdmin;
+  VoidCallback callback;
 
-  EditVocaSetArguments({required this.vocaSetEntity});
+  EditVocaSetArguments(
+      {required this.vocaSetEntity,
+      required this.isAdmin,
+      required this.callback});
 }
