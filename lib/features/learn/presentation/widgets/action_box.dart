@@ -8,6 +8,7 @@ import 'dart:async';
 class ActionBox extends StatefulWidget {
   final List<WordEntity> words;
   final int vocabularySetId;
+  final int? reviewReminderId;
   final DateTime? reviewAt;
   final List<UserLearnedWordEntity> userLearnedWords;
 
@@ -16,6 +17,7 @@ class ActionBox extends StatefulWidget {
       this.words = const [],
       this.userLearnedWords = const [],
       required this.vocabularySetId,
+      this.reviewReminderId,
       this.reviewAt});
 
   @override
@@ -64,16 +66,8 @@ class _ActionBoxState extends State<ActionBox> {
                         width: 3,
                       ),
                       Expanded(
-                        flex: 1, // Adjust the flex value as needed
-                        child: Text(
-                          _getTitleAction(),
-                          textAlign: TextAlign.left,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ),
+                          flex: 1, // Adjust the flex value as needed
+                          child: _getTitleAction()),
                     ],
                   ),
                   (widget.reviewAt != null &&
@@ -85,7 +79,7 @@ class _ActionBoxState extends State<ActionBox> {
                               width: 25,
                             ),
                             Text(
-                              '${widget.words.length.toString()} từ',
+                              '${widget.userLearnedWords.length.toString()} từ',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -119,6 +113,8 @@ class _ActionBoxState extends State<ActionBox> {
                                 ? () {
                                     Navigator.of(context).pushNamed('/learn',
                                         arguments: LearnringArguments(
+                                            reviewReminderId:
+                                                widget.reviewReminderId,
                                             words: widget.userLearnedWords
                                                 .map((e) => e.word!)
                                                 .toList(),
@@ -139,7 +135,6 @@ class _ActionBoxState extends State<ActionBox> {
                                               listen: false)
                                           .changePage(1);
                                     } else {
-                                      // TODO: filter words to learn, excepted user learned words
                                       List<WordEntity> unLearnedWords = widget
                                           .words
                                           .where((element) => !widget
@@ -150,23 +145,16 @@ class _ActionBoxState extends State<ActionBox> {
                                       // final dynamic result =
                                       // await
 
-                                      Navigator.of(context)
-                                          .pushNamed('/select-word',
-                                              arguments: SelectWordArguments(
-                                                vocabularySetId:
-                                                    widget.vocabularySetId,
-                                                words: unLearnedWords,
-                                                callback: (selectedWords) {},
-                                              ));
-
-                                      // if (result != null && result.length > 0) {
-                                      //   Navigator.of(context).pushNamed(
-                                      //       '/learn',
-                                      //       arguments: LearnringArguments(
-                                      //           words: result,
-                                      //           vocabularySetId:
-                                      //               widget.vocabularySetId));
-                                      // }
+                                      if (unLearnedWords.isNotEmpty) {
+                                        Navigator.of(context)
+                                            .pushNamed('/select-word',
+                                                arguments: SelectWordArguments(
+                                                  vocabularySetId:
+                                                      widget.vocabularySetId,
+                                                  words: unLearnedWords,
+                                                  callback: (selectedWords) {},
+                                                ));
+                                      }
                                     }
                                   },
                         child: Text(
@@ -193,16 +181,60 @@ class _ActionBoxState extends State<ActionBox> {
     );
   }
 
-  String _getTitleAction() {
+  Widget _getTitleAction() {
     if (widget.vocabularySetId == -1) {
-      return 'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé';
+      return Text(
+        'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé',
+        textAlign: TextAlign.left,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+      );
     } else if (widget.reviewAt != null &&
         DateTime.now().isAfter(widget.reviewAt!)) {
-      return 'Đã đến lúc ôn tập';
+      return Text(
+        'Đã đến lúc ôn tập',
+        textAlign: TextAlign.left,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+      );
     } else if (widget.reviewAt != null) {
-      return 'Bạn có ${widget.words.length} từ vựng cần ôn tập ${getRemainingTime()}';
+      return RichText(
+          text: TextSpan(
+        text: 'Bạn có ',
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+        children: [
+          TextSpan(
+            text: '${widget.words.length} từ vựng ',
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade800,
+                ),
+          ),
+          TextSpan(
+            text: 'cần ôn tập',
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          TextSpan(
+            text: ' ${getRemainingTime()}',
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade800,
+                ),
+          )
+        ],
+      ));
     } else {
-      return 'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé';
+      return Text('Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé',
+          textAlign: TextAlign.left,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+              ));
     }
 
     //  'Bạn có ${widget.words.length} từ vựng cần ôn tập sau ${getRemainingTime()}'
@@ -276,11 +308,12 @@ class LearnringArguments {
   List<WordEntity> words = [];
   List<int> memoryLevels = [];
   int vocabularySetId;
-  LearnringArguments({
-    required this.words,
-    required this.memoryLevels,
-    required this.vocabularySetId,
-  });
+  int? reviewReminderId;
+  LearnringArguments(
+      {required this.words,
+      required this.memoryLevels,
+      required this.vocabularySetId,
+      this.reviewReminderId});
 }
 
 class SelectWordArguments {

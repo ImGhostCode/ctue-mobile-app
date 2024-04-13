@@ -53,6 +53,7 @@ String kV1 = 'v1';
 String kV2 = 'v2';
 String kV3 = 'v3';
 String kWords = 'words';
+String kLearnedWords = 'learnedWords';
 String kWord = 'Word';
 String kStatus = 'status';
 String kUser = 'User';

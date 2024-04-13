@@ -28,6 +28,7 @@ class _LearnPageState extends State<LearnPage> {
   List<LearnData> listLearningData = [];
   int currWordIndex = 0;
   int? vocabularySetId;
+  int? reviewReminderId;
 
   final TextEditingController _answerController = TextEditingController();
   Queue<Widget> questionQueue = Queue();
@@ -99,11 +100,11 @@ class _LearnPageState extends State<LearnPage> {
         }
       }
     }
-    print('learnedWords: $learnedWords');
-    print('memoryLevels: $memoryLevels');
+    // print('learnedWords: $learnedWords');
+    // print('memoryLevels: $memoryLevels');
 
 // Save result
-    _saveLearnedResult(learnedWords, memoryLevels);
+    _saveLearnedResult(learnedWords, memoryLevels, reviewReminderId);
 
 // Create review reminder
     _createReviewReminder(learnedWords, memoryLevels, now);
@@ -117,12 +118,13 @@ class _LearnPageState extends State<LearnPage> {
             memoryLevels: memoryLevels));
   }
 
-  void _saveLearnedResult(
-      List<WordEntity> learnedWords, List<int> memoryLevels) {
+  void _saveLearnedResult(List<WordEntity> learnedWords, List<int> memoryLevels,
+      int? reviewReimderId) {
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrSaveLearnedResult(
             learnedWords.map((e) => e.id).toList(),
             vocabularySetId!,
+            reviewReimderId,
             memoryLevels);
   }
 
@@ -203,6 +205,7 @@ class _LearnPageState extends State<LearnPage> {
         args.words.map((e) => LearnData(word: e, numOfMistakes: 0)).toList();
     initMemoryLevels = args.memoryLevels;
     vocabularySetId = args.vocabularySetId;
+    reviewReminderId = args.reviewReminderId;
     _prepareQuestionQueue(); // Moved into separate method
   }
 
@@ -336,23 +339,25 @@ class _LearnPageState extends State<LearnPage> {
   Column _buildQuoteRows(BuildContext context, WordEntity word) {
     return Column(
       children: [
-        Container(
-          margin: const EdgeInsets.all(16),
-          height: 100,
-          width: 130,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              word.pictures[0],
-              fit: BoxFit.fill,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-          ),
-        ),
+        word.pictures.isNotEmpty
+            ? Container(
+                margin: const EdgeInsets.all(16),
+                height: 100,
+                width: 130,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    word.pictures[0],
+                    fit: BoxFit.fill,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
         const SizedBox(
           height: 10,
         ),
@@ -486,43 +491,40 @@ class _LearnPageState extends State<LearnPage> {
               ),
             )),
         // Spacer(),
-        Expanded(
-          flex: 3,
-          child: ListView.separated(
-              // padding: EdgeInsets.only(bottom: 1),
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return SizedBox(
-                  height: 60,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _checkAnswer(shuffledAnswers[index].word.content);
-                    },
-                    style: ButtonStyle(
-                      // backgroundColor: MaterialStatePropertyAll(Colors.white),
-                      // foregroundColor: MaterialStatePropertyAll(Colors.black),
-                      // textStyle:,
-                      side: MaterialStateProperty.all(
-                          const BorderSide(color: Colors.grey)),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12))),
-                      elevation: MaterialStateProperty.all(
-                          2), // Set the elevation value
-                      // You can also set other properties like shadowColor if needed
-                    ),
-                    child:
-                        Text(shuffledAnswers[index].word.meanings[0].meaning),
+        ListView.separated(
+            // padding: EdgeInsets.only(bottom: 1),
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _checkAnswer(shuffledAnswers[index].word.content);
+                  },
+                  style: ButtonStyle(
+                    // backgroundColor: MaterialStatePropertyAll(Colors.white),
+                    // foregroundColor: MaterialStatePropertyAll(Colors.black),
+                    // textStyle:,
+                    side: MaterialStateProperty.all(
+                        const BorderSide(color: Colors.grey)),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
+                    elevation:
+                        MaterialStateProperty.all(2), // Set the elevation value
+                    // You can also set other properties like shadowColor if needed
                   ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: 5,
-                );
-              },
-              itemCount: shuffledAnswers.length),
-        ),
+                  child: Text(shuffledAnswers[index].word.meanings[0].meaning),
+                ),
+              );
+            },
+            separatorBuilder: (context, index) {
+              return const SizedBox(
+                height: 5,
+              );
+            },
+            itemCount: shuffledAnswers.length),
       ],
     );
   }

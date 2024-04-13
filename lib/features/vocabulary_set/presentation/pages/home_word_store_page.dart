@@ -36,7 +36,7 @@ class _WordStorePageState extends State<WordStorePage> {
         Provider.of<LearnProvider>(context, listen: false).currReminder ==
             null) {
       Provider.of<LearnProvider>(context, listen: false)
-          .eitherFailureOrGetUpcomingReminder();
+          .eitherFailureOrGetUpcomingReminder(null);
     }
     super.initState();
   }
@@ -143,28 +143,36 @@ class _WordStorePageState extends State<WordStorePage> {
               if (failure != null) {
                 // Handle failure, for example, show an error message
                 return Text(failure.errorMessage);
-              } else if (!isLoading && provider.currReminder != null) {
+              }
+              // else if (!isLoading && provider.currReminder != null) {
+              //   return Container(
+              //     padding:
+              //         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              //     color: Colors.grey.shade200,
+              //     child: ActionBox(
+              //       vocabularySetId: provider.currReminder!.vocabularySetId,
+              //       userLearnedWords: provider.currReminder!.learnedWords,
+              //       reviewAt: provider.currReminder!.reviewAt,
+              //     ),
+              //   );
+              // }
+              else if (!isLoading && provider.upcomingReminder != null) {
                 return Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   color: Colors.grey.shade200,
                   child: ActionBox(
-                    vocabularySetId: provider.currReminder!.vocabularySetId,
-                    words: provider.currReminder!.words,
-                    reviewAt: provider.currReminder!.reviewAt,
-                  ),
-                );
-              } else if (!isLoading && provider.upcomingReminder != null) {
-                return Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  color: Colors.grey.shade200,
-                  child: ActionBox(
+                    reviewReminderId: provider.upcomingReminder!.id,
                     vocabularySetId: provider.upcomingReminder!.vocabularySetId,
-                    words: provider.upcomingReminder!.words,
+                    userLearnedWords: provider.upcomingReminder!.learnedWords,
+                    words: provider.upcomingReminder!.learnedWords
+                        .map((e) => e.word!)
+                        .toList(),
                     reviewAt: provider.upcomingReminder!.reviewAt,
                   ),
                 );
+              } else if (!isLoading && provider.upcomingReminder == null) {
+                return const SizedBox.shrink();
               } else {
                 return Skeletonizer(
                     enabled: isLoading,

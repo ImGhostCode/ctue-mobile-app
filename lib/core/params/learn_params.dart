@@ -3,6 +3,7 @@ import 'package:ctue_app/core/constants/constants.dart';
 class SaveLearnedResultParams {
   List<int> wordIds = [];
   final int vocabularySetId;
+  final int? reviewReminderId;
   List<int> memoryLevels = [];
   String accessToken;
 
@@ -10,7 +11,8 @@ class SaveLearnedResultParams {
       {required this.wordIds,
       required this.memoryLevels,
       required this.accessToken,
-      required this.vocabularySetId});
+      required this.vocabularySetId,
+      this.reviewReminderId});
 }
 
 class CreReviewReminderParams {
@@ -40,9 +42,9 @@ class DataRemindParams {
 
 class GetUpcomingReminderParams {
   final String accessToken;
-  // final int userId;
+  final int? vocabularySetId;
 
-  GetUpcomingReminderParams({required this.accessToken});
+  GetUpcomingReminderParams({required this.accessToken, this.vocabularySetId});
 }
 
 class GetUserLearnedWordParams {

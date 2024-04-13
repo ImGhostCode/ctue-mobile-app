@@ -33,7 +33,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
   void didChangeDependencies() {
     args = ModalRoute.of(context)!.settings.arguments as VocabularySetArguments;
     Provider.of<LearnProvider>(context, listen: false)
-        .eitherFailureOrGetUpcomingReminder();
+        .eitherFailureOrGetUpcomingReminder(args.id);
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetDetail(args.id);
     Provider.of<LearnProvider>(context, listen: false)
@@ -140,25 +140,22 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                                 return const Center(
                                     child:
                                         CircularProgressIndicator()); // or show an empty state message
-                              } else if (learnProvider.upcomingReminder !=
-                                  null) {
-                                if (learnProvider
-                                        .upcomingReminder!.vocabularySetId ==
-                                    provider.vocaSetEntity!.id) {
-                                  return ActionBox(
-                                    words:
-                                        learnProvider.upcomingReminder!.words,
-                                    vocabularySetId: vocaSetEntity.id,
-                                    reviewAt: learnProvider
-                                        .upcomingReminder!.reviewAt,
-                                  );
-                                } else {
-                                  return ActionBox(
-                                    userLearnedWords: userLearnedWords,
-                                    words: vocaSetEntity.words,
-                                    vocabularySetId: vocaSetEntity.id,
-                                  );
-                                }
+                              } else if (!isLoading &&
+                                  learnProvider.upcomingReminder != null) {
+                                return ActionBox(
+                                  reviewReminderId:
+                                      learnProvider.upcomingReminder!.id,
+                                  userLearnedWords: learnProvider
+                                      .upcomingReminder!.learnedWords,
+                                  // words: learnProvider
+                                  //     .upcomingReminder!.learnedWords
+                                  //     .map((e) => e.word!)
+                                  //     .toList(),
+                                  words: vocaSetEntity.words,
+                                  vocabularySetId: vocaSetEntity.id,
+                                  reviewAt:
+                                      learnProvider.upcomingReminder!.reviewAt,
+                                );
                               } else {
                                 return ActionBox(
                                   userLearnedWords: userLearnedWords,

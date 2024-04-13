@@ -58,6 +58,8 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
           data: {
             'wordIds': saveLearnedResultParams.wordIds,
             'vocabularySetId': saveLearnedResultParams.vocabularySetId,
+            if (saveLearnedResultParams.reviewReminderId != null)
+              'reviewReminderId': saveLearnedResultParams.reviewReminderId,
             'memoryLevels': saveLearnedResultParams.memoryLevels,
           },
           // queryParameters: {"setId": getVocaSetStatisParams.id},
@@ -119,8 +121,10 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
       {required GetUpcomingReminderParams getUpcomingReminderParams}) async {
     try {
       final response = await dio.get('/learn/upcoming-reminder',
-
-          // queryParameters: {"setId": getVocaSetStatisParams.id},
+          queryParameters: {
+            if (getUpcomingReminderParams.vocabularySetId != null)
+              "setId": getUpcomingReminderParams.vocabularySetId
+          },
           options: Options(headers: {
             "authorization": "Bearer ${getUpcomingReminderParams.accessToken}"
           }));

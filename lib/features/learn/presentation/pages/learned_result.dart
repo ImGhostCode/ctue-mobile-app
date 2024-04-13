@@ -93,7 +93,8 @@ class LearningResult extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 6),
                       shape: RoundedRectangleBorder(
-                          side: const BorderSide(color: Colors.green),
+                          side: const BorderSide(
+                              width: 2, color: Colors.redAccent),
                           borderRadius: BorderRadius.circular(20)),
                       avatar: GradientBorderContainer(
                           diameter: level.diameter,
@@ -110,6 +111,9 @@ class LearningResult extends StatelessWidget {
                 ],
               )
             ],
+          ),
+          const SizedBox(
+            height: 15,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +152,7 @@ class LearningResult extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 6),
                       shape: RoundedRectangleBorder(
-                          side: const BorderSide(color: Colors.green),
+                          side: const BorderSide(width: 2, color: Colors.green),
                           borderRadius: BorderRadius.circular(20)),
                       avatar: GradientBorderContainer(
                           diameter: level.diameter,

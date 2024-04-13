@@ -237,7 +237,10 @@ class LearnProvider extends ChangeNotifier {
   });
 
   Future eitherFailureOrSaveLearnedResult(
-      List<int> wordIds, int vocabularySetId, List<int> memoryLevels) async {
+      List<int> wordIds,
+      int vocabularySetId,
+      int? reviewReminderId,
+      List<int> memoryLevels) async {
     _isLoading = true;
     LearnRepositoryImpl repository = LearnRepositoryImpl(
       remoteDataSource: LearnRemoteDataSourceImpl(
@@ -256,6 +259,7 @@ class LearnProvider extends ChangeNotifier {
       saveLearnedResultParams: SaveLearnedResultParams(
           wordIds: wordIds,
           vocabularySetId: vocabularySetId,
+          reviewReminderId: reviewReminderId,
           memoryLevels: memoryLevels,
           accessToken: await SecureStorageService.secureStorage
                   .read(key: 'accessToken') ??
@@ -326,7 +330,7 @@ class LearnProvider extends ChangeNotifier {
     );
   }
 
-  Future eitherFailureOrGetUpcomingReminder() async {
+  Future eitherFailureOrGetUpcomingReminder(int? vocabularySetId) async {
     _isLoading = true;
     LearnRepositoryImpl repository = LearnRepositoryImpl(
       remoteDataSource: LearnRemoteDataSourceImpl(
@@ -343,6 +347,7 @@ class LearnProvider extends ChangeNotifier {
     final failureOrUpcomingReminder =
         await GetUpcomingReminderUsecase(learnRepository: repository).call(
       getUpcomingReminderParams: GetUpcomingReminderParams(
+          vocabularySetId: vocabularySetId,
           accessToken: await SecureStorageService.secureStorage
                   .read(key: 'accessToken') ??
               ''),

@@ -1,6 +1,7 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/learn/business/entities/review_reminder_entity.dart';
-import 'package:ctue_app/features/word/data/models/word_model.dart';
+import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
+// import 'package:ctue_app/features/word/data/models/word_model.dart';
 
 class ReviewReminderModel extends ReviewReminderEntity {
   ReviewReminderModel(
@@ -8,7 +9,7 @@ class ReviewReminderModel extends ReviewReminderEntity {
       required super.vocabularySetId,
       required super.userId,
       required super.isDone,
-      required super.words,
+      required super.learnedWords,
       required super.reviewAt,
       required super.createdAt,
       super.userEntity,
@@ -22,8 +23,9 @@ class ReviewReminderModel extends ReviewReminderEntity {
         isDone: json[kIsDone],
         reviewAt: DateTime.parse(json[kReviewAt]),
         createdAt: DateTime.parse(json[kCreatedAt]),
-        words: json[kWords]
-            .map<WordModel>((word) => WordModel.fromJson(json: word))
+        learnedWords: json[kLearnedWords]
+            .map<UserLearnedWordModel>(
+                (word) => UserLearnedWordModel.fromJson(json: word))
             .toList());
   }
 
@@ -35,7 +37,7 @@ class ReviewReminderModel extends ReviewReminderEntity {
       kReviewAt: reviewAt,
       kCreatedAt: createdAt,
       kVocaSetId: vocabularySetId,
-      kWords: words,
+      kLearnedWords: learnedWords,
     };
   }
 }

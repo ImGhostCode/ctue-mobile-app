@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
         Provider.of<LearnProvider>(context, listen: false).currReminder ==
             null) {
       Provider.of<LearnProvider>(context, listen: false)
-          .eitherFailureOrGetUpcomingReminder();
+          .eitherFailureOrGetUpcomingReminder(null);
     }
 
     return Scaffold(
@@ -154,27 +154,36 @@ class HomePage extends StatelessWidget {
                     if (failure != null) {
                       // Handle failure, for example, show an error message
                       return Text(failure.errorMessage);
-                    } else if (!isLoading && provider.currReminder != null) {
+                    }
+                    // else if (!isLoading && provider.currReminder != null) {
+                    //   return Container(
+                    //     decoration: const BoxDecoration(color: Colors.white),
+                    //     padding: const EdgeInsets.all(16.0),
+                    //     child: ActionBox(
+                    //       vocabularySetId:
+                    //           provider.currReminder!.vocabularySetId,
+                    //       words: provider.currReminder!.learnedWords
+                    //           .map((e) => e.word!)
+                    //           .toList(),
+                    //       reviewAt: provider.currReminder!.reviewAt,
+                    //       userLearnedWords: provider.currReminder!.learnedWords,
+                    //     ),
+                    //   );
+                    // }
+                    else if (!isLoading && provider.upcomingReminder != null) {
                       return Container(
                         decoration: const BoxDecoration(color: Colors.white),
                         padding: const EdgeInsets.all(16.0),
                         child: ActionBox(
-                          vocabularySetId:
-                              provider.currReminder!.vocabularySetId,
-                          words: provider.currReminder!.words,
-                          reviewAt: provider.currReminder!.reviewAt,
-                        ),
-                      );
-                    } else if (!isLoading &&
-                        provider.upcomingReminder != null) {
-                      return Container(
-                        decoration: const BoxDecoration(color: Colors.white),
-                        padding: const EdgeInsets.all(16.0),
-                        child: ActionBox(
+                          reviewReminderId: provider.upcomingReminder!.id,
                           vocabularySetId:
                               provider.upcomingReminder!.vocabularySetId,
-                          words: provider.upcomingReminder!.words,
+                          words: provider.upcomingReminder!.learnedWords
+                              .map((e) => e.word!)
+                              .toList(),
                           reviewAt: provider.upcomingReminder!.reviewAt,
+                          userLearnedWords:
+                              provider.upcomingReminder!.learnedWords,
                         ),
                       );
                     } else {
