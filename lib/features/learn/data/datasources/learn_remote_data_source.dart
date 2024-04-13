@@ -12,6 +12,8 @@ abstract class LearnRemoteDataSource {
       {required CreReviewReminderParams creReviewReminderParams});
   Future<ResponseDataModel<ReviewReminderModel?>> getUpcomingReminder(
       {required GetUpcomingReminderParams getUpcomingReminderParams});
+  Future<ResponseDataModel<List<UserLearnedWordModel>>> getUserLearnedWords(
+      {required GetUserLearnedWordParams getUserLearnedWordParams});
 }
 
 class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
@@ -126,6 +128,37 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
           json: response.data,
           fromJsonD: (json) =>
               json != null ? ReviewReminderModel.fromJson(json: json) : null);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<List<UserLearnedWordModel>>> getUserLearnedWords(
+      {required GetUserLearnedWordParams getUserLearnedWordParams}) async {
+    try {
+      final response = await dio.get(
+          '/learn/${getUserLearnedWordParams.setId}/user/learned',
+
+          // queryParameters: {"setId": getVocaSetStatisParams.id},
+          options: Options(headers: {
+            "authorization": "Bearer ${getUserLearnedWordParams.accessToken}"
+          }));
+      return ResponseDataModel<List<UserLearnedWordModel>>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => json
+              .map<UserLearnedWordModel>(
+                  (word) => UserLearnedWordModel.fromJson(json: word))
+              .toList());
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

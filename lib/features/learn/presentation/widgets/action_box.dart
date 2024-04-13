@@ -1,3 +1,4 @@
+import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
 import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +9,12 @@ class ActionBox extends StatefulWidget {
   final List<WordEntity> words;
   final int vocabularySetId;
   final DateTime? reviewAt;
+  final List<UserLearnedWordEntity> userLearnedWords;
 
   const ActionBox(
       {super.key,
       this.words = const [],
+      this.userLearnedWords = const [],
       required this.vocabularySetId,
       this.reviewAt});
 
@@ -51,6 +54,7 @@ class _ActionBoxState extends State<ActionBox> {
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Icon(
                         Icons.error_outline_sharp,
@@ -59,29 +63,39 @@ class _ActionBoxState extends State<ActionBox> {
                       const SizedBox(
                         width: 3,
                       ),
-                      Flexible(
+                      Expanded(
+                        flex: 1, // Adjust the flex value as needed
                         child: Text(
-                          widget.vocabularySetId == -1
-                              ? 'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé'
-                              : widget.reviewAt != null
-                                  ? 'Bạn có ${widget.words.length} từ vựng cần ôn tập sau ${getRemainingTime()}'
-                                  : 'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                          _getTitleAction(),
+                          textAlign: TextAlign.left,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ),
                     ],
                   ),
-                  // Text(
-                  //   '3 từ',
-                  //   style: Theme.of(context)
-                  //       .textTheme
-                  //       .bodyLarge!
-                  //       .copyWith(color: Colors.red),
-                  // ),
+                  (widget.reviewAt != null &&
+                          DateTime.now().isAfter(widget.reviewAt!))
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              width: 25,
+                            ),
+                            Text(
+                              '${widget.words.length.toString()} từ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                      color: Colors.redAccent,
+                                      fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                   const SizedBox(
                     height: 5,
                   ),
@@ -105,11 +119,17 @@ class _ActionBoxState extends State<ActionBox> {
                                 ? () {
                                     Navigator.of(context).pushNamed('/learn',
                                         arguments: LearnringArguments(
-                                            words: widget.words,
+                                            words: widget.userLearnedWords
+                                                .map((e) => e.word!)
+                                                .toList(),
+                                            memoryLevels: widget
+                                                .userLearnedWords
+                                                .map((e) => e.memoryLevel)
+                                                .toList(),
                                             vocabularySetId:
                                                 widget.vocabularySetId));
                                   }
-                                : () {
+                                : () async {
                                     if (Provider.of<SelectedPageProvider>(
                                                 context,
                                                 listen: false)
@@ -120,17 +140,39 @@ class _ActionBoxState extends State<ActionBox> {
                                           .changePage(1);
                                     } else {
                                       // TODO: filter words to learn, excepted user learned words
+                                      List<WordEntity> unLearnedWords = widget
+                                          .words
+                                          .where((element) => !widget
+                                              .userLearnedWords
+                                              .map((e) => e.wordId)
+                                              .contains(element.id))
+                                          .toList();
+                                      // final dynamic result =
+                                      // await
 
-                                      Navigator.of(context).pushNamed('/learn',
-                                          arguments: LearnringArguments(
-                                              words: widget.words,
-                                              vocabularySetId:
-                                                  widget.vocabularySetId));
+                                      Navigator.of(context)
+                                          .pushNamed('/select-word',
+                                              arguments: SelectWordArguments(
+                                                vocabularySetId:
+                                                    widget.vocabularySetId,
+                                                words: unLearnedWords,
+                                                callback: (selectedWords) {},
+                                              ));
+
+                                      // if (result != null && result.length > 0) {
+                                      //   Navigator.of(context).pushNamed(
+                                      //       '/learn',
+                                      //       arguments: LearnringArguments(
+                                      //           words: result,
+                                      //           vocabularySetId:
+                                      //               widget.vocabularySetId));
+                                      // }
                                     }
                                   },
                         child: Text(
-                            // ''
-                            getTextAction()),
+                          // ''
+                          getTtileActionButton(),
+                        ),
                       ))
                 ],
               )),
@@ -151,6 +193,22 @@ class _ActionBoxState extends State<ActionBox> {
     );
   }
 
+  String _getTitleAction() {
+    if (widget.vocabularySetId == -1) {
+      return 'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé';
+    } else if (widget.reviewAt != null &&
+        DateTime.now().isAfter(widget.reviewAt!)) {
+      return 'Đã đến lúc ôn tập';
+    } else if (widget.reviewAt != null) {
+      return 'Bạn có ${widget.words.length} từ vựng cần ôn tập ${getRemainingTime()}';
+    } else {
+      return 'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé';
+    }
+
+    //  'Bạn có ${widget.words.length} từ vựng cần ôn tập sau ${getRemainingTime()}'
+    // : 'Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé';
+  }
+
   void _updateRemainingTime() {
     if (widget.reviewAt != null) {
       Duration remainingTime = widget.reviewAt!.difference(DateTime.now());
@@ -165,7 +223,7 @@ class _ActionBoxState extends State<ActionBox> {
     }
   }
 
-  String getTextAction() {
+  String getTtileActionButton() {
     // if (widget.reviewAt != null) {
     //   print(DateTime.now().isBefore(widget.reviewAt!));
     // }
@@ -203,19 +261,34 @@ class _ActionBoxState extends State<ActionBox> {
         .difference(DateTime.now());
 
     if (remainingTime <= Duration.zero) {
-      return 'Ôn tập ngay'; // It's due
+      return ''; // It's due
     }
 
     // Format remaining time
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     String twoDigitMinutes = twoDigits(remainingTime.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(remainingTime.inSeconds.remainder(60));
-    return "${remainingTime.inHours}h:${twoDigitMinutes}m:${twoDigitSeconds}s";
+    return "sau ${remainingTime.inHours}h:${twoDigitMinutes}m:${twoDigitSeconds}s";
   }
 }
 
 class LearnringArguments {
   List<WordEntity> words = [];
+  List<int> memoryLevels = [];
   int vocabularySetId;
-  LearnringArguments({required this.words, required this.vocabularySetId});
+  LearnringArguments({
+    required this.words,
+    required this.memoryLevels,
+    required this.vocabularySetId,
+  });
+}
+
+class SelectWordArguments {
+  List<WordEntity> words = [];
+  final Function(List<WordEntity>) callback;
+  int vocabularySetId;
+  SelectWordArguments(
+      {required this.words,
+      required this.callback,
+      required this.vocabularySetId});
 }

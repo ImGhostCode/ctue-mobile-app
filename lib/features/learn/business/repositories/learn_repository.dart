@@ -18,4 +18,8 @@ abstract class LearnRepository {
       getUpcomingReminder({
     required GetUpcomingReminderParams getUpcomingReminderParams,
   });
+  Future<Either<Failure, ResponseDataModel<List<UserLearnedWordEntity>>>>
+      getUserLearnedWords({
+    required GetUserLearnedWordParams getUserLearnedWordParams,
+  });
 }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
-import 'package:ctue_app/features/vocabulary_set/data/models/voca_set_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/errors/exceptions.dart';
 

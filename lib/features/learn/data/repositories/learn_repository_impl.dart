@@ -90,6 +90,24 @@ class LearnRepositoryImpl implements LearnRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, ResponseDataModel<List<UserLearnedWordModel>>>>
+      getUserLearnedWords(
+          {required GetUserLearnedWordParams getUserLearnedWordParams}) async {
+    try {
+      ResponseDataModel<List<UserLearnedWordModel>> remoteLearn =
+          await remoteDataSource.getUserLearnedWords(
+              getUserLearnedWordParams: getUserLearnedWordParams);
+
+      // localDataSource.cacheVocaSet(VocaSetToCache: remoteLearn);
+
+      return Right(remoteLearn);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(
+          errorMessage: e.errorMessage, statusCode: e.statusCode));
+    }
+  }
+
   // @override
   // Future<Either<Failure, ResponseDataModel<VocaSetStatisticsModel>>>
   //     getVocaSetStatistics(

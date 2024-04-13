@@ -9,6 +9,7 @@ import 'package:ctue_app/features/learn/business/entities/review_reminder_entity
 import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
 import 'package:ctue_app/features/learn/business/usecases/cre_review_reminder_usecase.dart';
 import 'package:ctue_app/features/learn/business/usecases/get_upcoming_reminder_usecase.dart';
+import 'package:ctue_app/features/learn/business/usecases/get_usr_learned_word_usecase.dart';
 import 'package:ctue_app/features/learn/business/usecases/save_learned_res_usecase.dart';
 import 'package:ctue_app/features/learn/data/datasources/learn_local_data_source.dart';
 import 'package:ctue_app/features/learn/data/datasources/learn_remote_data_source.dart';
@@ -28,6 +29,7 @@ class LearnProvider extends ChangeNotifier {
   ReviewReminderEntity? createdReviewReminder;
   ReviewReminderEntity? currReminder;
   ReviewReminderEntity? upcomingReminder;
+  List<UserLearnedWordEntity> learnedWords = [];
 
   TimeOfDay? _remindTime;
   bool? _isRemind = true;
@@ -358,6 +360,47 @@ class LearnProvider extends ChangeNotifier {
         _isLoading = false;
         upcomingReminder = newReviewReminder.data;
         message = newReviewReminder.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrGetUsrLearnedWords(int? setId) async {
+    _isLoading = true;
+    LearnRepositoryImpl repository = LearnRepositoryImpl(
+      remoteDataSource: LearnRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: LearnLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrLearnedWords =
+        await GetUsrLearnedWordUsecase(learnRepository: repository).call(
+      getUserLearnedWordParams: GetUserLearnedWordParams(
+          setId: setId,
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
+    );
+
+    failureOrLearnedWords.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        learnedWords = [];
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<List<UserLearnedWordEntity>> newLearnedWords) {
+        _isLoading = false;
+        learnedWords = newLearnedWords.data;
+        message = newLearnedWords.message;
         failure = null;
         notifyListeners();
       },

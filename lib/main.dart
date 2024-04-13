@@ -7,7 +7,8 @@ import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/contribute/presentation/pages/contri_history_page.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/add_irr_verb_page.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/edit_irr_verb_page.dart';
-import 'package:ctue_app/features/learn/presentation/pages/learning_result.dart';
+import 'package:ctue_app/features/learn/presentation/pages/learned_result.dart';
+import 'package:ctue_app/features/learn/presentation/pages/select_word_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/contri_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
@@ -342,7 +343,8 @@ class MyApp extends StatelessWidget {
           '/api': (context) => const IPA(),
           '/learn': (context) => const LearnPage(),
           '/learn-setting': (context) => const LearnSettingPage(),
-          '/learning-result': (context) => const LearningResult(),
+          '/select-word': (context) => SelectWordPage(),
+          '/learned-result': (context) => const LearningResult(),
           '/dictionary': (context) => const DictionaryPage(),
           '/look-up-result': (context) => LookUpResultPage(),
           '/word-detail': (context) => const WordDetail(),

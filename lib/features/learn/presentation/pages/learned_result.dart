@@ -1,6 +1,7 @@
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
 import 'package:ctue_app/features/learn/presentation/pages/learn_page.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
+import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 
 class LearningResult extends StatelessWidget {
@@ -10,6 +11,21 @@ class LearningResult extends StatelessWidget {
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as LearningResultArguments;
+
+    List<WordEntity> rememberedWords = [];
+    List<WordEntity> forgotWords = [];
+    List<int> rememberedMemoryLevels = [];
+    List<int> forgotMemoryLevels = [];
+
+    for (int i = 0; i < args.learnedWords.length; i++) {
+      if (args.memoryLevels[i] > args.oldMemoryLevels[i]) {
+        rememberedWords.add(args.learnedWords[i]);
+        rememberedMemoryLevels.add(args.memoryLevels[i]);
+      } else {
+        forgotWords.add(args.learnedWords[i]);
+        forgotMemoryLevels.add(args.memoryLevels[i]);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -27,8 +43,8 @@ class LearningResult extends StatelessWidget {
             ),
           )),
       body: Container(
-        decoration: BoxDecoration(color: Colors.white),
-        padding: EdgeInsets.all(16),
+        decoration: const BoxDecoration(color: Colors.white),
+        padding: const EdgeInsets.all(16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           SizedBox(
             height: 150,
@@ -36,7 +52,7 @@ class LearningResult extends StatelessWidget {
             child: Image.asset('assets/images/congratulation.png'),
           ),
           Text(
-            'Chúc mừng! Bạn hãy tiếp tục học để giỏi hơn nữa nhé!!!',
+            '${rememberedWords.isNotEmpty ? 'Chúc mừng! ' : ''}Bạn hãy tiếp tục học để giỏi hơn nữa nhé!!!',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleMedium,
           ),
@@ -60,7 +76,7 @@ class LearningResult extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    '${args.rememberedWords.length} từ',
+                    '${rememberedWords.length} từ',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   )
                 ],
@@ -69,9 +85,9 @@ class LearningResult extends StatelessWidget {
                 spacing: 6,
                 alignment: WrapAlignment.start,
                 children: [
-                  ...List.generate(args.rememberedWords.length, (index) {
+                  ...List.generate(rememberedWords.length, (index) {
                     MemoryLevel level =
-                        getMemoryLevel(args.memoryLevels[index]);
+                        getMemoryLevel(rememberedMemoryLevels[index]);
                     return Chip(
                       backgroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
@@ -88,66 +104,68 @@ class LearningResult extends StatelessWidget {
                           stop2: level.stop2,
                           percent: level.percent,
                           fontSize: level.fontSize),
-                      label: Text(args.rememberedWords[index].content),
+                      label: Text(rememberedWords[index].content),
                     );
                   })
                 ],
               )
             ],
           ),
-          // Column(
-          //   children: [
-          //     Row(
-          //       children: [
-          //         Container(
-          //           height: 30,
-          //           width: 30,
-          //           alignment: Alignment.center,
-          //           decoration: BoxDecoration(
-          //               shape: BoxShape.circle, color: Colors.red),
-          //           child: const Icon(
-          //             Icons.sourth,
-          //             color: Colors.white,
-          //           ),
-          //         ),
-          //         const SizedBox(
-          //           width: 5,
-          //         ),
-          //         const Text(
-          //           '2 từ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         )
-          //       ],
-          //     ),
-          //     Wrap(
-          //       spacing: 6,
-          //       children: [
-          //         ...List.generate(
-          //             5,
-          //             (index) => SizedBox(
-          //                   child: Chip(
-          //                     backgroundColor: Colors.white,
-          //                     padding: const EdgeInsets.symmetric(
-          //                         horizontal: 10, vertical: 6),
-          //                     shape: RoundedRectangleBorder(
-          //                         side: const BorderSide(color: Colors.grey),
-          //                         borderRadius: BorderRadius.circular(20)),
-          //                     avatar: GradientBorderContainer(
-          //                         diameter: level_1.diameter,
-          //                         borderWidth: level_1.borderWidth,
-          //                         borderColor1: level_1.borderColor1,
-          //                         borderColor2: level_1.borderColor2,
-          //                         stop1: level_1.stop1,
-          //                         stop2: level_1.stop2,
-          //                         percent: level_1.percent,
-          //                         fontSize: level_1.fontSize),
-          //                     label: const Text('Aaron'),
-          //                   ),
-          //                 ))
-          //       ],
-          //     )
-          //   ],
-          // )
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    height: 30,
+                    width: 30,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.redAccent),
+                    child: const Icon(
+                      Icons.south,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    '${forgotWords.length} từ',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+              Wrap(
+                spacing: 6,
+                alignment: WrapAlignment.start,
+                children: [
+                  ...List.generate(forgotWords.length, (index) {
+                    MemoryLevel level =
+                        getMemoryLevel(forgotMemoryLevels[index]);
+                    return Chip(
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(20)),
+                      avatar: GradientBorderContainer(
+                          diameter: level.diameter,
+                          borderWidth: level.borderWidth,
+                          borderColor1: level.borderColor1,
+                          borderColor2: level.borderColor2,
+                          stop1: level.stop1,
+                          stop2: level.stop2,
+                          percent: level.percent,
+                          fontSize: level.fontSize),
+                      label: Text(forgotWords[index].content),
+                    );
+                  })
+                ],
+              )
+            ],
+          ),
         ]),
       ),
     );

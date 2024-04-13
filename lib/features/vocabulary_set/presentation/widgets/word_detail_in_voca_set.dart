@@ -1,5 +1,5 @@
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
-import 'package:ctue_app/features/learn/presentation/pages/learning_result.dart';
+import 'package:ctue_app/features/learn/presentation/pages/learned_result.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';

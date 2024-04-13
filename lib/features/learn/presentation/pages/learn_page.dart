@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ctue_app/core/constants/memory_level_constants.dart';
 import 'package:ctue_app/core/params/learn_params.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
@@ -19,6 +20,8 @@ class LearnPage extends StatefulWidget {
 }
 
 class _LearnPageState extends State<LearnPage> {
+  bool _dataInitialized = false; // Flag to track initialization
+  List<int> initMemoryLevels = [];
   int totalStep = 4;
   int currStep = 1;
   Widget? currQuestion;
@@ -74,36 +77,65 @@ class _LearnPageState extends State<LearnPage> {
 
   void _displayResult() {
     DateTime now = DateTime.now();
-
-    List<WordEntity> rememberedWords = [];
+    List<WordEntity> learnedWords = [];
     List<int> memoryLevels = [];
-    for (var data in listLearningData) {
-      if (data.currStep == 4) {
-        rememberedWords.add(data.word);
-        memoryLevels.add(1);
+    for (int idx = 0; idx < listLearningData.length; idx++) {
+      // remembered
+      if (listLearningData[idx].currStep == 4) {
+        learnedWords.add(listLearningData[idx].word);
+        if (initMemoryLevels[idx] >= MemoryLevels.level_6) {
+          memoryLevels.add(initMemoryLevels[idx]);
+        } else {
+          memoryLevels.add(initMemoryLevels[idx] + 1);
+        }
+
+        // not remembered
+      } else if (listLearningData[idx].numOfMistakes == 4) {
+        learnedWords.add(listLearningData[idx].word);
+        if (initMemoryLevels[idx] - 1 > 0) {
+          memoryLevels.add(initMemoryLevels[idx] - 1);
+        } else {
+          memoryLevels.add(initMemoryLevels[idx]);
+        }
       }
     }
-    // print(rememberedWords);
-    // print(memoryLevels);
+    print('learnedWords: $learnedWords');
+    print('memoryLevels: $memoryLevels');
+
+// Save result
+    _saveLearnedResult(learnedWords, memoryLevels);
+
+// Create review reminder
+    _createReviewReminder(learnedWords, memoryLevels, now);
+
+// Show result
+    // Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, '/learned-result',
+        arguments: LearningResultArguments(
+            oldMemoryLevels: initMemoryLevels,
+            learnedWords: learnedWords,
+            memoryLevels: memoryLevels));
+  }
+
+  void _saveLearnedResult(
+      List<WordEntity> learnedWords, List<int> memoryLevels) {
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrSaveLearnedResult(
-            rememberedWords.map((e) => e.id).toList(),
+            learnedWords.map((e) => e.id).toList(),
             vocabularySetId!,
             memoryLevels);
+  }
 
+  void _createReviewReminder(
+      List<WordEntity> learnedWords, List<int> memoryLevels, DateTime now) {
     List<DataRemindParams> dataRemind = [];
-    for (var i = 0; i < rememberedWords.length; i++) {
+    for (var i = 0; i < learnedWords.length; i++) {
       dataRemind.add(DataRemindParams(
-          wordId: rememberedWords[i].id,
+          wordId: learnedWords[i].id,
           reviewAt: getTimeToReview(memoryLevels[i], now)));
     }
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrCreReviewReminder(vocabularySetId!, dataRemind);
-
-    // Navigator.pop(context);
-    Navigator.pushReplacementNamed(context, '/learning-result',
-        arguments: LearningResultArguments(
-            rememberedWords: rememberedWords, memoryLevels: memoryLevels));
   }
 
   void _checkAnswer(dynamic userAnswer) {
@@ -152,11 +184,29 @@ class _LearnPageState extends State<LearnPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _initializeData() {
     final args =
         ModalRoute.of(context)!.settings.arguments as LearnringArguments;
+    // Check arguments are not null
+    _processArguments(args);
+  }
+
+  void _processArguments(LearnringArguments args) {
     listLearningData =
         args.words.map((e) => LearnData(word: e, numOfMistakes: 0)).toList();
+    initMemoryLevels = args.memoryLevels;
     vocabularySetId = args.vocabularySetId;
+    _prepareQuestionQueue(); // Moved into separate method
+  }
+
+  void _prepareQuestionQueue() {
     for (var step = 1; step <= totalStep; step++) {
       for (var index = 0; index < listLearningData.length; index++) {
         questionQueue.addLast(_buildQuestion(listLearningData[index], step));
@@ -168,12 +218,11 @@ class _LearnPageState extends State<LearnPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    if (!_dataInitialized) {
+      _initializeData();
+      _dataInitialized = true;
+    }
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -216,7 +265,9 @@ class _LearnPageState extends State<LearnPage> {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/learning-result',
                       arguments: LearningResultArguments(
-                          rememberedWords: [], memoryLevels: []));
+                          oldMemoryLevels: [],
+                          learnedWords: [],
+                          memoryLevels: []));
                 },
                 icon: const Icon(
                   Icons.settings_rounded,
@@ -610,9 +661,12 @@ class LearnData {
 }
 
 class LearningResultArguments {
-  List<WordEntity> rememberedWords = [];
+  List<WordEntity> learnedWords = [];
   List<int> memoryLevels = [];
+  List<int> oldMemoryLevels = [];
 
   LearningResultArguments(
-      {required this.rememberedWords, required this.memoryLevels});
+      {required this.learnedWords,
+      required this.memoryLevels,
+      required this.oldMemoryLevels});
 }

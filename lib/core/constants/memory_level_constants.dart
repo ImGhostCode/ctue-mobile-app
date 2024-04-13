@@ -80,3 +80,12 @@ MemoryLevel level_6 = MemoryLevel(
     stop2: 1,
     percent: 6,
     fontSize: 12);
+
+class MemoryLevels {
+  static const int level_1 = 1;
+  static const int level_2 = 2;
+  static const int level_3 = 3;
+  static const int level_4 = 4;
+  static const int level_5 = 5;
+  static const int level_6 = 6;
+}

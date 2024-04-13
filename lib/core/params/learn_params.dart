@@ -44,3 +44,10 @@ class GetUpcomingReminderParams {
 
   GetUpcomingReminderParams({required this.accessToken});
 }
+
+class GetUserLearnedWordParams {
+  final String accessToken;
+  final int? setId;
+
+  GetUserLearnedWordParams({required this.accessToken, this.setId});
+}

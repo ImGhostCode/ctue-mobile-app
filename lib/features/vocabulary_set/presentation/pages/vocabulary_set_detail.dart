@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
@@ -21,6 +22,7 @@ class VocabularySetDetail extends StatefulWidget {
 class _VocabularySetDetailState extends State<VocabularySetDetail> {
   String sortBy = 'Mới nhất';
   dynamic args;
+  List<UserLearnedWordEntity> userLearnedWords = [];
 
   @override
   void initState() {
@@ -34,6 +36,10 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
         .eitherFailureOrGetUpcomingReminder();
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetDetail(args.id);
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUsrLearnedWords(args.id);
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUsrLearnedWords(args.id);
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(args.id);
     super.didChangeDependencies();
@@ -121,6 +127,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       vocaSetEntity.words.isNotEmpty
                           ? Consumer<LearnProvider>(
                               builder: (context, learnProvider, child) {
+                              userLearnedWords = learnProvider.learnedWords;
                               bool isLoading = learnProvider.isLoading;
 
                               Failure? failure = learnProvider.failure;
@@ -139,26 +146,28 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                                         .upcomingReminder!.vocabularySetId ==
                                     provider.vocaSetEntity!.id) {
                                   return ActionBox(
-                                    words: vocaSetEntity.words,
+                                    words:
+                                        learnProvider.upcomingReminder!.words,
                                     vocabularySetId: vocaSetEntity.id,
                                     reviewAt: learnProvider
                                         .upcomingReminder!.reviewAt,
                                   );
                                 } else {
                                   return ActionBox(
+                                    userLearnedWords: userLearnedWords,
                                     words: vocaSetEntity.words,
                                     vocabularySetId: vocaSetEntity.id,
                                   );
                                 }
                               } else {
                                 return ActionBox(
+                                  userLearnedWords: userLearnedWords,
                                   words: vocaSetEntity.words,
                                   vocabularySetId: vocaSetEntity.id,
                                 );
                               }
                             })
                           : const SizedBox.shrink(),
-
                       const SizedBox(
                         height: 20,
                       ),
@@ -240,7 +249,6 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                           ],
                         ),
                       ]),
-
                       ...List.generate(
                           args.isAdmin ||
                                   provider
@@ -250,24 +258,21 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                                       maxDisplayedWords
                                   ? maxDisplayedWords
                                   : provider.vocaSetEntity!.words.length,
-                          (index) => WordDetailInVocaSet(
-                                wordEntity:
-                                    provider.vocaSetEntity!.words[index],
-                              ))
-                      // Expanded(
-                      //   child: ListView.builder(
-                      //       physics: const NeverScrollableScrollPhysics(),
-                      //       scrollDirection: Axis.vertical,
-                      //       itemBuilder: (context, index) {
-                      //         return WordDetailInVocaSet();
-                      //       },
-                      //       // separatorBuilder: (context, index) {
-                      //       //   return const SizedBox(
-                      //       //     height: 5,
-                      //       //   );
-                      //       // },
-                      //       itemCount: 4),
-                      // )
+                          (index) {
+                        //check if word is learned or not
+                        int learnedWordEntity = userLearnedWords.indexWhere(
+                            (element) =>
+                                element.wordId ==
+                                provider.vocaSetEntity!.words[index].id);
+
+                        return WordDetailInVocaSet(
+                          showLevel: learnedWordEntity != -1 ? true : false,
+                          memoryLevel: learnedWordEntity != -1
+                              ? userLearnedWords[learnedWordEntity].memoryLevel
+                              : 1,
+                          wordEntity: provider.vocaSetEntity!.words[index],
+                        );
+                      })
                     ],
                   ),
                 ),

@@ -120,12 +120,12 @@ class _WordStorePageState extends State<WordStorePage> {
                         return Skeletonizer(
                           enabled: isLoading,
                           child: StatisticChart(
-                              dataStatistics:
-                                  provider.vocaSetStatisticsEntity ??
-                                      VocaSetStatisticsEntity(
-                                          detailVocaSetStatisEntity:
-                                              DetailVocaSetStatisEntity(),
-                                          numberOfWords: 0)),
+                              dataStatistics: isLoading
+                                  ? VocaSetStatisticsEntity(
+                                      detailVocaSetStatisEntity:
+                                          DetailVocaSetStatisEntity(),
+                                      numberOfWords: 0)
+                                  : provider.vocaSetStatisticsEntity!),
                         );
                       }
                     },
