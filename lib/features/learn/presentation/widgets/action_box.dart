@@ -203,27 +203,21 @@ class _ActionBoxState extends State<ActionBox> {
       return RichText(
           text: TextSpan(
         text: 'Bạn có ',
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+        style: Theme.of(context).textTheme.bodyLarge,
         children: [
           TextSpan(
             text: '${widget.words.length} từ vựng ',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: Colors.blue.shade800,
                 ),
           ),
           TextSpan(
             text: 'cần ôn tập',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
           ),
           TextSpan(
             text: ' ${getRemainingTime()}',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: Colors.blue.shade800,
                 ),
           )
@@ -232,9 +226,7 @@ class _ActionBoxState extends State<ActionBox> {
     } else {
       return Text('Bắt đầu học để ghi nhớ từ trong kho từ vựng của bạn nhé',
           textAlign: TextAlign.left,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.bold,
-              ));
+          style: Theme.of(context).textTheme.bodyLarge);
     }
 
     //  'Bạn có ${widget.words.length} từ vựng cần ôn tập sau ${getRemainingTime()}'

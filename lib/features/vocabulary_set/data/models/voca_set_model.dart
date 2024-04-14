@@ -7,7 +7,7 @@ import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_enti
 import '../../../../../core/constants/constants.dart';
 
 class VocaSetModel extends VocaSetEntity {
-  const VocaSetModel(
+  VocaSetModel(
       {required super.id,
       required super.title,
       required super.userId,

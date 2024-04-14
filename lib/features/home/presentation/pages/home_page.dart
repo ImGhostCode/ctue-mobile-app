@@ -144,7 +144,6 @@ class HomePage extends StatelessWidget {
                 //   ),
                 // ),
 
-                // TODO: fix userlearnedWord = []
                 Consumer<LearnProvider>(
                   builder: (context, provider, child) {
                     bool isLoading = provider.isLoading;

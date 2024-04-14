@@ -11,7 +11,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:timezone/data/latest_all.dart' as tz; // For timezone support
+// ignore: unused_import
+import 'package:timezone/data/latest_all.dart' as tz; // For timezone support
 import 'package:timezone/timezone.dart' as tz;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -183,7 +184,7 @@ class _SettingPageState extends State<SettingPage> {
                           now.day,
                           selectedTime24Hour.hour,
                           selectedTime24Hour.minute);
-                      await flutterLocalNotificationsPlugin.cancel(0);
+                      await flutterLocalNotificationsPlugin.cancel(983);
                       // Schedule the notification
                       await scheduleNotification('Nhắc nhở',
                           'Đã đến giờ học tập cùng CTUE!', scheduledTime);
@@ -230,7 +231,7 @@ class _SettingPageState extends State<SettingPage> {
                                         .statusCode ==
                                     200) {
                                   await flutterLocalNotificationsPlugin
-                                      .cancel(0);
+                                      .cancel(983);
 
                                   await SecureStorageService.secureStorage
                                       .delete(key: 'accessToken');
@@ -299,14 +300,28 @@ Future<void> scheduleNotification(
 
   // Schedule the notification using timezone support
   await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
+      983,
       title,
       body,
-      tz.TZDateTime.from(scheduledTime, tz.local), // Use the local timezone
+      _nextInstanceOfDailyNotification(scheduledTime), // Modified calculation
       platformChannelSpecifics,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime);
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents:
+          DateTimeComponents.time); // Repeat *at* the time, daily);
+}
+
+// Helper to calculate the next instance of the daily notification
+tz.TZDateTime _nextInstanceOfDailyNotification(DateTime scheduledTime) {
+  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+  tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month,
+      now.day, scheduledTime.hour, scheduledTime.minute, scheduledTime.second);
+
+  if (scheduledDate.isBefore(now)) {
+    scheduledDate = scheduledDate.add(const Duration(days: 1));
+  }
+  return scheduledDate;
 }
 
 // Add in a suitable place in your project
@@ -339,7 +354,7 @@ Future<void> showDailyReminderNotification(TimeOfDay time) async {
   );
 
   await flutterLocalNotificationsPlugin.zonedSchedule(
-      0, // Unique ID
+      983, // Unique ID
       'Daily Reminder',
       'Your daily reminder message',
       scheduledNotificationDateTime,

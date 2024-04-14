@@ -90,16 +90,17 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                             arguments: EditVocaSetArguments(
                               vocaSetEntity: vocaSetEntity,
                               isAdmin: false,
-                              callback: () {
-                                Provider.of<VocaSetProvider>(context,
+                              callback: () async {
+                                await Provider.of<VocaSetProvider>(context,
                                         listen: false)
                                     .eitherFailureOrGerUsrVocaSets();
+
                                 Navigator.pop(context);
                               },
                             ));
                       },
                       icon: const Icon(
-                        Icons.add_circle_outline_rounded,
+                        Icons.edit_rounded,
                         color: Colors.blue,
                       ))
             ],

@@ -147,7 +147,9 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
               // 'tags'
             ],
             'language': 'en',
-            'api-version': '2024-02-01'
+            'api-version': '2024-02-01',
+            // 'gender-neutral-captions': 'true',
+            // 'smartCrops-aspect-ratios': [0.9, 1.33]
           },
           options: Options(headers: {
             "Ocp-Apim-Subscription-Key": visonKey,

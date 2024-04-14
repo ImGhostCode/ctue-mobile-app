@@ -38,8 +38,8 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
   bool _isExpanded = false;
 
   Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 30);
 
     if (pickedFile != null) {
       setState(() {

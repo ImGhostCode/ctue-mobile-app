@@ -65,7 +65,9 @@ class _WordFormState extends State<WordForm> {
   String? _topicError = '';
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickMultiImage();
+    final pickedFile = await ImagePicker().pickMultiImage(
+      imageQuality: 30,
+    );
 
     if (pickedFile.isNotEmpty) {
       setState(() {
@@ -402,6 +404,9 @@ class _WordFormState extends State<WordForm> {
                       if (index < _selectedImages.length) {
                         // Display selected images
                         return Container(
+                          width: MediaQuery.of(context).size.width *
+                              0.25, // 25% of screen width
+                          height: 100,
                           margin: const EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.teal),
@@ -410,20 +415,21 @@ class _WordFormState extends State<WordForm> {
                             children: [
                               Image.file(
                                 File(_selectedImages[index].path),
-                                width: 100,
+                                width: MediaQuery.of(context).size.width *
+                                    0.25, // 25% of screen width
                                 height: 100,
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                               ),
                               Positioned(
                                 top: -10,
                                 right: -10,
                                 child: CircleAvatar(
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: Colors.transparent,
                                   child: IconButton(
                                     icon: const Icon(
                                       Icons.close,
                                       color: Colors.red,
-                                      size: 20,
+                                      size: 25,
                                     ),
                                     onPressed: () => _removeImage(index),
                                   ),
@@ -437,6 +443,9 @@ class _WordFormState extends State<WordForm> {
                         final oldImageUrl =
                             _oldImages[index - _selectedImages.length];
                         return Container(
+                          width: MediaQuery.of(context).size.width *
+                              0.25, // 25% of screen width
+                          height: 100,
                           margin: const EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.teal),
@@ -444,8 +453,8 @@ class _WordFormState extends State<WordForm> {
                           child: Stack(children: [
                             Image.network(
                               oldImageUrl,
-                              width: 100,
-                              height: 100,
+                              // width: 100,
+                              // height: 100,
                               fit: BoxFit.fill,
                             ),
                             Positioned(

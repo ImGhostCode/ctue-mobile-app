@@ -5,7 +5,7 @@ import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 
 class VocaSetEntity {
   final int id;
-  final String title;
+  String title;
   final int userId;
   final int? topicId;
   final int? specId;
@@ -19,7 +19,7 @@ class VocaSetEntity {
   final TopicEntity? topicEntity;
   final UserEntity? userEntity;
 
-  const VocaSetEntity(
+  VocaSetEntity(
       {required this.id,
       required this.title,
       required this.userId,

@@ -532,12 +532,13 @@ Future<String?> showWordConDetail(
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return SizedBox(
+                                  width: MediaQuery.of(context).size.width *
+                                      0.25, // 25% of screen width
                                   height: 100,
-                                  width: 100,
                                   child: Image.network(
                                     contributionDetail['pictures'][index],
                                     // height: 100,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.cover,
                                   ),
                                 );
                               },

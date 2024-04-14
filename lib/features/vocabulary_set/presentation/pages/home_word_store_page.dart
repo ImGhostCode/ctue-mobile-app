@@ -518,17 +518,22 @@ class _WordStorePageState extends State<WordStorePage> {
 }
 
 Future<String?> showDialogInput(
-    BuildContext context, String title, dynamic data) {
+    BuildContext context, String title, VocaSetEntity data) {
   return showDialog<String>(
       context: context,
       builder: (BuildContext context) => DialogTextInput(
           initialValue: data.title,
           title: title,
-          callback: (title) async {
+          callback: (newTitle) async {
             await Provider.of<VocaSetProvider>(context, listen: false)
                 .eitherFailureOrUpdateVocaSet(
-                    data.id, title, null, null, null, null, null, null);
+                    data.id, newTitle, null, null, null, null, null, null);
 
+            if (Provider.of<VocaSetProvider>(context, listen: false)
+                    .statusCode ==
+                200) {
+              data.title = newTitle;
+            }
             Navigator.pop(context);
             Navigator.pop(context);
           }));

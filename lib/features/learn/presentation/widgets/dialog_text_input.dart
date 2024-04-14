@@ -1,4 +1,6 @@
+import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DialogTextInput extends StatefulWidget {
   final String title;
@@ -26,7 +28,9 @@ class _DialogTextInputState extends State<DialogTextInput> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      shadowColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -88,7 +92,15 @@ class _DialogTextInputState extends State<DialogTextInput> {
                             widget.callback(_titleController.text);
                           }
                         : null,
-                    child: const Text('Xác nhận')),
+                    child: Provider.of<VocaSetProvider>(context, listen: true)
+                            .isLoading
+                        ? const SizedBox(
+                            height: 25,
+                            width: 25,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ))
+                        : const Text('Xác nhận')),
               ],
             ),
             // const SizedBox(height: 15),

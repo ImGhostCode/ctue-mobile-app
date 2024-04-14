@@ -29,6 +29,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
+    // minSdkVersion 21
     compileSdk 34
     compileSdkVersion 34  // compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
@@ -57,6 +58,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
+        minSdkVersion 21
     }
 
     buildTypes {

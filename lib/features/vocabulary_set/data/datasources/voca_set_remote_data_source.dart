@@ -198,11 +198,10 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
           "isPublic": updateVocaSetParams.isPublic,
         if (updateVocaSetParams.oldPicture != null)
           'oldPicture': updateVocaSetParams.oldPicture,
-        'words': updateVocaSetParams.words == null
-            ? null
-            : updateVocaSetParams.words!.length > 1
-                ? updateVocaSetParams.words
-                : [updateVocaSetParams.words],
+        if (updateVocaSetParams.words != null)
+          'words': updateVocaSetParams.words!.length > 1
+              ? updateVocaSetParams.words
+              : [updateVocaSetParams.words],
         "picture": updateVocaSetParams.picture != null
             ? MultipartFile.fromFileSync(updateVocaSetParams.picture!.path,
                 filename: updateVocaSetParams.picture!.name)
