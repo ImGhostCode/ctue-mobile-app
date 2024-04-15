@@ -57,6 +57,7 @@ class UpdateVocaSetParams {
   final XFile? picture;
   final bool? isPublic;
   List<int>? words;
+  List<int>? oldWords;
   final String accessToken;
 
   UpdateVocaSetParams(
@@ -66,6 +67,7 @@ class UpdateVocaSetParams {
       this.picture,
       this.isPublic,
       this.words,
+      this.oldWords,
       this.specId,
       this.topicId,
       required this.id});

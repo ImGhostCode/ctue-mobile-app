@@ -23,10 +23,12 @@ class ReviewReminderModel extends ReviewReminderEntity {
         isDone: json[kIsDone],
         reviewAt: DateTime.parse(json[kReviewAt]),
         createdAt: DateTime.parse(json[kCreatedAt]),
-        learnedWords: json[kLearnedWords]
-            .map<UserLearnedWordModel>(
-                (word) => UserLearnedWordModel.fromJson(json: word))
-            .toList());
+        learnedWords: json[kLearnedWords] == null
+            ? []
+            : json[kLearnedWords]
+                .map<UserLearnedWordModel>(
+                    (word) => UserLearnedWordModel.fromJson(json: word))
+                .toList());
   }
 
   Map<String, dynamic> toJson() {

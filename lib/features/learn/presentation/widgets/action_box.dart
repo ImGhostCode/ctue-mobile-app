@@ -206,7 +206,7 @@ class _ActionBoxState extends State<ActionBox> {
         style: Theme.of(context).textTheme.bodyLarge,
         children: [
           TextSpan(
-            text: '${widget.words.length} từ vựng ',
+            text: '${widget.userLearnedWords.length} từ vựng ',
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: Colors.blue.shade800,
                 ),

@@ -22,6 +22,8 @@ class EditVocabularySet extends StatefulWidget {
 }
 
 class _EditVocabularySetState extends State<EditVocabularySet> {
+  bool _dataInitialized = false; // Flag to track initialization
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -37,6 +39,7 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
   dynamic args;
   int? selectedTopic;
   bool? _isPublic;
+  List<int> oldWords = [];
 
   bool _isExpanded = false;
 
@@ -76,9 +79,20 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
 
   @override
   void didChangeDependencies() {
-    args = ModalRoute.of(context)!.settings.arguments as EditVocaSetArguments;
-    _titleController.text = args.vocaSetEntity.title;
+    super.didChangeDependencies();
+  }
 
+  void _initializeData() {
+    args = ModalRoute.of(context)!.settings.arguments as EditVocaSetArguments;
+    // Check arguments are not null
+    _processArguments(args);
+  }
+
+  void _processArguments(EditVocaSetArguments args) {
+    _titleController.text = args.vocaSetEntity.title;
+    args.vocaSetEntity.words.forEach((word) {
+      oldWords.add(word.id);
+    });
     if (args.isAdmin) {
       oldPicture = args.vocaSetEntity.picture;
       _selectedSpecializaiton = args.vocaSetEntity.specId;
@@ -87,12 +101,15 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
 
     selectedWords.clear();
     selectedWords.addAll(args.vocaSetEntity.words);
-
-    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_dataInitialized) {
+      _initializeData();
+      _dataInitialized = true;
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -138,7 +155,8 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                             oldPicture,
                             _selectedImage,
                             _isPublic,
-                            wordIds);
+                            wordIds,
+                            oldWords);
                   } else if (!args.isAdmin) {
                     await Provider.of<VocaSetProvider>(context, listen: false)
                         .eitherFailureOrUpdateVocaSet(
@@ -149,11 +167,9 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                             null,
                             null,
                             null,
-                            wordIds);
+                            wordIds,
+                            oldWords);
                   }
-
-                  // ignore: use_build_context_synchronously
-                  Navigator.of(context).pop();
 
                   // ignore: use_build_context_synchronously
                   if (Provider.of<VocaSetProvider>(context, listen: false)

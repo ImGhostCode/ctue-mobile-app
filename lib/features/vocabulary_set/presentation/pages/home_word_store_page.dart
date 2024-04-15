@@ -238,7 +238,13 @@ class _WordStorePageState extends State<WordStorePage> {
                           const MaterialStatePropertyAll(Colors.white)),
                   onPressed: () {
                     Navigator.pushNamed(context, '/create-vocabulary-set',
-                        arguments: CreateVocaSetArgument(isAdmin: false));
+                        arguments: CreateVocaSetArgument(
+                            isAdmin: false,
+                            callback: () {
+                              Provider.of<VocaSetProvider>(context,
+                                      listen: false)
+                                  .eitherFailureOrGerUsrVocaSets();
+                            }));
                   },
                   child: Row(children: [
                     const Icon(
@@ -444,48 +450,82 @@ class _WordStorePageState extends State<WordStorePage> {
                                             builder: (BuildContext context) =>
                                                 AlertDialog(
                                               backgroundColor: Colors.white,
+                                              shadowColor: Colors.white,
+                                              surfaceTintColor: Colors.white,
                                               // title: const Text('Cảnh báo'),
                                               content: const Text(
                                                   'Bạn có chắc chắn muốn xóa bộ từ này không?'),
                                               actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context, 'Xóa'),
-                                                  child: const Text('Trở lại'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    await provider
-                                                        .eitherFailureOrRmVocaSet(
-                                                            provider
-                                                                .userVocaSets[
-                                                                    index]
-                                                                .id,
-                                                            provider
-                                                                    .userVocaSets[
-                                                                        index]
-                                                                    .userId !=
-                                                                Provider.of<UserProvider>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .userEntity!
-                                                                    .id);
-                                                    if (provider.statusCode ==
-                                                        200) {
-                                                      listUsrVocaSets
-                                                          .removeAt(index);
-                                                    }
-                                                    // ignore: use_build_context_synchronously
-                                                    Navigator.pop(
-                                                        context, 'OK');
-                                                    // ignore: use_build_context_synchronously
-                                                    Navigator.pop(
-                                                      context,
-                                                    );
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.grey.shade400,
+                                                    textStyle: Theme.of(context)
+                                                        .textTheme
+                                                        .labelLarge,
+                                                  ),
+                                                  child: const Text('Trở về'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
                                                   },
-                                                  child: const Text('OK'),
+                                                ),
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    textStyle: Theme.of(context)
+                                                        .textTheme
+                                                        .labelLarge,
+                                                  ),
+                                                  onPressed: provider.isLoading
+                                                      ? null
+                                                      : () async {
+                                                          await provider.eitherFailureOrRmVocaSet(
+                                                              provider
+                                                                  .userVocaSets[
+                                                                      index]
+                                                                  .id,
+                                                              provider
+                                                                      .userVocaSets[
+                                                                          index]
+                                                                      .userId !=
+                                                                  Provider.of<UserProvider>(
+                                                                          context,
+                                                                          listen:
+                                                                              false)
+                                                                      .userEntity!
+                                                                      .id);
+                                                          if (provider
+                                                                  .statusCode ==
+                                                              200) {
+                                                            listUsrVocaSets
+                                                                .removeAt(
+                                                                    index);
+                                                            Provider.of<LearnProvider>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .eitherFailureOrGetUpcomingReminder(
+                                                                    null);
+                                                          }
+                                                          // ignore: use_build_context_synchronously
+                                                          Navigator.pop(
+                                                              context, 'OK');
+                                                          // ignore: use_build_context_synchronously
+                                                          Navigator.pop(
+                                                            context,
+                                                          );
+                                                        },
+                                                  child: provider.isLoading
+                                                      ? const SizedBox(
+                                                          height: 25,
+                                                          width: 25,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            color: Colors.white,
+                                                          ),
+                                                        )
+                                                      : const Text('Đồng ý'),
                                                 ),
                                               ],
                                             ),
@@ -526,8 +566,8 @@ Future<String?> showDialogInput(
           title: title,
           callback: (newTitle) async {
             await Provider.of<VocaSetProvider>(context, listen: false)
-                .eitherFailureOrUpdateVocaSet(
-                    data.id, newTitle, null, null, null, null, null, null);
+                .eitherFailureOrUpdateVocaSet(data.id, newTitle, null, null,
+                    null, null, null, null, null);
 
             if (Provider.of<VocaSetProvider>(context, listen: false)
                     .statusCode ==

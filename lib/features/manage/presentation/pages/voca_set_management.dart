@@ -72,7 +72,12 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
             TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/create-vocabulary-set',
-                      arguments: CreateVocaSetArgument(isAdmin: true));
+                      arguments: CreateVocaSetArgument(
+                          isAdmin: true,
+                          callback: () {
+                            Navigator.pop(context);
+                            _pagingController.refresh();
+                          }));
                 },
                 child: Text(
                   'Thêm',
@@ -410,7 +415,9 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
 
 class CreateVocaSetArgument {
   final bool isAdmin;
-  CreateVocaSetArgument({required this.isAdmin});
+  VoidCallback callback;
+
+  CreateVocaSetArgument({required this.isAdmin, required this.callback});
 }
 
 class EditVocaSetArguments {

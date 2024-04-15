@@ -85,12 +85,14 @@ class VocaSetProvider extends ChangeNotifier {
         vocaSetEntity = null;
         failure = newFailure;
         message = newFailure.errorMessage;
+        statusCode = 400;
         notifyListeners();
       },
       (ResponseDataModel<VocaSetEntity> newVocaSet) {
         _isLoading = false;
         vocaSetEntity = newVocaSet.data;
         message = newVocaSet.message;
+        statusCode = newVocaSet.statusCode;
         failure = null;
         notifyListeners();
       },
@@ -449,6 +451,7 @@ class VocaSetProvider extends ChangeNotifier {
     XFile? picture,
     bool? isPublic,
     List<int>? words,
+    List<int>? oldWords,
   ) async {
     isLoading = true;
     VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
@@ -477,6 +480,7 @@ class VocaSetProvider extends ChangeNotifier {
         picture: picture,
         isPublic: isPublic,
         words: words,
+        oldWords: oldWords,
       ),
     );
 

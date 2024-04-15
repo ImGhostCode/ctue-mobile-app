@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';

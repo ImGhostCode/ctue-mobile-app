@@ -412,11 +412,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (kDebugMode) {
         print('Handling a foreground message: ${message.messageId}');
@@ -428,6 +423,11 @@ class _HomeState extends State<Home> {
           true;
       // _messageStreamController.sink.add(message);/
     });
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
     super.didChangeDependencies();
   }
 
@@ -460,18 +460,22 @@ class _HomeState extends State<Home> {
 
       Failure? failure = provider.failure;
 
-      if (failure != null) {
+      if (!isLoading && failure != null) {
         // Handle failure, for example, show an error message
         return Scaffold(
             backgroundColor: Colors.white,
             body: Center(child: Text(failure.errorMessage)));
-      } else if (isLoading || userEntity == null) {
+      } else if (isLoading && userEntity == null) {
         // Handle the case where topics are empty
         return const Scaffold(
             backgroundColor: Colors.white,
             body: Center(child: CircularProgressIndicator()));
-      } else {
+      } else if (!isLoading && userEntity != null) {
         return const Skeleton();
+      } else {
+        return const Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(child: CircularProgressIndicator()));
       }
     });
   }

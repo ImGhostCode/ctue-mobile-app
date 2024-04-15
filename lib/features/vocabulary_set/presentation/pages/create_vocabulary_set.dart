@@ -101,13 +101,13 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                 //         .getSelectedTopics();
 
                 // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate() && _validateForm()) {
+                if (_formKey.currentState!.validate()) {
                   // ScaffoldMessenger.of(context).showSnackBar(
                   //   const SnackBar(content: Text('Processing Data')),
                   // );
                   List<int> wordIds = selectedWords.map((e) => e.id).toList();
 
-                  if (args.isAdmin) {
+                  if (args.isAdmin && _validateForm()) {
                     await Provider.of<VocaSetProvider>(context, listen: false)
                         .eitherFailureOrCreVocaSet(
                             _titleController.text,
@@ -126,6 +126,7 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                           .statusCode ==
                       201) {
                     // ignore: use_build_context_synchronously
+                    args.callback();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         duration: const Duration(seconds: 1),

@@ -56,10 +56,10 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
 
       Failure? failure = provider.failure;
 
-      if (failure != null) {
+      if (!isLoading && failure != null) {
         // Handle failure, for example, show an error message
         return Scaffold(body: Center(child: Text(failure.errorMessage)));
-      } else if (isLoading) {
+      } else if (isLoading && vocaSetEntity == null) {
         // Handle the case where topics are empty
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       } else if (!isLoading && vocaSetEntity != null) {
@@ -91,10 +91,20 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                               vocaSetEntity: vocaSetEntity,
                               isAdmin: false,
                               callback: () async {
+                                // Provider.of<LearnProvider>(context,
+                                //         listen: false)
+                                //     .eitherFailureOrGetUpcomingReminder(
+                                //         args.id);
+
+                                Provider.of<LearnProvider>(context,
+                                        listen: false)
+                                    .eitherFailureOrGetUpcomingReminder(null);
+
                                 await Provider.of<VocaSetProvider>(context,
                                         listen: false)
                                     .eitherFailureOrGerUsrVocaSets();
 
+                                Navigator.of(context).pop();
                                 Navigator.pop(context);
                               },
                             ));

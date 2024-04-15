@@ -321,7 +321,7 @@ class LearnProvider extends ChangeNotifier {
       (ResponseDataModel<ReviewReminderEntity> newReviewReminder) {
         _isLoading = false;
         createdReviewReminder = newReviewReminder.data;
-        currReminder = newReviewReminder.data;
+        // currReminder = newReviewReminder.data;
         message = newReviewReminder.message;
 
         failure = null;
