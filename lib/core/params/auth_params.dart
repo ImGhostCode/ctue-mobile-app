@@ -17,9 +17,13 @@ class SignupParams {
   final String name;
   final String email;
   final String password;
+  final List<int>? interestTopics;
 
   const SignupParams(
-      {required this.name, required this.email, required this.password});
+      {required this.name,
+      required this.email,
+      required this.password,
+      this.interestTopics});
 }
 
 class GetUserParams {

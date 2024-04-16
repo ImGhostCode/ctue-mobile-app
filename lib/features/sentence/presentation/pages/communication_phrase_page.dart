@@ -4,6 +4,7 @@ import 'package:ctue_app/features/sentence/presentation/providers/sentence_provi
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
+import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class ComPhrasePage extends StatefulWidget {
 class _ComPhrasePageState extends State<ComPhrasePage> {
   final PagingController<int, SentenceEntity> _pagingController =
       PagingController(firstPageKey: 1);
+  List<int> userInterestTopics = [];
 
   @override
   void initState() {
@@ -30,6 +32,9 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
     Provider.of<TypeProvider>(context, listen: false).eitherFailureOrGetTypes(
       false,
     );
+
+    userInterestTopics = Provider.of<UserProvider>(context, listen: false)
+        .getUserInterestTopics(false);
 
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
@@ -46,7 +51,7 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
       await Provider.of<SentenceProvider>(context, listen: false)
           .eitherFailureOrSentences(
               (selectedTopics.isEmpty || selectedTopics[0] == 0)
-                  ? []
+                  ? userInterestTopics
                   : selectedTopics,
               null,
               pageKey,

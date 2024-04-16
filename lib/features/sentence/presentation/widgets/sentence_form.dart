@@ -296,10 +296,11 @@ class _SentenceFormState extends State<SentenceForm> {
           },
           body: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey.shade100),
+              borderRadius: BorderRadius.circular(10),
+              // color: Colors.grey.shade100
+            ),
             margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(5),
+            // padding: const EdgeInsets.all(8),
             child: Consumer<TopicProvider>(builder: (context, provider, child) {
               List<TopicEntity> listTopics = provider.listTopicEntity;
 
@@ -330,6 +331,7 @@ class _SentenceFormState extends State<SentenceForm> {
               } else {
                 return Wrap(
                   spacing: 8.0, // Khoảng cách giữa các Chip
+                  runSpacing: 8.0,
                   children: listTopics.map((topic) {
                     return Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -339,24 +341,13 @@ class _SentenceFormState extends State<SentenceForm> {
                                 25.0), // Set the border radius here
                           ),
                           side: BorderSide(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.7),
+                              color: topic.isSelected
+                                  ? Colors.green.shade500
+                                  : Colors.grey.shade100,
                               width: 2),
-                          backgroundColor: topic.isSelected
-                              ? Colors.green.shade500
-                              : Colors.grey.shade100,
-                          // avatar: ClipOval(
-                          //   child: topic.image.isNotEmpty
-                          //       ? Image.network(
-                          //           topic.image,
-                          //           fit: BoxFit.fill,
-                          //           width: 60.0,
-                          //           height: 60.0,
-                          //         )
-                          //       : Container(),
-                          // ),
+                          // backgroundColor: topic.isSelected
+                          //     ? Colors.green.shade500
+                          //     : Colors.white,
                           label: Text(
                             topic.name,
                             style: Theme.of(context)
@@ -364,9 +355,7 @@ class _SentenceFormState extends State<SentenceForm> {
                                 .bodyMedium!
                                 .copyWith(
                                     fontWeight: FontWeight.normal,
-                                    color: topic.isSelected
-                                        ? Colors.white
-                                        : Colors.black),
+                                    color: Colors.black),
                           ),
                           onPressed: () {
                             setState(() {

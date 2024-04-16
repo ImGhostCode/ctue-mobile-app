@@ -57,7 +57,8 @@ class TopicProvider extends ChangeNotifier {
         .toList();
   }
 
-  Future eitherFailureOrTopics(int? id, bool? isWord, TopicEntity? init) async {
+  Future<List<TopicEntity>> eitherFailureOrTopics(
+      int? id, bool? isWord, TopicEntity? init) async {
     _isLoading = true;
 
     TopicRepositoryImpl repository = TopicRepositoryImpl(
@@ -91,8 +92,10 @@ class TopicProvider extends ChangeNotifier {
           listTopicEntity = [init, ...listTopicEntity];
         }
         failure = null;
+
         notifyListeners();
       },
     );
+    return listTopicEntity;
   }
 }

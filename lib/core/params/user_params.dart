@@ -10,10 +10,15 @@ class UpdateUserParams {
   final int id;
   final XFile? avt;
   final String? name;
+  final List<int>? interestTopics;
   final String accessToken;
 
   UpdateUserParams(
-      {required this.id, this.avt, this.name, required this.accessToken});
+      {required this.id,
+      this.avt,
+      this.name,
+      required this.accessToken,
+      this.interestTopics});
 }
 
 class ResetPasswordParams {

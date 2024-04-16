@@ -171,3 +171,5 @@ const String kByType = 'byType';
 
 const String kTotalPublic = 'totalPublic';
 const String kTotalPrivate = 'totalPrivate';
+
+const String kInterestTopics = 'interestTopics';

@@ -1,3 +1,5 @@
+import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
+import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
   final TextEditingController _searchController = TextEditingController();
   bool isSearching = false;
   final FocusNode _searchFocusNode = FocusNode();
+  List<int> userInterestTopics = [];
 
   final List<Word> _searchResults = [
     // Word(
@@ -42,6 +45,12 @@ class _DictionaryPageState extends State<DictionaryPage> {
 
   @override
   void initState() {
+    Provider.of<TopicProvider>(context, listen: false)
+        .eitherFailureOrTopics(null, true, null);
+
+    userInterestTopics = Provider.of<UserProvider>(context, listen: false)
+        .getUserInterestTopics(true);
+
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
@@ -58,7 +67,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
   Future<void> _fetchPage(int pageKey) async {
     try {
       await Provider.of<WordProvider>(context, listen: false)
-          .eitherFailureOrWords([], [], pageKey, 'asc', '');
+          .eitherFailureOrWords(userInterestTopics, [], pageKey, 'asc', '');
       final newItems =
           // ignore: use_build_context_synchronously
           Provider.of<WordProvider>(context, listen: false).wordResEntity!.data;

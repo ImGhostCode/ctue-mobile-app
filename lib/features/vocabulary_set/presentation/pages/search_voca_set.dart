@@ -1,7 +1,7 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_sets_page.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_set_store.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

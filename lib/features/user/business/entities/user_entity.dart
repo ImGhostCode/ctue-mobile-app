@@ -1,4 +1,5 @@
 import 'package:ctue_app/core/constants/constants.dart';
+import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 
 class UserEntity {
   final int id;
@@ -8,12 +9,14 @@ class UserEntity {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? accountType;
-  const UserEntity(
+  List<TopicEntity>? interestTopics = [];
+  UserEntity(
       {required this.id,
       required this.name,
       this.avt,
       required this.isDeleted,
       required this.createdAt,
       required this.updatedAt,
-      this.accountType = AccountType.user});
+      this.accountType = AccountType.user,
+      this.interestTopics = const []});
 }

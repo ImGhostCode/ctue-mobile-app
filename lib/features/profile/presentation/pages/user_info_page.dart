@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/auth/presentation/pages/sign_up_page.dart';
+import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
+import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,15 +19,51 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
+  bool _dataInitialized = false; // Flag to track initialization
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool isEdited = false;
+  bool isEditedTopic = false;
   final ImagePicker picker = ImagePicker();
   XFile? pickedImage;
   String newName = '';
 
+  List<TopicEntity> listWordTopics = [];
+  List<TopicEntity> listSentenceTopics = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  void initializeData() async {
+    listWordTopics = await Provider.of<TopicProvider>(context, listen: false)
+        .eitherFailureOrTopics(null, true, null);
+    listSentenceTopics =
+        await Provider.of<TopicProvider>(context, listen: false)
+            .eitherFailureOrTopics(null, false, null);
+
+    UserEntity? userEntity =
+        Provider.of<UserProvider>(context, listen: false).userEntity;
+
+    if (userEntity != null) {
+      List<int>? interestIdTopics =
+          userEntity.interestTopics?.map((e) => e.id).toList();
+      for (var element in listWordTopics) {
+        element.isSelected = interestIdTopics?.contains(element.id) ?? false;
+      }
+      for (var element in listSentenceTopics) {
+        element.isSelected = interestIdTopics?.contains(element.id) ?? false;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!_dataInitialized) {
+      initializeData();
+      _dataInitialized = true;
+    }
     return Consumer<UserProvider>(builder: (context, userProvider, _) {
       // Access the list of topics from the provider
       UserEntity? userDetail = userProvider.userEntity;
@@ -65,10 +104,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     onPressed: canUpdate(context)
                         ? () async {
                             if (_formKey.currentState!.validate()) {
+                              List<int>? selectedTopics = getSelectedTopics(
+                                  listWordTopics, listSentenceTopics);
                               await userProvider.eitherFailureOrUpdateUser(
                                 userDetail?.id ?? 0,
                                 pickedImage,
                                 newName,
+                                selectedTopics,
                               );
 
                               if (failure != null) {
@@ -258,7 +300,59 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                ])))
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    'Chủ đề yêu thích của bạn',
+                                    style:
+                                        Theme.of(context).textTheme.labelMedium,
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                        style: ButtonStyle(
+                                            // side: MaterialStatePropertyAll(
+                                            //     BorderSide(color: Colors.green, width: 3)),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Provider.of<TopicProvider>(
+                                                                context,
+                                                                listen: true)
+                                                            .isLoading
+                                                        ? Colors.blue.shade400
+                                                        : Colors.blue),
+                                            padding: MaterialStateProperty.all(
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 20))),
+                                        onPressed: Provider.of<TopicProvider>(
+                                                    context,
+                                                    listen: true)
+                                                .isLoading
+                                            ? null
+                                            : () {
+                                                _dialogTopicBuilder(
+                                                    context, userDetail, () {
+                                                  setState(() {
+                                                    isEditedTopic = true;
+                                                  });
+                                                });
+                                              },
+                                        child: Text(
+                                          'Chọn chủ đề',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                        )),
+                                  ),
+                                ]))),
                   ]),
             ),
           ),
@@ -267,12 +361,179 @@ class _UserInfoPageState extends State<UserInfoPage> {
     });
   }
 
+  Future<void> _dialogTopicBuilder(
+      BuildContext context, UserEntity? user, VoidCallback callback) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            insetPadding: const EdgeInsets.all(16),
+            title: Text(
+              'Chọn chủ đề',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Colors.blue),
+            ),
+            content: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Từ vựng',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8.0,
+                        mainAxisSpacing: 8.0,
+                        children: listWordTopics
+                            .map((topic) => GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      topic.isSelected = !topic.isSelected;
+                                      callback();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 150,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: topic.isSelected
+                                              ? Colors.green.shade500
+                                              : Colors.grey.shade100,
+                                          width: 2),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        ClipOval(
+                                          child: topic.image.isNotEmpty
+                                              ? Image.network(
+                                                  topic.image,
+                                                  fit: BoxFit.cover,
+                                                  width: 60.0,
+                                                  height: 60.0,
+                                                )
+                                              : Container(),
+                                        ),
+                                        Text(
+                                          topic.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        'Câu giao tiếp',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: listSentenceTopics
+                            .map(
+                              (topic) => ActionChip(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        25.0), // Set the border radius here
+                                  ),
+                                  side: BorderSide(
+                                      color: topic.isSelected
+                                          ? Colors.green.shade500
+                                          : Colors.grey.shade100,
+                                      width: 2),
+                                  // backgroundColor: topic.isSelected
+                                  //     ? Colors.green.shade500
+                                  //     : Colors.white,
+                                  label: Text(
+                                    topic.name,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.black),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      topic.isSelected = !topic.isSelected;
+                                      callback();
+                                    });
+                                  }),
+                            )
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                )),
+            actions: <Widget>[
+              // ElevatedButton(
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: Colors.grey.shade400,
+              //     textStyle: Theme.of(context).textTheme.labelLarge,
+              //   ),
+              //   child: const Text('Đóng'),
+              //   onPressed: () {
+              //     Navigator.of(context).pop();
+              //   },
+              // ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('Xác nhận'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   bool canUpdate(BuildContext context) {
     return !Provider.of<UserProvider>(context, listen: true).isLoading &&
-        isEdited &&
-        (newName.isNotEmpty || pickedImage != null) &&
-        (newName != Provider.of<UserProvider>(context).userEntity!.name ||
-            !areImagesEqual(pickedImage));
+        ((isEdited &&
+                (newName.isNotEmpty || pickedImage != null) &&
+                (newName !=
+                        Provider.of<UserProvider>(context).userEntity!.name &&
+                    !areImagesEqual(pickedImage))) ||
+            isEditedTopic);
   }
 
   bool areImagesEqual(XFile? newImage) {

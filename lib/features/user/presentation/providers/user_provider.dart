@@ -46,6 +46,16 @@ class UserProvider extends ChangeNotifier {
     notifyListeners(); // Trigger a rebuild when the isLoading changes
   }
 
+  List<int> getUserInterestTopics(bool isWord) {
+    if (userEntity != null) {
+      return userEntity!.interestTopics!
+          .where((element) => element.isWord == isWord)
+          .map((e) => e.id)
+          .toList();
+    }
+    return [];
+  }
+
   Future eitherFailureOrGetUser() async {
     isLoading = true;
     UserRepositoryImpl repository = UserRepositoryImpl(
@@ -117,7 +127,8 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future eitherFailureOrUpdateUser(int id, XFile? avt, String? name) async {
+  Future eitherFailureOrUpdateUser(
+      int id, XFile? avt, String? name, List<int>? interestTopics) async {
     isLoading = true;
     UserRepositoryImpl repository = UserRepositoryImpl(
       remoteDataSource: UserRemoteDataSourceImpl(
@@ -137,7 +148,8 @@ class UserProvider extends ChangeNotifier {
           accessToken: await secureStorage.read(key: 'accessToken') ?? '',
           id: id,
           avt: avt,
-          name: name),
+          name: name,
+          interestTopics: interestTopics),
     );
     failureOrGetUser.fold(
       (Failure newFailure) {

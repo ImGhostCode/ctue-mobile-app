@@ -591,10 +591,11 @@ class _WordFormState extends State<WordForm> {
           },
           body: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey.shade100),
+              borderRadius: BorderRadius.circular(10),
+              // color: Colors.grey.shade100
+            ),
             margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(5),
+            padding: const EdgeInsets.all(8),
             child: Consumer<TopicProvider>(builder: (context, provider, child) {
               List<TopicEntity> listTopics = provider.listTopicEntity;
 
@@ -623,51 +624,56 @@ class _WordFormState extends State<WordForm> {
                 // Handle the case where topics are empty
                 return const Center(child: Text('Không có dữ liệu'));
               } else {
-                return Wrap(
-                  spacing: 8.0, // Khoảng cách giữa các Chip
+                return GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
                   children: listTopics.map((topic) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      child: ActionChip(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                25.0), // Set the border radius here
-                          ),
-                          side: BorderSide(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.7),
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          topic.isSelected = !topic.isSelected;
+                        });
+                      },
+                      child: Container(
+                        height: 150,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                              color: topic.isSelected
+                                  ? Colors.green.shade500
+                                  : Colors.grey.shade100,
                               width: 2),
-                          backgroundColor: topic.isSelected
-                              ? Colors.green.shade500
-                              : Colors.grey.shade100,
-                          avatar: ClipOval(
-                            child: topic.image.isNotEmpty
-                                ? Image.network(
-                                    topic.image,
-                                    fit: BoxFit.fill,
-                                    width: 60.0,
-                                    height: 60.0,
-                                  )
-                                : Container(),
-                          ),
-                          label: Text(
-                            topic.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                    fontWeight: FontWeight.normal,
-                                    color: topic.isSelected
-                                        ? Colors.white
-                                        : Colors.black),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              topic.isSelected = !topic.isSelected;
-                            });
-                          }),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ClipOval(
+                              child: topic.image.isNotEmpty
+                                  ? Image.network(
+                                      topic.image,
+                                      fit: BoxFit.cover,
+                                      width: 60.0,
+                                      height: 60.0,
+                                    )
+                                  : Container(),
+                            ),
+                            Text(
+                              topic.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }).toList(),
                 );

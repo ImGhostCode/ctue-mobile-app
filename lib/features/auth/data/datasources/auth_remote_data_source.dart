@@ -66,6 +66,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'name': signupParams.name,
           'email': signupParams.email,
           'password': signupParams.password,
+          if (signupParams.interestTopics != null)
+            'interestTopics': signupParams.interestTopics!.length > 1
+                ? signupParams.interestTopics
+                : [signupParams.interestTopics]
         },
       );
       return ResponseDataModel<AccountModel>.fromJson(

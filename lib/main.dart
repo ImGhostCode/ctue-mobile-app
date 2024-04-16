@@ -65,7 +65,7 @@ import 'package:ctue_app/features/learn/presentation/pages/learn_setting_page.da
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/search_voca_set.dart';
 import 'package:ctue_app/features/learn/presentation/pages/statistic_learned_words.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_set_detail.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_sets_page.dart';
+import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_set_store.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -285,6 +285,10 @@ class MyApp extends StatelessWidget {
               // ···
               brightness: Brightness.light,
             ),
+            searchBarTheme: const SearchBarThemeData(
+              textStyle: MaterialStatePropertyAll(TextStyle(
+                  color: Colors.black87, fontWeight: FontWeight.normal)),
+            ),
             textTheme: TextTheme(
               displaySmall: TextStyle(
                   fontWeight: FontWeight.bold, color: Colors.blueGrey.shade700),
@@ -355,7 +359,7 @@ class MyApp extends StatelessWidget {
               const CommunicationPhraseDetail(),
           '/notification': (context) => const NotificationPage(),
           '/create-vocabulary-set': (context) => const CreateVocabularySet(),
-          '/vocabulary-sets': (context) => const VocabularySets(),
+          '/vocabulary-sets': (context) => const VocabularySetStore(),
           '/search-voca-set': (context) => SearchVocaSetPage(),
           '/vocabulary-set-detail': (context) => const VocabularySetDetail(),
           '/statistic-learned-words': (context) =>

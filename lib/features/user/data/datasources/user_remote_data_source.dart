@@ -69,7 +69,11 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         'avt': updateUserParams.avt != null
             ? MultipartFile.fromFileSync(updateUserParams.avt!.path,
                 filename: updateUserParams.avt!.name)
-            : ''
+            : '',
+        if (updateUserParams.interestTopics != null)
+          'interestTopics': updateUserParams.interestTopics!.length > 1
+              ? updateUserParams.interestTopics
+              : [updateUserParams.interestTopics]
       });
       final response = await dio.patch('/users/${updateUserParams.id}',
           queryParameters: {

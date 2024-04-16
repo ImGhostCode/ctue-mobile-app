@@ -125,7 +125,8 @@ class AuthProvider extends ChangeNotifier {
   Future eitherFailureOrSignup(
       {required String name,
       required String email,
-      required String password}) async {
+      required String password,
+      List<int>? interestTopics}) async {
     isLoading = true;
     AuthRepositoryImpl repository = AuthRepositoryImpl(
       remoteDataSource: AuthRemoteDataSourceImpl(
@@ -140,7 +141,11 @@ class AuthProvider extends ChangeNotifier {
     );
 
     final failureOrLogin = await SignUpUsecase(authRepository: repository).call(
-      signupParams: SignupParams(name: name, email: email, password: password),
+      signupParams: SignupParams(
+          name: name,
+          email: email,
+          password: password,
+          interestTopics: interestTopics),
     );
     failureOrLogin.fold(
       (Failure newFailure) {
