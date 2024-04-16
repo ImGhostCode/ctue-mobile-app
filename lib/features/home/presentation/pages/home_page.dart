@@ -1,4 +1,7 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/home/presentation/providers/home_provider.dart';
+import 'package:ctue_app/features/home/presentation/widgets/recent_widget.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
 import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart';
@@ -8,13 +11,9 @@ import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   // bool isDark = false;
-  final List<Recommend> _listRecommends = [
-    Recommend(path: '/contribution', title: 'Đóng góp từ vựng'),
-    Recommend(path: '/setting', title: 'Cài đặt giọng đọc'),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,9 @@ class HomePage extends StatelessWidget {
         title: 'Bảng phiên âm IPA',
         bgColor: Colors.green,
         onTap: () {
-          Navigator.pushNamed(context, '/api');
+          Navigator.pushNamed(context, RouteNames.ipa);
+          Provider.of<HomeProvider>(context, listen: false)
+              .saveRecentPage(RouteNames.ipa);
         },
       ),
       LearningSource(
@@ -32,7 +33,9 @@ class HomePage extends StatelessWidget {
         title: 'Mẫu câu giao tiếp',
         bgColor: Colors.blueAccent,
         onTap: () {
-          Navigator.pushNamed(context, '/communication-phrases');
+          Navigator.pushNamed(context, RouteNames.communicationPhrases);
+          Provider.of<HomeProvider>(context, listen: false)
+              .saveRecentPage(RouteNames.communicationPhrases);
         },
       ),
       LearningSource(
@@ -40,7 +43,9 @@ class HomePage extends StatelessWidget {
         title: 'Từ điển',
         bgColor: Colors.yellow,
         onTap: () {
-          Navigator.pushNamed(context, '/dictionary');
+          Navigator.pushNamed(context, RouteNames.dictionary);
+          Provider.of<HomeProvider>(context, listen: false)
+              .saveRecentPage(RouteNames.dictionary);
         },
       ),
       LearningSource(
@@ -48,7 +53,9 @@ class HomePage extends StatelessWidget {
         title: 'Động từ bất quy tắc',
         bgColor: Colors.orange,
         onTap: () {
-          Navigator.pushNamed(context, '/irregular-verb');
+          Navigator.pushNamed(context, RouteNames.irregularVerbs);
+          Provider.of<HomeProvider>(context, listen: false)
+              .saveRecentPage(RouteNames.irregularVerbs);
         },
       ),
       // LearningSource(
@@ -287,50 +294,18 @@ class HomePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Đề xuất cho bạn',
-                          style: Theme.of(context).textTheme.titleMedium,
+                          'Truy cập gần đây',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontWeight: FontWeight.w600),
                         ),
-                        ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                leading: Icon(
-                                  Icons.recommend,
-                                  size: 40,
-                                  color: Colors.yellow.shade700,
-                                ),
-                                title: Text(_listRecommends[index].title),
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, _listRecommends[index].path);
-                                },
-                                trailing: const Icon(
-                                  Icons.chevron_right_rounded,
-                                  size: 28,
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                height: 2,
-                              );
-                            },
-                            itemCount: _listRecommends.length)
+                        RecentPagesWidget()
                       ]),
                 )
               ]),
         )));
   }
-}
-
-class Recommend {
-  final String title;
-  final String path;
-
-  Recommend({required this.path, required this.title});
 }
 
 class LearningSource {

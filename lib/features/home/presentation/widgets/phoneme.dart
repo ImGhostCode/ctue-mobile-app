@@ -7,16 +7,21 @@ import 'package:flutter/material.dart';
 
 final AudioPlayer player = AudioService.player;
 
-class PhonemeWidget extends StatelessWidget {
+class PhonemeWidget extends StatefulWidget {
   final Phoneme phoneme;
-  PhonemeWidget({super.key, required this.phoneme});
+  const PhonemeWidget({super.key, required this.phoneme});
 
+  @override
+  State<PhonemeWidget> createState() => _PhonemeWidgetState();
+}
+
+class _PhonemeWidgetState extends State<PhonemeWidget> {
   bool isAudioPlaying = false;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _showPhonemeDetail(context, phoneme),
+      onTap: () => _showPhonemeDetail(context, widget.phoneme),
       child: Container(
           // height: 80,
           // width: 80,
@@ -24,19 +29,19 @@ class PhonemeWidget extends StatelessWidget {
           // padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             // color: vowels[index].bgColor,
-            color: _getBgColor(phoneme.type),
+            color: _getBgColor(widget.phoneme.type),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '/${phoneme.label}/',
+                '/${widget.phoneme.label}/',
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     fontWeight: FontWeight.w600, fontFamily: 'DoulosSIL'),
               ),
               Text(
-                phoneme.examples[0].split(' ')[0],
+                widget.phoneme.examples[0].split(' ')[0],
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!

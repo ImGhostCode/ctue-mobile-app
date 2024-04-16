@@ -2,6 +2,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:ctue_app/features/home/presentation/providers/home_provider.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/speech/presentation/pages/voice_setting_page.dart';
 import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
@@ -33,7 +34,9 @@ class _SettingPageState extends State<SettingPage> {
           icon: Icons.person,
           title: 'Cập nhật thông tin',
           onTap: () {
-            Navigator.pushNamed(context, '/user-info');
+            Navigator.pushNamed(context, RouteNames.userInfo);
+            Provider.of<HomeProvider>(context, listen: false)
+                .saveRecentPage(RouteNames.userInfo);
           }),
       // Setting(icon: Icons.vpn_key, title: 'Đổi mật khẩu', onTap: () {}),
       Setting(

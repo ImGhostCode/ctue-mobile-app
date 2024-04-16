@@ -1,4 +1,6 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/home/presentation/providers/home_provider.dart';
 import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
 import 'package:ctue_app/features/speech/presentation/widgets/pronuc_statistic_box.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
@@ -77,7 +79,9 @@ class ProfilePage extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/setting');
+                        Navigator.pushNamed(context, RouteNames.setting);
+                        Provider.of<HomeProvider>(context, listen: false)
+                            .saveRecentPage(RouteNames.setting);
                       },
                       icon: Icon(
                         Icons.settings_rounded,

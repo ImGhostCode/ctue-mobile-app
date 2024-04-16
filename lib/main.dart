@@ -1,3 +1,4 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/services/audio_service.dart';
@@ -5,6 +6,7 @@ import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ctue_app/features/contribute/presentation/pages/contri_history_page.dart';
+import 'package:ctue_app/features/home/presentation/providers/home_provider.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/add_irr_verb_page.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/edit_irr_verb_page.dart';
 import 'package:ctue_app/features/learn/presentation/pages/learned_result.dart';
@@ -257,6 +259,10 @@ class MyApp extends StatelessWidget {
           create: (context) => StatisticsProvider(),
           // builder: (context, child) {},
         ),
+        ChangeNotifierProvider(
+          create: (context) => HomeProvider(),
+          // builder: (context, child) {},
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -329,58 +335,67 @@ class MyApp extends StatelessWidget {
                         const MaterialStatePropertyAll(Colors.white),
                     textStyle: const MaterialStatePropertyAll(TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w500))))),
-        initialRoute: '/',
+        initialRoute: RouteNames.home,
         routes: {
-          '/': (context) => const Home(),
-          '/welcome': (context) => WelcomePage(),
-          '/verify-code': (context) => const VerifyCodePage(),
-          '/login': (context) => const LoginPage(),
-          '/reset-password': (context) => const ResetPasswordPage(),
-          '/sign-up': (context) => const SignUpPage(),
-          '/correct-word': (context) => const CorrectWordPage(),
-          '/word-match': (context) => const WordMatchPage(),
-          '/contribution': (context) => const ContributePage(),
-          '/contribution-history': (context) => const ContributionHistory(),
-          '/games': (context) => GamePage(),
-          '/setting': (context) => const SettingPage(),
-          '/user-info': (context) => UserInfoPage(),
-          '/api': (context) => const IPA(),
-          '/learn': (context) => const LearnPage(),
-          '/learn-setting': (context) => const LearnSettingPage(),
-          '/select-word': (context) => SelectWordPage(),
-          '/learned-result': (context) => const LearningResult(),
-          '/dictionary': (context) => const DictionaryPage(),
-          '/look-up-result': (context) => LookUpResultPage(),
-          '/word-detail': (context) => const WordDetail(),
-          '/irregular-verb': (context) => const IrregularVerbPage(),
-          '/favorite-vocabulary': (context) => FavoriteVocabulary(),
-          '/communication-phrases': (context) => const ComPhrasePage(),
-          '/communication-phrase-detail': (context) =>
+          RouteNames.home: (context) => const Home(),
+          RouteNames.welcome: (context) => WelcomePage(),
+          RouteNames.verifyCode: (context) => const VerifyCodePage(),
+          RouteNames.login: (context) => const LoginPage(),
+          RouteNames.resetPassword: (context) => const ResetPasswordPage(),
+          RouteNames.signUp: (context) => const SignUpPage(),
+          RouteNames.correctWord: (context) => const CorrectWordPage(),
+          RouteNames.wordMatch: (context) => const WordMatchPage(),
+          RouteNames.contribution: (context) => const ContributePage(),
+          RouteNames.contributionHistory: (context) =>
+              const ContributionHistory(),
+          RouteNames.games: (context) => GamePage(),
+          RouteNames.setting: (context) => const SettingPage(),
+          RouteNames.userInfo: (context) => const UserInfoPage(),
+          RouteNames.ipa: (context) => const IPA(),
+          RouteNames.learn: (context) => const LearnPage(),
+          RouteNames.learnSetting: (context) => const LearnSettingPage(),
+          RouteNames.selectWord: (context) => const SelectWordPage(),
+          RouteNames.learnedResult: (context) => const LearningResult(),
+          RouteNames.dictionary: (context) => const DictionaryPage(),
+          RouteNames.lookUpResult: (context) => LookUpResultPage(),
+          RouteNames.wordDetail: (context) => const WordDetail(),
+          RouteNames.irregularVerbs: (context) => const IrregularVerbPage(),
+          RouteNames.favoriteVocabulary: (context) => FavoriteVocabulary(),
+          RouteNames.communicationPhrases: (context) => const ComPhrasePage(),
+          RouteNames.communicationPhraseDetail: (context) =>
               const CommunicationPhraseDetail(),
-          '/notification': (context) => const NotificationPage(),
-          '/create-vocabulary-set': (context) => const CreateVocabularySet(),
-          '/vocabulary-sets': (context) => const VocabularySetStore(),
-          '/search-voca-set': (context) => SearchVocaSetPage(),
-          '/vocabulary-set-detail': (context) => const VocabularySetDetail(),
-          '/statistic-learned-words': (context) =>
+          RouteNames.notification: (context) => const NotificationPage(),
+          RouteNames.createVocabularySet: (context) =>
+              const CreateVocabularySet(),
+          RouteNames.vocabularySets: (context) => const VocabularySetStore(),
+          RouteNames.searchVocaSet: (context) => SearchVocaSetPage(),
+          RouteNames.vocabularySetDetail: (context) =>
+              const VocabularySetDetail(),
+          RouteNames.statisticLearnedWords: (context) =>
               const StatisticLearnedWordPage(),
-          '/pro-statistics-detail': (context) => const ProStatisticDetailPage(),
-          '/improve-pronunciation': (context) =>
+          RouteNames.proStatisticsDetail: (context) =>
+              const ProStatisticDetailPage(),
+          RouteNames.improvePronunciation: (context) =>
               const ImprovePronunciationPage(),
-          '/acc-management': (context) => const AccountManagementPage(),
-          '/contri-management': (context) => const ContributionManagementPage(),
-          '/dict-management': (context) => const DictionaryManagementPage(),
-          '/sen-management': (context) => const SentenceManagementPage(),
-          '/irr-verb-management': (context) => const IrreVerbManagementPage(),
-          '/add-word': (context) => const AddWordPage(),
-          '/edit-word': (context) => const EditWordPage(),
-          '/add-sentence': (context) => const AddSentencePage(),
-          '/edit-sentence': (context) => const EditSentencePage(),
-          '/add-irregular-verb': (context) => AddIrregularVerbPage(),
-          '/edit-irregular-verb': (context) => const EditIrregularVerbPage(),
-          '/voca-set-management': (context) => const VocaSetManagementPage(),
-          '/edit-voca-set': (context) => const EditVocabularySet(),
-          '/admin-overview': (context) => const OverviewPage(),
+          RouteNames.accManagement: (context) => const AccountManagementPage(),
+          RouteNames.contriManagement: (context) =>
+              const ContributionManagementPage(),
+          RouteNames.dictManagement: (context) =>
+              const DictionaryManagementPage(),
+          RouteNames.senManagement: (context) => const SentenceManagementPage(),
+          RouteNames.irrVerbManagement: (context) =>
+              const IrreVerbManagementPage(),
+          RouteNames.addWord: (context) => const AddWordPage(),
+          RouteNames.editWord: (context) => const EditWordPage(),
+          RouteNames.addSentence: (context) => const AddSentencePage(),
+          RouteNames.editSentence: (context) => const EditSentencePage(),
+          RouteNames.addIrregularVerb: (context) => AddIrregularVerbPage(),
+          RouteNames.editIrregularVerbCode: (context) =>
+              const EditIrregularVerbPage(),
+          RouteNames.vocaSetManagement: (context) =>
+              const VocaSetManagementPage(),
+          RouteNames.editVocaSet: (context) => const EditVocabularySet(),
+          RouteNames.adminOverview: (context) => const OverviewPage(),
         },
       ),
     );

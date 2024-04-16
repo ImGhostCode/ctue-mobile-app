@@ -1,4 +1,6 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/home/presentation/providers/home_provider.dart';
 import 'package:ctue_app/features/speech/business/entities/prounc_statistics_entity.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:ctue_app/features/speech/presentation/widgets/record_button.dart';
@@ -284,7 +286,10 @@ class PronuncStatisticBox extends StatelessWidget {
                               EdgeInsets.symmetric(
                                   horizontal: 4, vertical: 8))),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pro-statistics-detail');
+                        Navigator.pushNamed(
+                            context, RouteNames.proStatisticsDetail);
+                        Provider.of<HomeProvider>(context, listen: false)
+                            .saveRecentPage(RouteNames.proStatisticsDetail);
                       },
                       child: Text(
                         'Xem chi tiết',

@@ -1,3 +1,155 @@
+class RouteNames {
+  static const String home = '/';
+  static const String welcome = '/welcome';
+  static const String verifyCode = '/verify-code';
+  static const String login = '/login ';
+  static const String resetPassword = '/reset-password';
+  static const String signUp = '/sign-up';
+  static const String correctWord = '/correct-word';
+  static const String wordMatch = '/word-match';
+  static const String contribution = '/contribution';
+  static const String contributionHistory = '/contribution-history';
+  static const String games = '/games';
+  static const String setting = '/setting';
+  static const String userInfo = '/user-info';
+  static const String ipa = '/ipa';
+  static const String learn = '/learn';
+  static const String learnSetting = '/learn-setting';
+  static const String selectWord = '/select-word';
+  static const String learnedResult = '/learned-result';
+  static const String dictionary = '/dictionary';
+  static const String lookUpResult = '/look-up-result';
+  static const String wordDetail = '/word-detail';
+  static const String irregularVerbs = '/irregular-verb';
+  static const String favoriteVocabulary = '/favorite-vocabulary';
+  static const String communicationPhrases = '/communication-phrases';
+  static const String communicationPhraseDetail =
+      '/communication-phrase-detail';
+  static const String notification = '/notification';
+  static const String createVocabularySet = '/create-vocabulary-set';
+  static const String vocabularySets = '/vocabulary-sets';
+  static const String searchVocaSet = '/search-voca-set';
+  static const String vocabularySetDetail = '/vocabulary-set-detail';
+  static const String statisticLearnedWords = '/statistic-learned-words';
+  static const String proStatisticsDetail = '/pro-statistics-detail';
+  static const String improvePronunciation = '/improve-pronunciation';
+  static const String accManagement = '/acc-management';
+  static const String contriManagement = '/contri-management';
+  static const String dictManagement = '/dict-management';
+  static const String senManagement = '/sen-management';
+  static const String irrVerbManagement = '/irr-verb-management';
+  static const String addWord = '/add-word';
+  static const String editWord = '/edit-word';
+  static const String addSentence = '/add-sentence';
+  static const String editSentence = '/edit-sentence';
+  static const String addIrregularVerb = '/add-irregular-verb';
+  static const String editIrregularVerbCode = '/edit-irregular-verb';
+  static const String vocaSetManagement = '/voca-set-management';
+  static const String editVocaSet = '/edit-voca-set';
+  static const String adminOverview = '/admin-overview';
+}
+
+String getRouteName(String url) {
+  switch (url) {
+    // case RouteNames.home:
+    //   return 'Home';
+    // case RouteNames.welcome:
+    //   return 'Home';
+    // case RouteNames.verifyCode:
+    //   return 'Home';
+    // case RouteNames.login:
+    //   return 'Home';
+    // case RouteNames.resetPassword:
+    //   return 'Home';
+    // case RouteNames.signUp:
+    //   return 'Home';
+    // case RouteNames.correctWord:
+    //   return 'Home';
+    // case RouteNames.wordMatch:
+    //   return 'Home';
+    case RouteNames.contribution:
+      return 'Đóng góp';
+    case RouteNames.contributionHistory:
+      return 'Lịch sử đóng góp';
+    // case RouteNames.games:
+    // return 'Home';
+    case RouteNames.setting:
+      return 'Cài đặt';
+    case RouteNames.userInfo:
+      return 'Thông tin cá nhân';
+    case RouteNames.ipa:
+      return 'Bảng phiên âm';
+    // case RouteNames.learn:
+    // return 'Home';
+    // case RouteNames.learnSetting:
+    // return 'Home';
+    // case RouteNames.selectWord:
+    // return 'Home';
+    // case RouteNames.learnedResult:
+    // return 'Home';
+    case RouteNames.dictionary:
+      return 'Từ điển';
+    // case RouteNames.lookUpResult:
+    // return 'Home';
+    // case RouteNames.wordDetail:
+    // return 'Home';
+    case RouteNames.irregularVerbs:
+      return 'Danh sách động từ bất quy tắc';
+    case RouteNames.favoriteVocabulary:
+      return 'Từ vựng yêu thích';
+    case RouteNames.communicationPhrases:
+      return 'Mẫu câu giao tiếp thông dụng';
+    // case RouteNames.communicationPhraseDetail:
+    // return 'Home';
+    // case RouteNames.notification:
+    //   return 'Home';
+    // case RouteNames.createVocabularySet:
+    // return 'Home';
+    // case RouteNames.vocabularySets:
+    //   return 'Home';
+    // case RouteNames.searchVocaSet:
+    // return 'Home';
+    // case RouteNames.vocabularySetDetail:
+    // return 'Home';
+    // case RouteNames.statisticLearnedWords:
+    // return 'Home';
+    case RouteNames.proStatisticsDetail:
+      return 'Báo cáo chi tiết phát âm';
+    case RouteNames.improvePronunciation:
+      return 'Cải thiện phát âm';
+    // case RouteNames.accManagement:
+    // return 'Home';
+    // case RouteNames.contriManagement:
+    //   return 'Home';
+    // case RouteNames.dictManagement:
+    //   return 'Home';
+    // case RouteNames.senManagement:
+    //   return 'Home';
+    // case RouteNames.irrVerbManagement:
+    //   return 'Home';
+    // case RouteNames.addWord:
+    //   return 'Home';
+    // case RouteNames.editWord:
+    //   return 'Home';
+    // case RouteNames.addSentence:
+    //   return 'Home';
+    // case RouteNames.editSentence:
+    //   return 'Home';
+    // case RouteNames.addIrregularVerb:
+    //   return 'Home';
+    // case RouteNames.editIrregularVerbCode:
+    //   return 'Home';
+    // case RouteNames.vocaSetManagement:
+    //   return 'Home';
+    // case RouteNames.editVocaSet:
+    //   return 'Home';
+    case RouteNames.adminOverview:
+      return 'Tổng quan';
+    default:
+      return 'Trang chủ';
+  }
+}
+
 String kTemplate = 'template';
 
 // String kName = 'name';

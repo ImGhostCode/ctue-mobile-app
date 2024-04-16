@@ -1,6 +1,9 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/contribute/presentation/widgets/MyFeatureListTile.dart';
+import 'package:ctue_app/features/home/presentation/providers/home_provider.dart';
 import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ExtentionPage extends StatelessWidget {
   ExtentionPage({Key? key}) : super(key: key);
@@ -17,21 +20,27 @@ class ExtentionPage extends StatelessWidget {
             //   context,
             //   MaterialPageRoute(builder: (context) => const ContributePage()),
             // );
-            Navigator.pushNamed(context, '/contribution');
+            Navigator.pushNamed(context, RouteNames.contribution);
+            Provider.of<HomeProvider>(context, listen: false)
+                .saveRecentPage(RouteNames.contribution);
           }),
       Feature(
           imagePath: 'assets/images/icons/favorite.png',
           title: 'Từ vựng yêu thích của bạn',
           subtitle: 'Danh sách những từ vựng yêu thích mà bạn đã lưu',
           onTap: () {
-            Navigator.pushNamed(context, '/favorite-vocabulary');
+            Navigator.pushNamed(context, RouteNames.favoriteVocabulary);
+            Provider.of<HomeProvider>(context, listen: false)
+                .saveRecentPage(RouteNames.favoriteVocabulary);
           }),
       Feature(
           imagePath: 'assets/images/icons/speech-icon.png',
           title: 'Cải thiện phát âm',
           subtitle: 'Nâng cao trình độ nói tiếng Anh của bạn',
           onTap: () {
-            Navigator.pushNamed(context, '/improve-pronunciation');
+            Navigator.pushNamed(context, RouteNames.improvePronunciation);
+            Provider.of<HomeProvider>(context, listen: false)
+                .saveRecentPage(RouteNames.improvePronunciation);
           }),
     ];
 
@@ -52,43 +61,43 @@ class ExtentionPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Đề xuất cho bạn',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      SizedBox(
-                        height: 100.0, // Set a fixed height for the ListView
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 1, // Number of items in your list
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.asset(
-                                      'assets/images/chatbot.png',
-                                      height: 60,
-                                      width: 60,
-                                    ),
-                                  ),
-                                  Text(
-                                    'CTUE AI',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(fontWeight: FontWeight.w600),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      // Text(
+                      //   'Đề xuất cho bạn',
+                      //   style: Theme.of(context).textTheme.titleMedium,
+                      // ),
+                      // SizedBox(
+                      //   height: 100.0, // Set a fixed height for the ListView
+                      //   child: ListView.builder(
+                      //     scrollDirection: Axis.horizontal,
+                      //     itemCount: 1, // Number of items in your list
+                      //     itemBuilder: (BuildContext context, int index) {
+                      //       return Padding(
+                      //         padding: const EdgeInsets.all(8.0),
+                      //         child: Column(
+                      //           mainAxisAlignment:
+                      //               MainAxisAlignment.spaceBetween,
+                      //           children: [
+                      //             ClipRRect(
+                      //               borderRadius: BorderRadius.circular(10),
+                      //               child: Image.asset(
+                      //                 'assets/images/chatbot.png',
+                      //                 height: 60,
+                      //                 width: 60,
+                      //               ),
+                      //             ),
+                      //             Text(
+                      //               'CTUE AI',
+                      //               style: Theme.of(context)
+                      //                   .textTheme
+                      //                   .bodySmall!
+                      //                   .copyWith(fontWeight: FontWeight.w600),
+                      //             )
+                      //           ],
+                      //         ),
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
                       Text(
                         'Công cụ và tính năng',
                         style: Theme.of(context).textTheme.titleMedium,
