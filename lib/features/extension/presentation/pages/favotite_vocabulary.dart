@@ -90,13 +90,14 @@ class _FavoriteVocabularyState extends State<FavoriteVocabulary> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          forceMaterialTransparency: true,
           centerTitle: true,
           title: Text(
             'Từ vựng yêu thích của bạn',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          surfaceTintColor: Colors.white,
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();

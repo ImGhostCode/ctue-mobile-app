@@ -162,6 +162,7 @@ class _WordStorePageState extends State<WordStorePage> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   color: Colors.grey.shade200,
                   child: ActionBox(
+                    isLoadingPage: isLoading,
                     reviewReminderId: provider.upcomingReminder!.id,
                     vocabularySetId: provider.upcomingReminder!.vocabularySetId,
                     userLearnedWords: provider.upcomingReminder!.learnedWords,
@@ -180,9 +181,10 @@ class _WordStorePageState extends State<WordStorePage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                       color: Colors.grey.shade200,
-                      child: const ActionBox(
+                      child: ActionBox(
+                        isLoadingPage: isLoading,
                         vocabularySetId: -1,
-                        words: [],
+                        words: const [],
                       ),
                     ));
                 // return const SizedBox.shrink();

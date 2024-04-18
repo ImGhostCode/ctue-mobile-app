@@ -244,6 +244,10 @@ class _SettingPageState extends State<SettingPage> {
                                           listen: false)
                                       .selectedPage = 0;
 
+                                  Provider.of<HomeProvider>(context,
+                                          listen: false)
+                                      .removeRecentPages();
+
                                   FirebaseMessaging.instance
                                       .unsubscribeFromTopic('all');
                                   FirebaseMessaging.instance.deleteToken();

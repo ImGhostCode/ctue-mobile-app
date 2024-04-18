@@ -21,7 +21,7 @@ class ColoredLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: height ?? 3.0, // Adjust the height of the line as needed
+      height: height ?? 5.0, // Adjust the height of the line as needed
       width: length ?? double.infinity,
       decoration: BoxDecoration(
           gradient: LinearGradient(

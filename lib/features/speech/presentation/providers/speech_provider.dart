@@ -32,10 +32,17 @@ class SpeechProvider extends ChangeNotifier {
 
   Failure? failure;
   bool _isLoading = false;
+  bool _isLoadingWidget = false;
   bool get isLoading => _isLoading;
+  bool get isLoadingWidget => _isLoadingWidget;
 
   set isLoading(bool value) {
     _isLoading = value;
+    notifyListeners();
+  }
+
+  set isLoadingWidget(bool value) {
+    _isLoadingWidget = value;
     notifyListeners();
   }
 
@@ -154,7 +161,7 @@ class SpeechProvider extends ChangeNotifier {
   }
 
   Future eitherFailureOrTts(String text, VoiceEntity voice) async {
-    isLoading = true;
+    isLoadingWidget = true;
 
     SpeechRepositoryImpl repository = SpeechRepositoryImpl(
       remoteDataSource: SpeechRemoteDataSourceImpl(
@@ -174,13 +181,13 @@ class SpeechProvider extends ChangeNotifier {
 
     failureOrSpeech.fold(
       (Failure newFailure) {
-        isLoading = false;
+        isLoadingWidget = false;
         audioBytes = [];
         failure = newFailure;
         notifyListeners();
       },
       (ResponseDataModel<List<int>> dataModel) {
-        isLoading = false;
+        isLoadingWidget = false;
         audioBytes = dataModel.data;
         failure = null;
         notifyListeners();

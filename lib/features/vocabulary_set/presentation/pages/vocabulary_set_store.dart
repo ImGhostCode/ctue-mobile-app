@@ -769,9 +769,11 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 6),
                                       shape: RoundedRectangleBorder(
-                                        side: const BorderSide(
+                                        side: BorderSide(
                                           width: 2,
-                                          color: Colors.green,
+                                          color: provider.isLoading
+                                              ? Colors.grey.shade100
+                                              : Colors.green,
                                         ),
                                         borderRadius: BorderRadius.circular(20),
                                       ),

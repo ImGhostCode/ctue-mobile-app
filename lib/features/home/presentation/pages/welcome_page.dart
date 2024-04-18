@@ -1,3 +1,4 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -254,7 +255,7 @@ class _WelcomePageState extends State<WelcomePage>
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
-                    Navigator.of(context).pushNamed('/login');
+                    Navigator.of(context).pushNamed(RouteNames.login);
                   },
                   child: Text(
                     'Bắt đầu ngay',

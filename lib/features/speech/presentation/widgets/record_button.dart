@@ -13,8 +13,9 @@ import 'package:provider/provider.dart';
 
 class RecordButton extends StatefulWidget {
   final String text;
-
-  const RecordButton({super.key, required this.text});
+  final bool isLoadingPage;
+  const RecordButton(
+      {super.key, required this.text, this.isLoadingPage = false});
 
   @override
   State<RecordButton> createState() => _RecordButtonState();
@@ -88,6 +89,9 @@ class _RecordButtonState extends State<RecordButton> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
+          backgroundColor: MaterialStatePropertyAll(widget.isLoadingPage
+              ? Colors.grey.shade50
+              : Colors.tealAccent.shade700),
           shape: MaterialStatePropertyAll(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
           padding: const MaterialStatePropertyAll(
@@ -298,6 +302,8 @@ Color scoreToColor(int score) {
     return Colors.green;
   } else if (score > 59) {
     return Colors.yellow.shade700;
+  } else if (score == -1) {
+    return Colors.grey;
   } else {
     return Colors.red;
   }

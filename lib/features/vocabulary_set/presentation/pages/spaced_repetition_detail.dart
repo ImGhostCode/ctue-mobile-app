@@ -1,5 +1,7 @@
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
+// ignore: unused_import
 import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
+import 'package:ctue_app/features/profile/presentation/widgets/radial_bar_chart.dart';
 import 'package:flutter/material.dart';
 
 class SpacedRepetitionDetail extends StatelessWidget {
@@ -145,14 +147,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GradientBorderContainer(
+                        RadialBarChart(
+                            fontWeight: FontWeight.normal,
+                            radius: '100%',
+                            innerRadius: '70%',
+                            title: level_1.title,
+                            color: level_1.color,
+                            initialPercent: level_1.percent,
                             diameter: level_1.diameter,
-                            borderWidth: level_1.borderWidth,
-                            borderColor1: level_1.borderColor1,
-                            borderColor2: level_1.borderColor2,
-                            stop1: level_1.stop1,
-                            stop2: level_1.stop2,
-                            percent: level_1.percent,
                             fontSize: level_1.fontSize),
                         const SizedBox(
                           width: 5,
@@ -184,7 +186,7 @@ class SpacedRepetitionDetail extends StatelessWidget {
             // borderRadius: const BorderRadius.only(
             //     topLeft: Radius.circular(12),
             //     topRight: Radius.circular(12)),
-            color: Colors.grey.shade200,
+            color: Colors.grey.shade100,
           ),
           children: <Widget>[
             TableCell(
@@ -194,14 +196,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GradientBorderContainer(
+                        RadialBarChart(
+                            fontWeight: FontWeight.normal,
+                            radius: '100%',
+                            innerRadius: '70%',
+                            title: level_2.title,
+                            color: level_2.color,
+                            initialPercent: level_2.percent,
                             diameter: level_2.diameter,
-                            borderWidth: level_2.borderWidth,
-                            borderColor1: level_2.borderColor1,
-                            borderColor2: level_2.borderColor2,
-                            stop1: level_2.stop1,
-                            stop2: level_2.stop2,
-                            percent: level_2.percent,
                             fontSize: level_2.fontSize),
                         const SizedBox(
                           width: 5,
@@ -243,14 +245,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GradientBorderContainer(
+                        RadialBarChart(
+                            fontWeight: FontWeight.normal,
+                            radius: '100%',
+                            innerRadius: '70%',
+                            title: level_3.title,
+                            color: level_3.color,
+                            initialPercent: level_3.percent,
                             diameter: level_3.diameter,
-                            borderWidth: level_3.borderWidth,
-                            borderColor1: level_3.borderColor1,
-                            borderColor2: level_3.borderColor2,
-                            stop1: level_3.stop1,
-                            stop2: level_3.stop2,
-                            percent: level_3.percent,
                             fontSize: level_3.fontSize),
                         const SizedBox(
                           width: 5,
@@ -282,7 +284,7 @@ class SpacedRepetitionDetail extends StatelessWidget {
             // borderRadius: const BorderRadius.only(
             //     topLeft: Radius.circular(12),
             //     topRight: Radius.circular(12)),
-            color: Colors.grey.shade200,
+            color: Colors.grey.shade100,
           ),
           children: <Widget>[
             TableCell(
@@ -292,14 +294,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GradientBorderContainer(
+                        RadialBarChart(
+                            fontWeight: FontWeight.normal,
+                            radius: '100%',
+                            innerRadius: '70%',
+                            title: level_4.title,
+                            color: level_4.color,
+                            initialPercent: level_4.percent,
                             diameter: level_4.diameter,
-                            borderWidth: level_4.borderWidth,
-                            borderColor1: level_4.borderColor1,
-                            borderColor2: level_4.borderColor2,
-                            stop1: level_4.stop1,
-                            stop2: level_4.stop2,
-                            percent: level_4.percent,
                             fontSize: level_4.fontSize),
                         const SizedBox(
                           width: 5,
@@ -341,14 +343,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GradientBorderContainer(
+                        RadialBarChart(
+                            fontWeight: FontWeight.normal,
+                            radius: '100%',
+                            innerRadius: '70%',
+                            title: level_5.title,
+                            color: level_5.color,
+                            initialPercent: level_5.percent,
                             diameter: level_5.diameter,
-                            borderWidth: level_5.borderWidth,
-                            borderColor1: level_5.borderColor1,
-                            borderColor2: level_5.borderColor2,
-                            stop1: level_5.stop1,
-                            stop2: level_5.stop2,
-                            percent: level_5.percent,
                             fontSize: level_5.fontSize),
                         const SizedBox(
                           width: 5,
@@ -380,7 +382,7 @@ class SpacedRepetitionDetail extends StatelessWidget {
             borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(12),
                 bottomRight: Radius.circular(12)),
-            color: Colors.grey.shade200,
+            color: Colors.grey.shade100,
           ),
           children: <Widget>[
             TableCell(
@@ -390,14 +392,14 @@ class SpacedRepetitionDetail extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GradientBorderContainer(
+                        RadialBarChart(
+                            fontWeight: FontWeight.normal,
+                            radius: '100%',
+                            innerRadius: '70%',
+                            title: level_6.title,
+                            color: level_6.color,
+                            initialPercent: level_6.percent,
                             diameter: level_6.diameter,
-                            borderWidth: level_6.borderWidth,
-                            borderColor1: level_6.borderColor1,
-                            borderColor2: level_6.borderColor2,
-                            stop1: level_6.stop1,
-                            stop2: level_6.stop2,
-                            percent: level_6.percent,
                             fontSize: level_6.fontSize),
                         const SizedBox(
                           width: 5,

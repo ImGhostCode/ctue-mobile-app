@@ -29,4 +29,8 @@ class HomeProvider with ChangeNotifier {
     _recentPages = prefs.getStringList('recentPages') ?? [];
     notifyListeners();
   }
+
+  Future<void> removeRecentPages() async {
+    prefs.remove('recentPages');
+  }
 }

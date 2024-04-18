@@ -1,3 +1,4 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/communication_phrase_page.dart';
@@ -5,6 +6,7 @@ import 'package:ctue_app/features/sentence/presentation/providers/sentence_provi
 import 'package:ctue_app/features/sentence/presentation/widgets/listen_sentence_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class CommunicationPhraseDetail extends StatelessWidget {
   const CommunicationPhraseDetail({Key? key}) : super(key: key);
@@ -46,122 +48,128 @@ class CommunicationPhraseDetail extends StatelessWidget {
               // Access the failure from the provider
               Failure? failure = sentenceProvider.failure;
 
-              if (failure != null) {
+              if (!isLoading && failure != null) {
                 // Handle failure, for example, show an error message
                 return Text(failure.errorMessage);
-              } else if (isLoading) {
-                // Handle the case where topics are empty
-                return const Center(
-                    child:
-                        CircularProgressIndicator()); // or show an empty state message
-              } else if (sentenceDetail == null) {
+              } else if (!isLoading && sentenceDetail == null) {
                 // Handle the case where topics are empty
                 return const Center(child: Text('Không có dữ liệu'));
               } else {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Center(
-                        child: Text(
-                      sentenceDetail.content,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    )),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Center(
-                        child: Text(
-                      sentenceDetail.meaning,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    )),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ListenSenButton(text: sentenceDetail.content),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'Loại câu: ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(color: Colors.black87),
-                        ),
-                        Text(
-                          sentenceDetail.type!.name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.normal),
-                        )
-                      ],
-                    ),
-                    Text(
-                      'Chủ đề:',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Colors.black87),
-                    ),
-                    Container(
-                      // height: 200,
-                      // width: MediaQuery.of(context).size.width - 32,
-                      padding: const EdgeInsets.all(8),
-                      child: Wrap(
-                        spacing:
-                            5, // Adjust the spacing between items as needed
-                        runSpacing: 10,
-                        children: List.generate(
-                          sentenceDetail.topics!.length,
-                          (index) => Chip(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                color: Colors.tealAccent.shade200,
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            label: Text(sentenceDetail.topics![index].name),
-                            backgroundColor: Colors.white,
-                            labelStyle: Theme.of(context)
+                return Skeletonizer(
+                  enabled: isLoading,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Center(
+                          child: Text(
+                        sentenceDetail?.content ?? '',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      )),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                          child: Text(
+                        sentenceDetail?.meaning ?? '',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      )),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ListenSenButton(text: sentenceDetail?.content ?? ''),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'Loại câu: ',
+                            style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(
-                                  fontWeight: FontWeight.normal,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            sentenceDetail?.type!.name ?? '',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.normal),
+                          )
+                        ],
+                      ),
+                      Text(
+                        'Chủ đề:',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.black87, fontWeight: FontWeight.bold),
+                      ),
+                      Container(
+                        // height: 200,
+                        // width: MediaQuery.of(context).size.width - 32,
+                        padding: const EdgeInsets.all(8),
+                        child: Wrap(
+                          spacing:
+                              5, // Adjust the spacing between items as needed
+                          runSpacing: 10,
+                          children: List.generate(
+                            sentenceDetail?.topics!.length ?? 0,
+                            (index) => Chip(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: isLoading
+                                        ? isLoadingColor
+                                        : Colors.green,
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              label: Text(
+                                  sentenceDetail?.topics![index].name ?? ''),
+                              backgroundColor: Colors.white,
+                              labelStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    fontWeight: FontWeight.normal,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'Ghi chú: ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(color: Colors.black87),
-                        ),
-                        Text(
-                          sentenceDetail.note ?? '',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.normal),
-                        )
-                      ],
-                    )
-                  ],
+                      sentenceDetail?.note == null
+                          ? const SizedBox.shrink()
+                          : Row(
+                              children: [
+                                Text(
+                                  'Ghi chú: ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  sentenceDetail?.note ?? '',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.normal),
+                                )
+                              ],
+                            )
+                    ],
+                  ),
                 );
               }
             })));

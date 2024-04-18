@@ -146,14 +146,10 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                               if (failure != null) {
                                 // Handle failure, for example, show an error message
                                 return Text(failure.errorMessage);
-                              } else if (isLoading) {
-                                // Handle the case where topics are empty
-                                return const Center(
-                                    child:
-                                        CircularProgressIndicator()); // or show an empty state message
                               } else if (!isLoading &&
                                   learnProvider.upcomingReminder != null) {
                                 return ActionBox(
+                                  isLoadingPage: isLoading,
                                   reviewReminderId:
                                       learnProvider.upcomingReminder!.id,
                                   userLearnedWords: learnProvider
@@ -169,6 +165,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                                 );
                               } else {
                                 return ActionBox(
+                                  isLoadingPage: isLoading,
                                   userLearnedWords: userLearnedWords,
                                   words: vocaSetEntity.words,
                                   vocabularySetId: vocaSetEntity.id,
@@ -356,7 +353,8 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
         );
       } else {
         // Handle the case where topics are empty
-        return const Scaffold(body: Center(child: Text('Không có dữ liệu')));
+        // return const Scaffold(body: Center(child: Text('Không có dữ liệu')));
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
       }
     });
   }

@@ -1,3 +1,4 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
@@ -213,8 +214,8 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, '/communication-phrase-detail',
+                                Navigator.pushNamed(context,
+                                    RouteNames.communicationPhraseDetail,
                                     arguments: ComPhraseArguments(id: item.id));
                               },
                             )),

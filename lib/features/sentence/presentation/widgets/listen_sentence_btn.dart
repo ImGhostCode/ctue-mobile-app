@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
@@ -9,7 +10,8 @@ import 'package:audioplayers/audioplayers.dart';
 
 class ListenSenButton extends StatelessWidget {
   final String text;
-  ListenSenButton({super.key, required this.text});
+  final bool isLoadingPage;
+  ListenSenButton({super.key, required this.text, this.isLoadingPage = false});
   final audioPlayer = AudioService.player;
 
   @override
@@ -25,8 +27,10 @@ class ListenSenButton extends StatelessWidget {
                 style: ButtonStyle(
                     shadowColor: const MaterialStatePropertyAll(Colors.black),
                     backgroundColor: MaterialStatePropertyAll(isLoading
-                        ? Colors.grey.shade400
-                        : Colors.grey.shade200)),
+                        ? Colors.grey.shade300
+                        : isLoadingPage
+                            ? isLoadingColor
+                            : Colors.grey.shade100)),
                 onPressed: isLoading
                     ? null
                     : () async {

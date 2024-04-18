@@ -9,21 +9,24 @@ import 'package:provider/provider.dart';
 
 class ListenWordButton extends StatelessWidget {
   final String text;
-  ListenWordButton({super.key, required this.text});
+  final bool isLoadingPage;
+  ListenWordButton({super.key, required this.text, this.isLoadingPage = false});
   final _audioPlayer = AudioService.player;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<SpeechProvider>(
       builder: (context, provider, child) {
-        bool isLoading = provider.isLoading;
+        bool isLoading = provider.isLoadingWidget;
 
         return ElevatedButton(
           style: ButtonStyle(
               backgroundColor: isLoading
                   ? MaterialStatePropertyAll(
                       Colors.tealAccent.shade700.withOpacity(0.8))
-                  : MaterialStatePropertyAll(Colors.tealAccent.shade700),
+                  : MaterialStatePropertyAll(isLoadingPage
+                      ? Colors.grey.shade50
+                      : Colors.tealAccent.shade700),
               padding: const MaterialStatePropertyAll(
                   EdgeInsets.symmetric(horizontal: 8, vertical: 4))),
           onPressed: isLoading

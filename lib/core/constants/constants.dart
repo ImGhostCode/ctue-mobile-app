@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
+
 class RouteNames {
   static const String home = '/';
   static const String welcome = '/welcome';
   static const String verifyCode = '/verify-code';
-  static const String login = '/login ';
+  static const String login = '/login';
   static const String resetPassword = '/reset-password';
   static const String signUp = '/sign-up';
   static const String correctWord = '/correct-word';
@@ -325,3 +327,5 @@ const String kTotalPublic = 'totalPublic';
 const String kTotalPrivate = 'totalPrivate';
 
 const String kInterestTopics = 'interestTopics';
+
+Color isLoadingColor = Colors.grey.shade100;

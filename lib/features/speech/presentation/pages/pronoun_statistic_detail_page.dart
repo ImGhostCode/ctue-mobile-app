@@ -5,6 +5,7 @@ import 'package:ctue_app/features/speech/presentation/providers/speech_provider.
 import 'package:ctue_app/features/speech/presentation/widgets/record_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ProStatisticDetailPage extends StatelessWidget {
   const ProStatisticDetailPage({super.key});
@@ -13,6 +14,7 @@ class ProStatisticDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Provider.of<SpeechProvider>(context, listen: false)
         .eitherFailureOrgetUserProStatistics();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -42,89 +44,99 @@ class ProStatisticDetailPage extends StatelessWidget {
         // Access the failure from the provider
         Failure? failure = provider.failure;
 
-        if (failure != null) {
+        if (!isLoading && failure != null) {
           // Handle failure, for example, show an error message
           return Text(failure.errorMessage);
-        } else if (isLoading) {
-          // Handle the case where topics are empty
-          return const Center(
-              child:
-                  CircularProgressIndicator()); // or show an empty state message
-        } else if (detailEntity == null) {
+        } else if (!isLoading && detailEntity == null) {
           // Handle the case where topics are empty
           return const Center(child: Text('Không có dữ liệu'));
         } else {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-              child: Column(
-                children: [
-                  // Row(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     Text(
-                  //       'Đánh giá',
-                  //       style: Theme.of(context).textTheme.titleLarge,
-                  //     ),
-                  //     GradientBorderContainer(
-                  //       diameter: 80.0,
-                  //       borderWidth: 0.1, // 10% of diameter
-                  //       borderColor1: Colors.lightGreenAccent.shade700,
-                  //       borderColor2: Colors.lightGreenAccent.shade100,
-                  //       stop1: 0.6,
-                  //       stop2: 0.4,
-                  //       percent: 60,
-                  //       fontSize: 30,
-                  //     ),
-                  //   ],
-                  // ),
-                  // const SizedBox(
-                  //   height: 30,
-                  // ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    // separatorBuilder: (context, index) {
-                    //   return const Divider();
-                    // },
-                    itemBuilder: (context, index) {
-                      Color lineColor = scoreToColor(detailEntity[index].avg);
-                      return ListTile(
-                        leading: Text(
-                          textAlign: TextAlign.left,
-                          '/${detailEntity[index].label}/',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                  color: lineColor, fontFamily: 'DoulosSIL'),
-                        ),
-                        title: ColoredLine(
-                            // length: 150,
-                            height: 9,
-                            percentLeft: detailEntity[index].avg / 100,
-                            percentRight: 1 - (detailEntity[index].avg / 100),
-                            colorLeft: lineColor,
-                            colorRight: lineColor.withOpacity(0.2)),
-                        subtitle: Text('${detailEntity[index].avg}%',
-                            textAlign: TextAlign.right,
+          return Skeletonizer(
+            enabled: isLoading,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                child: Column(
+                  children: [
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Text(
+                    //       'Đánh giá',
+                    //       style: Theme.of(context).textTheme.titleLarge,
+                    //     ),
+                    //     GradientBorderContainer(
+                    //       diameter: 80.0,
+                    //       borderWidth: 0.1, // 10% of diameter
+                    //       borderColor1: Colors.lightGreenAccent.shade700,
+                    //       borderColor2: Colors.lightGreenAccent.shade100,
+                    //       stop1: 0.6,
+                    //       stop2: 0.4,
+                    //       percent: 60,
+                    //       fontSize: 30,
+                    //     ),
+                    //   ],
+                    // ),
+                    // const SizedBox(
+                    //   height: 30,
+                    // ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      // separatorBuilder: (context, index) {
+                      //   return const Divider();
+                      // },
+                      itemBuilder: (context, index) {
+                        Color lineColor =
+                            scoreToColor(detailEntity?[index].avg ?? -1);
+                        return ListTile(
+                          leading: Text(
+                            textAlign: TextAlign.left,
+                            '/${detailEntity?[index].label}/',
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyMedium!
-                                .copyWith(color: lineColor)),
-                        minVerticalPadding: 0,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 0),
-                      );
-                    },
-                    itemCount: detailEntity.length,
-                  ),
-                ],
+                                .titleMedium!
+                                .copyWith(
+                                    color: lineColor, fontFamily: 'DoulosSIL'),
+                          ),
+                          title: ColoredLine(
+                              // length: 150,
+                              height: 9,
+                              percentLeft: detailEntity != null
+                                  ? (detailEntity[index].avg / 100)
+                                  : 0,
+                              percentRight: detailEntity != null
+                                  ? (1 - (detailEntity[index].avg / 100))
+                                  : 0,
+                              colorLeft:
+                                  isLoading ? Colors.grey.shade200 : lineColor,
+                              colorRight: isLoading
+                                  ? Colors.grey.shade200
+                                  : lineColor.withOpacity(0.2)),
+                          subtitle: Text('${detailEntity?[index].avg}%',
+                              textAlign: TextAlign.right,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: lineColor)),
+                          minVerticalPadding: 0,
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 0),
+                        );
+                      },
+                      itemCount: detailEntity?.length ?? 0,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         }
+        // else {
+        //   return const Center(child: Text('Chưa có dữ liệu'));
+        // }
       }),
     );
   }

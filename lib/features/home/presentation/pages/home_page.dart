@@ -199,9 +199,10 @@ class HomePage extends StatelessWidget {
                             decoration:
                                 const BoxDecoration(color: Colors.white),
                             padding: const EdgeInsets.all(16.0),
-                            child: const ActionBox(
+                            child: ActionBox(
+                              isLoadingPage: isLoading,
                               vocabularySetId: -1,
-                              words: [],
+                              words: const [],
                             ),
                           ));
                     }

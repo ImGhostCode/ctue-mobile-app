@@ -1,3 +1,4 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
 import 'package:ctue_app/features/skeleton/providers/selected_page_provider.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
@@ -6,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 
 class ActionBox extends StatefulWidget {
+  final bool isLoadingPage;
   final List<WordEntity> words;
   final int vocabularySetId;
   final int? reviewReminderId;
@@ -18,7 +20,8 @@ class ActionBox extends StatefulWidget {
       this.userLearnedWords = const [],
       required this.vocabularySetId,
       this.reviewReminderId,
-      this.reviewAt});
+      this.reviewAt,
+      this.isLoadingPage = false});
 
   @override
   State<ActionBox> createState() => _ActionBoxState();
@@ -45,7 +48,7 @@ class _ActionBoxState extends State<ActionBox> {
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Colors.blue.shade100,
+          color: widget.isLoadingPage ? isLoadingColor : Colors.blue.shade100,
           boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 3)]),
       child: Row(
         children: [
@@ -100,8 +103,10 @@ class _ActionBoxState extends State<ActionBox> {
                             shape: MaterialStatePropertyAll(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8))),
-                            backgroundColor:
-                                MaterialStatePropertyAll(Colors.blue.shade600)),
+                            backgroundColor: MaterialStatePropertyAll(
+                                widget.isLoadingPage
+                                    ? isLoadingColor
+                                    : Colors.blue.shade600)),
                         onPressed: widget.words.isEmpty
                             ? () {
                                 Provider.of<SelectedPageProvider>(context,

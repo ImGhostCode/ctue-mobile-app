@@ -193,18 +193,19 @@ class ProfilePage extends StatelessWidget {
                       height: 10,
                     ),
                     SizedBox(
-                        height: 390,
-                        child: ListView(
-                          // shrinkWrap: true,
-                          padding: const EdgeInsets.all(8),
-                          scrollDirection: Axis.horizontal,
-                          children: const [
-                            PronuncStatisticBox(),
-                            SizedBox(
-                              width: 15,
-                            ),
-                          ],
-                        ))
+                      height: 430,
+                      child: ListView(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(8),
+                        scrollDirection: Axis.horizontal,
+                        children: const [
+                          PronuncStatisticBox(),
+                          SizedBox(
+                            width: 15,
+                          ),
+                        ],
+                      ),
+                    )
                   ]),
                 ),
               ],
