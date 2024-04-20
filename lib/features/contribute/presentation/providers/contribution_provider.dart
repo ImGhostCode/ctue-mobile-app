@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/failure.dart';
-import '../../data/datasources/template_local_data_source.dart';
+import '../../data/datasources/contribution_local_data_source.dart';
 import '../../data/datasources/contribution_remote_data_source.dart';
 import '../../data/repositories/con_repository_impl.dart';
 
@@ -47,7 +47,7 @@ class ContributionProvider extends ChangeNotifier {
       remoteDataSource: ContributionRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: ContributionLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -87,7 +87,7 @@ class ContributionProvider extends ChangeNotifier {
       remoteDataSource: ContributionRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: ContributionLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -127,7 +127,7 @@ class ContributionProvider extends ChangeNotifier {
       remoteDataSource: ContributionRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: ContributionLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -168,7 +168,7 @@ class ContributionProvider extends ChangeNotifier {
       remoteDataSource: ContributionRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: ContributionLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -209,7 +209,7 @@ class ContributionProvider extends ChangeNotifier {
       remoteDataSource: ContributionRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: ContributionLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(

@@ -17,7 +17,7 @@ class VocaSetStatisticsModel extends VocaSetStatisticsEntity {
   Map<String, dynamic> toJson() {
     return {
       kNumberOfWords: numberOfWords,
-      kDetail: detailVocaSetStatisEntity,
+      kDetail: (detailVocaSetStatisEntity as DetailVocaSetStatisModel).toJson(),
     };
   }
 }
@@ -39,49 +39,49 @@ class DetailVocaSetStatisModel extends DetailVocaSetStatisEntity {
           ? json[kLevel_1]
               .map<UserLearnedWordModel>(
                   (set) => UserLearnedWordModel.fromJson(json: set))
-              .toList()
+              .toList() as List<UserLearnedWordModel>
           : [],
       level_2: json[kLevel_2] != null
           ? json[kLevel_2]
               .map<UserLearnedWordModel>(
                   (set) => UserLearnedWordModel.fromJson(json: set))
-              .toList()
+              .toList() as List<UserLearnedWordModel>
           : [],
       level_3: json[kLevel_3] != null
           ? json[kLevel_3]
               .map<UserLearnedWordModel>(
                   (set) => UserLearnedWordModel.fromJson(json: set))
-              .toList()
+              .toList() as List<UserLearnedWordModel>
           : [],
       level_4: json[kLevel_4] != null
           ? json[kLevel_4]
               .map<UserLearnedWordModel>(
                   (set) => UserLearnedWordModel.fromJson(json: set))
-              .toList()
+              .toList() as List<UserLearnedWordModel>
           : [],
       level_5: json[kLevel_5] != null
           ? json[kLevel_5]
               .map<UserLearnedWordModel>(
                   (set) => UserLearnedWordModel.fromJson(json: set))
-              .toList()
+              .toList() as List<UserLearnedWordModel>
           : [],
       level_6: json[kLevel_6] != null
           ? json[kLevel_6]
               .map<UserLearnedWordModel>(
                   (set) => UserLearnedWordModel.fromJson(json: set))
-              .toList()
+              .toList() as List<UserLearnedWordModel>
           : [],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      kLevel_1: level_1,
-      kLevel_2: level_2,
-      kLevel_3: level_3,
-      kLevel_4: level_4,
-      kLevel_5: level_5,
-      kLevel_6: level_6,
+      kLevel_1: (level_1 as List<dynamic>).map((set) => set.toJson()).toList(),
+      kLevel_2: (level_2 as List<dynamic>).map((set) => set.toJson()).toList(),
+      kLevel_3: (level_3 as List<dynamic>).map((set) => set.toJson()).toList(),
+      kLevel_4: (level_4 as List<dynamic>).map((set) => set.toJson()).toList(),
+      kLevel_5: (level_5 as List<dynamic>).map((set) => set.toJson()).toList(),
+      kLevel_6: (level_6 as List<dynamic>).map((set) => set.toJson()).toList(),
     };
   }
 }

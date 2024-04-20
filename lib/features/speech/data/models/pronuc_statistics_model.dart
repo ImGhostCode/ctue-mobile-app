@@ -15,23 +15,31 @@ class PronuncStatisticModel extends PronuncStatisticEntity {
       avg: json[kAvg].toInt(),
       detail: json[kDetail]
           .map<DetailModel>((detail) => DetailModel.fromJson(json: detail))
-          .toList(),
+          .toList() as List<DetailModel>,
       lablesNeedToBeImprove: json[kLablesNeedToBeImprove]
           .map<DetailModel>((value) => DetailModel.fromJson(json: value))
-          .toList(),
+          .toList() as List<DetailModel>,
       lablesDoWell: json[kLablesDoWell]
           .map<DetailModel>((value) => DetailModel.fromJson(json: value))
-          .toList(),
+          .toList() as List<DetailModel>,
       suggestWordsToImprove: json[kSuggestWordsToImprove]
           .map<WordModel>((word) => WordModel.fromJson(json: word))
-          .toList(),
+          .toList() as List<WordModel>,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       kAvg: avg,
-      kDetail: detail,
+      kDetail: (detail as List<dynamic>).map((e) => e.toJson()).toList(),
+      kLablesDoWell:
+          (lablesDoWell as List<dynamic>).map((e) => e.toJson()).toList(),
+      kLablesNeedToBeImprove: (lablesNeedToBeImprove as List<dynamic>)
+          .map((e) => e.toJson())
+          .toList(),
+      kSuggestWordsToImprove: (suggestWordsToImprove as List<dynamic>)
+          .map((e) => e.toJson())
+          .toList(),
     };
   }
 }

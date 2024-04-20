@@ -26,7 +26,7 @@ class UserLearnedWordModel extends UserLearnedWordEntity {
       kWordId: wordId,
       kVocaSetId: vocabularySetId,
       kMemoryLevel: memoryLevel,
-      kWord: word,
+      kWord: (word as WordModel?)?.toJson(),
     };
   }
 }

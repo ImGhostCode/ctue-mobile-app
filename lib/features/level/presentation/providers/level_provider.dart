@@ -4,7 +4,7 @@ import 'package:ctue_app/core/params/level_params.dart';
 import 'package:ctue_app/features/level/business/entities/level_entity.dart';
 import 'package:ctue_app/features/level/business/usecases/get_levels_usecase.dart';
 import 'package:ctue_app/features/level/data/datasources/level_remote_data_source.dart';
-import 'package:ctue_app/features/level/data/datasources/template_local_data_source.dart';
+import 'package:ctue_app/features/level/data/datasources/level_local_data_source.dart';
 import 'package:ctue_app/features/level/data/repositories/level_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:flutter/material.dart';

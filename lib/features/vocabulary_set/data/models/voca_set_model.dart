@@ -34,7 +34,7 @@ class VocaSetModel extends VocaSetEntity {
         words: json[kWords] != null
             ? json[kWords]
                 .map<WordModel>((word) => WordModel.fromJson(json: word))
-                .toList()
+                .toList() as List<WordModel>
             : [],
         isDeleted: json[kIsDeleted],
         picture: json[kPicture],
@@ -56,16 +56,16 @@ class VocaSetModel extends VocaSetEntity {
       kTitle: title,
       kUserId: userId,
       kIsPublic: isPublic,
-      kCreatedAt: createdAt,
+      kCreatedAt: createdAt.toString(),
       kDownloads: downloads,
-      kWords: words,
+      kWords: (words as List<dynamic>).map((word) => word.toJson()).toList(),
       kIsDeleted: isDeleted,
       kPicture: picture,
       kSpecId: specId,
       kTopicId: topicId,
-      kSpecialization: specializationEntity,
-      kTopic: topicEntity,
-      kUser: userEntity
+      kSpecialization: (specializationEntity as SpecializationModel?)?.toJson(),
+      kTopic: (topicEntity as TopicModel?)?.toJson(),
+      kUser: (userEntity as UserModel?)?.toJson()
     };
   }
 }

@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/failure.dart';
-import '../../data/datasources/template_local_data_source.dart';
+import '../../data/datasources/noti_local_data_source.dart';
 import '../../data/datasources/noti_remote_data_source.dart';
 import '../../data/repositories/noti_repository_impl.dart';
 

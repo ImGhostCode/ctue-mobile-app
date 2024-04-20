@@ -15,13 +15,13 @@ class AccountModel extends AccountEntity {
 
   factory AccountModel.fromJson({required Map<String, dynamic> json}) {
     return AccountModel(
-      email: json['email'],
-      userId: json['userId'],
-      authType: json['authType'],
-      accountType: json['accountType'],
-      isBan: json['isBan'],
-      feedback: json['feedback'],
-      isDeleted: json['isDeleted'] ?? false,
+      email: json[kEmail],
+      userId: json[kUserId],
+      authType: json[kAuthType],
+      accountType: json[kAccountType],
+      isBan: json[kIsBan],
+      feedback: json[kFeedback],
+      isDeleted: json[kIsDeleted] ?? false,
       user: UserModel.fromJson(json: json[kUser]),
     );
   }
@@ -35,7 +35,7 @@ class AccountModel extends AccountEntity {
       kIsBan: isBan,
       kFeedback: feedback,
       kIsDeleted: isDeleted,
-      kUser: user
+      kUser: (user as UserModel).toJson(),
     };
   }
 }

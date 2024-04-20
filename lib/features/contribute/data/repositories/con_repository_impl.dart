@@ -10,12 +10,12 @@ import 'package:dartz/dartz.dart';
 import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/errors/failure.dart';
-import '../datasources/template_local_data_source.dart';
+import '../datasources/contribution_local_data_source.dart';
 import '../datasources/contribution_remote_data_source.dart';
 
 class ContributionRepositoryImpl implements ContributionRepository {
   final ContributionRemoteDataSource remoteDataSource;
-  final TemplateLocalDataSource localDataSource;
+  final ContributionLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
   ContributionRepositoryImpl({
@@ -76,7 +76,8 @@ class ContributionRepositoryImpl implements ContributionRepository {
         ResponseDataModel<ContributionResModel> remoteContribution =
             await remoteDataSource.getAllCon(getAllConParams: getAllConParams);
 
-        // localDataSource.cacheContribution(ContributionToCache: remoteContribution);
+        localDataSource.cacheContributionByAdmin(
+            contributionResModel: remoteContribution);
 
         return Right(remoteContribution);
       } on ServerException catch (e) {
@@ -84,7 +85,13 @@ class ContributionRepositoryImpl implements ContributionRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<ContributionResModel> localContribution =
+            await localDataSource.getLastContributionByAdmin();
+        return Right(localContribution);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 
@@ -98,7 +105,8 @@ class ContributionRepositoryImpl implements ContributionRepository {
             await remoteDataSource.getAllConByUser(
                 getAllConByUserParams: getAllConByUserParams);
 
-        // localDataSource.cacheContribution(ContributionToCache: remoteContribution);
+        localDataSource.cacheContributionByUser(
+            contributionResModel: remoteContribution);
 
         return Right(remoteContribution);
       } on ServerException catch (e) {
@@ -106,7 +114,13 @@ class ContributionRepositoryImpl implements ContributionRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<ContributionResModel> localContribution =
+            await localDataSource.getLastContributionByUser();
+        return Right(localContribution);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 

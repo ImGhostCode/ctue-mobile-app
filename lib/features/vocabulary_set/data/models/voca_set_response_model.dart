@@ -11,10 +11,14 @@ class VocabularySetResModel extends VocabularySetResEntity {
         totalPages: json[kTotalPages],
         data: json[kData]
             .map<VocaSetModel>((set) => VocaSetModel.fromJson(json: set))
-            .toList());
+            .toList() as List<VocaSetModel>);
   }
 
   Map<String, dynamic> toJson() {
-    return {kTotal: total, kTotalPages: totalPages, kData: data};
+    return {
+      kTotal: total,
+      kTotalPages: totalPages,
+      kData: (data as List<dynamic>).map((e) => e.toJson()).toList()
+    };
   }
 }

@@ -12,10 +12,14 @@ class ContributionResModel extends ContributionResEntity {
         data: json[kData]
             .map<ContributionModel>((contribution) =>
                 ContributionModel.fromJson(json: contribution))
-            .toList());
+            .toList() as List<ContributionModel>);
   }
 
   Map<String, dynamic> toJson() {
-    return {kTotal: total, kTotalPages: totalPages, kData: data};
+    return {
+      kTotal: total,
+      kTotalPages: totalPages,
+      kData: (data as List<dynamic>).map((e) => e.toJson()).toList()
+    };
   }
 }

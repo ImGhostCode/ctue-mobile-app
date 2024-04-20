@@ -32,8 +32,8 @@ class NotificationModel extends NotificationEntity {
       kUserId: userId,
       kBody: body,
       kData: data,
-      kCreatedAt: createdAt,
-      kUpdatedAt: updatedAt,
+      kCreatedAt: createdAt.toString(),
+      kUpdatedAt: updatedAt.toString(),
       kUser: user,
     };
   }

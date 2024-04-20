@@ -1,7 +1,7 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/sentence_params.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/sentence/business/repositories/sentece_repository.dart';
+import 'package:ctue_app/features/sentence/data/datasources/sentence_local_data_source.dart';
 import 'package:ctue_app/features/sentence/data/datasources/sentence_remote_data_source.dart';
 import 'package:ctue_app/features/sentence/data/models/sentence_model.dart';
 import 'package:ctue_app/features/sentence/data/models/word_response_model.dart';
@@ -14,7 +14,7 @@ import '../../../../../core/errors/failure.dart';
 
 class SentenceRepositoryImpl implements SentenceRepository {
   final SentenceRemoteDataSource remoteDataSource;
-  final TemplateLocalDataSource localDataSource;
+  final SentenceLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
   SentenceRepositoryImpl({
@@ -32,7 +32,7 @@ class SentenceRepositoryImpl implements SentenceRepository {
             await remoteDataSource.getSentences(
                 getSentenceParams: getSentenceParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteSentence);
+        localDataSource.cacheSentence(sentenceResModel: remoteSentence);
 
         return Right(remoteSentence);
       } on ServerException catch (e) {
@@ -40,12 +40,13 @@ class SentenceRepositoryImpl implements SentenceRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localAuth = await localDataSource.getLastAuth();
-      //   return Right(localAuth);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+      try {
+        ResponseDataModel<SentenceResModel> localSentence =
+            await localDataSource.getLastSentence();
+        return Right(localSentence);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 
@@ -57,7 +58,7 @@ class SentenceRepositoryImpl implements SentenceRepository {
         ResponseDataModel<SentenceModel> remoteSentence = await remoteDataSource
             .getSentenceDetail(getSentenceParams: getSentenceParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteSentence);
+        localDataSource.cacheSentenceDetail(sentenceModel: remoteSentence);
 
         return Right(remoteSentence);
       } on ServerException catch (e) {
@@ -65,12 +66,13 @@ class SentenceRepositoryImpl implements SentenceRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localAuth = await localDataSource.getLastAuth();
-      //   return Right(localAuth);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+      try {
+        ResponseDataModel<SentenceModel> localSentenceDetail =
+            await localDataSource.getLastSentenceDetail();
+        return Right(localSentenceDetail);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 

@@ -2,7 +2,6 @@ import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/sentence_params.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/sentence/business/entities/sen_response_entity.dart';
 import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
 import 'package:ctue_app/features/sentence/business/usecases/cre_sentence_usecase.dart';
@@ -10,6 +9,7 @@ import 'package:ctue_app/features/sentence/business/usecases/del_sentence_usecas
 import 'package:ctue_app/features/sentence/business/usecases/edit_sentence_usecase.dart';
 import 'package:ctue_app/features/sentence/business/usecases/get_sen_detail_usecase.dart';
 import 'package:ctue_app/features/sentence/business/usecases/get_senteces_usecase.dart';
+import 'package:ctue_app/features/sentence/data/datasources/sentence_local_data_source.dart';
 import 'package:ctue_app/features/sentence/data/datasources/sentence_remote_data_source.dart';
 import 'package:ctue_app/features/sentence/data/repositories/sentence_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
@@ -61,7 +61,7 @@ class SentenceProvider extends ChangeNotifier {
       remoteDataSource: SentenceRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SentenceLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -98,7 +98,7 @@ class SentenceProvider extends ChangeNotifier {
       remoteDataSource: SentenceRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SentenceLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -141,7 +141,7 @@ class SentenceProvider extends ChangeNotifier {
       remoteDataSource: SentenceRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SentenceLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -192,7 +192,7 @@ class SentenceProvider extends ChangeNotifier {
       remoteDataSource: SentenceRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SentenceLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -237,7 +237,7 @@ class SentenceProvider extends ChangeNotifier {
       remoteDataSource: SentenceRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SentenceLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(

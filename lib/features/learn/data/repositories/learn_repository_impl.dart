@@ -1,6 +1,5 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/learn_params.dart';
-import 'package:ctue_app/features/learn/business/entities/review_reminder_entity.dart';
 import 'package:ctue_app/features/learn/data/models/review_reminder_model.dart';
 import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
 import 'package:dartz/dartz.dart';
@@ -68,17 +67,17 @@ class LearnRepositoryImpl implements LearnRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseDataModel<ReviewReminderEntity?>>>
+  Future<Either<Failure, ResponseDataModel<ReviewReminderModel?>>>
       getUpcomingReminder(
           {required GetUpcomingReminderParams
               getUpcomingReminderParams}) async {
     if (await networkInfo.isConnected!) {
       try {
-        ResponseDataModel<ReviewReminderEntity?> remoteLearn =
+        ResponseDataModel<ReviewReminderModel?> remoteLearn =
             await remoteDataSource.getUpcomingReminder(
                 getUpcomingReminderParams: getUpcomingReminderParams);
 
-        // localDataSource.cacheVocaSet(VocaSetToCache: remoteLearn);
+        localDataSource.cacheReviewReminder(reviewReminderModel: remoteLearn);
 
         return Right(remoteLearn);
       } on ServerException catch (e) {
@@ -86,7 +85,13 @@ class LearnRepositoryImpl implements LearnRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<ReviewReminderModel?> localReviewReminder =
+            await localDataSource.getLastReviewReminder();
+        return Right(localReviewReminder);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 
@@ -94,17 +99,27 @@ class LearnRepositoryImpl implements LearnRepository {
   Future<Either<Failure, ResponseDataModel<List<UserLearnedWordModel>>>>
       getUserLearnedWords(
           {required GetUserLearnedWordParams getUserLearnedWordParams}) async {
-    try {
-      ResponseDataModel<List<UserLearnedWordModel>> remoteLearn =
-          await remoteDataSource.getUserLearnedWords(
-              getUserLearnedWordParams: getUserLearnedWordParams);
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<List<UserLearnedWordModel>> remoteLearn =
+            await remoteDataSource.getUserLearnedWords(
+                getUserLearnedWordParams: getUserLearnedWordParams);
 
-      // localDataSource.cacheVocaSet(VocaSetToCache: remoteLearn);
+        localDataSource.cacheUserLeanredWords(userLearnedWords: remoteLearn);
 
-      return Right(remoteLearn);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(
-          errorMessage: e.errorMessage, statusCode: e.statusCode));
+        return Right(remoteLearn);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      try {
+        ResponseDataModel<List<UserLearnedWordModel>> localUserLearnedWords =
+            await localDataSource.getLastUserLearnedWords();
+        return Right(localUserLearnedWords);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 

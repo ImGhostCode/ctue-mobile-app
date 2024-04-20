@@ -30,7 +30,7 @@ class IrrVerbRepositoryImpl implements IrrVerbRepository {
         ResponseDataModel<IrrVerbResModel> remoteIrrVerb =
             await remoteDataSource.getIrrVerbs(irrVerbParams: irrVerbParams);
 
-        // localDataSource.cacheIrrVerb(irrVerbParamsToCache: remoteIrrVerb);
+        localDataSource.cacheIrrVerb(irrVerbResModel: remoteIrrVerb);
 
         return Right(remoteIrrVerb);
       } on ServerException catch (e) {
@@ -38,12 +38,13 @@ class IrrVerbRepositoryImpl implements IrrVerbRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localAuth = await localDataSource.getLastAuth();
-      //   return Right(localAuth);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+      try {
+        ResponseDataModel<IrrVerbResModel> localAuth =
+            await localDataSource.getLastIrrVerb();
+        return Right(localAuth);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 

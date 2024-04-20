@@ -1,14 +1,12 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/notification_params.dart';
-import 'package:ctue_app/features/notification/business/entities/noti_response_entity.dart';
 import 'package:ctue_app/features/notification/business/repositories/noti_repository.dart';
 import 'package:ctue_app/features/notification/data/models/noti_response_model.dart';
 import 'package:dartz/dartz.dart';
-
 import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/errors/failure.dart';
-import '../datasources/template_local_data_source.dart';
+import '../datasources/noti_local_data_source.dart';
 import '../datasources/noti_remote_data_source.dart';
 
 class NotiRepositoryImpl implements NotiRepository {
@@ -23,7 +21,7 @@ class NotiRepositoryImpl implements NotiRepository {
   });
 
   @override
-  Future<Either<Failure, ResponseDataModel<NotiResEntity>>>
+  Future<Either<Failure, ResponseDataModel<NotiResModel>>>
       getAllUserNotifications(
           {required GetAllUserNotiParams getAllUserNotiParams}) async {
     if (await networkInfo.isConnected!) {
@@ -31,7 +29,7 @@ class NotiRepositoryImpl implements NotiRepository {
         ResponseDataModel<NotiResModel> remoteNoti = await remoteDataSource
             .getAllUserNoti(getAllUserNotiParams: getAllUserNotiParams);
 
-        // localDataSource.cacheNoti(NotiToCache: remoteNoti);
+        localDataSource.cacheNoti(notiResModel: remoteNoti);
 
         return Right(remoteNoti);
       } on ServerException catch (e) {
@@ -39,12 +37,13 @@ class NotiRepositoryImpl implements NotiRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localNoti = await localDataSource.getLastNoti();
-      //   return Right(localNoti);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+      try {
+        ResponseDataModel<NotiResModel> localNoti =
+            await localDataSource.getLastNoti();
+        return Right(localNoti);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 }

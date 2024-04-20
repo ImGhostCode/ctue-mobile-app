@@ -4,7 +4,7 @@ import 'package:ctue_app/core/params/specialization_params.dart';
 import 'package:ctue_app/features/specialization/business/entities/specialization_entity.dart';
 import 'package:ctue_app/features/specialization/business/usecases/get_specs_usecase.dart';
 import 'package:ctue_app/features/specialization/data/datasources/spec_remote_data_source.dart';
-import 'package:ctue_app/features/specialization/data/datasources/template_local_data_source.dart';
+import 'package:ctue_app/features/specialization/data/datasources/spec_local_data_source.dart';
 import 'package:ctue_app/features/specialization/data/repositories/spec_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class SpecializationProvider extends ChangeNotifier {
       remoteDataSource: SpecRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: SpecLocalDataSourceImpl(
+      localDataSource: SpecializationLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(

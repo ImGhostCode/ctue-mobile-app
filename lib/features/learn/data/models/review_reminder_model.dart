@@ -28,7 +28,7 @@ class ReviewReminderModel extends ReviewReminderEntity {
             : json[kLearnedWords]
                 .map<UserLearnedWordModel>(
                     (word) => UserLearnedWordModel.fromJson(json: word))
-                .toList());
+                .toList() as List<UserLearnedWordModel>);
   }
 
   Map<String, dynamic> toJson() {
@@ -36,10 +36,12 @@ class ReviewReminderModel extends ReviewReminderEntity {
       kId: id,
       kUserId: userId,
       kIsDone: isDone,
-      kReviewAt: reviewAt,
-      kCreatedAt: createdAt,
+      kReviewAt: reviewAt.toString(),
+      kCreatedAt: createdAt.toString(),
       kVocaSetId: vocabularySetId,
-      kLearnedWords: learnedWords,
+      kLearnedWords: (learnedWords as List<dynamic>?)
+          ?.map((word) => word.toJson())
+          .toList(),
     };
   }
 }

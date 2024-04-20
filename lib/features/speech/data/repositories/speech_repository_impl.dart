@@ -1,7 +1,7 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/speech_params.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/speech/business/repositories/speech_repository.dart';
+import 'package:ctue_app/features/speech/data/datasources/speech_local_data_source.dart';
 import 'package:ctue_app/features/speech/data/datasources/speech_remote_data_source.dart';
 import 'package:ctue_app/features/speech/data/models/pronuc_statistics_model.dart';
 import 'package:ctue_app/features/speech/data/models/pronunc_assessment_model.dart';
@@ -14,7 +14,7 @@ import '../../../../../core/errors/failure.dart';
 
 class SpeechRepositoryImpl implements SpeechRepository {
   final SpeechRemoteDataSource remoteDataSource;
-  final TemplateLocalDataSource localDataSource;
+  final SpeechLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
   SpeechRepositoryImpl({
@@ -31,7 +31,7 @@ class SpeechRepositoryImpl implements SpeechRepository {
         ResponseDataModel<List<VoiceModel>> remoteSpeech =
             await remoteDataSource.getVoices(getVoiceParams: getVoiceParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteSpeech);
+        localDataSource.cacheVoices(pronuncStatisticModel: remoteSpeech);
 
         return Right(remoteSpeech);
       } on ServerException catch (e) {
@@ -39,7 +39,13 @@ class SpeechRepositoryImpl implements SpeechRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<List<VoiceModel>> localVoices =
+            await localDataSource.getLastVoices();
+        return Right(localVoices);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 
@@ -51,7 +57,7 @@ class SpeechRepositoryImpl implements SpeechRepository {
         ResponseDataModel<List<int>> remoteSpeech =
             await remoteDataSource.tts(ttsParams: ttsParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteSpeech);
+        localDataSource.cacheTextToSpeech(audioData: remoteSpeech);
 
         return Right(remoteSpeech);
       } on ServerException catch (e) {
@@ -59,7 +65,13 @@ class SpeechRepositoryImpl implements SpeechRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<List<int>> localTextToSpeech =
+            await localDataSource.getLastTextToSpeech();
+        return Right(localTextToSpeech);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 
@@ -97,7 +109,8 @@ class SpeechRepositoryImpl implements SpeechRepository {
             await remoteDataSource.getUserProStatistics(
                 getUserProStatisticParams: getUserProStatisticParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteSpeech);
+        localDataSource.cacheUserPronuncStatistics(
+            pronuncStatisticModel: remoteSpeech);
 
         return Right(remoteSpeech);
       } on ServerException catch (e) {
@@ -105,7 +118,13 @@ class SpeechRepositoryImpl implements SpeechRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<PronuncStatisticModel> localUserPronuncStatistics =
+            await localDataSource.getLastUserPronuncStatistics();
+        return Right(localUserPronuncStatistics);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 }

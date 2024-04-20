@@ -2,9 +2,9 @@ import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/favorite_params.dart';
 import 'package:ctue_app/features/extension/business/entities/favorite_entity.dart';
 import 'package:ctue_app/features/extension/business/repositories/favorite_repository.dart';
+import 'package:ctue_app/features/extension/data/datasources/favorite_local_data_source.dart';
 import 'package:ctue_app/features/extension/data/datasources/favotire_remote_data_source.dart';
 import 'package:ctue_app/features/extension/data/models/favorite_model.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 
 import 'package:ctue_app/features/word/data/models/word_model.dart';
 import 'package:dartz/dartz.dart';
@@ -15,7 +15,7 @@ import '../../../../../core/errors/failure.dart';
 
 class FavoriteRepositoryImpl implements FavoriteRepository {
   final FavoriteRemoteDataSource remoteDataSource;
-  final TemplateLocalDataSource localDataSource;
+  final FavoriteLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
   FavoriteRepositoryImpl({
@@ -33,7 +33,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
             await remoteDataSource.getFavorites(
                 getFavoritesParams: getFavoritesParams);
 
-        // localDataSource.cacheFavorite(templateToCache: remoteFavorite);
+        localDataSource.cacheFavorite(favoriteModel: remoteFavorite);
 
         return Right(remoteFavorite);
       } on ServerException catch (e) {
@@ -41,7 +41,13 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<List<WordModel>> localFavorites =
+            await localDataSource.getLastFavorites();
+        return Right(localFavorites);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 

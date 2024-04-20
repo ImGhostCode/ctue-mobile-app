@@ -5,7 +5,6 @@ import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/speech_params.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/speech/business/entities/pronunc_assessment_entity.dart';
 import 'package:ctue_app/features/speech/business/entities/prounc_statistics_entity.dart';
 import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
@@ -13,6 +12,7 @@ import 'package:ctue_app/features/speech/business/usecases/eval_speech_pron_usec
 import 'package:ctue_app/features/speech/business/usecases/get_usr_pronuc_statis_usecase.dart';
 import 'package:ctue_app/features/speech/business/usecases/get_voices_usecase.dart';
 import 'package:ctue_app/features/speech/business/usecases/tts_usecase.dart';
+import 'package:ctue_app/features/speech/data/datasources/speech_local_data_source.dart';
 import 'package:ctue_app/features/speech/data/datasources/speech_remote_data_source.dart';
 import 'package:ctue_app/features/speech/data/repositories/speech_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
@@ -92,7 +92,7 @@ class SpeechProvider extends ChangeNotifier {
       remoteDataSource: SpeechRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SpeechLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -128,7 +128,7 @@ class SpeechProvider extends ChangeNotifier {
       remoteDataSource: SpeechRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SpeechLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -167,7 +167,7 @@ class SpeechProvider extends ChangeNotifier {
       remoteDataSource: SpeechRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SpeechLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -202,7 +202,7 @@ class SpeechProvider extends ChangeNotifier {
       remoteDataSource: SpeechRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: SpeechLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(

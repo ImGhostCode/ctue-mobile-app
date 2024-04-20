@@ -1,7 +1,7 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/topic_params.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/topic/business/repositories/topic_repository.dart';
+import 'package:ctue_app/features/topic/data/datasources/topic_local_data_source.dart';
 import 'package:ctue_app/features/topic/data/datasources/topic_remote_data_source.dart';
 import 'package:ctue_app/features/topic/data/models/topic_model.dart';
 import 'package:dartz/dartz.dart';
@@ -12,7 +12,7 @@ import '../../../../../core/errors/failure.dart';
 
 class TopicRepositoryImpl implements TopicRepository {
   final TopicRemoteDataSource remoteDataSource;
-  final TemplateLocalDataSource localDataSource;
+  final TopicLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
   TopicRepositoryImpl({
@@ -29,7 +29,7 @@ class TopicRepositoryImpl implements TopicRepository {
         ResponseDataModel<List<TopicModel>> remoteType =
             await remoteDataSource.getTopics(topicParams: topicParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteType);
+        localDataSource.cacheTopic(topicModel: remoteType);
 
         return Right(remoteType);
       } on ServerException catch (e) {
@@ -37,12 +37,13 @@ class TopicRepositoryImpl implements TopicRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localAuth = await localDataSource.getLastAuth();
-      //   return Right(localAuth);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+      try {
+        ResponseDataModel<List<TopicModel>> localTopics =
+            await localDataSource.getLastTopic();
+        return Right(localTopics);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 }

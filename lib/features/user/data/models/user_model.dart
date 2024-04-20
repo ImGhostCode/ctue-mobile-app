@@ -43,10 +43,11 @@ class UserModel extends UserEntity {
       kName: name,
       kAvt: avt.toString(),
       kIsDeleted: isDeleted,
-      kCreatedAt: createdAt,
+      kCreatedAt: createdAt.toString(),
       kAccountType: accountType,
-      kUpdatedAt: updatedAt,
-      kInterestTopics: interestTopics
+      kUpdatedAt: updatedAt.toString(),
+      kInterestTopics:
+          (interestTopics as List<dynamic>?)?.map((e) => e.toJson()).toList()
     };
   }
 }

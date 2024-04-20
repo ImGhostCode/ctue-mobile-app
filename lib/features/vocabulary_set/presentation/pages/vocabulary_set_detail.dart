@@ -38,8 +38,8 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
         .eitherFailureOrGerVocaSetDetail(args.id);
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrGetUsrLearnedWords(args.id);
-    Provider.of<LearnProvider>(context, listen: false)
-        .eitherFailureOrGetUsrLearnedWords(args.id);
+    // Provider.of<LearnProvider>(context, listen: false)
+    //     .eitherFailureOrGetUsrLearnedWords(args.id);
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(args.id);
     super.didChangeDependencies();

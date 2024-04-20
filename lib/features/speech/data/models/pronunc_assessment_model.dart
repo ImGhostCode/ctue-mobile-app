@@ -21,7 +21,7 @@ class PronuncAssessmentModel extends PronuncAssessmentEntity {
         phonemeAssessments: json[kPhonemeAssessment]
             .map<PhonemeAssessmentModel>(
                 (phoneme) => PhonemeAssessmentModel.fromJson(json: phoneme))
-            .toList(),
+            .toList() as List<PhonemeAssessmentModel>,
         userEntity:
             json[kUser] != null ? UserModel.fromJson(json: json[kUser]) : null);
   }
@@ -32,8 +32,9 @@ class PronuncAssessmentModel extends PronuncAssessmentEntity {
       kUserId: userId,
       kLabel: label,
       kScore: score,
-      kPhonemeAssessment: phonemeAssessments,
-      kUser: userEntity
+      kPhonemeAssessment:
+          (phonemeAssessments as List<dynamic>).map((e) => e.toJson()).toList(),
+      kUser: (userEntity as UserModel?)?.toJson()
     };
   }
 }

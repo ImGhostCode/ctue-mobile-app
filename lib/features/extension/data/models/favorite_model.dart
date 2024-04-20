@@ -13,11 +13,15 @@ class FavoriteModel extends FavoriteEntity {
             ? json[kWord]
                 .map<WordModel>(
                     (wordJson) => WordModel.fromJson(json: wordJson))
-                .toList()
+                .toList() as List<WordModel>
             : []);
   }
 
   Map<String, dynamic> toJson() {
-    return {kId: id, kUserId: userId, kWords: words};
+    return {
+      kId: id,
+      kUserId: userId,
+      kWords: (words as List<dynamic>).map((e) => e.toJson()).toList()
+    };
   }
 }

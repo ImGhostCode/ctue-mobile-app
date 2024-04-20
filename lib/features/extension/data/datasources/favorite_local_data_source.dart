@@ -1,41 +1,49 @@
 import 'dart:convert';
 
+import 'package:ctue_app/core/constants/response.dart';
+import 'package:ctue_app/features/word/data/models/word_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/errors/exceptions.dart';
-import '../models/template_model.dart';
 
-abstract class TemplateLocalDataSource {
-  Future<void> cacheTemplate({required TemplateModel? templateToCache});
-  Future<TemplateModel> getLastTemplate();
+abstract class FavoriteLocalDataSource {
+  Future<void> cacheFavorite(
+      {required ResponseDataModel<List<WordModel>>? favoriteModel});
+  Future<ResponseDataModel<List<WordModel>>> getLastFavorites();
 }
 
-const cachedTemplate = 'CACHED_TEMPLATE';
+const cachedFavorite = 'CACHED_FAVORITES';
 
-class TemplateLocalDataSourceImpl implements TemplateLocalDataSource {
+class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
   final SharedPreferences sharedPreferences;
 
-  TemplateLocalDataSourceImpl({required this.sharedPreferences});
+  FavoriteLocalDataSourceImpl({required this.sharedPreferences});
 
   @override
-  Future<TemplateModel> getLastTemplate() {
-    final jsonString = sharedPreferences.getString(cachedTemplate);
+  Future<ResponseDataModel<List<WordModel>>> getLastFavorites() {
+    final jsonString = sharedPreferences.getString(cachedFavorite);
 
     if (jsonString != null) {
-      return Future.value(
-          TemplateModel.fromJson(json: json.decode(jsonString)));
+      return Future.value(ResponseDataModel<List<WordModel>>.fromJson(
+          json: json.decode(jsonString),
+          fromJsonD: (jsonFavorites) => jsonFavorites
+              ?.map<WordModel>((json) => WordModel.fromJson(json: json))
+              .toList()));
     } else {
       throw CacheException();
     }
   }
 
   @override
-  Future<void> cacheTemplate({required TemplateModel? templateToCache}) async {
-    if (templateToCache != null) {
+  Future<void> cacheFavorite(
+      {required ResponseDataModel<List<WordModel>>? favoriteModel}) async {
+    if (favoriteModel != null) {
       sharedPreferences.setString(
-        cachedTemplate,
-        json.encode(
-          templateToCache.toJson(),
-        ),
+        cachedFavorite,
+        json.encode(Map.from({
+          "data": favoriteModel.data.map((e) => e.toJson()).toList(),
+          "statusCode": favoriteModel.statusCode,
+          "message": favoriteModel.message
+        })),
       );
     } else {
       throw CacheException();

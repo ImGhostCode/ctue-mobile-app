@@ -38,9 +38,9 @@ class ContributionModel extends ContributionEntity {
       kContriType: type,
       kUserId: userId,
       kFeedback: feedback,
-      kCreatedAt: createdAt,
-      kUpdatedAt: updatedAt,
-      kUser: user,
+      kCreatedAt: createdAt.toString(),
+      kUpdatedAt: updatedAt.toString(),
+      kUser: (user as UserModel?)?.toJson(),
       kStatus: status
     };
   }

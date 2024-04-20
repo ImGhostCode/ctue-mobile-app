@@ -33,7 +33,7 @@ class UserRepositoryImpl implements UserRepository {
         ResponseDataModel<UserModel> remoteUser =
             await remoteDataSource.getUser(getUserParams: getUserParams);
 
-        // localDataSource.cacheUser(UserToCache: remoteUser);
+        localDataSource.cacheUser(userModel: remoteUser);
 
         return Right(remoteUser);
       } on ServerException catch (e) {
@@ -41,12 +41,13 @@ class UserRepositoryImpl implements UserRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localUser = await localDataSource.getLastUser();
-      //   return Right(localUser);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+      try {
+        ResponseDataModel<UserModel> localUser =
+            await localDataSource.getLastUser();
+        return Right(localUser);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 
@@ -128,7 +129,7 @@ class UserRepositoryImpl implements UserRepository {
         ResponseDataModel<UserResModel> remoteUser = await remoteDataSource
             .getAllUser(getAllUserParams: getAllUserParams);
 
-        // localDataSource.cacheUser(UserToCache: remoteUser);
+        localDataSource.cacheUsersByAdmin(userResModel: remoteUser);
 
         return Right(remoteUser);
       } on ServerException catch (e) {
@@ -136,12 +137,13 @@ class UserRepositoryImpl implements UserRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localUser = await localDataSource.getLastUser();
-      //   return Right(localUser);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+      try {
+        ResponseDataModel<UserResModel> localUsersByAdmin =
+            await localDataSource.getLastUsersByAdmin();
+        return Right(localUsersByAdmin);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 

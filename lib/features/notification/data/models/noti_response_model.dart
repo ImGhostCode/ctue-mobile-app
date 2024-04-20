@@ -12,10 +12,14 @@ class NotiResModel extends NotiResEntity {
         data: json[kData]
             .map<NotificationModel>(
                 (noti) => NotificationModel.fromJson(json: noti))
-            .toList());
+            .toList() as List<NotificationModel>);
   }
 
   Map<String, dynamic> toJson() {
-    return {kTotal: total, kTotalPages: totalPages, kData: data};
+    return {
+      kTotal: total,
+      kTotalPages: totalPages,
+      kData: (data as List<NotificationModel>).map((e) => e.toJson()).toList(),
+    };
   }
 }

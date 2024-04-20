@@ -1,7 +1,7 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/type_params.dart';
 import 'package:ctue_app/features/type/business/repositories/type_repository.dart';
-import 'package:ctue_app/features/type/data/datasources/template_local_data_source.dart';
+import 'package:ctue_app/features/type/data/datasources/type_local_data_source.dart';
 import 'package:ctue_app/features/type/data/datasources/type_remote_data_source.dart';
 import 'package:ctue_app/features/type/data/models/type_model.dart';
 import 'package:dartz/dartz.dart';
@@ -29,7 +29,7 @@ class TypeRepositoryImpl implements TypeRepository {
         ResponseDataModel<List<TypeModel>> remoteType =
             await remoteDataSource.getTypes(typeParams: typeParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteType);
+        localDataSource.cacheType(typeModel: remoteType);
 
         return Right(remoteType);
       } on ServerException catch (e) {
@@ -37,7 +37,13 @@ class TypeRepositoryImpl implements TypeRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<List<TypeModel>> localTypes =
+            await localDataSource.getLastType();
+        return Right(localTypes);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 }

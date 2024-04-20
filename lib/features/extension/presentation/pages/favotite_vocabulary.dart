@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteVocabulary extends StatefulWidget {
-  FavoriteVocabulary({super.key});
+  const FavoriteVocabulary({super.key});
 
   @override
   State<FavoriteVocabulary> createState() => _FavoriteVocabularyState();

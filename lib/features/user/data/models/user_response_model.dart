@@ -12,10 +12,14 @@ class UserResModel extends UserResEntity {
         data: json[kData]
             .map<AccountModel>(
                 (account) => AccountModel.fromJson(json: account))
-            .toList());
+            .toList() as List<AccountModel>);
   }
 
   Map<String, dynamic> toJson() {
-    return {kTotal: total, kTotalPages: totalPages, kData: data};
+    return {
+      kTotal: total,
+      kTotalPages: totalPages,
+      kData: (data as List<dynamic>).map((e) => e.toJson()).toList()
+    };
   }
 }

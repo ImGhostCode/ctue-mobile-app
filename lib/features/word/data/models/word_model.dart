@@ -26,39 +26,37 @@ class WordModel extends WordEntity {
 
   factory WordModel.fromJson({required Map<String, dynamic> json}) {
     return WordModel(
-      id: json['id'],
-      content: json['content'],
+      id: json[kId],
+      content: json[kContent],
 
-      isDeleted: json['isDeleted'],
-      note: json['note'],
-      userId: json['userId'],
-      topics: json['Topic'] != null
-          ? json['Topic']
+      isDeleted: json[kIsDeleted],
+      note: json[kNote],
+      userId: json[kUserId],
+      topics: json[kTopic] != null
+          ? json[kTopic]
               .map<TopicModel>(
                   (topicJson) => TopicModel.fromJson(json: topicJson))
-              .toList()
+              .toList() as List<TopicModel>
           : [],
       // type: TypeModel.fromJson(json: json['Type']),
-      levelId: json['levelId'],
-      specializationId: json['specializationId'],
-      meanings: json['meanings'] != null
-          ? json['meanings']
+      levelId: json[kLevelId],
+      specializationId: json[kSpecializationId],
+      meanings: json[kMeanings] != null
+          ? json[kMeanings]
               .map<WordMeaningModel>(
                   (meaingJson) => WordMeaningModel.fromJson(json: meaingJson))
-              .toList()
+              .toList() as List<WordMeaningModel>
           : [],
-      levelEntity: json['Level'] != null
-          ? LevelModel.fromJson(json: json['Level'])
+      levelEntity:
+          json[kLevel] != null ? LevelModel.fromJson(json: json[kLevel]) : null,
+      specializationEntity: json[kSpecialization] != null
+          ? SpecializationModel.fromJson(json: json[kSpecialization])
           : null,
-      specializationEntity: json['Specialization'] != null
-          ? SpecializationModel.fromJson(json: json['Specialization'])
-          : null,
-      phonetic: json['phonetic'],
-      pictures: json['pictures'].map<String>((pic) => pic.toString()).toList(),
-      examples:
-          json['examples'].map<String>((exam) => exam.toString()).toList(),
-      synonyms: json['synonyms'].map<String>((syn) => syn.toString()).toList(),
-      antonyms: json['antonyms'].map<String>((ant) => ant.toString()).toList(),
+      phonetic: json[kPhonetic],
+      pictures: json[kPictures].map<String>((pic) => pic.toString()).toList(),
+      examples: json[kExamples].map<String>((exam) => exam.toString()).toList(),
+      synonyms: json[kSynonyms].map<String>((syn) => syn.toString()).toList(),
+      antonyms: json[kAntonyms].map<String>((ant) => ant.toString()).toList(),
     );
   }
 
@@ -68,16 +66,21 @@ class WordModel extends WordEntity {
       kLevelId: levelId,
       kSpecializationId: specializationId,
       kContent: content,
-      kMeanings: meanings,
+      kMeanings: (meanings as List<dynamic>)
+          .map((meaning) => meaning.toJson())
+          .toList(),
       kIsDeleted: isDeleted,
       kNote: note,
       kUserId: userId,
-      kTopics: topics,
+      kTopics:
+          (topics as List<dynamic>).map((topic) => topic.toJson()).toList(),
       kPhonetic: phonetic,
       kPictures: pictures,
       kExamples: examples,
       kSynonyms: synonyms,
-      kAntonyms: antonyms
+      kAntonyms: antonyms,
+      kLevel: (levelEntity as LevelModel?)?.toJson(),
+      kSpecialization: (specializationEntity as SpecializationModel?)?.toJson(),
     };
   }
 }

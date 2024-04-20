@@ -23,6 +23,7 @@ class IrrVerbModel extends IrrVerbEntity {
 
   Map<String, dynamic> toJson() {
     return {
+      kId: id,
       kV1: v1,
       kV2: v2,
       kV3: v3,

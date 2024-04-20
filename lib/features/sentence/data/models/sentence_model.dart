@@ -24,10 +24,10 @@ class SentenceModel extends SentenceEntity {
       isDeleted: json['isDeleted'],
       note: json['note'],
       userId: json['userId'],
-      topics: json['Topic']
+      topics: json[kTopic]
           .map<TopicModel>((topicJson) => TopicModel.fromJson(json: topicJson))
-          .toList(),
-      type: TypeModel.fromJson(json: json['Type']),
+          .toList() as List<TopicModel>,
+      type: TypeModel.fromJson(json: json[kTYPE]),
     );
   }
 
@@ -40,8 +40,10 @@ class SentenceModel extends SentenceEntity {
       kIsDeleted: isDeleted,
       kNote: note,
       kUserId: userId,
-      kTopics: topics,
-      kType: type
+      kTopic: (topics as List<TopicModel>?)
+          ?.map((topic) => topic.toJson())
+          .toList(),
+      kTYPE: (type as TypeModel).toJson()
     };
   }
 }

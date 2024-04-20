@@ -10,13 +10,13 @@ class TopicModel extends TopicEntity {
 
   factory TopicModel.fromJson({required Map<String, dynamic> json}) {
     return TopicModel(
-        id: json['id'],
-        name: json['name'],
-        isWord: json['isWord'],
-        image: json['image']);
+        id: json[kId],
+        name: json[kName],
+        isWord: json[kisWord],
+        image: json[kImage]);
   }
 
   Map<String, dynamic> toJson() {
-    return {kId: id, kName: name, kisWord: isWord};
+    return {kId: id, kName: name, kisWord: isWord, kImage: image};
   }
 }

@@ -5,7 +5,6 @@ import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/word_pararms.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/business/entities/word_response_entity.dart';
@@ -16,6 +15,7 @@ import 'package:ctue_app/features/word/business/usecases/get_word_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/look_up_by_image_usecase%20copy.dart';
 import 'package:ctue_app/features/word/business/usecases/look_up_dic_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/upd_word_usecase.dart';
+import 'package:ctue_app/features/word/data/datasources/word_local_data_source.dart';
 import 'package:ctue_app/features/word/data/datasources/word_remote_data_source.dart';
 import 'package:ctue_app/features/word/data/repositories/word_repository_impl.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
@@ -71,7 +71,7 @@ class WordProvider extends ChangeNotifier {
       remoteDataSource: WordRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: WordLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -109,7 +109,7 @@ class WordProvider extends ChangeNotifier {
       remoteDataSource: WordRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: WordLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -145,7 +145,7 @@ class WordProvider extends ChangeNotifier {
       remoteDataSource: WordRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: WordLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -180,7 +180,7 @@ class WordProvider extends ChangeNotifier {
       remoteDataSource: WordRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: WordLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -228,7 +228,7 @@ class WordProvider extends ChangeNotifier {
       remoteDataSource: WordRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: WordLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -291,7 +291,7 @@ class WordProvider extends ChangeNotifier {
       remoteDataSource: WordRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: WordLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -343,7 +343,7 @@ class WordProvider extends ChangeNotifier {
       remoteDataSource: WordRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: WordLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(

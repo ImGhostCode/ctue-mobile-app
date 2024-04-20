@@ -5,8 +5,7 @@ class TypeModel extends TypeEntity {
   TypeModel({required super.id, required super.name, super.isWord});
 
   factory TypeModel.fromJson({required Map<String, dynamic> json}) {
-    return TypeModel(
-        id: json['id'], name: json['name'], isWord: json['isWord']);
+    return TypeModel(id: json[kId], name: json[kName], isWord: json[kisWord]);
   }
 
   Map<String, dynamic> toJson() {

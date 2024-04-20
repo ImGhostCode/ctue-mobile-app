@@ -11,12 +11,11 @@ class WordMeaningModel extends WordMeaningEntity {
 
   factory WordMeaningModel.fromJson({required Map<String, dynamic> json}) {
     return WordMeaningModel(
-        typeId: json['typeId'],
-        wordId: json['wordId'],
-        meaning: json['meaning'],
-        type: json['Type'] != null
-            ? TypeModel.fromJson(json: json['Type'])
-            : null);
+        typeId: json[kTypeId],
+        wordId: json[kWordId],
+        meaning: json[kMeaning],
+        type:
+            json[kTYPE] != null ? TypeModel.fromJson(json: json[kTYPE]) : null);
   }
 
   Map<String, dynamic> toJson() {
@@ -24,8 +23,9 @@ class WordMeaningModel extends WordMeaningEntity {
       kTypeId: typeId,
       kWordId: wordId,
       kMeaning: meaning,
-      kType: TypeModel(id: type!.id, name: type!.name, isWord: type!.isWord)
-          .toJson()
+      // kTYPE: TypeModel(id: type!.id, name: type!.name, isWord: type!.isWord)
+      //     .toJson()
+      kTYPE: (type as TypeModel?)?.toJson()
     };
   }
 }

@@ -2,7 +2,7 @@ import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/level_params.dart';
 import 'package:ctue_app/features/level/business/repositories/level_repository.dart';
 import 'package:ctue_app/features/level/data/datasources/level_remote_data_source.dart';
-import 'package:ctue_app/features/level/data/datasources/template_local_data_source.dart';
+import 'package:ctue_app/features/level/data/datasources/level_local_data_source.dart';
 import 'package:ctue_app/features/level/data/models/level_model.dart';
 import 'package:dartz/dartz.dart';
 
@@ -29,7 +29,7 @@ class LevelRepositoryImpl implements LevelRepository {
         ResponseDataModel<List<LevelModel>> remoteLevel =
             await remoteDataSource.getLevels(levelParams: levelParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteLevel);
+        localDataSource.cacheLevel(levelModel: remoteLevel);
 
         return Right(remoteLevel);
       } on ServerException catch (e) {
@@ -37,7 +37,13 @@ class LevelRepositoryImpl implements LevelRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<List<LevelModel>> localLevels =
+            await localDataSource.getLastLevel();
+        return Right(localLevels);
+      } on CacheException {
+        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      }
     }
   }
 }

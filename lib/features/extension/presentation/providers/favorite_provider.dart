@@ -5,9 +5,9 @@ import 'package:ctue_app/features/extension/business/entities/favorite_entity.da
 import 'package:ctue_app/features/extension/business/usecases/check_is_favorite.dart';
 import 'package:ctue_app/features/extension/business/usecases/get_favorites.dart';
 import 'package:ctue_app/features/extension/business/usecases/toggle_favorite.dart';
+import 'package:ctue_app/features/extension/data/datasources/favorite_local_data_source.dart';
 import 'package:ctue_app/features/extension/data/datasources/favotire_remote_data_source.dart';
 import 'package:ctue_app/features/extension/data/repositories/favorite_respository_impl.dart';
-import 'package:ctue_app/features/home/data/datasources/template_local_data_source.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 
@@ -58,7 +58,7 @@ class FavoriteProvider extends ChangeNotifier {
       remoteDataSource: FavoriteRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: FavoriteLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -99,7 +99,7 @@ class FavoriteProvider extends ChangeNotifier {
       remoteDataSource: FavoriteRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: FavoriteLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
@@ -135,7 +135,7 @@ class FavoriteProvider extends ChangeNotifier {
       remoteDataSource: FavoriteRemoteDataSourceImpl(
         dio: ApiService.dio,
       ),
-      localDataSource: TemplateLocalDataSourceImpl(
+      localDataSource: FavoriteLocalDataSourceImpl(
         sharedPreferences: await SharedPreferences.getInstance(),
       ),
       networkInfo: NetworkInfoImpl(
