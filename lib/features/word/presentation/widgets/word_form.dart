@@ -58,6 +58,7 @@ class _WordFormState extends State<WordForm> {
   int? _selectedLevel;
   int? _selectedSpecializaiton;
   bool _isExpanded = false;
+  bool isInititalizedTopic = false;
 
   String? _wordDefinitionError = '';
   String? _levelError = '';
@@ -599,7 +600,12 @@ class _WordFormState extends State<WordForm> {
             child: Consumer<TopicProvider>(builder: (context, provider, child) {
               List<TopicEntity> listTopics = provider.listTopicEntity;
 
-              if (widget.initData != null) {
+              bool isLoading = provider.isLoading;
+
+              if (!isLoading &&
+                  !isInititalizedTopic &&
+                  listTopics.isNotEmpty &&
+                  widget.initData != null) {
                 List<int> selectedId =
                     widget.initData!.topics!.map((e) => e.id).toList();
                 for (var element in listTopics) {
@@ -607,9 +613,8 @@ class _WordFormState extends State<WordForm> {
                     element.isSelected = true;
                   }
                 }
+                isInititalizedTopic = true;
               }
-
-              bool isLoading = provider.isLoading;
 
               // Access the failure from the provider
               Failure? failure = provider.failure;

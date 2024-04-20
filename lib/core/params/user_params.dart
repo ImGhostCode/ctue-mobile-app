@@ -6,6 +6,13 @@ class GetUserParams {
   GetUserParams({required this.accessToken});
 }
 
+class GetAccountParams {
+  final int userId;
+  final String accessToken;
+
+  GetAccountParams({required this.accessToken, required this.userId});
+}
+
 class UpdateUserParams {
   final int id;
   final XFile? avt;

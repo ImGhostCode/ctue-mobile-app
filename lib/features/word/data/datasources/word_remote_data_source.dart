@@ -194,21 +194,12 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
         "levelId": createWordParams.levelId,
         "specializationId": createWordParams.specializationId,
         "content": createWordParams.content,
-        "meanings": createWordParams.meanings.length > 1
-            ? createWordParams.meanings
-                .map((meaning) => {
-                      'typeId': meaning.typeId,
-                      'meaning': meaning.meaning,
-                    })
-                .toList()
-            : [
-                createWordParams.meanings
-                    .map((meaning) => {
-                          'typeId': meaning.typeId,
-                          'meaning': meaning.meaning,
-                        })
-                    .toList()
-              ],
+        "meanings": createWordParams.meanings
+            .map((meaning) => {
+                  'typeId': meaning.typeId,
+                  'meaning': meaning.meaning,
+                })
+            .toList(),
         "note": createWordParams.note,
         "phonetic": createWordParams.phonetic,
         "examples": createWordParams.examples.length > 1

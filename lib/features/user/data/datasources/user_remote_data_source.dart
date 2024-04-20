@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/user_params.dart';
+import 'package:ctue_app/features/auth/data/models/account_model.dart';
 import 'package:ctue_app/features/user/data/models/user_model.dart';
 import 'package:ctue_app/features/user/data/models/user_response_model.dart';
 import 'package:dio/dio.dart';
@@ -9,6 +10,8 @@ import '../../../../../core/errors/exceptions.dart';
 abstract class UserRemoteDataSource {
   Future<ResponseDataModel<UserModel>> getUser(
       {required GetUserParams getUserParams});
+  Future<ResponseDataModel<AccountModel>> getAccountDetailByAdmin(
+      {required GetAccountParams getAccountParams});
   Future<ResponseDataModel<UserResModel>> getAllUser(
       {required GetAllUserParams getAllUserParams});
 
@@ -232,6 +235,36 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
           }));
       return ResponseDataModel<void>.fromJson(
           json: response.data, fromJsonD: (json) {});
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw ServerException(
+            statusCode: 500, errorMessage: 'Can\'t connect server');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response?.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<AccountModel>> getAccountDetailByAdmin(
+      {required GetAccountParams getAccountParams}) async {
+    try {
+      final response = await dio.get('/users/${getAccountParams.userId}',
+          options: Options(headers: {
+            "authorization": "Bearer ${getAccountParams.accessToken}"
+          }));
+      return ResponseDataModel<AccountModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) {
+            return AccountModel.fromJson(json: json);
+          });
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {

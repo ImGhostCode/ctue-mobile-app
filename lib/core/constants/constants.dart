@@ -49,6 +49,7 @@ class RouteNames {
   static const String vocaSetManagement = '/voca-set-management';
   static const String editVocaSet = '/edit-voca-set';
   static const String adminOverview = '/admin-overview';
+  static const String accountDetail = '/account-detail';
 }
 
 String getRouteName(String url) {

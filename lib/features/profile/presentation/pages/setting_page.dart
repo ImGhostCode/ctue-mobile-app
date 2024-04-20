@@ -244,7 +244,7 @@ class _SettingPageState extends State<SettingPage> {
                                           listen: false)
                                       .selectedPage = 0;
 
-                                  Provider.of<HomeProvider>(context,
+                                  await Provider.of<HomeProvider>(context,
                                           listen: false)
                                       .removeRecentPages();
 

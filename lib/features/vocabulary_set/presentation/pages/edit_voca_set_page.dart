@@ -93,8 +93,8 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
     args.vocaSetEntity.words.forEach((word) {
       oldWords.add(word.id);
     });
+    oldPicture = args.vocaSetEntity.picture;
     if (args.isAdmin) {
-      oldPicture = args.vocaSetEntity.picture;
       _selectedSpecializaiton = args.vocaSetEntity.specId;
       _isPublic ??= args.vocaSetEntity.isPublic;
     }
@@ -164,7 +164,7 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                             _titleController.text,
                             null,
                             null,
-                            null,
+                            oldPicture,
                             null,
                             null,
                             wordIds,

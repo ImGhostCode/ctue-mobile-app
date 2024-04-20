@@ -60,13 +60,6 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
     super.dispose();
   }
 
-  // @override
-  // void initState() {
-  //   Provider.of<SentenceProvider>(context, listen: false)
-  //       .eitherFailureOrSentences([], null, 1, 'asc');
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

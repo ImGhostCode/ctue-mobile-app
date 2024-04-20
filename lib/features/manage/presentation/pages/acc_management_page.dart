@@ -1,3 +1,4 @@
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
@@ -309,11 +310,12 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
               ),
               TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/contribution-history',
-                        arguments: ContriHistoryArguments(user: account.user));
+                    Navigator.pushNamed(context, RouteNames.accountDetail,
+                        arguments:
+                            AccountDetailArguments(userId: account.userId));
                   },
                   child: const Text(
-                    'Lịch sử đóng góp',
+                    'Xem chi tiết',
                   ))
             ]),
         actionsAlignment: MainAxisAlignment.spaceBetween,
@@ -497,4 +499,10 @@ class ContriHistoryArguments {
   // List<ContributionEntity> contributions = [];
 
   ContriHistoryArguments({this.user, this.userId});
+}
+
+class AccountDetailArguments {
+  int userId;
+
+  AccountDetailArguments({required this.userId});
 }

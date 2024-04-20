@@ -12,6 +12,7 @@ import 'package:ctue_app/features/irregular_verb/presentation/pages/edit_irr_ver
 import 'package:ctue_app/features/learn/presentation/pages/learned_result.dart';
 import 'package:ctue_app/features/learn/presentation/pages/select_word_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
+import 'package:ctue_app/features/manage/presentation/pages/account_detail_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/contri_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/dict_management_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/irre_verb_management_page.dart';
@@ -396,6 +397,7 @@ class MyApp extends StatelessWidget {
               const VocaSetManagementPage(),
           RouteNames.editVocaSet: (context) => const EditVocabularySet(),
           RouteNames.adminOverview: (context) => const OverviewPage(),
+          RouteNames.accountDetail: (context) => const AccountDetailPage(),
         },
       ),
     );

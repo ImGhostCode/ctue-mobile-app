@@ -172,13 +172,13 @@ class _WordDetailState extends State<WordDetail> {
                                   wordDetail?.pictures != null &&
                                           wordDetail!.pictures.isNotEmpty
                                       ? SizedBox(
-                                          height: 100,
+                                          height: 180,
                                           child: ListView.separated(
                                               scrollDirection: Axis.horizontal,
                                               itemBuilder: (context, index) {
                                                 return Container(
-                                                    height: 100,
-                                                    width: 130,
+                                                    height: 180,
+                                                    width: 200,
                                                     decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.circular(

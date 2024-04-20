@@ -1,6 +1,8 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/contribute/business/entities/contribution_entity.dart';
 import 'package:ctue_app/features/contribute/presentation/providers/contribution_provider.dart';
+import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
+import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -239,7 +241,7 @@ class _ContributionManagementPageState
                         ? showWordConDetail(
                             context,
                             item,
-                            item.user!.name,
+                            item.user!,
                             item.content,
                             item.feedback,
                             true,
@@ -250,7 +252,7 @@ class _ContributionManagementPageState
                         : showSentenceConDetail(
                             context,
                             item,
-                            item.user!.name,
+                            item.user!,
                             item.content,
                             item.feedback,
                             true,
@@ -413,7 +415,7 @@ Future<void> _dialogRefuseConBuilder(BuildContext context,
 Future<String?> showWordConDetail(
     BuildContext context,
     ContributionEntity contribution,
-    String name,
+    UserEntity user,
     Map<String, dynamic> contributionDetail,
     String? feedback,
     bool isAdmin,
@@ -443,7 +445,26 @@ Future<String?> showWordConDetail(
                         .bodyMedium!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text(name),
+                  !isAdmin
+                      ? Text(user.name)
+                      : TextButton(
+                          style: const ButtonStyle(
+                              padding:
+                                  MaterialStatePropertyAll(EdgeInsets.zero),
+                              overlayColor:
+                                  MaterialStatePropertyAll(Colors.transparent)),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RouteNames.accountDetail,
+                                arguments:
+                                    AccountDetailArguments(userId: user.id));
+                          },
+                          child: Text(
+                            user.name,
+                            style: const TextStyle(
+                                decoration: TextDecoration.underline),
+                          ),
+                        )
                 ],
               ),
               Row(
@@ -797,7 +818,7 @@ Future<String?> showWordConDetail(
 Future<String?> showSentenceConDetail(
     BuildContext context,
     ContributionEntity contribution,
-    String name,
+    UserEntity user,
     Map<String, dynamic> contributionDetail,
     String? feedback,
     bool isAdmin,
@@ -827,7 +848,26 @@ Future<String?> showSentenceConDetail(
                         .bodyMedium!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text(name),
+                  !isAdmin
+                      ? Text(user.name)
+                      : TextButton(
+                          style: const ButtonStyle(
+                              padding:
+                                  MaterialStatePropertyAll(EdgeInsets.zero),
+                              overlayColor:
+                                  MaterialStatePropertyAll(Colors.transparent)),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RouteNames.accountDetail,
+                                arguments:
+                                    AccountDetailArguments(userId: user.id));
+                          },
+                          child: Text(
+                            user.name,
+                            style: const TextStyle(
+                                decoration: TextDecoration.underline),
+                          ),
+                        )
                 ],
               ),
               RichText(

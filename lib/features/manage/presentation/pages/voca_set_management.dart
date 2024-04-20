@@ -100,80 +100,96 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
             ),
           )),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
         child: Column(
           children: [
-            SizedBox(
-                height: 45,
-                child: SearchBar(
-                  hintText: 'Nhập câu để tìm kiếm',
-                  overlayColor:
-                      const MaterialStatePropertyAll(Colors.transparent),
-                  hintStyle: const MaterialStatePropertyAll<TextStyle>(
-                      TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal)),
-                  elevation: const MaterialStatePropertyAll(0),
-                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(12))),
-                  backgroundColor:
-                      const MaterialStatePropertyAll(Colors.transparent),
-                  // controller: _searchController,
-                  padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 2)),
-                  // focusNode: _searchFocusNode,
-                  onSubmitted: (String value) {
-                    // Handle editing complete (e.g., when user presses Enter)
-                    // setState(() {
-                    //   isSearching = false;
-                    // });
-                  },
-                  onTap: () {
-                    // _searchController.openView();
-                  },
-                  onChanged: (_) {
-                    // _searchController.openView();
-                    // setState(() {
-                    //   isSearching = true;
-                    // });
-                  },
-                  leading: Icon(
-                    Icons.search,
-                    size: 28,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  // trailing: <Widget>[],
-                )),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: [
-                Text(
-                  'Tổng cộng: ${Provider.of<VocaSetProvider>(context, listen: true).vocabularySetResEntity?.total ?? 'Đang tải...'}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.blue),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.filter_alt_outlined)),
-                  ],
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          height: 45,
+                          child: SearchBar(
+                            hintText: 'Nhập câu để tìm kiếm',
+                            overlayColor: const MaterialStatePropertyAll(
+                                Colors.transparent),
+                            hintStyle:
+                                const MaterialStatePropertyAll<TextStyle>(
+                                    TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal)),
+                            elevation: const MaterialStatePropertyAll(0),
+                            shape: MaterialStatePropertyAll(
+                                RoundedRectangleBorder(
+                                    side: const BorderSide(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(12))),
+                            backgroundColor: const MaterialStatePropertyAll(
+                                Colors.transparent),
+                            // controller: _searchController,
+                            padding: const MaterialStatePropertyAll<EdgeInsets>(
+                                EdgeInsets.symmetric(
+                                    horizontal: 12.0, vertical: 2)),
+                            // focusNode: _searchFocusNode,
+                            onSubmitted: (String value) {
+                              // Handle editing complete (e.g., when user presses Enter)
+                              // setState(() {
+                              //   isSearching = false;
+                              // });
+                            },
+                            onTap: () {
+                              // _searchController.openView();
+                            },
+                            onChanged: (_) {
+                              // _searchController.openView();
+                              // setState(() {
+                              //   isSearching = true;
+                              // });
+                            },
+                            leading: Icon(
+                              Icons.search,
+                              size: 28,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            // trailing: <Widget>[],
+                          )),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Tổng cộng: ${Provider.of<VocaSetProvider>(context, listen: true).vocabularySetResEntity?.total ?? 'Đang tải...'}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: Colors.blue),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.sort)),
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.filter_alt_outlined)),
+                            ],
+                          ),
+                        ],
+                      ),
+                      // const SizedBox(
+                      //   height: 5,
+                      // ),
+                      const Divider(),
+                    ],
+                  ),
                 ),
               ],
             ),
-            // const SizedBox(
-            //   height: 5,
-            // ),
-            // const Divider(),
             Expanded(
               child: PagedListView<int, VocaSetEntity>.separated(
                 pagingController: _pagingController,
@@ -290,6 +306,7 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                         callback: () {
                           Navigator.pop(context);
                           _pagingController.refresh();
+                          Navigator.pop(context);
                         },
                       ));
                 },

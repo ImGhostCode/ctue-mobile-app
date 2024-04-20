@@ -569,7 +569,7 @@ Future<String?> showDialogInput(
           callback: (newTitle) async {
             await Provider.of<VocaSetProvider>(context, listen: false)
                 .eitherFailureOrUpdateVocaSet(data.id, newTitle, null, null,
-                    null, null, null, null, null);
+                    data.picture, null, null, null, null);
 
             if (Provider.of<VocaSetProvider>(context, listen: false)
                     .statusCode ==
