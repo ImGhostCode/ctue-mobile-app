@@ -42,7 +42,8 @@ class LevelRepositoryImpl implements LevelRepository {
             await localDataSource.getLastLevel();
         return Right(localLevels);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }

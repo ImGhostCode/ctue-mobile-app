@@ -39,7 +39,7 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -65,7 +65,8 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
             await localDataSource.getLastVocaSet();
         return Right(localUserVocaSets);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -89,9 +90,14 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
       try {
         ResponseDataModel<VocaSetModel> localVocaSetDetail =
             await localDataSource.getLastVocaSetDetail();
-        return Right(localVocaSetDetail);
+        if (localVocaSetDetail.data.id == getVocaSetParams.id) {
+          return Right(localVocaSetDetail);
+        }
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -105,7 +111,7 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
             await remoteDataSource.getVocaSets(
                 getVocaSetParams: getVocaSetParams);
 
-        localDataSource.cacheVocaSet(vocaSetResModel: remoteVocaSet);
+        localDataSource.cachePublicVocaSet(vocaSetResModel: remoteVocaSet);
 
         return Right(remoteVocaSet);
       } on ServerException catch (e) {
@@ -115,10 +121,11 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
     } else {
       try {
         ResponseDataModel<List<VocaSetModel>> localVocaSets =
-            await localDataSource.getLastVocaSet();
+            await localDataSource.getLastPublicVocaSet();
         return Right(localVocaSets);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -139,7 +146,7 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -159,7 +166,7 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -179,7 +186,7 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -205,9 +212,46 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
       try {
         ResponseDataModel<VocaSetStatisticsModel> localUserVocaSets =
             await localDataSource.getLastVocaSetStatistics();
+
+        // if (localUserVocaSets.data.numberOfWords == 0) {
         return Right(localUserVocaSets);
+        // }
+
+        // if (localUserVocaSets.data.detailVocaSetStatisEntity.level_1.contains(
+        //     (element) =>
+        //         element.vocabularySetId == getVocaSetStatisParams.id)) {
+        //   return Right(localUserVocaSets);
+        // }
+        // if (localUserVocaSets.data.detailVocaSetStatisEntity.level_2.contains(
+        //     (element) =>
+        //         element.vocabularySetId == getVocaSetStatisParams.id)) {
+        //   return Right(localUserVocaSets);
+        // }
+        // if (localUserVocaSets.data.detailVocaSetStatisEntity.level_3.contains(
+        //     (element) =>
+        //         element.vocabularySetId == getVocaSetStatisParams.id)) {
+        //   return Right(localUserVocaSets);
+        // }
+        // if (localUserVocaSets.data.detailVocaSetStatisEntity.level_4.contains(
+        //     (element) =>
+        //         element.vocabularySetId == getVocaSetStatisParams.id)) {
+        //   return Right(localUserVocaSets);
+        // }
+        // if (localUserVocaSets.data.detailVocaSetStatisEntity.level_5.contains(
+        //     (element) =>
+        //         element.vocabularySetId == getVocaSetStatisParams.id)) {
+        //   return Right(localUserVocaSets);
+        // }
+        // if (localUserVocaSets.data.detailVocaSetStatisEntity.level_6.contains(
+        //     (element) =>
+        //         element.vocabularySetId == getVocaSetStatisParams.id)) {
+        //   return Right(localUserVocaSets);
+        // }
+        // return Left(
+        //     CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -234,7 +278,8 @@ class VocaSetRepositoryImpl implements VocaSetRepository {
             await localDataSource.getLastVocaSetByAdmin();
         return Right(localVocaSets);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }

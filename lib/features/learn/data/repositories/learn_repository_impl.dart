@@ -40,7 +40,7 @@ class LearnRepositoryImpl implements LearnRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -62,7 +62,7 @@ class LearnRepositoryImpl implements LearnRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -88,9 +88,17 @@ class LearnRepositoryImpl implements LearnRepository {
       try {
         ResponseDataModel<ReviewReminderModel?> localReviewReminder =
             await localDataSource.getLastReviewReminder();
+        if (getUpcomingReminderParams.vocabularySetId != null) {
+          if (localReviewReminder.data?.vocabularySetId !=
+              getUpcomingReminderParams.vocabularySetId) {
+            return Left(
+                CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+          }
+        }
         return Right(localReviewReminder);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -116,9 +124,11 @@ class LearnRepositoryImpl implements LearnRepository {
       try {
         ResponseDataModel<List<UserLearnedWordModel>> localUserLearnedWords =
             await localDataSource.getLastUserLearnedWords();
+
         return Right(localUserLearnedWords);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -141,7 +151,7 @@ class LearnRepositoryImpl implements LearnRepository {
   //           errorMessage: e.errorMessage, statusCode: e.statusCode));
   //     }
   //   } else {
-  //     return Left(CacheFailure(errorMessage: 'This is a network exception'));
+  //     return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
   //   }
   // }
 }

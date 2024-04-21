@@ -42,7 +42,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -64,7 +64,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -90,7 +90,8 @@ class ContributionRepositoryImpl implements ContributionRepository {
             await localDataSource.getLastContributionByAdmin();
         return Right(localContribution);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -119,7 +120,8 @@ class ContributionRepositoryImpl implements ContributionRepository {
             await localDataSource.getLastContributionByUser();
         return Right(localContribution);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -140,7 +142,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 }

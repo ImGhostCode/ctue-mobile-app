@@ -2,6 +2,7 @@ import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
@@ -121,7 +122,18 @@ class _ComPhrasePageState extends State<ComPhrasePage> {
               // print(topicProvider.getSelectedTopics());
 
               if (failure != null) {
-                return Text(failure.errorMessage);
+                return CustomErrorWidget(
+                    title: failure.errorMessage,
+                    onTryAgain: () {
+                      topicProvider.eitherFailureOrTopics(
+                          null,
+                          false,
+                          TopicEntity(
+                              id: 0,
+                              name: 'Tất cả',
+                              isWord: false,
+                              isSelected: true));
+                    });
               } else if (!isLoading && topics.isEmpty) {
                 return const Center(child: Text('Chưa có dữ liệu'));
               } else {

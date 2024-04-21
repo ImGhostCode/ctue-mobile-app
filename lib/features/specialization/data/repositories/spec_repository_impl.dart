@@ -45,7 +45,8 @@ class SpecRepositoryImpl implements SpecializationRepository {
             await localDataSource.getLastSpecialization();
         return Right(localSpecializations);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }

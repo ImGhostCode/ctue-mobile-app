@@ -16,24 +16,25 @@ class WordStatisticsModel extends WordStatisticsEntity {
       bySpecialization: json[kBySpecialization]
           .map<SpecStatisticsModel>(
               (item) => SpecStatisticsModel.fromJson(json: item))
-          .toList(),
+          .toList() as List<SpecStatisticsModel>,
       byLevel: json[kByLevel]
           .map<LevelStatisticsModel>(
               (item) => LevelStatisticsModel.fromJson(json: item))
-          .toList(),
+          .toList() as List<LevelStatisticsModel>,
       byTopic: json[kByTopic]
           .map<TopicStatisticsModel>(
               (item) => TopicStatisticsModel.fromJson(json: item))
-          .toList(),
+          .toList() as List<TopicStatisticsModel>,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       kTotal: total,
-      kBySpecialization: bySpecialization,
-      kByLevel: byLevel,
-      kByTopic: byTopic,
+      kBySpecialization:
+          (bySpecialization as List<dynamic>).map((e) => e.toJson()).toList(),
+      kByLevel: (byLevel as List<dynamic>).map((e) => e.toJson()).toList(),
+      kByTopic: (byTopic as List<dynamic>).map((e) => e.toJson()).toList(),
     };
   }
 }

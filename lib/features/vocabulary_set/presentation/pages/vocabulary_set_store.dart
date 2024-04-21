@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
@@ -85,8 +86,12 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
         Failure? failure = provider.failure;
 
         if (!isLoading && failure != null) {
-          // Handle failure, for example, show an error message
-          return Center(child: Text(failure.errorMessage));
+          return CustomErrorWidget(
+              title: failure.errorMessage,
+              onTryAgain: () {
+                Provider.of<VocaSetProvider>(context, listen: false)
+                    .eitherFailureOrGerVocaSets(null, null, '');
+              });
         } else if (!isLoading && provider.publicVocaSets.isEmpty) {
           // Handle the case where topics are empty
           return const Scaffold(body: Center(child: Text('Không có dữ liệu')));
@@ -193,6 +198,15 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                                     child: Image.network(
                                                       _downloadedVocaSets[index]
                                                           .picture!,
+                                                      errorBuilder: (context,
+                                                              error,
+                                                              stackTrace) =>
+                                                          Image.asset(
+                                                        'assets/images/broken-image.png',
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),
@@ -354,6 +368,15 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                                     child: Image.network(
                                                       _recommendVocaSets[index]
                                                           .picture!,
+                                                      errorBuilder: (context,
+                                                              error,
+                                                              stackTrace) =>
+                                                          Image.asset(
+                                                        'assets/images/broken-image.png',
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),
@@ -496,6 +519,15 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                                     child: Image.network(
                                                       _vocaSetBySpec[index]
                                                           .picture!,
+                                                      errorBuilder: (context,
+                                                              error,
+                                                              stackTrace) =>
+                                                          Image.asset(
+                                                        'assets/images/broken-image.png',
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),
@@ -631,6 +663,15 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                                     child: Image.network(
                                                       _vocaSetByTopic[index]
                                                           .picture!,
+                                                      errorBuilder: (context,
+                                                              error,
+                                                              stackTrace) =>
+                                                          Image.asset(
+                                                        'assets/images/broken-image.png',
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),

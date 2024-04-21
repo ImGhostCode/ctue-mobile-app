@@ -179,9 +179,10 @@ class _WordFormState extends State<WordForm> {
                 height: 4,
               ),
               TextFormField(
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontFamily: 'DoulosSIL',
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontFamily: 'DoulosSIL', fontSize: 16),
                 readOnly: true,
                 // showCursor: true,
                 controller: _phoneticController,
@@ -454,6 +455,12 @@ class _WordFormState extends State<WordForm> {
                           child: Stack(children: [
                             Image.network(
                               oldImageUrl,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.asset(
+                                'assets/images/broken-image.png',
+                                color: Colors.grey.shade300,
+                                fit: BoxFit.cover,
+                              ),
                               // width: 100,
                               // height: 100,
                               fit: BoxFit.fill,
@@ -661,6 +668,13 @@ class _WordFormState extends State<WordForm> {
                               child: topic.image.isNotEmpty
                                   ? Image.network(
                                       topic.image,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Image.asset(
+                                        'assets/images/broken-image.png',
+                                        color: Colors.grey.shade300,
+                                        fit: BoxFit.cover,
+                                      ),
                                       fit: BoxFit.cover,
                                       width: 60.0,
                                       height: 60.0,
@@ -772,29 +786,34 @@ class _WordFormState extends State<WordForm> {
 
   void _showPronunciationDialog(BuildContext context) {
     showModalBottomSheet(
+      backgroundColor: Colors.white,
       context: context,
       builder: (BuildContext context) {
         return Container(
-          // Add your pronunciation input UI here
-          height: 400,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: Colors.white,
+          ),
           padding: const EdgeInsets.all(16),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 'Nhập phiên âm',
                 style: Theme.of(context)
                     .textTheme
-                    .labelMedium!
+                    .bodyMedium!
                     .copyWith(color: Colors.teal),
               ),
               const SizedBox(
                 height: 5,
               ),
               TextFormField(
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontFamily: 'DoulosSIL',
-                    ),
-                readOnly: true,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontFamily: 'DoulosSIL', fontSize: 16),
+                // readOnly: true,
                 showCursor: true,
                 controller: _phoneticController,
                 decoration: InputDecoration(
@@ -815,10 +834,8 @@ class _WordFormState extends State<WordForm> {
               const SizedBox(
                 height: 10,
               ),
-              Expanded(
-                child: IPAKeyboard(
-                  onTap: _handleButtonPress,
-                ),
+              IPAKeyboard(
+                onTap: _handleButtonPress,
               ),
               const SizedBox(
                 height: 10,

@@ -60,6 +60,12 @@ class ProfilePage extends StatelessWidget {
                           child: userEntity.avt != null
                               ? Image.network(
                                   userEntity.avt!,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Image.asset(
+                                    'assets/images/broken-image.png',
+                                    color: Colors.grey.shade300,
+                                    fit: BoxFit.cover,
+                                  ),
                                   fit: BoxFit.cover,
                                 )
                               : const FlutterLogo(),

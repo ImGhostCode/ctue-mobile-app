@@ -1,6 +1,7 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
+import 'package:ctue_app/core/services/shared_pref_service.dart';
 import 'package:ctue_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:ctue_app/features/home/presentation/providers/home_provider.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
@@ -236,8 +237,14 @@ class _SettingPageState extends State<SettingPage> {
                                   await flutterLocalNotificationsPlugin
                                       .cancel(983);
 
+                                  // await SecureStorageService.secureStorage
+                                  //     .delete(key: 'accessToken');
+
                                   await SecureStorageService.secureStorage
-                                      .delete(key: 'accessToken');
+                                      .deleteAll();
+
+                                  // Clear data in shared preferences
+                                  await SharedPrefService.prefs.clear();
 
                                   // ignore: use_build_context_synchronously
                                   Provider.of<SelectedPageProvider>(context,

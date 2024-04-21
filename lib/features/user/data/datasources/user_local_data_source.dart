@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ctue_app/core/constants/response.dart';
+import 'package:ctue_app/features/auth/data/models/account_model.dart';
 import 'package:ctue_app/features/user/data/models/user_model.dart';
 import 'package:ctue_app/features/user/data/models/user_response_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,8 +12,8 @@ abstract class UserLocalDataSource {
   Future<ResponseDataModel<UserModel>> getLastUser();
 
   Future<void> cacheAccountDetailByAdmin(
-      {required ResponseDataModel<UserResModel>? accountResModel});
-  Future<ResponseDataModel<UserResModel>> getLastAccountDetailByAdmin();
+      {required ResponseDataModel<AccountModel>? accountResModel});
+  Future<ResponseDataModel<AccountModel>> getLastAccountDetailByAdmin();
 
   Future<void> cacheUsersByAdmin(
       {required ResponseDataModel<UserResModel>? userResModel});
@@ -86,7 +87,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<void> cacheAccountDetailByAdmin(
-      {required ResponseDataModel<UserResModel>? accountResModel}) async {
+      {required ResponseDataModel<AccountModel>? accountResModel}) async {
     if (accountResModel != null) {
       sharedPreferences.setString(
         cachedAccountDetailByAdmin,
@@ -100,13 +101,13 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   }
 
   @override
-  Future<ResponseDataModel<UserResModel>> getLastAccountDetailByAdmin() async {
+  Future<ResponseDataModel<AccountModel>> getLastAccountDetailByAdmin() async {
     final jsonString = sharedPreferences.getString(cachedAccountDetailByAdmin);
 
     if (jsonString != null) {
-      return Future.value(ResponseDataModel<UserResModel>.fromJson(
+      return Future.value(ResponseDataModel<AccountModel>.fromJson(
           json: json.decode(jsonString),
-          fromJsonD: (jsonUser) => UserResModel.fromJson(json: jsonUser)));
+          fromJsonD: (jsonUser) => AccountModel.fromJson(json: jsonUser)));
     } else {
       throw CacheException();
     }

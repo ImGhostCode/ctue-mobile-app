@@ -1,4 +1,5 @@
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:flutter/material.dart';
@@ -68,8 +69,11 @@ class _VoiceSettingPageState extends State<VoiceSettingPage> {
                 Failure? failure = provider.failure;
 
                 if (failure != null) {
-                  // Handle failure, for example, show an error message
-                  return Text(failure.errorMessage);
+                  return CustomErrorWidget(
+                      title: failure.errorMessage,
+                      onTryAgain: () {
+                        provider.eitherFailureOrGetVoices();
+                      });
                 } else if (isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 } else {

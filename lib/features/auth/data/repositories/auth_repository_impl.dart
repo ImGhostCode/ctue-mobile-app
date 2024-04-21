@@ -42,7 +42,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // LoginModel localAuth = await localDataSource.getLastAuth();
       //   return Right(localAuth);
       // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       // }
     }
   }
@@ -67,7 +67,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // LoginModel localAuth = await localDataSource.getLastAuth();
       //   return Right(localAuth);
       // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       // }
     }
   }
@@ -92,7 +92,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // LoginModel localAuth = await localDataSource.getLastAuth();
       //   return Right(localAuth);
       // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       // }
     }
   }

@@ -12,6 +12,10 @@ abstract class VocaSetLocalDataSource {
       {required ResponseDataModel<List<VocaSetModel>>? vocaSetResModel});
   Future<ResponseDataModel<List<VocaSetModel>>> getLastVocaSet();
 
+  Future<void> cachePublicVocaSet(
+      {required ResponseDataModel<List<VocaSetModel>>? vocaSetResModel});
+  Future<ResponseDataModel<List<VocaSetModel>>> getLastPublicVocaSet();
+
   Future<void> cacheVocaSetByAdmin(
       {required ResponseDataModel<VocabularySetResModel>? vocaSetResModel});
   Future<ResponseDataModel<VocabularySetResModel>> getLastVocaSetByAdmin();
@@ -27,6 +31,7 @@ abstract class VocaSetLocalDataSource {
 }
 
 const cachedVocaSet = 'CACHED_USER_VOCA_SETS';
+const cachedPublicVocaSets = 'CACHED_PUBLIC_VOCA_SETS';
 const cachedVocaSetsByAdmin = 'CACHED_USER_VOCA_SETS_BY_ADMIN';
 const cachedVocaSetDetail = 'CACHED_USER_VOCA_SET_DETAIL';
 const cachedVocaSetStatistics = 'CACHED_VOCA_SET_STATISTICS';
@@ -160,6 +165,38 @@ class VocaSetLocalDataSourceImpl implements VocaSetLocalDataSource {
           json: json.decode(jsonString),
           fromJsonD: (jsonVocaSet) =>
               VocabularySetResModel.fromJson(json: jsonVocaSet)));
+    } else {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<void> cachePublicVocaSet(
+      {required ResponseDataModel<List<VocaSetModel>>? vocaSetResModel}) async {
+    if (vocaSetResModel != null) {
+      sharedPreferences.setString(
+        cachedPublicVocaSets,
+        json.encode(Map.from({
+          "data": vocaSetResModel.data.map((e) => e.toJson()).toList(),
+          "statusCode": vocaSetResModel.statusCode,
+          "message": vocaSetResModel.message
+        })),
+      );
+    } else {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<List<VocaSetModel>>> getLastPublicVocaSet() async {
+    final jsonString = sharedPreferences.getString(cachedPublicVocaSets);
+
+    if (jsonString != null) {
+      return Future.value(ResponseDataModel<List<VocaSetModel>>.fromJson(
+          json: json.decode(jsonString),
+          fromJsonD: (jsonVocaSet) => jsonVocaSet
+              ?.map<VocaSetModel>((json) => VocaSetModel.fromJson(json: json))
+              .toList()));
     } else {
       throw CacheException();
     }

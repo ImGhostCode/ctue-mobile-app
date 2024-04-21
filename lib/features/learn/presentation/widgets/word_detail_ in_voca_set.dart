@@ -117,6 +117,12 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                               borderRadius: BorderRadius.circular(12),
                               child: Image.network(
                                 widget.wordEntity!.pictures[index],
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Image.asset(
+                                  'assets/images/broken-image.png',
+                                  color: Colors.grey.shade300,
+                                  fit: BoxFit.cover,
+                                ),
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,

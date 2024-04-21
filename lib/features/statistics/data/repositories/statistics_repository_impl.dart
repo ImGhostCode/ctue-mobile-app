@@ -11,7 +11,7 @@ import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/errors/failure.dart';
 import '../../business/repositories/statistics_repository.dart';
-import '../datasources/template_local_data_source.dart';
+import '../datasources/statistics_local_data_source.dart';
 import '../datasources/statistics_remote_data_source.dart';
 import '../models/user_stat_model.dart';
 
@@ -35,7 +35,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             await remoteDataSource.getUserStatistics(
                 statisticsParams: statisticsParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteStatistics);
+        localDataSource.cacheUserStatistics(
+            userStatisticsModel: remoteStatistics);
 
         return Right(remoteStatistics);
       } on ServerException catch (e) {
@@ -43,7 +44,14 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<UserStatisticsModel> localUserStatistics =
+            await localDataSource.getLastUserStatistics();
+        return Right(localUserStatistics);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
     }
   }
 
@@ -56,7 +64,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             await remoteDataSource.getContriStatistics(
                 statisticsParams: statisticsParams);
 
-        // localDataSource.cacheAuth(AuthToCache: remoteStatistics);
+        localDataSource.cacheContributionStatistics(
+            contriStatisticsModel: remoteStatistics);
 
         return Right(remoteStatistics);
       } on ServerException catch (e) {
@@ -64,7 +73,14 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<ContriStatisticsModel> localConStatistics =
+            await localDataSource.getLastContributionStatistics();
+        return Right(localConStatistics);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
     }
   }
 
@@ -77,7 +93,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             await remoteDataSource.getWordStatistics(
                 statisticsParams: statisticsParams);
 
-        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+        localDataSource.cacheWordStatistics(
+            wordStatisticsModel: remoteStatistics);
 
         return Right(remoteStatistics);
       } on ServerException catch (e) {
@@ -85,7 +102,14 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<WordStatisticsModel> localWordStatistics =
+            await localDataSource.getLastWordStatistics();
+        return Right(localWordStatistics);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
     }
   }
 
@@ -98,7 +122,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             await remoteDataSource.getIrrVerbStatistics(
                 statisticsParams: statisticsParams);
 
-        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+        localDataSource.cacheIrrVerbStatistics(
+            irrVerbStatisticsModel: remoteStatistics);
 
         return Right(remoteStatistics);
       } on ServerException catch (e) {
@@ -106,7 +131,14 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<IrrVerbStatisticsModel> localIrrVerbStatistics =
+            await localDataSource.getLastIrrVerbStatistics();
+        return Right(localIrrVerbStatistics);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
     }
   }
 
@@ -119,7 +151,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             await remoteDataSource.getSenStatistics(
                 statisticsParams: statisticsParams);
 
-        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+        localDataSource.cacheSentenceStatistics(
+            senStatisticsModel: remoteStatistics);
 
         return Right(remoteStatistics);
       } on ServerException catch (e) {
@@ -127,7 +160,14 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<SenStatisticsModel> localSentenceStatistics =
+            await localDataSource.getLastSentenceStatistics();
+        return Right(localSentenceStatistics);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
     }
   }
 
@@ -140,7 +180,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             await remoteDataSource.getVocaSetStatistics(
                 statisticsParams: statisticsParams);
 
-        // localDataSource.cacheVocaSet(VocaSetToCache: remoteVocaSet);
+        localDataSource.cacheVocaSetStatistics(
+            vocaSetStatisticsModel: remoteStatistics);
 
         return Right(remoteStatistics);
       } on ServerException catch (e) {
@@ -148,7 +189,14 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      try {
+        ResponseDataModel<VocaSetStatisticsModel> localVocaSetStatistics =
+            await localDataSource.getLastVocaSetStatistics();
+        return Right(localVocaSetStatistics);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
     }
   }
 }

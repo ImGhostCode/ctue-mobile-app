@@ -41,7 +41,7 @@ class UserModel extends UserEntity {
     return {
       kId: id,
       kName: name,
-      kAvt: avt.toString(),
+      kAvt: avt,
       kIsDeleted: isDeleted,
       kCreatedAt: createdAt.toString(),
       kAccountType: accountType,

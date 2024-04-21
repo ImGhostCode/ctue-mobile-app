@@ -351,6 +351,11 @@ class _LearnPageState extends State<LearnPage> {
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
                     word.pictures[0],
+                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                      'assets/images/broken-image.png',
+                      color: Colors.grey.shade300,
+                      fit: BoxFit.cover,
+                    ),
                     fit: BoxFit.fill,
                     width: double.infinity,
                     height: double.infinity,

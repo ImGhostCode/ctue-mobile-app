@@ -21,7 +21,7 @@ import '../../../../../core/connection/network_info.dart';
 import '../../../../../core/errors/failure.dart';
 import '../../business/entities/user_stat_entity.dart';
 import '../../business/usecases/get_user_stat_usecase.dart';
-import '../../data/datasources/template_local_data_source.dart';
+import '../../data/datasources/statistics_local_data_source.dart';
 import '../../data/datasources/statistics_remote_data_source.dart';
 import '../../data/repositories/statistics_repository_impl.dart';
 

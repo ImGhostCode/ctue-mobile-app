@@ -629,6 +629,13 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                             child: topic.image.isNotEmpty
                                 ? Image.network(
                                     topic.image,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Image.asset(
+                                      'assets/images/broken-image.png',
+                                      color: Colors.grey.shade300,
+                                      fit: BoxFit.cover,
+                                    ),
                                     fit: BoxFit.fill,
                                     width: 60.0,
                                     height: 60.0,

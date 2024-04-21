@@ -11,10 +11,14 @@ class WordResModel extends WordResEntity {
         totalPages: json[kTotalPages],
         data: json[kData]
             .map<WordModel>((word) => WordModel.fromJson(json: word))
-            .toList());
+            .toList() as List<WordModel>);
   }
 
   Map<String, dynamic> toJson() {
-    return {kTotal: total, kTotalPages: totalPages, kData: data};
+    return {
+      kTotal: total,
+      kTotalPages: totalPages,
+      kData: (data as List<dynamic>).map((e) => e.toJson()).toList()
+    };
   }
 }

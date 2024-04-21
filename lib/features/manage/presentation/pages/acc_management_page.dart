@@ -196,9 +196,16 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                           child: SizedBox(
                             height: 50,
                             width: 50,
-                            child: item.user!.avt != null
+                            child: item.user?.avt != null
                                 ? Image.network(
                                     item.user!.avt!,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Image.asset(
+                                      'assets/images/broken-image.png',
+                                      color: Colors.grey.shade300,
+                                      fit: BoxFit.cover,
+                                    ),
                                     fit: BoxFit.cover,
                                   )
                                 : Image.asset(

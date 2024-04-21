@@ -4,6 +4,7 @@ import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dar
 import 'package:ctue_app/features/sentence/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
 import 'package:ctue_app/features/sentence/presentation/widgets/listen_sentence_btn.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -49,8 +50,11 @@ class CommunicationPhraseDetail extends StatelessWidget {
               Failure? failure = sentenceProvider.failure;
 
               if (!isLoading && failure != null) {
-                // Handle failure, for example, show an error message
-                return Text(failure.errorMessage);
+                return CustomErrorWidget(
+                    title: failure.errorMessage,
+                    onTryAgain: () {
+                      sentenceProvider.eitherFailureOrSenDetail(args.id);
+                    });
               } else if (!isLoading && sentenceDetail == null) {
                 // Handle the case where topics are empty
                 return const Center(child: Text('Không có dữ liệu'));

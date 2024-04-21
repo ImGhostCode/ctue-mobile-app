@@ -46,7 +46,8 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
             await localDataSource.getLastFavorites();
         return Right(localFavorites);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -67,7 +68,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -87,7 +88,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 }

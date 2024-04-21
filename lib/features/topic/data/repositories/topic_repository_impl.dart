@@ -42,7 +42,8 @@ class TopicRepositoryImpl implements TopicRepository {
             await localDataSource.getLastTopic();
         return Right(localTopics);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }

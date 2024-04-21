@@ -42,7 +42,8 @@ class NotiRepositoryImpl implements NotiRepository {
             await localDataSource.getLastNoti();
         return Right(localNoti);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }

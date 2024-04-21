@@ -20,11 +20,11 @@ class VocaSetStatisticsModel extends VocaSetStatisticsEntity {
       bySpecialization: json[kBySpecialization]
           .map<SpecStatisticsModel>(
               (item) => SpecStatisticsModel.fromJson(json: item))
-          .toList(),
+          .toList() as List<SpecStatisticsModel>,
       byTopic: json[kByTopic]
           .map<TopicStatisticsModel>(
               (item) => TopicStatisticsModel.fromJson(json: item))
-          .toList(),
+          .toList() as List<TopicStatisticsModel>,
     );
   }
 
@@ -33,8 +33,9 @@ class VocaSetStatisticsModel extends VocaSetStatisticsEntity {
       kTotal: total,
       kTotalPublic: totalPublic,
       kTotalPrivate: totalPrivate,
-      kBySpecialization: bySpecialization,
-      kByTopic: byTopic,
+      kBySpecialization:
+          (bySpecialization as List<dynamic>).map((e) => e.toJson()).toList(),
+      kByTopic: (byTopic as List<dynamic>).map((e) => e.toJson()).toList(),
     };
   }
 }

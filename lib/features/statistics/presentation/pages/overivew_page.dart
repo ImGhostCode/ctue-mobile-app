@@ -219,620 +219,27 @@ class _OverviewPageState extends State<OverviewPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<StatisticsProvider>(
-                      builder: (context, provider, child) {
-                    UserStatisticsEntity? userStatisticsEntity =
-                        provider.userStatisticsEntity;
-
-                    bool isLoading = provider.isLoading;
-
-                    // Access the failure from the provider
-                    Failure? failure = provider.failure;
-
-                    if (failure != null) {
-                      return Text(failure.errorMessage);
-                    } else if (!isLoading && userStatisticsEntity == null) {
-                      return const Center(child: Text('Không có dữ liệu'));
-                    } else {
-                      return Skeletonizer(
-                        enabled: isLoading,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.white),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Icon(
-                                      Icons.group_outlined,
-                                      size: 30,
-                                      color: Colors.blue,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text('Người dùng ',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge!
-                                        // .copyWith(color: Colors.white),
-                                        ),
-                                  ],
-                                ),
-                                Text(
-                                  'Tổng cộng: ${userStatisticsEntity?.total}',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                isLoading
-                                    ? const SizedBox.shrink()
-                                    : SizedBox(
-                                        // width: MediaQuery.of(context).size.width - 100,
-                                        child: AspectRatio(
-                                        aspectRatio: 1.6,
-                                        child: ColumnChartWidget(
-                                          chartData: [
-                                            ColumnChartData(
-                                                'Đang hoạt động',
-                                                userStatisticsEntity!.active,
-                                                1),
-                                            ColumnChartData('Đã khóa',
-                                                userStatisticsEntity.banned, 0),
-                                            ColumnChartData(
-                                                'Đã xóa',
-                                                userStatisticsEntity.deleted,
-                                                -1)
-                                          ],
-                                        ),
-                                      )),
-                              ]),
-                        ),
-                      );
-                    }
-                  }),
+                  _userStatistics(),
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<StatisticsProvider>(
-                      builder: (context, provider, child) {
-                    ContriStatisticsEntity? contriStatisticsEntity =
-                        provider.contriStatisticsEntity;
-
-                    bool isLoading = provider.isLoading;
-
-                    // Access the failure from the provider
-                    Failure? failure = provider.failure;
-
-                    if (failure != null) {
-                      return Text(failure.errorMessage);
-                    } else if (!isLoading && contriStatisticsEntity == null) {
-                      return const Center(child: Text('Không có dữ liệu'));
-                    } else {
-                      return Skeletonizer(
-                        enabled: isLoading,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.white),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Icon(
-                                      Icons.extension,
-                                      size: 30,
-                                      color: Colors.green,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text('Đóng góp ',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge!
-                                        // .copyWith(color: Colors.white),
-                                        ),
-                                  ],
-                                ),
-                                Text(
-                                  'Tổng cộng: ${contriStatisticsEntity?.total}',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                isLoading
-                                    ? const SizedBox.shrink()
-                                    : SizedBox(
-                                        child: AspectRatio(
-                                        aspectRatio: 1.6,
-                                        child: ColumnChartWidget(
-                                          chartData: [
-                                            ColumnChartData(
-                                                'Đã duyệt',
-                                                contriStatisticsEntity!
-                                                    .approved,
-                                                1),
-                                            ColumnChartData(
-                                                'Đang chờ',
-                                                contriStatisticsEntity.pending,
-                                                0),
-                                            ColumnChartData(
-                                                'Đã từ chối',
-                                                contriStatisticsEntity.refused,
-                                                -1)
-                                          ],
-                                        ),
-                                      )),
-                              ]),
-                        ),
-                      );
-                    }
-                  }),
+                  _contributionStatistics(),
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<StatisticsProvider>(
-                      builder: (context, provider, child) {
-                    WordStatisticsEntity? wordStatisticsEntity =
-                        provider.wordStatisticsEntity;
-
-                    bool isLoading = provider.isLoading;
-
-                    // Access the failure from the provider
-                    Failure? failure = provider.failure;
-
-                    if (failure != null) {
-                      return Text(failure.errorMessage);
-                    } else if (!isLoading && wordStatisticsEntity == null) {
-                      return const Center(child: Text('Không có dữ liệu'));
-                    } else {
-                      return Skeletonizer(
-                          enabled: isLoading,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.white),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.menu_book,
-                                        size: 30,
-                                        color: Colors.yellow.shade700,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('Từ vựng ',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge!
-                                          // .copyWith(color: Colors.white),
-                                          ),
-                                    ],
-                                  ),
-                                  Text(
-                                    'Tổng cộng: ${wordStatisticsEntity?.total}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Theo chuyên ngành',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  isLoading
-                                      ? const SizedBox.shrink()
-                                      : SizedBox(
-                                          // width: MediaQuery.of(context).size.width - 100,
-                                          child: AspectRatio(
-                                          aspectRatio: 1.6,
-                                          child: BarChartWidget(
-                                            chartData: wordStatisticsEntity!
-                                                .bySpecialization
-                                                .map((e) => BarChartData(
-                                                    e.specializationName,
-                                                    e.count))
-                                                .toList(),
-                                          ),
-                                        )),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Theo cấp độ',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  isLoading
-                                      ? const SizedBox.shrink()
-                                      : SizedBox(
-                                          // width: MediaQuery.of(context).size.width - 100,
-                                          child: AspectRatio(
-                                          aspectRatio: 1.6,
-                                          child: BarChartWidget(
-                                            chartData: wordStatisticsEntity!
-                                                .byLevel
-                                                .map((e) => BarChartData(
-                                                    e.levelName, e.count))
-                                                .toList(),
-                                          ),
-                                        )),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Theo chủ đề',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  isLoading
-                                      ? const SizedBox.shrink()
-                                      : SizedBox(
-                                          // width: MediaQuery.of(context).size.width - 100,
-                                          child: AspectRatio(
-                                          aspectRatio: 1.6,
-                                          child: BarChartWidget(
-                                            chartData: wordStatisticsEntity!
-                                                .byTopic
-                                                .map((e) => BarChartData(
-                                                    e.topicName, e.count))
-                                                .toList(),
-                                          ),
-                                        )),
-                                ]),
-                          ));
-                    }
-                  }),
+                  _wordStatistics(),
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<StatisticsProvider>(
-                      builder: (context, provider, child) {
-                    SenStatisticsEntity? senStatisticsEntity =
-                        provider.senStatisticsEntity;
-
-                    bool isLoading = provider.isLoading;
-
-                    // Access the failure from the provider
-                    Failure? failure = provider.failure;
-
-                    if (failure != null) {
-                      return Text(failure.errorMessage);
-                    } else if (!isLoading && senStatisticsEntity == null) {
-                      return const Center(child: Text('Không có dữ liệu'));
-                    } else {
-                      return Skeletonizer(
-                          enabled: isLoading,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.white),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Icon(
-                                        Icons.record_voice_over_outlined,
-                                        size: 30,
-                                        color: Colors.blue,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('Mẫu câu giao tiếp ',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge!
-                                          // .copyWith(color: Colors.white),
-                                          ),
-                                    ],
-                                  ),
-                                  Text(
-                                    'Tổng cộng: ${senStatisticsEntity?.total}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Theo loại câu',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  isLoading
-                                      ? const SizedBox.shrink()
-                                      : SizedBox(
-                                          // width: MediaQuery.of(context).size.width - 100,
-                                          child: AspectRatio(
-                                          aspectRatio: 1.6,
-                                          child: BarChartWidget(
-                                            chartData: senStatisticsEntity!
-                                                .byType
-                                                .map((e) => BarChartData(
-                                                    e.typeName, e.count))
-                                                .toList(),
-                                          ),
-                                        )),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Theo chủ đề',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  isLoading
-                                      ? const SizedBox.shrink()
-                                      : SizedBox(
-                                          // width: MediaQuery.of(context).size.width - 100,
-                                          child: AspectRatio(
-                                          aspectRatio: 1.6,
-                                          child: BarChartWidget(
-                                            chartData: senStatisticsEntity!
-                                                .byTopic
-                                                .map((e) => BarChartData(
-                                                    e.topicName, e.count))
-                                                .toList(),
-                                          ),
-                                        )),
-                                ]),
-                          ));
-                    }
-                  }),
+                  _sentenceStatistics(),
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<StatisticsProvider>(
-                      builder: (context, provider, child) {
-                    IrrVerbStatisticsEntity? irrVerbStatisticsEntity =
-                        provider.irrVerbStatisticsEntity;
-
-                    bool isLoading = provider.isLoading;
-
-                    // Access the failure from the provider
-                    Failure? failure = provider.failure;
-
-                    if (failure != null) {
-                      return Text(failure.errorMessage);
-                    } else if (!isLoading && irrVerbStatisticsEntity == null) {
-                      return const Center(child: Text('Không có dữ liệu'));
-                    } else {
-                      return Skeletonizer(
-                          enabled: isLoading,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.white),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Icon(
-                                        Icons.article,
-                                        size: 30,
-                                        color: Colors.orange,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('Động từ bất quy tắc ',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge!
-                                          // .copyWith(color: Colors.white),
-                                          ),
-                                    ],
-                                  ),
-                                  Text(
-                                    'Tổng cộng: ${irrVerbStatisticsEntity?.total}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  irrVerbStatisticsEntity?.total != null
-                                      ? Text(
-                                          'Hiện có: ${irrVerbStatisticsEntity!.total - irrVerbStatisticsEntity.deleted}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
-                                        )
-                                      : const SizedBox(),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Đã xóa: ${irrVerbStatisticsEntity?.deleted}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                ]),
-                          ));
-                    }
-                  }),
+                  _irrVerbStatistics(),
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<StatisticsProvider>(
-                      builder: (context, provider, child) {
-                    VocaSetStatisticsEntity? vocaSetStatisticsEntity =
-                        provider.vocaSetStatisticsEntity;
-
-                    bool isLoading = provider.isLoading;
-
-                    // Access the failure from the provider
-                    Failure? failure = provider.failure;
-
-                    if (failure != null) {
-                      return Text(failure.errorMessage);
-                    } else if (!isLoading && vocaSetStatisticsEntity == null) {
-                      return const Center(child: Text('Không có dữ liệu'));
-                    } else {
-                      return Skeletonizer(
-                          enabled: isLoading,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.white),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Icon(
-                                        Icons.book,
-                                        size: 30,
-                                        color: Colors.teal,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('Bộ từ vựng ',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge!
-                                          // .copyWith(color: Colors.white),
-                                          ),
-                                    ],
-                                  ),
-                                  Text(
-                                    'Tổng cộng: ${vocaSetStatisticsEntity?.total}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Bộ từ công khai: ${vocaSetStatisticsEntity?.totalPublic}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Bộ từ do người dùng tạo: ${vocaSetStatisticsEntity?.totalPrivate}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Theo chuyên ngành',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  isLoading
-                                      ? const SizedBox.shrink()
-                                      : SizedBox(
-                                          // width: MediaQuery.of(context).size.width - 100,
-                                          child: AspectRatio(
-                                          aspectRatio: 1.6,
-                                          child: BarChartWidget(
-                                            chartData: vocaSetStatisticsEntity!
-                                                .byTopic
-                                                .map((e) => BarChartData(
-                                                    e.topicName, e.count))
-                                                .toList(),
-                                          ),
-                                        )),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Theo chủ đề',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  isLoading
-                                      ? const SizedBox.shrink()
-                                      : SizedBox(
-                                          // width: MediaQuery.of(context).size.width - 100,
-                                          child: AspectRatio(
-                                          aspectRatio: 1.6,
-                                          child: BarChartWidget(
-                                            chartData: vocaSetStatisticsEntity!
-                                                .byTopic
-                                                .map((e) => BarChartData(
-                                                    e.topicName, e.count))
-                                                .toList(),
-                                          ),
-                                        )),
-                                ]),
-                          ));
-                    }
-                  }),
+                  _vocaSetStatistics(),
                   const SizedBox(
                     height: 20,
                   ),
@@ -843,6 +250,561 @@ class _OverviewPageState extends State<OverviewPage> {
         ),
       ),
     );
+  }
+
+  Consumer<StatisticsProvider> _vocaSetStatistics() {
+    return Consumer<StatisticsProvider>(builder: (context, provider, child) {
+      VocaSetStatisticsEntity? vocaSetStatisticsEntity =
+          provider.vocaSetStatisticsEntity;
+
+      bool isLoading = provider.isLoading;
+
+      // Access the failure from the provider
+      Failure? failure = provider.failure;
+
+      if (failure != null) {
+        return Text(failure.errorMessage);
+      } else if (!isLoading && vocaSetStatisticsEntity == null) {
+        return const Center(child: Text('Không có dữ liệu'));
+      } else {
+        return Skeletonizer(
+            enabled: isLoading,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), color: Colors.white),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.book,
+                          size: 30,
+                          color: Colors.teal,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text('Bộ từ vựng ',
+                            style: Theme.of(context).textTheme.bodyLarge!
+                            // .copyWith(color: Colors.white),
+                            ),
+                      ],
+                    ),
+                    Text(
+                      'Tổng cộng: ${vocaSetStatisticsEntity?.total}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Bộ từ công khai: ${vocaSetStatisticsEntity?.totalPublic}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Bộ từ do người dùng tạo: ${vocaSetStatisticsEntity?.totalPrivate}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Theo chuyên ngành',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    isLoading
+                        ? const SizedBox.shrink()
+                        : SizedBox(
+                            // width: MediaQuery.of(context).size.width - 100,
+                            child: AspectRatio(
+                            aspectRatio: 1.6,
+                            child: BarChartWidget(
+                              chartData: vocaSetStatisticsEntity!.byTopic
+                                  .map(
+                                      (e) => BarChartData(e.topicName, e.count))
+                                  .toList(),
+                            ),
+                          )),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Theo chủ đề',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    isLoading
+                        ? const SizedBox.shrink()
+                        : SizedBox(
+                            // width: MediaQuery.of(context).size.width - 100,
+                            child: AspectRatio(
+                            aspectRatio: 1.6,
+                            child: BarChartWidget(
+                              chartData: vocaSetStatisticsEntity!.byTopic
+                                  .map(
+                                      (e) => BarChartData(e.topicName, e.count))
+                                  .toList(),
+                            ),
+                          )),
+                  ]),
+            ));
+      }
+    });
+  }
+
+  Consumer<StatisticsProvider> _irrVerbStatistics() {
+    return Consumer<StatisticsProvider>(builder: (context, provider, child) {
+      IrrVerbStatisticsEntity? irrVerbStatisticsEntity =
+          provider.irrVerbStatisticsEntity;
+
+      bool isLoading = provider.isLoading;
+
+      // Access the failure from the provider
+      Failure? failure = provider.failure;
+
+      if (failure != null) {
+        return Text(failure.errorMessage);
+      } else if (!isLoading && irrVerbStatisticsEntity == null) {
+        return const Center(child: Text('Không có dữ liệu'));
+      } else {
+        return Skeletonizer(
+            enabled: isLoading,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), color: Colors.white),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.article,
+                          size: 30,
+                          color: Colors.orange,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text('Động từ bất quy tắc ',
+                            style: Theme.of(context).textTheme.bodyLarge!
+                            // .copyWith(color: Colors.white),
+                            ),
+                      ],
+                    ),
+                    Text(
+                      'Tổng cộng: ${irrVerbStatisticsEntity?.total}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    irrVerbStatisticsEntity?.total != null
+                        ? Text(
+                            'Hiện có: ${irrVerbStatisticsEntity!.total - irrVerbStatisticsEntity.deleted}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          )
+                        : const SizedBox(),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Đã xóa: ${irrVerbStatisticsEntity?.deleted}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ]),
+            ));
+      }
+    });
+  }
+
+  Consumer<StatisticsProvider> _sentenceStatistics() {
+    return Consumer<StatisticsProvider>(builder: (context, provider, child) {
+      SenStatisticsEntity? senStatisticsEntity = provider.senStatisticsEntity;
+
+      bool isLoading = provider.isLoading;
+
+      // Access the failure from the provider
+      Failure? failure = provider.failure;
+
+      if (failure != null) {
+        return Text(failure.errorMessage);
+      } else if (!isLoading && senStatisticsEntity == null) {
+        return const Center(child: Text('Không có dữ liệu'));
+      } else {
+        return Skeletonizer(
+            enabled: isLoading,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), color: Colors.white),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.record_voice_over_outlined,
+                          size: 30,
+                          color: Colors.blue,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text('Mẫu câu giao tiếp ',
+                            style: Theme.of(context).textTheme.bodyLarge!
+                            // .copyWith(color: Colors.white),
+                            ),
+                      ],
+                    ),
+                    Text(
+                      'Tổng cộng: ${senStatisticsEntity?.total}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Theo loại câu',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    isLoading
+                        ? const SizedBox.shrink()
+                        : SizedBox(
+                            // width: MediaQuery.of(context).size.width - 100,
+                            child: AspectRatio(
+                            aspectRatio: 1.6,
+                            child: BarChartWidget(
+                              chartData: senStatisticsEntity!.byType
+                                  .map((e) => BarChartData(e.typeName, e.count))
+                                  .toList(),
+                            ),
+                          )),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Theo chủ đề',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    isLoading
+                        ? const SizedBox.shrink()
+                        : SizedBox(
+                            // width: MediaQuery.of(context).size.width - 100,
+                            child: AspectRatio(
+                            aspectRatio: 1.6,
+                            child: BarChartWidget(
+                              chartData: senStatisticsEntity!.byTopic
+                                  .map(
+                                      (e) => BarChartData(e.topicName, e.count))
+                                  .toList(),
+                            ),
+                          )),
+                  ]),
+            ));
+      }
+    });
+  }
+
+  Consumer<StatisticsProvider> _wordStatistics() {
+    return Consumer<StatisticsProvider>(builder: (context, provider, child) {
+      WordStatisticsEntity? wordStatisticsEntity =
+          provider.wordStatisticsEntity;
+
+      bool isLoading = provider.isLoading;
+
+      // Access the failure from the provider
+      Failure? failure = provider.failure;
+
+      if (failure != null) {
+        return Text(failure.errorMessage);
+      } else if (!isLoading && wordStatisticsEntity == null) {
+        return const Center(child: Text('Không có dữ liệu'));
+      } else {
+        return Skeletonizer(
+            enabled: isLoading,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), color: Colors.white),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.menu_book,
+                          size: 30,
+                          color: Colors.yellow.shade700,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text('Từ vựng ',
+                            style: Theme.of(context).textTheme.bodyLarge!
+                            // .copyWith(color: Colors.white),
+                            ),
+                      ],
+                    ),
+                    Text(
+                      'Tổng cộng: ${wordStatisticsEntity?.total}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Theo chuyên ngành',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    isLoading
+                        ? const SizedBox.shrink()
+                        : SizedBox(
+                            // width: MediaQuery.of(context).size.width - 100,
+                            child: AspectRatio(
+                            aspectRatio: 1.6,
+                            child: BarChartWidget(
+                              chartData: wordStatisticsEntity!.bySpecialization
+                                  .map((e) => BarChartData(
+                                      e.specializationName, e.count))
+                                  .toList(),
+                            ),
+                          )),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Theo cấp độ',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    isLoading
+                        ? const SizedBox.shrink()
+                        : SizedBox(
+                            // width: MediaQuery.of(context).size.width - 100,
+                            child: AspectRatio(
+                            aspectRatio: 1.6,
+                            child: BarChartWidget(
+                              chartData: wordStatisticsEntity!.byLevel
+                                  .map(
+                                      (e) => BarChartData(e.levelName, e.count))
+                                  .toList(),
+                            ),
+                          )),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Theo chủ đề',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    isLoading
+                        ? const SizedBox.shrink()
+                        : SizedBox(
+                            // width: MediaQuery.of(context).size.width - 100,
+                            child: AspectRatio(
+                            aspectRatio: 1.6,
+                            child: BarChartWidget(
+                              chartData: wordStatisticsEntity!.byTopic
+                                  .map(
+                                      (e) => BarChartData(e.topicName, e.count))
+                                  .toList(),
+                            ),
+                          )),
+                  ]),
+            ));
+      }
+    });
+  }
+
+  Consumer<StatisticsProvider> _contributionStatistics() {
+    return Consumer<StatisticsProvider>(builder: (context, provider, child) {
+      ContriStatisticsEntity? contriStatisticsEntity =
+          provider.contriStatisticsEntity;
+
+      bool isLoading = provider.isLoading;
+
+      // Access the failure from the provider
+      Failure? failure = provider.failure;
+
+      if (failure != null) {
+        return Text(failure.errorMessage);
+      } else if (!isLoading && contriStatisticsEntity == null) {
+        return const Center(child: Text('Không có dữ liệu'));
+      } else {
+        return Skeletonizer(
+          enabled: isLoading,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12), color: Colors.white),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.extension,
+                    size: 30,
+                    color: Colors.green,
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text('Đóng góp ',
+                      style: Theme.of(context).textTheme.bodyLarge!
+                      // .copyWith(color: Colors.white),
+                      ),
+                ],
+              ),
+              Text(
+                'Tổng cộng: ${contriStatisticsEntity?.total}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              isLoading
+                  ? const SizedBox.shrink()
+                  : SizedBox(
+                      child: AspectRatio(
+                      aspectRatio: 1.6,
+                      child: ColumnChartWidget(
+                        chartData: [
+                          ColumnChartData(
+                              'Đã duyệt', contriStatisticsEntity!.approved, 1),
+                          ColumnChartData(
+                              'Đang chờ', contriStatisticsEntity.pending, 0),
+                          ColumnChartData(
+                              'Đã từ chối', contriStatisticsEntity.refused, -1)
+                        ],
+                      ),
+                    )),
+            ]),
+          ),
+        );
+      }
+    });
+  }
+
+  Consumer<StatisticsProvider> _userStatistics() {
+    return Consumer<StatisticsProvider>(builder: (context, provider, child) {
+      UserStatisticsEntity? userStatisticsEntity =
+          provider.userStatisticsEntity;
+
+      bool isLoading = provider.isLoading;
+
+      // Access the failure from the provider
+      Failure? failure = provider.failure;
+
+      if (failure != null) {
+        return Text(failure.errorMessage);
+      } else if (!isLoading && userStatisticsEntity == null) {
+        return const Center(child: Text('Không có dữ liệu'));
+      } else {
+        return Skeletonizer(
+          enabled: isLoading,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12), color: Colors.white),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.group_outlined,
+                    size: 30,
+                    color: Colors.blue,
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text('Người dùng ',
+                      style: Theme.of(context).textTheme.bodyLarge!
+                      // .copyWith(color: Colors.white),
+                      ),
+                ],
+              ),
+              Text(
+                'Tổng cộng: ${userStatisticsEntity?.total}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              isLoading
+                  ? const SizedBox.shrink()
+                  : SizedBox(
+                      // width: MediaQuery.of(context).size.width - 100,
+                      child: AspectRatio(
+                      aspectRatio: 1.6,
+                      child: ColumnChartWidget(
+                        chartData: [
+                          ColumnChartData('Đang hoạt động',
+                              userStatisticsEntity!.active, 1),
+                          ColumnChartData(
+                              'Đã khóa', userStatisticsEntity.banned, 0),
+                          ColumnChartData(
+                              'Đã xóa', userStatisticsEntity.deleted, -1)
+                        ],
+                      ),
+                    )),
+            ]),
+          ),
+        );
+      }
+    });
   }
 
   Future<void> _dialogPickerBuilder(BuildContext context) {

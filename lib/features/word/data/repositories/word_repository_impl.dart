@@ -45,7 +45,8 @@ class WordRepositoryImpl implements WordRepository {
             await localDataSource.getLastWord();
         return Right(localWord);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -69,9 +70,15 @@ class WordRepositoryImpl implements WordRepository {
       try {
         ResponseDataModel<WordModel> localWordDetail =
             await localDataSource.getLastWordDetail();
+
+        if (localWordDetail.data.id != getWordParams.id) {
+          return Left(
+              CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+        }
         return Right(localWordDetail);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -92,7 +99,7 @@ class WordRepositoryImpl implements WordRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -112,7 +119,7 @@ class WordRepositoryImpl implements WordRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -132,7 +139,7 @@ class WordRepositoryImpl implements WordRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -152,7 +159,7 @@ class WordRepositoryImpl implements WordRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -172,7 +179,7 @@ class WordRepositoryImpl implements WordRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 }

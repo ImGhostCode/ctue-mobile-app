@@ -4,6 +4,7 @@ import 'package:ctue_app/features/home/presentation/providers/home_provider.dart
 import 'package:ctue_app/features/home/presentation/widgets/recent_widget.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/word/presentation/widgets/look_up_dic_bar.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:flutter/material.dart';
@@ -116,41 +117,6 @@ class HomePage extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-
-                // Text(
-                //   'Đề xuất cho bạn',
-                //   style: Theme.of(context).textTheme.titleLarge,
-                // ),
-                // SizedBox(
-                //   height: 90.0, // Set a fixed height for the ListView
-                //   child: ListView.builder(
-                //     scrollDirection: Axis.horizontal,
-                //     itemCount: 1, // Number of items in your list
-                //     itemBuilder: (BuildContext context, int index) {
-                //       return Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Column(
-                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //           children: [
-                //             ClipRRect(
-                //               borderRadius: BorderRadius.circular(10),
-                //               child: Image.asset(
-                //                 'assets/images/chatbot.png',
-                //                 height: 52,
-                //                 width: 52,
-                //               ),
-                //             ),
-                //             Text(
-                //               'CTUE AI',
-                //               style: Theme.of(context).textTheme.bodyMedium,
-                //             )
-                //           ],
-                //         ),
-                //       );
-                //     },
-                //   ),
-                // ),
-
                 Consumer<LearnProvider>(
                   builder: (context, provider, child) {
                     bool isLoading = provider.isLoading;
@@ -159,7 +125,13 @@ class HomePage extends StatelessWidget {
 
                     if (failure != null) {
                       // Handle failure, for example, show an error message
-                      return Text(failure.errorMessage);
+                      // return Text(failure.errorMessage);
+                      return CustomErrorWidget(
+                          title: failure.errorMessage,
+                          onTryAgain: () {
+                            Provider.of<LearnProvider>(context, listen: false)
+                                .eitherFailureOrGetUpcomingReminder(null);
+                          });
                     }
                     // else if (!isLoading && provider.currReminder != null) {
                     //   return Container(
@@ -218,7 +190,6 @@ class HomePage extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-
                 Container(
                   height: 200,
                   width: MediaQuery.of(context).size.width,

@@ -463,6 +463,13 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                                 children: [
                                   Image.network(
                                     oldPicture!,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Image.asset(
+                                      'assets/images/broken-image.png',
+                                      color: Colors.grey.shade300,
+                                      fit: BoxFit.cover,
+                                    ),
                                     width: 100,
                                     height: 100,
                                     fit: BoxFit.fill,
@@ -720,6 +727,13 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                             child: topic.image.isNotEmpty
                                 ? Image.network(
                                     topic.image,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Image.asset(
+                                      'assets/images/broken-image.png',
+                                      color: Colors.grey.shade300,
+                                      fit: BoxFit.cover,
+                                    ),
                                     fit: BoxFit.fill,
                                     width: 60.0,
                                     height: 60.0,

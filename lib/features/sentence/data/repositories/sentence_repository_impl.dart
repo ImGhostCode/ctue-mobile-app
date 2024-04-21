@@ -45,7 +45,8 @@ class SentenceRepositoryImpl implements SentenceRepository {
             await localDataSource.getLastSentence();
         return Right(localSentence);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -69,9 +70,14 @@ class SentenceRepositoryImpl implements SentenceRepository {
       try {
         ResponseDataModel<SentenceModel> localSentenceDetail =
             await localDataSource.getLastSentenceDetail();
+        if (localSentenceDetail.data.id != getSentenceParams.id) {
+          return Left(
+              CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+        }
         return Right(localSentenceDetail);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -92,7 +98,7 @@ class SentenceRepositoryImpl implements SentenceRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -112,7 +118,7 @@ class SentenceRepositoryImpl implements SentenceRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -132,7 +138,7 @@ class SentenceRepositoryImpl implements SentenceRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 }

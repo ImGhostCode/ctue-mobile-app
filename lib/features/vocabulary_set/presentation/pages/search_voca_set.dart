@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/pages/vocabulary_set_store.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
@@ -47,8 +48,13 @@ class SearchVocaSetPage extends StatelessWidget {
             Failure? failure = provider.failure;
 
             if (failure != null) {
-              // Handle failure, for example, show an error message
-              return Center(child: Text(failure.errorMessage));
+              return CustomErrorWidget(
+                  title: failure.errorMessage,
+                  onTryAgain: () {
+                    Provider.of<VocaSetProvider>(context, listen: false)
+                        .eitherFailureOrSearchVocaSets(
+                            args.title, args.topicId);
+                  });
             } else if (isLoading) {
               // Handle the case where topics are empty
               return const Center(child: CircularProgressIndicator());
@@ -133,6 +139,13 @@ class SearchVocaSetPage extends StatelessWidget {
                                               BorderRadius.circular(12),
                                           child: Image.network(
                                             searchResults[index].picture!,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    Image.asset(
+                                              'assets/images/broken-image.png',
+                                              color: Colors.grey.shade300,
+                                              fit: BoxFit.cover,
+                                            ),
                                             fit: BoxFit.cover,
                                           ),
                                         )

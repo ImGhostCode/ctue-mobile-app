@@ -44,7 +44,8 @@ class SpeechRepositoryImpl implements SpeechRepository {
             await localDataSource.getLastVoices();
         return Right(localVoices);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -70,7 +71,8 @@ class SpeechRepositoryImpl implements SpeechRepository {
             await localDataSource.getLastTextToSpeech();
         return Right(localTextToSpeech);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -94,7 +96,7 @@ class SpeechRepositoryImpl implements SpeechRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -123,7 +125,8 @@ class SpeechRepositoryImpl implements SpeechRepository {
             await localDataSource.getLastUserPronuncStatistics();
         return Right(localUserPronuncStatistics);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }

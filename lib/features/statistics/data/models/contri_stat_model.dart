@@ -21,9 +21,9 @@ class ContriStatisticsModel extends ContriStatisticsEntity {
   Map<String, dynamic> toJson() {
     return {
       kTotal: total,
-      kPending: pending,
-      kRefused: refused,
-      kApproved: approved,
+      kPending: this.pending,
+      kRefused: this.refused,
+      kApproved: this.approved,
     };
   }
 }

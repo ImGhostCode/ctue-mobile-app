@@ -3,6 +3,7 @@ import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
 import 'package:ctue_app/features/notification/presentation/widgets/notification_icon.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
@@ -141,8 +142,11 @@ class _WordStorePageState extends State<WordStorePage> {
               Failure? failure = provider.failure;
 
               if (failure != null) {
-                // Handle failure, for example, show an error message
-                return Text(failure.errorMessage);
+                return CustomErrorWidget(
+                    title: failure.errorMessage,
+                    onTryAgain: () {
+                      provider.eitherFailureOrGetUpcomingReminder(null);
+                    });
               }
               // else if (!isLoading && provider.currReminder != null) {
               //   return Container(
@@ -323,8 +327,11 @@ class _WordStorePageState extends State<WordStorePage> {
       Failure? failure = provider.failure;
 
       if (failure != null) {
-        // Handle failure, for example, show an error message
-        return Text(failure.errorMessage);
+        return CustomErrorWidget(
+            title: failure.errorMessage,
+            onTryAgain: () {
+              provider.eitherFailureOrGerUsrVocaSets();
+            });
       } else if (!isLoading && listUsrVocaSets.isEmpty) {
         // Handle the case where topics are empty
         return const Center(

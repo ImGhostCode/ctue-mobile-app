@@ -269,6 +269,12 @@ class _ContributionManagementPageState
                         child: item.user!.avt != null
                             ? Image.network(
                                 item.user!.avt!,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Image.asset(
+                                  'assets/images/broken-image.png',
+                                  color: Colors.grey.shade300,
+                                  fit: BoxFit.cover,
+                                ),
                                 fit: BoxFit.cover,
                               )
                             : Image.asset(
@@ -558,6 +564,13 @@ Future<String?> showWordConDetail(
                                   height: 100,
                                   child: Image.network(
                                     contributionDetail['pictures'][index],
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Image.asset(
+                                      'assets/images/broken-image.png',
+                                      color: Colors.grey.shade300,
+                                      fit: BoxFit.cover,
+                                    ),
                                     // height: 100,
                                     fit: BoxFit.cover,
                                   ),

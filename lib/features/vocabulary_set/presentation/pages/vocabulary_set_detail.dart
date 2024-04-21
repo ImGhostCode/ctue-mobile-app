@@ -3,6 +3,7 @@ import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/manage/presentation/pages/voca_set_management.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
 import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
@@ -23,6 +24,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
   String sortBy = 'Mới nhất';
   dynamic args;
   List<UserLearnedWordEntity> userLearnedWords = [];
+  // bool isLoadedVocaStatistics = false;
 
   @override
   void initState() {
@@ -38,8 +40,6 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
         .eitherFailureOrGerVocaSetDetail(args.id);
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrGetUsrLearnedWords(args.id);
-    // Provider.of<LearnProvider>(context, listen: false)
-    //     .eitherFailureOrGetUsrLearnedWords(args.id);
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(args.id);
     super.didChangeDependencies();
@@ -58,9 +58,20 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
 
       if (!isLoading && failure != null) {
         // Handle failure, for example, show an error message
-        return Scaffold(body: Center(child: Text(failure.errorMessage)));
+        return Scaffold(
+            body: CustomErrorWidget(
+                title: failure.errorMessage,
+                onTryAgain: () {
+                  Provider.of<LearnProvider>(context, listen: false)
+                      .eitherFailureOrGetUpcomingReminder(args.id);
+                  Provider.of<VocaSetProvider>(context, listen: false)
+                      .eitherFailureOrGerVocaSetDetail(args.id);
+                  Provider.of<LearnProvider>(context, listen: false)
+                      .eitherFailureOrGetUsrLearnedWords(args.id);
+                  Provider.of<VocaSetProvider>(context, listen: false)
+                      .eitherFailureOrGerVocaSetStatistics(args.id);
+                }));
       } else if (isLoading && vocaSetEntity == null) {
-        // Handle the case where topics are empty
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       } else if (!isLoading && vocaSetEntity != null) {
         return Scaffold(
@@ -144,8 +155,13 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                               Failure? failure = learnProvider.failure;
 
                               if (failure != null) {
-                                // Handle failure, for example, show an error message
-                                return Text(failure.errorMessage);
+                                return CustomErrorWidget(
+                                    title: failure.errorMessage,
+                                    onTryAgain: () {
+                                      learnProvider
+                                          .eitherFailureOrGetUpcomingReminder(
+                                              args.id);
+                                    });
                               } else if (!isLoading &&
                                   learnProvider.upcomingReminder != null) {
                                 return ActionBox(
@@ -352,9 +368,8 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
           ),
         );
       } else {
-        // Handle the case where topics are empty
-        // return const Scaffold(body: Center(child: Text('Không có dữ liệu')));
-        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        return const Scaffold(body: Center(child: Text('Không có dữ liệu')));
+        // return const Scaffold(body: Center(child: CircularProgressIndicator()));
       }
     });
   }

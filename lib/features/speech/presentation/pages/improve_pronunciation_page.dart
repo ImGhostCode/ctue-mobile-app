@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/speech/business/entities/prounc_statistics_entity.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:ctue_app/features/word/presentation/widgets/listen_word_btn.dart';
@@ -43,8 +44,11 @@ class ImprovePronunciationPage extends StatelessWidget {
             Failure? failure = provider.failure;
 
             if (!isLoading && failure != null) {
-              // Handle failure, for example, show an error message
-              return Text(failure.errorMessage);
+              return CustomErrorWidget(
+                  title: failure.errorMessage,
+                  onTryAgain: () {
+                    provider.eitherFailureOrgetUserProStatistics();
+                  });
             } else if (!isLoading &&
                 pronuncStatisticEntity?.suggestWordsToImprove == null) {
               // Handle the case where topics are empty

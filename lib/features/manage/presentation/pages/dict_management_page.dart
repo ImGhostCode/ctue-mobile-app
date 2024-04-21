@@ -196,6 +196,12 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
                           child: item.pictures.isNotEmpty
                               ? Image.network(
                                   item.pictures[0],
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Image.asset(
+                                    'assets/images/broken-image.png',
+                                    color: Colors.grey.shade300,
+                                    fit: BoxFit.cover,
+                                  ),
                                   fit: BoxFit.cover,
                                 )
                               : Container(),

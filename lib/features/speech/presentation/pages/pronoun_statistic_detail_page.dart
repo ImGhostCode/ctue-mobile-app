@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/colored_line.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/speech/business/entities/prounc_statistics_entity.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:ctue_app/features/speech/presentation/widgets/record_button.dart';
@@ -46,7 +47,11 @@ class ProStatisticDetailPage extends StatelessWidget {
 
         if (!isLoading && failure != null) {
           // Handle failure, for example, show an error message
-          return Text(failure.errorMessage);
+          return CustomErrorWidget(
+              title: failure.errorMessage,
+              onTryAgain: () {
+                provider.eitherFailureOrgetUserProStatistics();
+              });
         } else if (!isLoading && detailEntity == null) {
           // Handle the case where topics are empty
           return const Center(child: Text('Không có dữ liệu'));

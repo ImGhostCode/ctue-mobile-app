@@ -2,6 +2,7 @@ import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/features/extension/presentation/providers/favorite_provider.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
+import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:ctue_app/features/word/presentation/widgets/listen_word_btn.dart';
@@ -61,7 +62,11 @@ class _WordDetailState extends State<WordDetail> {
 
             if (!isLoading && failure != null) {
               // Handle failure, for example, show an error message
-              return Text(failure.errorMessage);
+              return CustomErrorWidget(
+                  title: failure.errorMessage,
+                  onTryAgain: () {
+                    wordProvider.eitherFailureOrWordDetail(args.id);
+                  });
             } else if (!isLoading && wordDetail == null) {
               // Handle the case where topics are empty
               return const Center(child: Text('Không có dữ liệu'));
@@ -191,6 +196,15 @@ class _WordDetailState extends State<WordDetail> {
                                                       child: Image.network(
                                                         wordDetail
                                                             .pictures[index],
+                                                        errorBuilder: (context,
+                                                                error,
+                                                                stackTrace) =>
+                                                            Image.asset(
+                                                          'assets/images/broken-image.png',
+                                                          color: Colors
+                                                              .grey.shade300,
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                         fit: BoxFit.contain,
                                                         width: double.infinity,
                                                         height: double.infinity,
@@ -460,6 +474,15 @@ class _WordDetailState extends State<WordDetail> {
                                                 ? Image.network(
                                                     wordDetail
                                                         .topics![index].image,
+                                                    errorBuilder: (context,
+                                                            error,
+                                                            stackTrace) =>
+                                                        Image.asset(
+                                                      'assets/images/broken-image.png',
+                                                      color:
+                                                          Colors.grey.shade300,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                     fit: BoxFit.cover,
                                                     width: 60.0,
                                                     height: 60.0,

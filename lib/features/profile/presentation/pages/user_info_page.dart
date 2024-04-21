@@ -195,6 +195,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                           null
                                       ? Image.network(
                                           userDetail?.avt ?? '',
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Image.asset(
+                                            'assets/images/broken-image.png',
+                                            color: Colors.grey.shade300,
+                                            fit: BoxFit.cover,
+                                          ),
                                           fit: BoxFit.cover,
                                         )
                                       : const FlutterLogo(),
@@ -428,6 +435,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                           child: topic.image.isNotEmpty
                                               ? Image.network(
                                                   topic.image,
+                                                  errorBuilder: (context, error,
+                                                          stackTrace) =>
+                                                      Image.asset(
+                                                    'assets/images/broken-image.png',
+                                                    color: Colors.grey.shade300,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                   fit: BoxFit.cover,
                                                   width: 60.0,
                                                   height: 60.0,

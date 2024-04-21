@@ -46,7 +46,8 @@ class UserRepositoryImpl implements UserRepository {
             await localDataSource.getLastUser();
         return Right(localUser);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -71,7 +72,7 @@ class UserRepositoryImpl implements UserRepository {
       // AccessTokenModel localUser = await localDataSource.getLastUser();
       //   return Right(localUser);
       // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       // }
     }
   }
@@ -96,7 +97,7 @@ class UserRepositoryImpl implements UserRepository {
       // AccessTokenModel localUser = await localDataSource.getLastUser();
       //   return Right(localUser);
       // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       // }
     }
   }
@@ -117,7 +118,7 @@ class UserRepositoryImpl implements UserRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
     }
   }
 
@@ -142,7 +143,8 @@ class UserRepositoryImpl implements UserRepository {
             await localDataSource.getLastUsersByAdmin();
         return Right(localUsersByAdmin);
       } on CacheException {
-        return Left(CacheFailure(errorMessage: 'This is a network exception'));
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       }
     }
   }
@@ -167,7 +169,7 @@ class UserRepositoryImpl implements UserRepository {
       // AccessTokenModel localUser = await localDataSource.getLastUser();
       //   return Right(localUser);
       // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       // }
     }
   }
@@ -192,7 +194,7 @@ class UserRepositoryImpl implements UserRepository {
       // AccessTokenModel localUser = await localDataSource.getLastUser();
       //   return Right(localUser);
       // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
+      return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
       // }
     }
   }
@@ -206,7 +208,7 @@ class UserRepositoryImpl implements UserRepository {
         ResponseDataModel<AccountModel> remoteUser = await remoteDataSource
             .getAccountDetailByAdmin(getAccountParams: getAccountParams);
 
-        // localDataSource.cacheUser(UserToCache: remoteUser);
+        localDataSource.cacheAccountDetailByAdmin(accountResModel: remoteUser);
 
         return Right(remoteUser);
       } on ServerException catch (e) {
@@ -214,12 +216,19 @@ class UserRepositoryImpl implements UserRepository {
             errorMessage: e.errorMessage, statusCode: e.statusCode));
       }
     } else {
-      // try {
-      // AccessTokenModel localUser = await localDataSource.getLastUser();
-      //   return Right(localUser);
-      // } on CacheException {
-      return Left(CacheFailure(errorMessage: 'This is a network exception'));
-      // }
+      try {
+        ResponseDataModel<AccountModel> localAccountDetail =
+            await localDataSource.getLastAccountDetailByAdmin();
+
+        if (getAccountParams.userId != localAccountDetail.data.userId) {
+          return Left(
+              CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+        }
+        return Right(localAccountDetail);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
     }
   }
 }
