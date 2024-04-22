@@ -174,7 +174,7 @@ String kEmail = 'email';
 String kUserId = 'userId';
 String kAuthType = 'authType';
 String kAccountType = 'accountType';
-String kIsBan = 'isBan';
+String kIsBanned = 'isBanned';
 String kFeedback = 'feedback';
 String kIsDeleted = 'isDeleted';
 
@@ -205,6 +205,7 @@ String kAntonyms = 'antonyms';
 
 String kMeaning = 'meaning';
 String kWordId = 'wordId';
+String kSentenceId = 'sentenceId';
 
 String kV1 = 'v1';
 String kV2 = 'v2';
@@ -212,6 +213,7 @@ String kV3 = 'v3';
 String kWords = 'words';
 String kLearnedWords = 'learnedWords';
 String kWord = 'Word';
+String kSentence = 'Sentence';
 String kStatus = 'status';
 String kUser = 'User';
 String kContriType = 'type';

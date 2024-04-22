@@ -25,7 +25,7 @@ class IrrVerbRemoteDataSourceImpl implements IrrVerbRemoteDataSource {
   Future<ResponseDataModel<IrrVerbResModel>> getIrrVerbs(
       {required IrrVerbParams irrVerbParams}) async {
     try {
-      final response = await dio.get('/irregular-verb/',
+      final response = await dio.get('/irregular-verbs/',
           queryParameters: {
             "page": irrVerbParams.page,
             "sort": irrVerbParams.sort,
@@ -56,7 +56,7 @@ class IrrVerbRemoteDataSourceImpl implements IrrVerbRemoteDataSource {
   Future<ResponseDataModel<IrrVerbModel>> createIrrVerb(
       {required CreateIrrVerbParams createIrrVerbParams}) async {
     try {
-      final response = await dio.post('/irregular-verb',
+      final response = await dio.post('/irregular-verbs',
           data: {
             "v1": createIrrVerbParams.v1,
             "v2": createIrrVerbParams.v2,
@@ -88,7 +88,7 @@ class IrrVerbRemoteDataSourceImpl implements IrrVerbRemoteDataSource {
       {required UpdateIrrVerbParams updateIrrVerbParams}) async {
     try {
       final response = await dio.patch(
-          '/irregular-verb/${updateIrrVerbParams.irrVerbId}',
+          '/irregular-verbs/${updateIrrVerbParams.irrVerbId}',
           data: {
             "v1": updateIrrVerbParams.v1,
             "v2": updateIrrVerbParams.v2,
@@ -120,7 +120,7 @@ class IrrVerbRemoteDataSourceImpl implements IrrVerbRemoteDataSource {
       {required DeleteIrrVerbParams deleteIrrVerbParams}) async {
     try {
       final response = await dio.delete(
-          '/irregular-verb/${deleteIrrVerbParams.irrVerbId}',
+          '/irregular-verbs/${deleteIrrVerbParams.irrVerbId}',
           options: Options(headers: {
             "authorization": "Bearer ${deleteIrrVerbParams.accessToken}"
           }));

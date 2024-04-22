@@ -59,7 +59,7 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
             .toList(),
       });
 
-      final response = await dio.post('/contribution/word',
+      final response = await dio.post('/contributions/word',
           data: formData,
           options: Options(headers: {
             "authorization": "Bearer ${createWordConParams.accessToken}"
@@ -85,7 +85,7 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
   Future<ResponseDataModel<ContributionModel>> createSenContribution(
       {required CreateSenConParams createSenConParams}) async {
     try {
-      final response = await dio.post('/contribution/sentence',
+      final response = await dio.post('/contributions/sentence',
           data: {
             'type': createSenConParams.type,
             'content': {
@@ -120,7 +120,7 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
   Future<ResponseDataModel<ContributionResModel>> getAllCon(
       {required GetAllConParams getAllConParams}) async {
     try {
-      final response = await dio.get('/contribution/',
+      final response = await dio.get('/contributions/',
           queryParameters: {
             'type': getAllConParams.type,
             'status': getAllConParams.status,
@@ -150,7 +150,7 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
       {required GetAllConByUserParams getAllConByUserParams}) async {
     try {
       final response = await dio.get(
-          '/contribution/user/${getAllConByUserParams.userId}',
+          '/contributions/user/${getAllConByUserParams.userId}',
           queryParameters: {'page': getAllConByUserParams.page},
           options: Options(headers: {
             "authorization": "Bearer ${getAllConByUserParams.accessToken}"
@@ -177,7 +177,7 @@ class ContributionRemoteDataSourceImpl implements ContributionRemoteDataSource {
       {required VerifyConParams verifyConParams}) async {
     try {
       final response = await dio.patch(
-          '/contribution/verify/${verifyConParams.isWord ? 'word' : 'sentence'}/${verifyConParams.contributionId}',
+          '/contributions/verify/${verifyConParams.isWord ? 'word' : 'sentence'}/${verifyConParams.contributionId}',
           data: {
             'status': verifyConParams.status,
             'feedback': verifyConParams.feedback

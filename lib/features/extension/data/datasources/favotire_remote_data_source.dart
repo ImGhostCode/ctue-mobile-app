@@ -1,12 +1,12 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/favorite_params.dart';
 import 'package:ctue_app/features/extension/data/models/favorite_model.dart';
-import 'package:ctue_app/features/word/data/models/word_model.dart';
+import 'package:ctue_app/features/extension/data/models/favorite_response_model.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/exceptions.dart';
 
 abstract class FavoriteRemoteDataSource {
-  Future<ResponseDataModel<List<WordModel>>> getFavorites(
+  Future<ResponseDataModel<FavoriteResModel>> getFavorites(
       {required GetFavoritesParams getFavoritesParams});
   Future<ResponseDataModel<FavoriteModel>> toggleFavorite(
       {required ToggleFavoriteParams toggleFavoriteParams});
@@ -23,7 +23,7 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
   Future<ResponseDataModel<FavoriteModel>> toggleFavorite(
       {required ToggleFavoriteParams toggleFavoriteParams}) async {
     try {
-      final response = await dio.patch('/favorite/user',
+      final response = await dio.patch('/favorites/user',
           queryParameters: {},
           data: {'wordId': toggleFavoriteParams.wordId},
           options: Options(headers: {
@@ -49,10 +49,10 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
   }
 
   @override
-  Future<ResponseDataModel<List<WordModel>>> getFavorites(
+  Future<ResponseDataModel<FavoriteResModel>> getFavorites(
       {required GetFavoritesParams getFavoritesParams}) async {
     try {
-      final response = await dio.get('/favorite/user',
+      final response = await dio.get('/favorites/user',
           queryParameters: {
             'page': getFavoritesParams.page,
             'sort': getFavoritesParams.sort,
@@ -62,11 +62,10 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
             "authorization": "Bearer ${getFavoritesParams.accessToken}"
           }));
 
-      return ResponseDataModel<List<WordModel>>.fromJson(
+      return ResponseDataModel<FavoriteResModel>.fromJson(
         json: response.data,
-        fromJsonD: (jsonFavorites) => jsonFavorites['results']['Word']
-            ?.map<WordModel>((json) => WordModel.fromJson(json: json))
-            .toList(),
+        fromJsonD: (jsonFavorites) =>
+            FavoriteResModel.fromJson(json: jsonFavorites),
       );
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
@@ -87,7 +86,7 @@ class FavoriteRemoteDataSourceImpl implements FavoriteRemoteDataSource {
       {required CheckFavoriteParams checkFavoriteParams}) async {
     try {
       final response = await dio.get(
-          '/favorite/user/is-favorite/${checkFavoriteParams.wordId}',
+          '/favorites/user/is-favorite/${checkFavoriteParams.wordId}',
           queryParameters: {},
           options: Options(headers: {
             "authorization": "Bearer ${checkFavoriteParams.accessToken}"

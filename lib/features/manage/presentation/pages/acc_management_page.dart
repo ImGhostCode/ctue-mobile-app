@@ -220,7 +220,8 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                           height: 10,
                           width: 10,
                           decoration: BoxDecoration(
-                              color: item.isBan ? Colors.yellow : Colors.green,
+                              color:
+                                  item.isBanned ? Colors.yellow : Colors.green,
                               shape: BoxShape.circle),
                         )),
                   ),
@@ -309,10 +310,10 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                     height: 10,
                     width: 10,
                     decoration: BoxDecoration(
-                        color: account.isBan ? Colors.yellow : Colors.green,
+                        color: account.isBanned ? Colors.yellow : Colors.green,
                         shape: BoxShape.circle),
                   ),
-                  Text(account.isBan ? 'Đã khóa' : 'Đang hoạt động'),
+                  Text(account.isBanned ? 'Đã khóa' : 'Đang hoạt động'),
                 ],
               ),
               TextButton(
@@ -339,13 +340,13 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(account.isBan
+                  Icon(account.isBanned
                       ? Icons.lock_open_rounded
                       : Icons.lock_outline_rounded),
                   const SizedBox(
                     width: 3,
                   ),
-                  Text(account.isBan ? 'Mở khóa' : 'Khóa'),
+                  Text(account.isBanned ? 'Mở khóa' : 'Khóa'),
                 ],
               )),
           ElevatedButton(
@@ -429,7 +430,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                               .statusCode ==
                           200) {
                         setState(() {
-                          accountEntity.isBan = !accountEntity.isBan;
+                          accountEntity.isBanned = !accountEntity.isBanned;
                         });
                       }
                     },

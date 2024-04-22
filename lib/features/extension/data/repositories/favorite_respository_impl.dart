@@ -5,8 +5,7 @@ import 'package:ctue_app/features/extension/business/repositories/favorite_repos
 import 'package:ctue_app/features/extension/data/datasources/favorite_local_data_source.dart';
 import 'package:ctue_app/features/extension/data/datasources/favotire_remote_data_source.dart';
 import 'package:ctue_app/features/extension/data/models/favorite_model.dart';
-
-import 'package:ctue_app/features/word/data/models/word_model.dart';
+import 'package:ctue_app/features/extension/data/models/favorite_response_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/connection/network_info.dart';
@@ -25,11 +24,11 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
   });
 
   @override
-  Future<Either<Failure, ResponseDataModel<List<WordModel>>>> getFavoriteList(
+  Future<Either<Failure, ResponseDataModel<FavoriteResModel>>> getFavoriteList(
       {required GetFavoritesParams getFavoritesParams}) async {
     if (await networkInfo.isConnected!) {
       try {
-        ResponseDataModel<List<WordModel>> remoteFavorite =
+        ResponseDataModel<FavoriteResModel> remoteFavorite =
             await remoteDataSource.getFavorites(
                 getFavoritesParams: getFavoritesParams);
 
@@ -42,7 +41,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       }
     } else {
       try {
-        ResponseDataModel<List<WordModel>> localFavorites =
+        ResponseDataModel<FavoriteResModel> localFavorites =
             await localDataSource.getLastFavorites();
         return Right(localFavorites);
       } on CacheException {

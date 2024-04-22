@@ -18,7 +18,7 @@ class NotiRemoteDataSourceImpl implements NotiRemoteDataSource {
   Future<ResponseDataModel<NotiResModel>> getAllUserNoti(
       {required GetAllUserNotiParams getAllUserNotiParams}) async {
     try {
-      final response = await dio.get('/notification/user',
+      final response = await dio.get('/notifications/user',
           queryParameters: {
             'page': getAllUserNotiParams.page,
           },

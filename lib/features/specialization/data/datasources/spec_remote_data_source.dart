@@ -18,7 +18,7 @@ class SpecRemoteDataSourceImpl implements SpecRemoteDataSource {
   Future<ResponseDataModel<List<SpecializationModel>>> getSpecializations(
       {required SpecializationParams specializationParams}) async {
     try {
-      final response = await dio.get('/specialization',
+      final response = await dio.get('/specializations',
           queryParameters: {
             'api_key': 'if needed',
           },

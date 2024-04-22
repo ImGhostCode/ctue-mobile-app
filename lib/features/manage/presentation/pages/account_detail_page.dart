@@ -164,13 +164,13 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                           decoration: BoxDecoration(
                               color: isLoading
                                   ? isLoadingColor
-                                  : (account != null && account.isBan
+                                  : (account != null && account.isBanned
                                       ? Colors.yellow
                                       : Colors.green),
                               shape: BoxShape.circle),
                         ),
                         Text(account != null
-                            ? account.isBan
+                            ? account.isBanned
                                 ? 'Đã khóa'
                                 : 'Đang hoạt động'
                             : 'Đang tải dữ liệu'),

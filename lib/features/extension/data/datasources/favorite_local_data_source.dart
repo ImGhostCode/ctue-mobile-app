@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:ctue_app/core/constants/response.dart';
-import 'package:ctue_app/features/word/data/models/word_model.dart';
+import 'package:ctue_app/features/extension/data/models/favorite_model.dart';
+import 'package:ctue_app/features/extension/data/models/favorite_response_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/errors/exceptions.dart';
 
 abstract class FavoriteLocalDataSource {
   Future<void> cacheFavorite(
-      {required ResponseDataModel<List<WordModel>>? favoriteModel});
-  Future<ResponseDataModel<List<WordModel>>> getLastFavorites();
+      {required ResponseDataModel<FavoriteResModel>? favoriteModel});
+  Future<ResponseDataModel<FavoriteResModel>> getLastFavorites();
 }
 
 const cachedFavorite = 'CACHED_FAVORITES';
@@ -19,14 +20,14 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
   FavoriteLocalDataSourceImpl({required this.sharedPreferences});
 
   @override
-  Future<ResponseDataModel<List<WordModel>>> getLastFavorites() {
+  Future<ResponseDataModel<FavoriteResModel>> getLastFavorites() {
     final jsonString = sharedPreferences.getString(cachedFavorite);
 
     if (jsonString != null) {
-      return Future.value(ResponseDataModel<List<WordModel>>.fromJson(
+      return Future.value(ResponseDataModel<FavoriteResModel>.fromJson(
           json: json.decode(jsonString),
           fromJsonD: (jsonFavorites) => jsonFavorites
-              ?.map<WordModel>((json) => WordModel.fromJson(json: json))
+              ?.map<FavoriteModel>((json) => FavoriteModel.fromJson(json: json))
               .toList()));
     } else {
       throw CacheException();
@@ -35,12 +36,12 @@ class FavoriteLocalDataSourceImpl implements FavoriteLocalDataSource {
 
   @override
   Future<void> cacheFavorite(
-      {required ResponseDataModel<List<WordModel>>? favoriteModel}) async {
+      {required ResponseDataModel<FavoriteResModel>? favoriteModel}) async {
     if (favoriteModel != null) {
       sharedPreferences.setString(
         cachedFavorite,
         json.encode(Map.from({
-          "data": favoriteModel.data.map((e) => e.toJson()).toList(),
+          "data": favoriteModel.data.toJson(),
           "statusCode": favoriteModel.statusCode,
           "message": favoriteModel.message
         })),

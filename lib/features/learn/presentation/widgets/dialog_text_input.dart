@@ -1,4 +1,4 @@
-import 'package:ctue_app/features/vocabulary_set/presentation/providers/voca_set_provider.dart';
+import 'package:ctue_app/features/vocabulary_pack/presentation/providers/voca_set_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

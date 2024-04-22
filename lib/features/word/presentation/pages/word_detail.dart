@@ -132,10 +132,16 @@ class _WordDetailState extends State<WordDetail> {
                                                           .eitherFailureOrToggleFavorite(
                                                               wordDetail?.id ??
                                                                   0);
-                                                      provider
-                                                          .eitherFailureOrIsFavorite(
-                                                              wordDetail?.id ??
-                                                                  0);
+                                                      // provider
+                                                      //     .eitherFailureOrIsFavorite(
+                                                      //         wordDetail?.id ??
+                                                      //             0);
+                                                      if (provider.failure ==
+                                                          null) {
+                                                        provider.isFavorite =
+                                                            !provider
+                                                                .isFavorite;
+                                                      }
                                                     }
                                                   : null,
                                               icon: provider.isFavorite

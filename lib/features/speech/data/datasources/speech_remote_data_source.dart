@@ -26,6 +26,7 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
   Future<ResponseDataModel<List<VoiceModel>>> getVoices(
       {required GetVoiceParams getVoiceParams}) async {
     try {
+      final String baseUrl = dotenv.env['BASE_URL']!;
       final String speechRegion = dotenv.env['SPEECH_REGION']!;
       final String speechKey = dotenv.env['SPEECH_KEY']!;
 
@@ -37,7 +38,7 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
           },
           options: Options(headers: {"Ocp-Apim-Subscription-Key": speechKey}));
 
-      dio.options.baseUrl = 'https://ctue-learn-english-api.onrender.com/apis';
+      dio.options.baseUrl = baseUrl;
 
       return ResponseDataModel<List<VoiceModel>>.fromJson(
         json: response,
@@ -65,6 +66,7 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
     try {
       final String speechRegion = dotenv.env['SPEECH_REGION']!;
       final String speechKey = dotenv.env['SPEECH_KEY']!;
+      final String baseUrl = dotenv.env['BASE_URL']!;
 
       dio.options.baseUrl = 'https://$speechRegion.tts.speech.microsoft.com';
 
@@ -89,7 +91,7 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
         audioChunks.addAll(chunk);
       });
 
-      dio.options.baseUrl = 'https://ctue-learn-english-api.onrender.com/apis';
+      dio.options.baseUrl = baseUrl;
 
       return ResponseDataModel<List<int>>.fromJson(
         json: response,
@@ -120,7 +122,7 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
             evaluateSpeechPronunParams.audio.path,
             filename: 'audio.wav')
       });
-      final response = await dio.post('/pronunciation-assessment/assess',
+      final response = await dio.post('/pronunciation-assessments/assess',
           data: formData,
           queryParameters: {},
           options: Options(headers: {
@@ -154,7 +156,7 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
       {required GetUserProStatisticParams getUserProStatisticParams}) async {
     try {
       final response = await dio.get(
-          '/pronunciation-assessment/user/statistics',
+          '/pronunciation-assessments/user/statistics',
           queryParameters: {},
           options: Options(headers: {
             "authorization": "Bearer ${getUserProStatisticParams.accessToken}"

@@ -1,4 +1,4 @@
-import 'package:ctue_app/features/vocabulary_set/business/entities/voca_statistics_entity.dart';
+import 'package:ctue_app/features/vocabulary_pack/business/entities/voca_statistics_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

@@ -2,7 +2,7 @@ import 'package:ctue_app/features/extension/presentation/pages/extension_page.da
 import 'package:ctue_app/features/home/presentation/pages/home_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/management_page.dart';
 import 'package:ctue_app/features/profile/presentation/pages/profile_page.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/pages/home_word_store_page.dart';
+import 'package:ctue_app/features/vocabulary_pack/presentation/pages/home_word_store_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'widgets/custom_bottom_bar_widget.dart';

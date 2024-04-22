@@ -5,7 +5,7 @@ class AccountEntity {
   final int userId;
   final String authType;
   final String accountType;
-  bool isBan;
+  bool isBanned;
   final String? feedback;
   final bool isDeleted;
   final UserEntity? user;
@@ -15,7 +15,7 @@ class AccountEntity {
       required this.userId,
       required this.authType,
       required this.accountType,
-      required this.isBan,
+      required this.isBanned,
       required this.feedback,
       required this.isDeleted,
       this.user});

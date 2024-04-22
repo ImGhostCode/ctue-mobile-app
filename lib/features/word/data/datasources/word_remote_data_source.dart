@@ -35,7 +35,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
   Future<ResponseDataModel<WordResModel>> getWords(
       {required GetWordParams getWordParams}) async {
     try {
-      final response = await dio.get('/word',
+      final response = await dio.get('/words',
           queryParameters: {
             'topic': getWordParams.topic,
             "type": getWordParams.type,
@@ -71,7 +71,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
   Future<ResponseDataModel<WordModel>> getWordDetail(
       {required GetWordParams getWordParams}) async {
     try {
-      final response = await dio.get('/word/id/${getWordParams.id}',
+      final response = await dio.get('/words/id/${getWordParams.id}',
           queryParameters: {},
           options: Options(headers: {
             // "authorization": "Bearer ${getUserParams.accessToken}"
@@ -99,7 +99,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
       {required LookUpDictionaryParams lookUpDictionaryParams}) async {
     try {
       final response = await dio.get(
-          '/word/look-up-dictionary?key=${lookUpDictionaryParams.key}',
+          '/words/look-up-dictionary?key=${lookUpDictionaryParams.key}',
           queryParameters: {},
           options: Options(headers: {
             // "authorization": "Bearer ${getUserParams.accessToken}"
@@ -129,6 +129,8 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
       {required LookUpByImageParams lookUpByImageParams}) async {
     try {
       final String visonKey = dotenv.env['VISON_KEY']!;
+      final String baseUrl = dotenv.env['BASE_URL']!;
+
       final fileBytes = File(lookUpByImageParams.file.path).readAsBytesSync();
 
       dio.options.baseUrl =
@@ -157,7 +159,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
             // 'Content-Type': 'multipart/form-data',
           }));
 
-      dio.options.baseUrl = 'https://ctue-learn-english-api.onrender.com/apis';
+      dio.options.baseUrl = baseUrl;
 
       return ResponseDataModel<List<ObjectModel>>.fromJson(
           json: response,
@@ -216,7 +218,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
             .toList(),
       });
 
-      final response = await dio.post('/word',
+      final response = await dio.post('/words',
           data: formData,
           options: Options(headers: {
             "authorization": "Bearer ${createWordParams.accessToken}"
@@ -283,7 +285,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
             .toList(),
       });
 
-      final response = await dio.patch('/word/${updateWordParams.wordId}',
+      final response = await dio.patch('/words/${updateWordParams.wordId}',
           data: formData,
           options: Options(headers: {
             "authorization": "Bearer ${updateWordParams.accessToken}"
@@ -309,7 +311,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
   Future<ResponseDataModel<void>> deleteWord(
       {required DeleteWordParams deleteWordParams}) async {
     try {
-      final response = await dio.delete('/word/${deleteWordParams.wordId}',
+      final response = await dio.delete('/words/${deleteWordParams.wordId}',
           options: Options(headers: {
             "authorization": "Bearer ${deleteWordParams.accessToken}"
           }));

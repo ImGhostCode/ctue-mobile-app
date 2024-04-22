@@ -18,7 +18,7 @@ class TypeRemoteDataSourceImpl implements TypeRemoteDataSource {
   Future<ResponseDataModel<List<TypeModel>>> getTypes(
       {required TypeParams typeParams}) async {
     try {
-      final response = await dio.get('/type/${typeParams.isWord}',
+      final response = await dio.get('/types/${typeParams.isWord}',
           queryParameters: {
             'api_key': 'if needed',
           },

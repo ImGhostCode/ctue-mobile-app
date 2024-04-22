@@ -18,7 +18,7 @@ class LevelRemoteDataSourceImpl implements LevelRemoteDataSource {
   Future<ResponseDataModel<List<LevelModel>>> getLevels(
       {required LevelParams levelParams}) async {
     try {
-      final response = await dio.get('/level',
+      final response = await dio.get('/levels',
           queryParameters: {
             'api_key': 'if needed',
           },

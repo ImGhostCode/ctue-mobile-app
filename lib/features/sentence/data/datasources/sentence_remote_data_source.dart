@@ -27,7 +27,7 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
   Future<ResponseDataModel<SentenceResModel>> getSentences(
       {required GetSentenceParams getSentenceParams}) async {
     try {
-      final response = await dio.get('/sentence',
+      final response = await dio.get('/sentences',
           queryParameters: {
             'topic': getSentenceParams.topics,
             "type": getSentenceParams.type,
@@ -60,7 +60,7 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
   Future<ResponseDataModel<SentenceModel>> getSentenceDetail(
       {required GetSentenceParams getSentenceParams}) async {
     try {
-      final response = await dio.get('/sentence/${getSentenceParams.id}',
+      final response = await dio.get('/sentences/${getSentenceParams.id}',
           queryParameters: {},
           options: Options(headers: {
             // "authorization": "Bearer ${getUserParams.accessToken}"
@@ -87,7 +87,7 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
   Future<ResponseDataModel<SentenceModel>> createSentence(
       {required CreateSentenceParams createSentenceParams}) async {
     try {
-      final response = await dio.post('/sentence',
+      final response = await dio.post('/sentences',
           data: {
             "topicId": createSentenceParams.topicId.length > 1
                 ? createSentenceParams.topicId
@@ -122,7 +122,7 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
       {required EditSentenceParams editSentenceParams}) async {
     try {
       final response = await dio.patch(
-          '/sentence/${editSentenceParams.sentenceId}',
+          '/sentences/${editSentenceParams.sentenceId}',
           data: {
             "topicId": editSentenceParams.topicId.length > 1
                 ? editSentenceParams.topicId
@@ -157,7 +157,7 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
       {required DeleteSentenceParams deleteSentenceParams}) async {
     try {
       final response = await dio.delete(
-          '/sentence/${deleteSentenceParams.sentenceId}',
+          '/sentences/${deleteSentenceParams.sentenceId}',
           options: Options(headers: {
             "authorization": "Bearer ${deleteSentenceParams.accessToken}"
           }));

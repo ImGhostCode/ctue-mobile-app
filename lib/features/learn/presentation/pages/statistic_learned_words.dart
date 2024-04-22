@@ -1,5 +1,5 @@
 import 'package:ctue_app/features/learn/presentation/widgets/statistic_chart.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_in_voca_set.dart';
+import 'package:ctue_app/features/vocabulary_pack/presentation/widgets/word_detail_in_voca_set.dart';
 import 'package:flutter/material.dart';
 
 class StatisticLearnedWordPage extends StatelessWidget {

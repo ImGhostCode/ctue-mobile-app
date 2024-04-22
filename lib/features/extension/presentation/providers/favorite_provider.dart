@@ -2,13 +2,13 @@ import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/favorite_params.dart';
 import 'package:ctue_app/features/extension/business/entities/favorite_entity.dart';
+import 'package:ctue_app/features/extension/business/entities/favorite_response_entity.dart';
 import 'package:ctue_app/features/extension/business/usecases/check_is_favorite.dart';
 import 'package:ctue_app/features/extension/business/usecases/get_favorites.dart';
 import 'package:ctue_app/features/extension/business/usecases/toggle_favorite.dart';
 import 'package:ctue_app/features/extension/data/datasources/favorite_local_data_source.dart';
 import 'package:ctue_app/features/extension/data/datasources/favotire_remote_data_source.dart';
 import 'package:ctue_app/features/extension/data/repositories/favorite_respository_impl.dart';
-import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ AndroidOptions _getAndroidOptions() => const AndroidOptions(
 final storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
 
 class FavoriteProvider extends ChangeNotifier {
-  List<WordEntity>? favoriteList = [];
+  FavoriteResEntity? favoriteResEntity;
   FavoriteEntity? favoriteEntity;
   Failure? failure;
   bool _isLoading = false;
@@ -38,19 +38,19 @@ class FavoriteProvider extends ChangeNotifier {
   // }
 
   FavoriteProvider({
-    this.favoriteList,
+    this.favoriteResEntity,
     this.favoriteEntity,
     this.failure,
   });
 
-  bool checkIsFavorite(int id) {
-    for (var item in favoriteList!) {
-      if (item.id == id) {
-        return true;
-      }
-    }
-    return false;
-  }
+  // bool checkIsFavorite(int id) {
+  //   for (var item in favoriteResEntity!) {
+  //     if (item.id == id) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   Future eitherFailureOrGetFavorites(int page, String sort, String key) async {
     _isLoading = true;
@@ -79,13 +79,13 @@ class FavoriteProvider extends ChangeNotifier {
       (Failure newFailure) {
         _isLoading = false;
 
-        favoriteList = [];
+        favoriteResEntity = null;
         failure = newFailure;
         notifyListeners();
       },
-      (ResponseDataModel<List<WordEntity>> newFavorites) {
+      (ResponseDataModel<FavoriteResEntity> newFavorites) {
         _isLoading = false;
-        favoriteList = newFavorites.data;
+        favoriteResEntity = newFavorites.data;
 
         failure = null;
         notifyListeners();

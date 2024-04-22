@@ -5,7 +5,7 @@ import 'package:ctue_app/core/params/learn_params.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/colored_line.dart';
-import 'package:ctue_app/features/vocabulary_set/presentation/widgets/word_detail_in_voca_set.dart';
+import 'package:ctue_app/features/vocabulary_pack/presentation/widgets/word_detail_in_voca_set.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 import 'dart:collection';

@@ -1,6 +1,6 @@
 import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
-import 'package:ctue_app/features/vocabulary_set/business/entities/voca_set_entity.dart';
+import 'package:ctue_app/features/vocabulary_pack/business/entities/voca_set_entity.dart';
 // import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 
 class ReviewReminderEntity {
