@@ -18,22 +18,13 @@ class TopicRemoteDataSourceImpl implements TopicRemoteDataSource {
   Future<ResponseDataModel<List<TopicModel>>> getTopics(
       {required TopicParams topicParams}) async {
     try {
-      final response = await dio.get('/topics/${topicParams.isWord}',
+      final response = await dio.get('/topics',
           queryParameters: {
-            'api_key': 'if needed',
+            'isWord': topicParams.isWord,
           },
           options: Options(headers: {
             // "authorization": "Bearer ${getUserParams.accessToken}"
           }));
-
-      // ResponseDataModel<List<TopicModel>> listTopicModel =
-      //     response.data['data'].map((topic) => {
-      //           topic.fromJson(
-      //               json: response.data,
-      //               fromJsonD: (json) => TopicModel.fromJson(json: json)).toList();
-      // });
-
-      // return listTopicModel;
 
       return ResponseDataModel<List<TopicModel>>.fromJson(
         json: response.data,

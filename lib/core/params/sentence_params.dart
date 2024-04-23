@@ -4,9 +4,15 @@ class GetSentenceParams {
   final int? type;
   final int? page;
   final String? sort;
+  final String? key;
 
   GetSentenceParams(
-      {this.id, this.type, this.page, this.sort = 'asc', this.topics});
+      {this.id,
+      this.type,
+      this.page,
+      this.sort = 'asc',
+      this.topics,
+      this.key});
 }
 
 class CreateSentenceParams {

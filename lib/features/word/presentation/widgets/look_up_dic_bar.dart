@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
@@ -23,6 +25,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
   stt.SpeechToText? _speech;
   bool _isListening = false;
   String _text = '';
+  // Timer? _searchTimer;
 
   @override
   void initState() {
@@ -82,7 +85,10 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                 ),
                 trailing: <Widget>[
                   IconButton(
-                    icon: const Icon(Icons.keyboard_voice),
+                    icon: const Icon(
+                      Icons.keyboard_voice,
+                      size: 28,
+                    ),
                     color: Theme.of(context).colorScheme.primary,
                     onPressed: () {
                       _dialogRecordBuilder(context);
@@ -117,7 +123,11 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
             suggestionsBuilder:
                 (BuildContext context, SearchController controller) async {
               if (controller.text.isNotEmpty) {
+                // _searchTimer?.cancel();
+                // _searchTimer =
+                // Timer(const Duration(milliseconds: 300), () async {
                 await wordProvider.eitherFailureOrLookUpDic(controller.text);
+                // });
               }
 
               return List<ListTile>.generate(wordProvider.lookUpResults.length,

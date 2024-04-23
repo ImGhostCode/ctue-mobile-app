@@ -172,6 +172,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       final response = await dio.get('/users',
           queryParameters: {
             'page': getAllUserParams.page,
+            'name': getAllUserParams.name,
+            'isBanned': getAllUserParams.isBanned,
           },
           options: Options(headers: {
             "authorization": "Bearer ${getAllUserParams.accessToken}"

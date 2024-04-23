@@ -55,7 +55,7 @@ class SentenceProvider extends ChangeNotifier {
   }
 
   Future eitherFailureOrSentences(
-      List<int> topics, int? type, int page, String sort) async {
+      List<int> topics, int? type, int page, String sort, String key) async {
     _isLoading = true;
     SentenceRepositoryImpl repository = SentenceRepositoryImpl(
       remoteDataSource: SentenceRemoteDataSourceImpl(
@@ -71,8 +71,8 @@ class SentenceProvider extends ChangeNotifier {
 
     final failureOrSentence =
         await GetSentencesUsecase(sentenceRepository: repository).call(
-      getSentenceParams:
-          GetSentenceParams(topics: topics, type: type, page: page, sort: sort),
+      getSentenceParams: GetSentenceParams(
+          topics: topics, type: type, page: page, sort: sort, key: key),
     );
 
     failureOrSentence.fold(

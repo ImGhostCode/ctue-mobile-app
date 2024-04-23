@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
 import 'package:ctue_app/features/user/business/entities/user_entity.dart';
@@ -16,9 +18,13 @@ class AccountManagementPage extends StatefulWidget {
 enum SampleItem { itemOne, itemTwo, itemThree }
 
 class _AccountManagementPageState extends State<AccountManagementPage> {
-  bool isActive = true;
+  bool isBanned = false;
   SampleItem? selectedItem;
   // static const _pageSize = 20;
+  Timer? _searchTimer;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool isSearching = false;
 
   final PagingController<int, AccountEntity> _pagingController =
       PagingController(firstPageKey: 1);
@@ -28,13 +34,20 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    _searchFocusNode.addListener(() {
+      if (!_searchFocusNode.hasFocus) {
+        setState(() {
+          isSearching = false;
+        });
+      }
+    });
     super.initState();
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
       await Provider.of<UserProvider>(context, listen: false)
-          .eitherFailureOrGetAllUser(pageKey);
+          .eitherFailureOrGetAllUser(pageKey, _searchController.text, isBanned);
       final newItems =
           // ignore: use_build_context_synchronously
           Provider.of<UserProvider>(context, listen: false).userResEntity!.data;
@@ -58,16 +71,9 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
-
-  // @override
-  // void initState() {
-  //   //
-  //   Provider.of<UserProvider>(context, listen: false)
-  //       .eitherFailureOrGetAllUser(1); // 1 is the first page
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +102,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
               SizedBox(
                   height: 45,
                   child: SearchBar(
+                    controller: _searchController,
                     hintText: 'Nhập tên người dùng',
                     overlayColor:
                         const MaterialStatePropertyAll(Colors.transparent),
@@ -116,24 +123,46 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                     // focusNode: _searchFocusNode,
                     onSubmitted: (String value) {
                       // Handle editing complete (e.g., when user presses Enter)
-                      // setState(() {
-                      //   isSearching = false;
-                      // });
+                      setState(() {
+                        isSearching = false;
+                      });
                     },
                     onTap: () {
                       // _searchController.openView();
                     },
-                    onChanged: (_) {
-                      // _searchController.openView();
-                      // setState(() {
-                      //   isSearching = true;
-                      // });
+                    onChanged: (value) {
+                      setState(() {
+                        isSearching = true;
+                      });
+                      _searchTimer?.cancel();
+                      _searchTimer =
+                          Timer(const Duration(milliseconds: 300), () {
+                        _pagingController.refresh();
+                      });
                     },
                     leading: Icon(
                       Icons.search,
                       size: 28,
                       color: Theme.of(context).colorScheme.primary,
                     ),
+                    trailing: <Widget>[
+                      _searchController.text.isNotEmpty
+                          ? IconButton(
+                              onPressed: () {
+                                _searchController.clear();
+                                // _searchFocusNode
+                                // FocusScope.of(context)
+                                //     .requestFocus(_searchFocusNode);
+                                _searchFocusNode.requestFocus();
+                                // FocusScope.of(context).unfocus();
+                                isSearching = false;
+                                // _searchFocusNode.unfocus();
+                                _pagingController.refresh();
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.close))
+                          : const SizedBox.shrink()
+                    ],
                     // trailing: <Widget>[],
                   )),
               const SizedBox(
@@ -151,7 +180,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      isActive ? 'Đang hoạt động' : 'Đã khóa',
+                      isBanned ? 'Đã khóa' : 'Đang hoạt động',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: Colors.blue, fontWeight: FontWeight.bold),
                     ),
@@ -159,18 +188,19 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                       icon: const Icon(Icons.sort),
                       onSelected: (value) {
                         setState(() {
-                          isActive = value;
+                          isBanned = value;
                         });
+                        _pagingController.refresh();
                       },
                       color: Colors.white,
                       itemBuilder: (BuildContext context) =>
                           <PopupMenuEntry<bool>>[
                         const PopupMenuItem<bool>(
-                          value: true,
+                          value: false,
                           child: Text('Đang hoạt động'),
                         ),
                         const PopupMenuItem<bool>(
-                          value: false,
+                          value: true,
                           child: Text('Đã khóa'),
                         ),
                         // Add more items if needed

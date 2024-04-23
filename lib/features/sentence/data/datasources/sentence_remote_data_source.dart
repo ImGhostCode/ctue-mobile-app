@@ -29,10 +29,13 @@ class SentenceRemoteDataSourceImpl implements SentenceRemoteDataSource {
     try {
       final response = await dio.get('/sentences',
           queryParameters: {
-            'topic': getSentenceParams.topics,
+            'topic': getSentenceParams.topics!.length > 1
+                ? getSentenceParams.topics
+                : [getSentenceParams.topics],
             "type": getSentenceParams.type,
             'page': getSentenceParams.page,
-            'sort': getSentenceParams.sort
+            'sort': getSentenceParams.sort,
+            'key': getSentenceParams.key,
           },
           options: Options(headers: {
             // "authorization": "Bearer ${getUserParams.accessToken}"

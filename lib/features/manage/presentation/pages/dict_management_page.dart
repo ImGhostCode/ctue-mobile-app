@@ -1,5 +1,11 @@
+import 'dart:async';
+
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/manage/presentation/widgets/action_dialog.dart';
+import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
+import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
+import 'package:ctue_app/features/type/business/entities/type_entity.dart';
+import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,22 +22,57 @@ class DictionaryManagementPage extends StatefulWidget {
 
 class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
   // static const _pageSize = 20;
+  final TextEditingController _searchController = TextEditingController();
+  bool isSearching = false;
+  final FocusNode _searchFocusNode = FocusNode();
+  List<int> userInterestTopics = [];
+  List<TopicEntity> listTopics = [];
+  Timer? _searchTimer;
+
+  List<int> selectedTypes = [];
 
   final PagingController<int, WordEntity> _pagingController =
       PagingController(firstPageKey: 1);
 
   @override
   void initState() {
+    Provider.of<TopicProvider>(context, listen: false)
+        .eitherFailureOrTopics(null, true, null);
+    Provider.of<TypeProvider>(context, listen: false).eitherFailureOrGetTypes(
+      true,
+    );
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
+    });
+    _searchFocusNode.addListener(() {
+      if (!_searchFocusNode.hasFocus) {
+        setState(() {
+          isSearching = false;
+        });
+      }
     });
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    listTopics =
+        Provider.of<TopicProvider>(context, listen: true).listTopicEntity;
+    super.didChangeDependencies();
+    // Provider.of<WordProvider>(context, listen: false)
+    //     .eitherFailureOrWords([], [], 1, 'asc', '');
+  }
+
   Future<void> _fetchPage(int pageKey) async {
     try {
+      List<int> selectedTopics = listTopics
+          .where((topic) => topic.isSelected)
+          .map((e) => e.id)
+          .toList();
+
       await Provider.of<WordProvider>(context, listen: false)
-          .eitherFailureOrWords([], [], pageKey, 'asc', '');
+          .eitherFailureOrWords(selectedTopics, selectedTypes, pageKey, 'asc',
+              _searchController.text);
       final newItems =
           // ignore: use_build_context_synchronously
           Provider.of<WordProvider>(context, listen: false).wordResEntity!.data;
@@ -56,6 +97,7 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
   // @override
@@ -107,6 +149,7 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
           SizedBox(
               height: 45,
               child: SearchBar(
+                controller: _searchController,
                 hintText: 'Nhập từ để tìm kiếm',
                 overlayColor:
                     const MaterialStatePropertyAll(Colors.transparent),
@@ -125,25 +168,45 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
                     EdgeInsets.symmetric(horizontal: 12.0, vertical: 2)),
                 // focusNode: _searchFocusNode,
                 onSubmitted: (String value) {
-                  // Handle editing complete (e.g., when user presses Enter)
-                  // setState(() {
-                  //   isSearching = false;
-                  // });
+                  setState(() {
+                    isSearching = false;
+                  });
                 },
                 onTap: () {
                   // _searchController.openView();
                 },
                 onChanged: (_) {
-                  // _searchController.openView();
-                  // setState(() {
-                  //   isSearching = true;
-                  // });
+                  setState(() {
+                    isSearching = true;
+                  });
+                  _searchTimer?.cancel();
+                  _searchTimer = Timer(const Duration(milliseconds: 300), () {
+                    _pagingController.refresh();
+                  });
                 },
                 leading: Icon(
                   Icons.search,
                   size: 28,
                   color: Theme.of(context).colorScheme.primary,
                 ),
+                trailing: <Widget>[
+                  _searchController.text.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            // _searchFocusNode
+                            // FocusScope.of(context)
+                            //     .requestFocus(_searchFocusNode);
+                            _searchFocusNode.requestFocus();
+                            // FocusScope.of(context).unfocus();
+                            isSearching = false;
+                            // _searchFocusNode.unfocus();
+                            _pagingController.refresh();
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.close))
+                      : const SizedBox.shrink()
+                ],
                 // trailing: <Widget>[],
               )),
           const SizedBox(
@@ -162,9 +225,17 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _pagingController.itemList =
+                            _pagingController.itemList!.reversed.toList();
+                      },
+                      icon: const Icon(Icons.sort)),
+                  IconButton(
+                      onPressed: () {
+                        showWordFilterModal(context, listTopics, selectedTypes,
+                            _pagingController);
+                      },
                       icon: const Icon(Icons.filter_alt_outlined)),
                 ],
               ),
@@ -257,6 +328,152 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
       ),
     );
   }
+}
+
+Future<void> showWordFilterModal(
+    BuildContext context,
+    List<TopicEntity> listTopics,
+    List<int> selectedTypes,
+    PagingController<int, WordEntity> _pagingController) {
+  return showModalBottomSheet<void>(
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          List<TypeEntity> listTypes =
+              Provider.of<TypeProvider>(context, listen: true).listTypes;
+
+          return SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Chọn chủ đề',
+                      style: Theme.of(context).textTheme.bodyLarge),
+                  const SizedBox(height: 8.0),
+                  SizedBox(
+                    height: 120,
+                    child: ListView.separated(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  listTopics[index].isSelected =
+                                      !listTopics[index].isSelected;
+                                });
+                                _pagingController.refresh();
+                              },
+                              child: Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                      color: listTopics[index].isSelected
+                                          ? Colors.green.shade500
+                                          : Colors.grey.shade100,
+                                      width: 2),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ClipOval(
+                                      child: listTopics[index].image.isNotEmpty
+                                          ? Image.network(
+                                              listTopics[index].image,
+                                              errorBuilder: (context, error,
+                                                      stackTrace) =>
+                                                  Image.asset(
+                                                'assets/images/broken-image.png',
+                                                color: Colors.grey.shade300,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              fit: BoxFit.cover,
+                                              width: 60.0,
+                                              height: 60.0,
+                                            )
+                                          : Container(),
+                                    ),
+                                    Text(
+                                      listTopics[index].name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ));
+                        },
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(
+                            width: 4,
+                          );
+                        },
+                        itemCount: listTopics.length),
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text('Chọn loại từ',
+                      style: Theme.of(context).textTheme.bodyLarge),
+                  const SizedBox(height: 8.0),
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    children: listTypes
+                        .map(
+                          (topic) => ActionChip(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    25.0), // Set the border radius here
+                              ),
+                              side: BorderSide(
+                                  color: selectedTypes.contains(topic.id)
+                                      ? Colors.green.shade500
+                                      : Colors.grey.shade200,
+                                  width: 2),
+                              // backgroundColor: topic.isSelected
+                              //     ? Colors.green.shade500
+                              //     : Colors.white,
+                              label: Text(
+                                topic.name,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  if (selectedTypes.contains(topic.id)) {
+                                    selectedTypes.remove(topic.id);
+                                  } else {
+                                    selectedTypes.add(topic.id);
+                                  }
+                                  _pagingController.refresh();
+                                });
+                              }),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+      });
 }
 
 class EditWordArguments {

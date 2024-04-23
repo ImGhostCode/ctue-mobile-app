@@ -44,8 +44,14 @@ class ResetPasswordParams {
 class GetAllUserParams {
   final int page;
   final String accessToken;
+  final String name;
+  final bool isBanned;
 
-  GetAllUserParams({required this.page, required this.accessToken});
+  GetAllUserParams(
+      {required this.page,
+      required this.accessToken,
+      required this.name,
+      required this.isBanned});
 }
 
 class ToggleBanUserParams {

@@ -290,6 +290,8 @@ String defaultVoiceType = 'Neural';
 class ContributionType {
   static const String word = 'word';
   static const String sentence = 'sentence';
+  static const String wordVi = 'Từ';
+  static const String sentenceVi = 'Câu';
 }
 
 class AccountType {

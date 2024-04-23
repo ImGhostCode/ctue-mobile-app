@@ -1,7 +1,13 @@
+import 'dart:async';
+
 import 'package:ctue_app/features/manage/presentation/widgets/action_dialog.dart';
 import 'package:ctue_app/features/sentence/business/entities/sentence_entity.dart';
 import 'package:ctue_app/features/sentence/presentation/pages/communication_phrase_page.dart';
 import 'package:ctue_app/features/sentence/presentation/providers/sentence_provider.dart';
+import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
+import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
+import 'package:ctue_app/features/type/business/entities/type_entity.dart';
+import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -14,23 +20,55 @@ class SentenceManagementPage extends StatefulWidget {
 }
 
 class _SentenceManagementPageState extends State<SentenceManagementPage> {
-  // static const _pageSize = 20;
-
+  final SearchController _searchController = SearchController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool isSearching = false;
   final PagingController<int, SentenceEntity> _pagingController =
       PagingController(firstPageKey: 1);
+  List<int> userInterestTopics = [];
+  List<TopicEntity> listTopics = [];
+  int? selectedType;
+  Timer? _searchTimer;
 
   @override
   void initState() {
+    Provider.of<TopicProvider>(context, listen: false)
+        .eitherFailureOrTopics(null, false, null);
+
+    Provider.of<TypeProvider>(context, listen: false).eitherFailureOrGetTypes(
+      false,
+    );
+
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
+    });
+    _searchFocusNode.addListener(() {
+      if (!_searchFocusNode.hasFocus) {
+        setState(() {
+          isSearching = false;
+        });
+      }
     });
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    listTopics =
+        Provider.of<TopicProvider>(context, listen: true).listTopicEntity;
+    super.didChangeDependencies();
+  }
+
   Future<void> _fetchPage(int pageKey) async {
     try {
+      List<int> selectedTopics = listTopics
+          .where((topic) => topic.isSelected)
+          .map((e) => e.id)
+          .toList();
+
       await Provider.of<SentenceProvider>(context, listen: false)
-          .eitherFailureOrSentences([], null, pageKey, 'asc');
+          .eitherFailureOrSentences(selectedTopics, selectedType, pageKey,
+              'asc', _searchController.text);
       final newItems =
           // ignore: use_build_context_synchronously
           Provider.of<SentenceProvider>(context, listen: false)
@@ -57,6 +95,7 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -102,6 +141,7 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
           SizedBox(
               height: 45,
               child: SearchBar(
+                controller: _searchController,
                 hintText: 'Nhập câu để tìm kiếm',
                 overlayColor:
                     const MaterialStatePropertyAll(Colors.transparent),
@@ -121,25 +161,45 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
                 // focusNode: _searchFocusNode,
                 onSubmitted: (String value) {
                   // Handle editing complete (e.g., when user presses Enter)
-                  // setState(() {
-                  //   isSearching = false;
-                  // });
+                  setState(() {
+                    isSearching = false;
+                  });
                 },
                 onTap: () {
                   // _searchController.openView();
                 },
-                onChanged: (_) {
-                  // _searchController.openView();
-                  // setState(() {
-                  //   isSearching = true;
-                  // });
+                onChanged: (value) {
+                  setState(() {
+                    isSearching = true;
+                  });
+                  _searchTimer?.cancel();
+                  _searchTimer = Timer(const Duration(milliseconds: 300), () {
+                    _pagingController.refresh();
+                  });
                 },
                 leading: Icon(
                   Icons.search,
                   size: 28,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                // trailing: <Widget>[],
+                trailing: <Widget>[
+                  _searchController.text.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            // _searchFocusNode
+                            // FocusScope.of(context)
+                            //     .requestFocus(_searchFocusNode);
+                            _searchFocusNode.requestFocus();
+                            // FocusScope.of(context).unfocus();
+                            isSearching = false;
+                            // _searchFocusNode.unfocus();
+                            _pagingController.refresh();
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.close))
+                      : const SizedBox.shrink()
+                ],
               )),
           const SizedBox(
             height: 10,
@@ -155,12 +215,153 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
                     .copyWith(color: Colors.blue),
               ),
               Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
                   IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.filter_alt_outlined)),
+                      onPressed: () {
+                        _pagingController.itemList =
+                            _pagingController.itemList!.reversed.toList();
+                      },
+                      icon: const Icon(Icons.sort)),
+                  IconButton(
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                            backgroundColor: Colors.white,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                            ),
+                            context: context,
+                            builder: (BuildContext context) {
+                              List<TypeEntity> listTypes =
+                                  Provider.of<TypeProvider>(context,
+                                          listen: true)
+                                      .listTypes;
+                              return StatefulBuilder(
+                                  builder: (context, setState) {
+                                return SingleChildScrollView(
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('Chọn chủ đề',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge),
+                                          const SizedBox(height: 8.0),
+                                          Wrap(
+                                            spacing: 8.0,
+                                            runSpacing: 8.0,
+                                            children: listTopics
+                                                .map(
+                                                  (topic) => ActionChip(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                25.0), // Set the border radius here
+                                                      ),
+                                                      side: BorderSide(
+                                                          color:
+                                                              topic.isSelected
+                                                                  ? Colors.green
+                                                                      .shade500
+                                                                  : Colors.grey
+                                                                      .shade200,
+                                                          width: 2),
+                                                      // backgroundColor: topic.isSelected
+                                                      //     ? Colors.green.shade500
+                                                      //     : Colors.white,
+                                                      label: Text(
+                                                        topic.name,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium!
+                                                            .copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                color: Colors
+                                                                    .black),
+                                                      ),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          topic.isSelected =
+                                                              !topic.isSelected;
+                                                        });
+                                                        _pagingController
+                                                            .refresh();
+                                                      }),
+                                                )
+                                                .toList(),
+                                          ),
+                                          const SizedBox(height: 10.0),
+                                          Text('Chọn loại câu',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge),
+                                          const SizedBox(height: 8.0),
+                                          Wrap(
+                                            spacing: 8.0,
+                                            runSpacing: 8.0,
+                                            children: listTypes
+                                                .map(
+                                                  (topic) => ActionChip(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                25.0), // Set the border radius here
+                                                      ),
+                                                      side: BorderSide(
+                                                          color: topic.id ==
+                                                                  selectedType
+                                                              ? Colors.green
+                                                                  .shade500
+                                                              : Colors.grey
+                                                                  .shade200,
+                                                          width: 2),
+                                                      // backgroundColor: topic.isSelected
+                                                      //     ? Colors.green.shade500
+                                                      //     : Colors.white,
+                                                      label: Text(
+                                                        topic.name,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium!
+                                                            .copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                color: Colors
+                                                                    .black),
+                                                      ),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          selectedType =
+                                                              topic.id;
+                                                          _pagingController
+                                                              .refresh();
+                                                        });
+                                                      }),
+                                                )
+                                                .toList(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
+                            });
+                      },
+                      icon: const Icon(Icons.filter_alt_outlined))
                 ],
               ),
             ],

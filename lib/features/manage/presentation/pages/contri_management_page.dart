@@ -24,7 +24,7 @@ const List<String> contriStates = <String>[
 
 class _ContributionManagementPageState
     extends State<ContributionManagementPage> {
-  String selectedType = contriTypes.first;
+  String selectedType = ContributionType.word;
   String selectedStatus = contriStates.first;
 
   final PagingController<int, ContributionEntity> _pagingController =
@@ -42,7 +42,7 @@ class _ContributionManagementPageState
     try {
       await Provider.of<ContributionProvider>(context, listen: false)
           .eitherFailureOrGetAllCons(
-              ContributionType.word, ContributionStatus.pending, pageKey);
+              selectedType, getStatusNumber(selectedStatus), pageKey);
       final newItems =
           // ignore: use_build_context_synchronously
           Provider.of<ContributionProvider>(context, listen: false)
@@ -71,14 +71,6 @@ class _ContributionManagementPageState
     _pagingController.dispose();
     super.dispose();
   }
-
-  // @override
-  // void initState() {
-  //   Provider.of<ContributionProvider>(context, listen: false)
-  //       .eitherFailureOrGetAllCons(
-  //           ContributionType.word, ContributionStatus.pending);
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -110,20 +102,19 @@ class _ContributionManagementPageState
               mainAxisSize: MainAxisSize.max,
               children: [
                 DropdownMenu<String>(
-                  initialSelection: selectedType,
+                  initialSelection: contriTypes.first,
                   onSelected: (String? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      selectedType = value!;
-
-                      // Provider.of<ContributionProvider>(context,
-                      //         listen: false)
-                      //     .eitherFailureOrGetAllCons(
-                      //         value == 'Từ'
-                      //             ? ContributionType.word
-                      //             : ContributionType.sentence,
-                      //         ContributionStatus.pending, );
-                    });
+                    switch (value) {
+                      case ContributionType.wordVi:
+                        selectedType = ContributionType.word;
+                        break;
+                      case ContributionType.sentenceVi:
+                        selectedType = ContributionType.sentence;
+                        break;
+                      default:
+                        selectedType = value!;
+                    }
+                    _pagingController.refresh();
                   },
                   textStyle: Theme.of(context).textTheme.bodyMedium,
                   menuStyle: MenuStyle(
@@ -166,10 +157,8 @@ class _ContributionManagementPageState
                     // This is called when the user selects an item.
                     setState(() {
                       selectedStatus = value!;
-                      // Provider.of<ContributionProvider>(context, listen: false)
-                      //     .eitherFailureOrGetAllCons(
-                      //         value, ContributionStatus.pending);
                     });
+                    _pagingController.refresh();
                   },
                   textStyle: Theme.of(context).textTheme.bodyMedium,
                   menuStyle: MenuStyle(
@@ -300,6 +289,19 @@ class _ContributionManagementPageState
         ]),
       ),
     );
+  }
+}
+
+int getStatusNumber(String status) {
+  switch (status) {
+    case 'Chờ duyệt':
+      return 0;
+    case 'Đã duyệt':
+      return 1;
+    case 'Đã từ chối':
+      return -1;
+    default:
+      return 2;
   }
 }
 

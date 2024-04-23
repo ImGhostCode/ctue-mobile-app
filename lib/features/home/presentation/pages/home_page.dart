@@ -69,13 +69,13 @@ class HomePage extends StatelessWidget {
       // ),
     ];
 
-    if (Provider.of<LearnProvider>(context, listen: false).upcomingReminder ==
-            null ||
-        Provider.of<LearnProvider>(context, listen: false).currReminder ==
-            null) {
-      Provider.of<LearnProvider>(context, listen: false)
-          .eitherFailureOrGetUpcomingReminder(null);
-    }
+    // if (Provider.of<LearnProvider>(context, listen: false).upcomingReminder ==
+    //         null ||
+    //     Provider.of<LearnProvider>(context, listen: false).currReminder ==
+    //         null) {
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUpcomingReminder(null);
+    // }
 
     return Scaffold(
         appBar: AppBar(

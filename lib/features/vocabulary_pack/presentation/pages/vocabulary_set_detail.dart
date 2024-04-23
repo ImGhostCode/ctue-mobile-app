@@ -10,6 +10,7 @@ import 'package:ctue_app/features/vocabulary_pack/presentation/providers/voca_se
 import 'package:ctue_app/features/learn/presentation/widgets/statistic_chart.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:ctue_app/features/vocabulary_pack/presentation/widgets/word_detail_in_voca_set.dart';
+import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,10 +26,26 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
   dynamic args;
   List<UserLearnedWordEntity> userLearnedWords = [];
   // bool isLoadedVocaStatistics = false;
+  String _searchValue = '';
+  List<WordEntity>? renderedWords = null;
+  List<WordEntity> filteredWords = []; // new list for filtered words
+  final TextEditingController _searchController =
+      TextEditingController(); // new controller for search text field
 
   @override
   void initState() {
+    _searchController
+        .addListener(_onSearchChanged); // add listener to search controller
     super.initState();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchValue = _searchController.text;
+      renderedWords = renderedWords
+          ?.where((word) => word.content.contains(_searchValue))
+          .toList();
+    });
   }
 
   @override
@@ -46,11 +63,19 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<VocaSetProvider>(builder: (context, provider, child) {
       VocaSetEntity? vocaSetEntity = provider.vocaSetEntity;
       VocaSetStatisticsEntity? vocaSetStatisticsEntity =
           provider.vocaSetStatisticsEntity;
+
+      renderedWords ??= vocaSetEntity?.words;
 
       bool isLoading = provider.isLoading;
 
@@ -195,6 +220,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       SizedBox(
                         height: 40,
                         child: SearchBar(
+                          controller: _searchController,
                           hintText: 'Tìm bằng từ hoặc nghĩa',
                           // padding: MaterialStatePropertyAll(
                           //     EdgeInsets.symmetric(vertical: 0, horizontal: 16)),
@@ -221,6 +247,20 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                               // );
                             }
                           }),
+                          onChanged: (value) {
+                            // setState(() {
+                            _searchValue = value;
+                            renderedWords = vocaSetEntity.words
+                                .where((element) =>
+                                    element.content.contains(value) ||
+                                    element.meanings.contains((value) => value
+                                        .toLowerCase()
+                                        .contains(value.toLowerCase())))
+                                .toList();
+
+                            // setState(() {});
+                            // });
+                          },
                           leading: Icon(
                             Icons.search,
                             size: 28,
@@ -231,69 +271,67 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       const SizedBox(
                         height: 15,
                       ),
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                        Text(
-                          'Xếp theo: ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: Colors.blue),
-                        ),
-                        Text(
-                          sortBy,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold),
-                        ),
-                        PopupMenuButton<String>(
-                          icon: const Icon(Icons.sort),
-                          onSelected: (value) {
-                            setState(() {
-                              sortBy = value;
-                            });
-                          },
-                          color: Colors.white,
-                          itemBuilder: (BuildContext context) =>
-                              <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
-                              value: 'Mới nhất',
-                              child: Text('Mới nhất'),
-                            ),
-                            const PopupMenuItem<String>(
-                              value: 'Chưa học',
-                              child: Text('Chưa học'),
-                            ),
-                            // Add more items if needed
-                          ],
-                        ),
-                      ]),
-                      ...List.generate(
-                          args.isAdmin ||
-                                  provider
-                                      .isDownloaded(provider.vocaSetEntity!.id)
-                              ? provider.vocaSetEntity!.words.length
-                              : provider.vocaSetEntity!.words.length >
-                                      maxDisplayedWords
-                                  ? maxDisplayedWords
-                                  : provider.vocaSetEntity!.words.length,
-                          (index) {
+                      // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      //   Text(
+                      //     'Xếp theo: ',
+                      //     style: Theme.of(context)
+                      //         .textTheme
+                      //         .bodySmall!
+                      //         .copyWith(color: Colors.blue),
+                      //   ),
+                      //   Text(
+                      //     sortBy,
+                      //     style: Theme.of(context)
+                      //         .textTheme
+                      //         .bodySmall!
+                      //         .copyWith(
+                      //             color: Colors.blue,
+                      //             fontWeight: FontWeight.bold),
+                      //   ),
+                      //   PopupMenuButton<String>(
+                      //     icon: const Icon(Icons.sort),
+                      //     onSelected: (value) {
+                      //       // setState(() {
+                      //       sortBy = value;
+                      //       // });
+                      //     },
+                      //     color: Colors.white,
+                      //     itemBuilder: (BuildContext context) =>
+                      //         <PopupMenuEntry<String>>[
+                      //       const PopupMenuItem<String>(
+                      //         value: 'Mới nhất',
+                      //         child: Text('Mới nhất'),
+                      //       ),
+                      //       const PopupMenuItem<String>(
+                      //         value: 'Chưa học',
+                      //         child: Text('Chưa học'),
+                      //       ),
+                      //       // Add more items if needed
+                      //     ],
+                      //   ),
+                      // ]),
+                      Column(
+                          children: List.generate(
+                              args.isAdmin ||
+                                      provider.isDownloaded(
+                                          provider.vocaSetEntity!.id)
+                                  ? renderedWords!.length
+                                  : renderedWords!.length > maxDisplayedWords
+                                      ? maxDisplayedWords
+                                      : renderedWords!.length, (index) {
                         //check if word is learned or not
                         int learnedWordEntity = userLearnedWords.indexWhere(
                             (element) =>
-                                element.wordId ==
-                                provider.vocaSetEntity!.words[index].id);
+                                element.wordId == renderedWords?[index].id);
 
                         return WordDetailInVocaSet(
                           showLevel: learnedWordEntity != -1 ? true : false,
                           memoryLevel: learnedWordEntity != -1
                               ? userLearnedWords[learnedWordEntity].memoryLevel
                               : 1,
-                          wordEntity: provider.vocaSetEntity!.words[index],
+                          wordEntity: renderedWords?[index],
                         );
-                      })
+                      }).toList())
                     ],
                   ),
                 ),

@@ -37,7 +37,9 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
     try {
       final response = await dio.get('/words',
           queryParameters: {
-            'topic': getWordParams.topic,
+            'topic': getWordParams.topic!.length > 1
+                ? getWordParams.topic
+                : [getWordParams.topic],
             "type": getWordParams.type,
             'page': getWordParams.page,
             'level': getWordParams.level,

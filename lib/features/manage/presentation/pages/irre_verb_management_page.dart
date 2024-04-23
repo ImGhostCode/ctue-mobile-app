@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/features/irregular_verb/business/entities/irr_verb_entity.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/irregular_verb_page.dart';
@@ -16,8 +18,13 @@ class IrreVerbManagementPage extends StatefulWidget {
 }
 
 class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
+  final FocusNode _searchFocusNode = FocusNode();
+
+  TextEditingController _searchController = TextEditingController();
   String sort = 'asc';
   // static const _pageSize = 20;
+  bool isSearching = false;
+  Timer? _debounce;
 
   final PagingController<int, IrrVerbEntity> _pagingController =
       PagingController(firstPageKey: 1);
@@ -27,13 +34,20 @@ class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    _searchFocusNode.addListener(() {
+      if (!_searchFocusNode.hasFocus) {
+        setState(() {
+          isSearching = false;
+        });
+      }
+    });
     super.initState();
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
       await Provider.of<IrrVerbProvider>(context, listen: false)
-          .eitherFailureOrIrrVerbs(pageKey, 'asc', null);
+          .eitherFailureOrIrrVerbs(pageKey, 'asc', _searchController.text);
       final newItems =
           // ignore: use_build_context_synchronously
           Provider.of<IrrVerbProvider>(context, listen: false)
@@ -59,15 +73,10 @@ class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
-
-  // @override
-  // void initState() {
-  //   Provider.of<IrrVerbProvider>(context, listen: false)
-  //       .eitherFailureOrIrrVerbs(1, 'asc', null);
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +122,7 @@ class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
           SizedBox(
               height: 45,
               child: SearchBar(
+                controller: _searchController,
                 hintText: 'Nhập từ để tìm kiếm',
                 overlayColor:
                     const MaterialStatePropertyAll(Colors.transparent),
@@ -131,25 +141,45 @@ class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
                     EdgeInsets.symmetric(horizontal: 12.0, vertical: 2)),
                 // focusNode: _searchFocusNode,
                 onSubmitted: (String value) {
-                  // Handle editing complete (e.g., when user presses Enter)
-                  // setState(() {
-                  //   isSearching = false;
-                  // });
+                  setState(() {
+                    isSearching = false;
+                  });
                 },
                 onTap: () {
                   // _searchController.openView();
                 },
                 onChanged: (_) {
-                  // _searchController.openView();
-                  // setState(() {
-                  //   isSearching = true;
-                  // });
+                  setState(() {
+                    isSearching = true;
+                  });
+                  _debounce?.cancel();
+                  _debounce = Timer(const Duration(milliseconds: 500), () {
+                    _pagingController.refresh();
+                  });
                 },
                 leading: Icon(
                   Icons.search,
                   size: 28,
                   color: Theme.of(context).colorScheme.primary,
                 ),
+                trailing: <Widget>[
+                  _searchController.text.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            // _searchFocusNode
+                            // FocusScope.of(context)
+                            //     .requestFocus(_searchFocusNode);
+                            _searchFocusNode.requestFocus();
+                            // FocusScope.of(context).unfocus();
+                            isSearching = false;
+                            // _searchFocusNode.unfocus();
+                            _pagingController.refresh();
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.close))
+                      : const SizedBox.shrink()
+                ],
                 // trailing: <Widget>[],
               )),
           const SizedBox(
@@ -170,14 +200,13 @@ class _IrreVerbManagementPageState extends State<IrreVerbManagementPage> {
                 children: [
                   IconButton(
                       onPressed: () {
-                        sort = sort == 'asc' ? 'desc' : 'asc';
-                        // Provider.of<IrrVerbProvider>(context, listen: false)
-                        //     .eitherFailureOrIrrVerbs(1, sort, null);
+                        _pagingController.itemList =
+                            _pagingController.itemList!.reversed.toList();
                       },
                       icon: const Icon(Icons.sort)),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.filter_alt_outlined)),
+                  // IconButton(
+                  //     onPressed: () {},
+                  //     icon: const Icon(Icons.filter_alt_outlined)),
                 ],
               ),
             ],

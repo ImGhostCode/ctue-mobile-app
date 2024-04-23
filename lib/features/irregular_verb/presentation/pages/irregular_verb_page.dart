@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -21,7 +22,9 @@ class IrregularVerbPage extends StatefulWidget {
 
 class _IrregularVerbPageState extends State<IrregularVerbPage> {
   String sort = 'asc';
-  // static const _pageSize = 20;
+
+  Timer? _searchTimer;
+  String _searchText = '';
 
   final PagingController<int, IrrVerbEntity> _pagingController =
       PagingController(firstPageKey: 1);
@@ -37,7 +40,7 @@ class _IrregularVerbPageState extends State<IrregularVerbPage> {
   Future<void> _fetchPage(int pageKey) async {
     try {
       await Provider.of<IrrVerbProvider>(context, listen: false)
-          .eitherFailureOrIrrVerbs(pageKey, 'asc', null);
+          .eitherFailureOrIrrVerbs(pageKey, 'asc', _searchText);
       final newItems =
           // ignore: use_build_context_synchronously
           Provider.of<IrrVerbProvider>(context, listen: false)
@@ -128,17 +131,17 @@ class _IrregularVerbPageState extends State<IrregularVerbPage> {
                     // _searchController.openView();
                   },
                   onChanged: (_) {
-                    // _searchController.openView();
-                    // setState(() {
-                    //   isSearching = true;
-                    // });
+                    _searchText = _;
+                    _searchTimer?.cancel();
+                    _searchTimer = Timer(const Duration(milliseconds: 300), () {
+                      _pagingController.refresh();
+                    });
                   },
                   leading: Icon(
                     Icons.search,
                     size: 28,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  // trailing: <Widget>[],
                 )),
             const SizedBox(
               height: 10,
@@ -148,14 +151,16 @@ class _IrregularVerbPageState extends State<IrregularVerbPage> {
               children: [
                 IconButton(
                     onPressed: () {
-                      sort = sort == 'asc' ? 'desc' : 'asc';
-                      Provider.of<IrrVerbProvider>(context, listen: false)
-                          .eitherFailureOrIrrVerbs(1, sort, null);
+                      // sort = sort == 'asc' ? 'desc' : 'asc';
+                      // Provider.of<IrrVerbProvider>(context, listen: false)
+                      //     .eitherFailureOrIrrVerbs(1, sort, null);
+                      _pagingController.itemList =
+                          _pagingController.itemList!.reversed.toList();
                     },
                     icon: const Icon(Icons.sort)),
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.filter_alt_outlined)),
+                // IconButton(
+                //     onPressed: () {},
+                //     icon: const Icon(Icons.filter_alt_outlined)),
               ],
             ),
             const SizedBox(
@@ -178,12 +183,12 @@ class _IrregularVerbPageState extends State<IrregularVerbPage> {
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 0),
                               horizontalTitleGap: 4,
-                              leading: Container(
-                                  height: 8,
-                                  width: 8,
-                                  decoration: BoxDecoration(
-                                      color: Colors.green.shade500,
-                                      shape: BoxShape.circle)),
+                              // leading: Container(
+                              //     height: 8,
+                              //     width: 8,
+                              //     decoration: BoxDecoration(
+                              //         color: Colors.green.shade500,
+                              //         shape: BoxShape.circle)),
                               title: Text(item.v1),
                               subtitle: Text(
                                 '${item.v2} / ${item.v3}',

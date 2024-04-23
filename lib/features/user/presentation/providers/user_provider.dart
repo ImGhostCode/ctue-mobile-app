@@ -129,7 +129,7 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future eitherFailureOrGetAllUser(int page) async {
+  Future eitherFailureOrGetAllUser(int page, String name, bool isBanned) async {
     _isLoading = true;
     UserRepositoryImpl repository = UserRepositoryImpl(
       remoteDataSource: UserRemoteDataSourceImpl(
@@ -146,6 +146,8 @@ class UserProvider extends ChangeNotifier {
     final failureOrGetAllUser =
         await GetAllUserUsecase(userRepository: repository).call(
       getAllUserParams: GetAllUserParams(
+          name: name,
+          isBanned: isBanned,
           page: page,
           accessToken: await secureStorage.read(key: 'accessToken') ?? ''),
     );
