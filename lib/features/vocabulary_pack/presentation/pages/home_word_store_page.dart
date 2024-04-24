@@ -308,9 +308,9 @@ class _WordStorePageState extends State<WordStorePage> {
               )),
             ],
           ),
-          const SizedBox(
-            height: 5,
-          ),
+          // const SizedBox(
+          //   height: 5,
+          // ),
           _buildListVocabularySets()
         ],
       ),
@@ -334,8 +334,10 @@ class _WordStorePageState extends State<WordStorePage> {
             });
       } else if (!isLoading && listUsrVocaSets.isEmpty) {
         // Handle the case where topics are empty
-        return const Center(
-            child: Text('Không có dữ liệu')); // or show an empty state message
+        return const SizedBox(
+          height: 50,
+          child: Center(child: Text('Không có dữ liệu')),
+        ); // or show an empty state message
       } else {
         return Skeletonizer(
             enabled: isLoading,

@@ -5,9 +5,11 @@ import 'package:ctue_app/core/params/learn_params.dart';
 import 'package:ctue_app/core/services/api_service.dart';
 import 'package:ctue_app/core/services/secure_storage_service.dart';
 import 'package:ctue_app/core/services/shared_pref_service.dart';
+import 'package:ctue_app/features/learn/business/entities/learn_response_entity.dart';
 import 'package:ctue_app/features/learn/business/entities/review_reminder_entity.dart';
 import 'package:ctue_app/features/learn/business/entities/user_learned_word_entity.dart';
 import 'package:ctue_app/features/learn/business/usecases/cre_review_reminder_usecase.dart';
+import 'package:ctue_app/features/learn/business/usecases/get_learning_history_usecase.dart';
 import 'package:ctue_app/features/learn/business/usecases/get_upcoming_reminder_usecase.dart';
 import 'package:ctue_app/features/learn/business/usecases/get_usr_learned_word_usecase.dart';
 import 'package:ctue_app/features/learn/business/usecases/save_learned_res_usecase.dart';
@@ -30,6 +32,7 @@ class LearnProvider extends ChangeNotifier {
   ReviewReminderEntity? currReminder;
   ReviewReminderEntity? upcomingReminder;
   List<UserLearnedWordEntity> learnedWords = [];
+  LearnResEntity? learnResEntity;
 
   TimeOfDay? _remindTime;
   bool? _isRemind = true;
@@ -406,6 +409,53 @@ class LearnProvider extends ChangeNotifier {
         _isLoading = false;
         learnedWords = newLearnedWords.data;
         message = newLearnedWords.message;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrGetLearningHistory(
+      int? userId, int page, int? level, String sort) async {
+    _isLoading = true;
+    LearnRepositoryImpl repository = LearnRepositoryImpl(
+      remoteDataSource: LearnRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: LearnLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrLearningHistory =
+        await GetLearningHistoryUsecase(learnRepository: repository).call(
+      getLearningHistoryParams: GetLearningHistoryParams(
+          userId: userId,
+          page: page,
+          level: level,
+          sort: sort,
+          accessToken: await SecureStorageService.secureStorage
+                  .read(key: 'accessToken') ??
+              ''),
+    );
+
+    failureOrLearningHistory.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        learnResEntity = null;
+        statusCode = 400;
+        failure = newFailure;
+        message = newFailure.errorMessage;
+        notifyListeners();
+      },
+      (ResponseDataModel<LearnResEntity> learnRes) {
+        _isLoading = false;
+        learnResEntity = learnRes.data;
+        message = learnRes.message;
+        statusCode = learnRes.statusCode;
         failure = null;
         notifyListeners();
       },

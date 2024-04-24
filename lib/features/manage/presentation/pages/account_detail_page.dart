@@ -3,6 +3,7 @@ import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/auth/business/entities/account_entiry.dart';
 import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
 import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
+import 'package:ctue_app/features/user/business/entities/user_entity.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -190,10 +191,9 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                         )),
                     TextButton(
                         onPressed: () {
-                          // Navigator.pushNamed(
-                          //     context, '/contribution-history',
-                          //     arguments: ContriHistoryArguments(
-                          //         user: account?.user));
+                          Navigator.pushNamed(context, '/learning-history',
+                              arguments: LearningHistoryArguments(
+                                  user: account?.user));
                         },
                         child: const Text(
                           'Lịch sử học tập',
@@ -205,4 +205,10 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
           }
         })));
   }
+}
+
+class LearningHistoryArguments {
+  final UserEntity? user;
+
+  LearningHistoryArguments({this.user});
 }

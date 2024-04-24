@@ -82,7 +82,7 @@ class VocaSetProvider extends ChangeNotifier {
     failureOrCreVocaSet.fold(
       (Failure newFailure) {
         _isLoading = false;
-        vocaSetEntity = null;
+        // vocaSetEntity = null;
         failure = newFailure;
         message = newFailure.errorMessage;
         statusCode = 400;
@@ -90,7 +90,7 @@ class VocaSetProvider extends ChangeNotifier {
       },
       (ResponseDataModel<VocaSetEntity> newVocaSet) {
         _isLoading = false;
-        vocaSetEntity = newVocaSet.data;
+        // vocaSetEntity = newVocaSet.data;
         message = newVocaSet.message;
         statusCode = newVocaSet.statusCode;
         failure = null;

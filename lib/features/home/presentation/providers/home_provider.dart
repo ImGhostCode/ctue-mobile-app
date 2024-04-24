@@ -31,6 +31,7 @@ class HomeProvider with ChangeNotifier {
   }
 
   Future<void> removeRecentPages() async {
+    recentPages.clear();
     prefs.remove('recentPages');
   }
 }

@@ -453,10 +453,11 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                             horizontal: 12, vertical: 10),
                         shape: RoundedRectangleBorder(
                             side: BorderSide(
-                                color: item.isPublic
-                                    ? Colors.green
-                                    : Colors.yellow.shade700,
-                                width: 1.5),
+                                // color: item.isPublic
+                                //     ? Colors.green
+                                //     : Colors.yellow.shade700,
+                                color: Colors.grey.shade200,
+                                width: 2),
                             borderRadius: BorderRadius.circular(12)),
                         tileColor: Colors.white,
                         leading: item.picture == null

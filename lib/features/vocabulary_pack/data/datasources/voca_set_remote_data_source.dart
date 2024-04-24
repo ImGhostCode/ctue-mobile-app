@@ -269,7 +269,7 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
       final queryParameters = <String, dynamic>{};
 
       if (getVocaSetStatisParams.id != null) {
-        queryParameters['setId'] = getVocaSetStatisParams.id;
+        queryParameters['packId'] = getVocaSetStatisParams.id;
       }
       final response = await dio.get('/learn/statistics',
           queryParameters: queryParameters,

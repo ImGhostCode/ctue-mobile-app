@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/learn_params.dart';
+import 'package:ctue_app/features/learn/data/models/learn_response_model.dart';
 import 'package:ctue_app/features/learn/data/models/review_reminder_model.dart';
 import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
 import 'package:dartz/dartz.dart';
@@ -113,7 +114,7 @@ class LearnRepositoryImpl implements LearnRepository {
             await remoteDataSource.getUserLearnedWords(
                 getUserLearnedWordParams: getUserLearnedWordParams);
 
-        localDataSource.cacheUserLeanredWords(userLearnedWords: remoteLearn);
+        localDataSource.cacheUserLearnedWords(userLearnedWords: remoteLearn);
 
         return Right(remoteLearn);
       } on ServerException catch (e) {
@@ -133,25 +134,32 @@ class LearnRepositoryImpl implements LearnRepository {
     }
   }
 
-  // @override
-  // Future<Either<Failure, ResponseDataModel<VocaSetStatisticsModel>>>
-  //     getVocaSetStatistics(
-  //         {required GetVocaSetStatisParams getVocaSetStatisParams}) async {
-  //   if (await networkInfo.isConnected!) {
-  //     try {
-  //       ResponseDataModel<VocaSetStatisticsModel> remoteLearn =
-  //           await remoteDataSource.getVocaSetStatistics(
-  //               getVocaSetStatisParams: getVocaSetStatisParams);
+  @override
+  Future<Either<Failure, ResponseDataModel<LearnResModel>>> getLearningHistory(
+      {required GetLearningHistoryParams getLearningHistoryParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<LearnResModel> remoteLearn =
+            await remoteDataSource.getLearningHistory(
+                getLearningHistoryParams: getLearningHistoryParams);
 
-  //       // localDataSource.cacheVocaSet(VocaSetToCache: remoteLearn);
+        localDataSource.cacheLearningHistory(learnResModel: remoteLearn);
 
-  //       return Right(remoteLearn);
-  //     } on ServerException catch (e) {
-  //       return Left(ServerFailure(
-  //           errorMessage: e.errorMessage, statusCode: e.statusCode));
-  //     }
-  //   } else {
-  //     return Left(CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
-  //   }
-  // }
+        return Right(remoteLearn);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      try {
+        ResponseDataModel<LearnResModel> localLearningHistory =
+            await localDataSource.getLastLearningHistory();
+
+        return Right(localLearningHistory);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
+    }
+  }
 }

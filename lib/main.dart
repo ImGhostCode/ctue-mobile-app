@@ -9,6 +9,7 @@ import 'package:ctue_app/features/contribute/presentation/pages/contri_history_p
 import 'package:ctue_app/features/home/presentation/providers/home_provider.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/add_irr_verb_page.dart';
 import 'package:ctue_app/features/irregular_verb/presentation/pages/edit_irr_verb_page.dart';
+import 'package:ctue_app/features/learn/presentation/pages/learn_history_page.dart';
 import 'package:ctue_app/features/learn/presentation/pages/learned_result.dart';
 import 'package:ctue_app/features/learn/presentation/pages/select_word_page.dart';
 import 'package:ctue_app/features/manage/presentation/pages/acc_management_page.dart';
@@ -398,6 +399,7 @@ class MyApp extends StatelessWidget {
           RouteNames.editVocaSet: (context) => const EditVocabularySet(),
           RouteNames.adminOverview: (context) => const OverviewPage(),
           RouteNames.accountDetail: (context) => const AccountDetailPage(),
+          RouteNames.learningHistory: (context) => const LearningHistoryPage(),
         },
       ),
     );

@@ -13,6 +13,7 @@ import 'package:ctue_app/features/vocabulary_pack/presentation/widgets/word_deta
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class VocabularySetDetail extends StatefulWidget {
   const VocabularySetDetail({super.key});
@@ -27,7 +28,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
   List<UserLearnedWordEntity> userLearnedWords = [];
   // bool isLoadedVocaStatistics = false;
   String _searchValue = '';
-  List<WordEntity>? renderedWords = null;
+  List<WordEntity>? renderedWords;
   List<WordEntity> filteredWords = []; // new list for filtered words
   final TextEditingController _searchController =
       TextEditingController(); // new controller for search text field
@@ -75,9 +76,11 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
       VocaSetStatisticsEntity? vocaSetStatisticsEntity =
           provider.vocaSetStatisticsEntity;
 
-      renderedWords ??= vocaSetEntity?.words;
-
       bool isLoading = provider.isLoading;
+
+      if (!isLoading && vocaSetEntity != null) {
+        renderedWords ??= vocaSetEntity.words;
+      }
 
       Failure? failure = provider.failure;
 

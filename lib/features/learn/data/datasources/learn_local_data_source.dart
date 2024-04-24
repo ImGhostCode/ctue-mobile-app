@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ctue_app/core/constants/response.dart';
+import 'package:ctue_app/features/learn/data/models/learn_response_model.dart';
 import 'package:ctue_app/features/learn/data/models/review_reminder_model.dart';
 import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,20 +12,21 @@ abstract class LearnLocalDataSource {
       {required ResponseDataModel<ReviewReminderModel?>? reviewReminderModel});
   Future<ResponseDataModel<ReviewReminderModel?>> getLastReviewReminder();
 
-  Future<void> cacheUserLeanredWords(
+  Future<void> cacheUserLearnedWords(
       {required ResponseDataModel<List<UserLearnedWordModel>>?
           userLearnedWords});
   Future<ResponseDataModel<List<UserLearnedWordModel>>>
       getLastUserLearnedWords();
 
-  // Future<void> cacheTextToLearn(
-  //     {required ResponseDataModel<List<int>>? audioData});
-  // Future<ResponseDataModel<List<int>>> getLastTextToLearn();
+  Future<void> cacheLearningHistory(
+      {required ResponseDataModel<LearnResModel>? learnResModel});
+  Future<ResponseDataModel<LearnResModel>> getLastLearningHistory();
 }
 
 const cachedReviewReminder = 'CACHED_REVIEW_REMINDER';
 const cachedVoices = 'CACHED_VOICES';
 const cachedUserLearnedWords = 'CACHED_USER_LEARNED_WORDS';
+const cachedLearningHistory = 'CACHED_LEARNING_HISTORY';
 const cachedTextToLearn = 'CACHED_TEXT_TO_SPEECH';
 
 class LearnLocalDataSourceImpl implements LearnLocalDataSource {
@@ -100,7 +102,7 @@ class LearnLocalDataSourceImpl implements LearnLocalDataSource {
   }
 
   @override
-  Future<void> cacheUserLeanredWords(
+  Future<void> cacheUserLearnedWords(
       {required ResponseDataModel<List<UserLearnedWordModel>>?
           userLearnedWords}) async {
     if (userLearnedWords != null) {
@@ -133,66 +135,33 @@ class LearnLocalDataSourceImpl implements LearnLocalDataSource {
     }
   }
 
-  // @override
-  // Future<ResponseDataModel<List<VoiceModel>>> getLastVoices() {
-  //   final jsonString = sharedPreferences.getString(cachedVoices);
+  @override
+  Future<void> cacheLearningHistory(
+      {required ResponseDataModel<LearnResModel>? learnResModel}) async {
+    if (learnResModel != null) {
+      sharedPreferences.setString(
+        cachedLearningHistory,
+        json.encode(Map.from({
+          "data": learnResModel.data.toJson(),
+          "statusCode": learnResModel.statusCode,
+          "message": learnResModel.message
+        })),
+      );
+    } else {
+      throw CacheException();
+    }
+  }
 
-  //   if (jsonString != null) {
-  //     return Future.value(ResponseDataModel<List<VoiceModel>>.fromJson(
-  //         json: json.decode(jsonString),
-  //         fromJsonD: (jsonVocaSet) => jsonVocaSet
-  //             ?.map<VoiceModel>((json) => VoiceModel.fromJson(json: json))
-  //             .toList()));
-  //   } else {
-  //     throw CacheException();
-  //   }
-  // }
+  @override
+  Future<ResponseDataModel<LearnResModel>> getLastLearningHistory() async {
+    final jsonString = sharedPreferences.getString(cachedLearningHistory);
 
-  // @override
-  // Future<void> cacheVoices(
-  //     {required ResponseDataModel<List<VoiceModel>>?
-  //         pronuncStatisticModel}) async {
-  //   if (pronuncStatisticModel != null) {
-  //     sharedPreferences.setString(
-  //       cachedVoices,
-  //       json.encode(Map.from({
-  //         "data": pronuncStatisticModel.data.map((e) => e.toJson()).toList(),
-  //         "statusCode": pronuncStatisticModel.statusCode,
-  //         "message": pronuncStatisticModel.message
-  //       })),
-  //     );
-  //   } else {
-  //     throw CacheException();
-  //   }
-  // }
-
-  // @override
-  // Future<void> cacheTextToLearn(
-  //     {required ResponseDataModel<List<int>>? audioData}) async {
-  //   if (audioData != null) {
-  //     sharedPreferences.setString(
-  //       cachedTextToLearn,
-  //       json.encode(Map.from({
-  //         "data": audioData.data,
-  //         "statusCode": audioData.statusCode,
-  //         "message": audioData.message
-  //       })),
-  //     );
-  //   } else {
-  //     throw CacheException();
-  //   }
-  // }
-
-  // @override
-  // Future<ResponseDataModel<List<int>>> getLastTextToLearn() {
-  //   final jsonString = sharedPreferences.getString(cachedTextToLearn);
-
-  //   if (jsonString != null) {
-  //     return Future.value(ResponseDataModel<List<int>>.fromJson(
-  //         json: json.decode(jsonString),
-  //         fromJsonD: (jsonData) => List<int>.from(jsonData)));
-  //   } else {
-  //     throw CacheException();
-  //   }
-  // }
+    if (jsonString != null) {
+      return Future.value(ResponseDataModel<LearnResModel>.fromJson(
+          json: json.decode(jsonString),
+          fromJsonD: (jsonWords) => LearnResModel.fromJson(json: jsonWords)));
+    } else {
+      throw CacheException();
+    }
+  }
 }

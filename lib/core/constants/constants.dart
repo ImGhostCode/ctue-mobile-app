@@ -50,6 +50,7 @@ class RouteNames {
   static const String editVocaSet = '/edit-voca-set';
   static const String adminOverview = '/admin-overview';
   static const String accountDetail = '/account-detail';
+  static const String learningHistory = '/learning-history';
 }
 
 String getRouteName(String url) {
@@ -249,7 +250,7 @@ String kLevel_4 = 'level_4';
 String kLevel_5 = 'level_5';
 String kLevel_6 = 'level_6';
 
-String kVocaSetId = 'vocabularySetId';
+String kVocaSetId = 'vocabularyPackId';
 String kMemoryLevel = 'memoryLevel';
 String kIsDone = 'isDone';
 String kReviewAt = 'reviewAt';

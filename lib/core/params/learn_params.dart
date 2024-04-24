@@ -53,3 +53,18 @@ class GetUserLearnedWordParams {
 
   GetUserLearnedWordParams({required this.accessToken, this.setId});
 }
+
+class GetLearningHistoryParams {
+  final int page;
+  final int? level;
+  final String sort;
+  final String accessToken;
+  final int? userId;
+
+  GetLearningHistoryParams(
+      {required this.accessToken,
+      this.userId,
+      required this.page,
+      required this.sort,
+      required this.level});
+}

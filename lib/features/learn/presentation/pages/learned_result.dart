@@ -1,6 +1,6 @@
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
 import 'package:ctue_app/features/learn/presentation/pages/learn_page.dart';
-import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
+import 'package:ctue_app/features/profile/presentation/widgets/radial_bar_chart.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -95,14 +95,14 @@ class LearningResult extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           side: const BorderSide(width: 2, color: Colors.green),
                           borderRadius: BorderRadius.circular(20)),
-                      avatar: GradientBorderContainer(
+                      avatar: RadialBarChart(
+                          fontWeight: FontWeight.normal,
+                          radius: '100%',
+                          innerRadius: '70%',
+                          title: level.title,
+                          color: level.color,
+                          initialPercent: level.percent,
                           diameter: level.diameter,
-                          borderWidth: level.borderWidth,
-                          borderColor1: level.borderColor1,
-                          borderColor2: level.borderColor2,
-                          stop1: level.stop1,
-                          stop2: level.stop2,
-                          percent: level.percent,
                           fontSize: level.fontSize),
                       label: Text(rememberedWords[index].content),
                     );
@@ -154,14 +154,14 @@ class LearningResult extends StatelessWidget {
                           side: const BorderSide(
                               width: 2, color: Colors.redAccent),
                           borderRadius: BorderRadius.circular(20)),
-                      avatar: GradientBorderContainer(
+                      avatar: RadialBarChart(
+                          fontWeight: FontWeight.normal,
+                          radius: '100%',
+                          innerRadius: '70%',
+                          title: level.title,
+                          color: level.color,
+                          initialPercent: level.percent,
                           diameter: level.diameter,
-                          borderWidth: level.borderWidth,
-                          borderColor1: level.borderColor1,
-                          borderColor2: level.borderColor2,
-                          stop1: level.stop1,
-                          stop2: level.stop2,
-                          percent: level.percent,
                           fontSize: level.fontSize),
                       label: Text(forgotWords[index].content),
                     );

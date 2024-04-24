@@ -1,5 +1,6 @@
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/learn_params.dart';
+import 'package:ctue_app/features/learn/data/models/learn_response_model.dart';
 import 'package:ctue_app/features/learn/data/models/review_reminder_model.dart';
 import 'package:ctue_app/features/learn/data/models/user_learned_word_model.dart';
 import 'package:dio/dio.dart';
@@ -14,6 +15,8 @@ abstract class LearnRemoteDataSource {
       {required GetUpcomingReminderParams getUpcomingReminderParams});
   Future<ResponseDataModel<List<UserLearnedWordModel>>> getUserLearnedWords(
       {required GetUserLearnedWordParams getUserLearnedWordParams});
+  Future<ResponseDataModel<LearnResModel>> getLearningHistory(
+      {required GetLearningHistoryParams getLearningHistoryParams});
 }
 
 class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
@@ -57,7 +60,7 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
       final response = await dio.post('/learn/learned-result',
           data: {
             'wordIds': saveLearnedResultParams.wordIds,
-            'vocabularySetId': saveLearnedResultParams.vocabularySetId,
+            'vocabularyPackId': saveLearnedResultParams.vocabularySetId,
             if (saveLearnedResultParams.reviewReminderId != null)
               'reviewReminderId': saveLearnedResultParams.reviewReminderId,
             'memoryLevels': saveLearnedResultParams.memoryLevels,
@@ -92,7 +95,7 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
     try {
       final response = await dio.post('/learn/review-reminder',
           data: {
-            'vocabularySetId': creReviewReminderParams.vocabularySetId,
+            'vocabularyPackId': creReviewReminderParams.vocabularySetId,
             'data': creReviewReminderParams.data,
           },
           // queryParameters: {"setId": getVocaSetStatisParams.id},
@@ -123,7 +126,7 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
       final response = await dio.get('/learn/upcoming-reminder',
           queryParameters: {
             if (getUpcomingReminderParams.vocabularySetId != null)
-              "setId": getUpcomingReminderParams.vocabularySetId
+              "packId": getUpcomingReminderParams.vocabularySetId
           },
           options: Options(headers: {
             "authorization": "Bearer ${getUpcomingReminderParams.accessToken}"
@@ -163,6 +166,38 @@ class LearnRemoteDataSourceImpl implements LearnRemoteDataSource {
               .map<UserLearnedWordModel>(
                   (word) => UserLearnedWordModel.fromJson(json: word))
               .toList());
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<LearnResModel>> getLearningHistory(
+      {required GetLearningHistoryParams getLearningHistoryParams}) async {
+    try {
+      final response = await dio.get(
+          '/learn/history/${getLearningHistoryParams.userId}',
+          queryParameters: {
+            "page": getLearningHistoryParams.page,
+            if (getLearningHistoryParams.level != null)
+              "level": getLearningHistoryParams.level,
+            "sort": getLearningHistoryParams.sort
+          },
+          options: Options(headers: {
+            "authorization": "Bearer ${getLearningHistoryParams.accessToken}"
+          }));
+      return ResponseDataModel<LearnResModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => LearnResModel.fromJson(json: json));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError ||
           e.type == DioExceptionType.cancel) {
