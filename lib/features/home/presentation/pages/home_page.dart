@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
       LearningSource(
         icon: Icons.menu_book,
         title: 'Từ điển',
-        bgColor: Colors.yellow,
+        bgColor: Colors.yellowAccent.shade700,
         onTap: () {
           Navigator.pushNamed(context, RouteNames.dictionary);
           Provider.of<HomeProvider>(context, listen: false)

@@ -45,10 +45,11 @@ class _ActionBoxState extends State<ActionBox> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: widget.isLoadingPage ? isLoadingColor : Colors.blue.shade100,
+          color:
+              widget.isLoadingPage ? isLoadingColor : Colors.lightBlue.shade100,
           boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 3)]),
       child: Row(
         children: [
@@ -61,9 +62,9 @@ class _ActionBoxState extends State<ActionBox> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline_sharp,
-                        color: Colors.grey,
+                        color: Colors.grey.shade400,
                       ),
                       const SizedBox(
                         width: 3,
@@ -87,7 +88,7 @@ class _ActionBoxState extends State<ActionBox> {
                                   .textTheme
                                   .bodyMedium!
                                   .copyWith(
-                                      color: Colors.redAccent,
+                                      color: Colors.redAccent.shade200,
                                       fontWeight: FontWeight.bold),
                             ),
                           ],
@@ -106,7 +107,7 @@ class _ActionBoxState extends State<ActionBox> {
                             backgroundColor: MaterialStatePropertyAll(
                                 widget.isLoadingPage
                                     ? isLoadingColor
-                                    : Colors.blue.shade600)),
+                                    : Colors.blue.shade500)),
                         onPressed: widget.words.isEmpty
                             ? () {
                                 Provider.of<SelectedPageProvider>(context,
@@ -179,7 +180,7 @@ class _ActionBoxState extends State<ActionBox> {
                   width: 100,
                   child: Image.asset(
                     'assets/images/note.png',
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                   )))
         ],
       ),

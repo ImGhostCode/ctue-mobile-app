@@ -84,6 +84,38 @@ class WordRepositoryImpl implements WordRepository {
   }
 
   @override
+  Future<Either<Failure, ResponseDataModel<WordModel>>> getWordByContent(
+      {required GetWordByContentParams getWordByContentParams}) async {
+    if (await networkInfo.isConnected!) {
+      try {
+        ResponseDataModel<WordModel> remoteWord = await remoteDataSource
+            .getWordByContent(getWordByContentParams: getWordByContentParams);
+
+        localDataSource.cacheWordDetail(wordModel: remoteWord);
+
+        return Right(remoteWord);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(
+            errorMessage: e.errorMessage, statusCode: e.statusCode));
+      }
+    } else {
+      try {
+        ResponseDataModel<WordModel> localWordDetail =
+            await localDataSource.getLastWordDetail();
+
+        if (localWordDetail.data.content != getWordByContentParams.key) {
+          return Left(
+              CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+        }
+        return Right(localWordDetail);
+      } on CacheException {
+        return Left(
+            CacheFailure(errorMessage: 'Không thể kết nối với máy chủ'));
+      }
+    }
+  }
+
+  @override
   Future<Either<Failure, ResponseDataModel<List<WordModel>>>> lookupDictionary(
       {required LookUpDictionaryParams lookUpDictionaryParams}) async {
     if (await networkInfo.isConnected!) {

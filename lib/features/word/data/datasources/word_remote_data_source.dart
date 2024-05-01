@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/constants/response.dart';
 import 'package:ctue_app/core/params/word_pararms.dart';
 import 'package:ctue_app/features/word/data/models/object_model.dart';
@@ -14,6 +15,8 @@ abstract class WordRemoteDataSource {
       {required GetWordParams getWordParams});
   Future<ResponseDataModel<WordModel>> getWordDetail(
       {required GetWordParams getWordParams});
+  Future<ResponseDataModel<WordModel>> getWordByContent(
+      {required GetWordByContentParams getWordByContentParams});
   Future<ResponseDataModel<WordModel>> createWord(
       {required CreateWordParams createWordParams});
   Future<ResponseDataModel<WordModel>> updateWord(
@@ -157,19 +160,22 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
           },
           options: Options(headers: {
             "Ocp-Apim-Subscription-Key": visonKey,
-            'Content-Type': 'application/octet-stream',
-            // 'Content-Type': 'multipart/form-data',
-          }));
+          }, contentType: 'application/octet-stream'));
 
       dio.options.baseUrl = baseUrl;
+
+      double threshold =
+          double.parse(dotenv.env['AZURE_DETECT_OBJECT_THRESOLD'] ?? '0.5');
 
       return ResponseDataModel<List<ObjectModel>>.fromJson(
           json: response,
           fromJsonD: (json) {
             final List<dynamic> results = [];
-            final values = json['objectsResult']['values'];
-            values.forEach((a) {
-              results.addAll(a['tags']);
+            final values = json[kObjectsResult][kValues];
+            values.forEach((value) {
+              value[kTags].forEach((tag) {
+                if (tag[kConfidence] > threshold) results.add(tag);
+              });
             });
             return results.map((e) => ObjectModel.fromJson(json: e)).toList();
           });
@@ -332,6 +338,35 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
             statusCode: e.response!.statusCode!,
             errorMessage:
                 e.response?.data['message'] ?? 'Unknown server error');
+      }
+    }
+  }
+
+  @override
+  Future<ResponseDataModel<WordModel>> getWordByContent(
+      {required GetWordByContentParams getWordByContentParams}) async {
+    try {
+      final response = await dio.get('/words/content',
+          queryParameters: {
+            'key': getWordByContentParams.key,
+          },
+          options: Options(headers: {
+            // "authorization": "Bearer ${getUserParams.accessToken}"
+          }));
+
+      return ResponseDataModel<WordModel>.fromJson(
+          json: response.data,
+          fromJsonD: (json) => WordModel.fromJson(json: json));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.cancel) {
+        throw ServerException(
+            statusCode: 400, errorMessage: 'Connection Refused');
+      } else {
+        throw ServerException(
+            statusCode: e.response!.statusCode!,
+            errorMessage:
+                e.response!.data['message'] ?? 'Unknown server error');
       }
     }
   }

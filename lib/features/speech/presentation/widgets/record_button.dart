@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:ctue_app/core/services/audio_service.dart';
-import 'package:ctue_app/features/profile/presentation/widgets/gradient_border_container.dart';
+import 'package:ctue_app/features/profile/presentation/widgets/radial_bar_chart.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -130,30 +130,12 @@ class _RecordButtonState extends State<RecordButton> {
                         const SizedBox(
                           height: 20,
                         ),
-                        score != 0
-                            ? GradientBorderContainer(
-                                diameter: 90.0,
-                                borderWidth: 0.1, // 10% of diameter
-                                borderColor1: scoreToColor(score!),
-                                borderColor2:
-                                    scoreToColor(score!).withOpacity(0.3),
-                                stop1: (score! / 100).toDouble(),
-                                stop2: 1 - (score! / 100).toDouble(),
-                                percent: score!,
-                                fontSize: 30,
-                              )
-                            : GradientBorderContainer(
-                                diameter: 90.0,
-                                borderWidth: 0.1, // 10% of diameter
-                                borderColor1: Colors.grey.shade300,
-                                borderColor2: Colors.grey.shade300,
-                                stop1: 1,
-                                stop2: 1,
-                                percent: 0,
-                                fontSize: 30,
-                              ),
+                        RadialBarChart(
+                            initialPercent: score!,
+                            diameter: 120,
+                            fontSize: 30),
                         const SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         phonemeResults.isNotEmpty
                             ? Row(
@@ -166,38 +148,6 @@ class _RecordButtonState extends State<RecordButton> {
                                           .copyWith(
                                               fontWeight: FontWeight.normal,
                                               fontFamily: 'DoulosSIL')),
-                                  // Text('t',
-                                  //     style: Theme.of(context)
-                                  //         .textTheme
-                                  //         .titleMedium!
-                                  //         .copyWith(
-                                  //             color: scoreToColor(34),
-                                  //             fontWeight: FontWeight.normal,
-                                  //             fontFamily: 'DoulosSIL')),
-                                  // Text('e',
-                                  //     style: Theme.of(context)
-                                  //         .textTheme
-                                  //         .titleMedium!
-                                  //         .copyWith(
-                                  //             color: scoreToColor(99),
-                                  //             fontWeight: FontWeight.normal,
-                                  //             fontFamily: 'DoulosSIL')),
-                                  // Text('s',
-                                  //     style: Theme.of(context)
-                                  //         .textTheme
-                                  //         .titleMedium!
-                                  //         .copyWith(
-                                  //             color: scoreToColor(68),
-                                  //             fontWeight: FontWeight.normal,
-                                  //             fontFamily: 'DoulosSIL')),
-                                  // Text('t',
-                                  //     style: Theme.of(context)
-                                  //         .textTheme
-                                  //         .titleMedium!
-                                  //         .copyWith(
-                                  //             color: scoreToColor(80),
-                                  //             fontWeight: FontWeight.normal,
-                                  //             fontFamily: 'DoulosSIL')),
                                   ...phonemeResults,
                                   Text('/',
                                       style: Theme.of(context)
@@ -210,7 +160,7 @@ class _RecordButtonState extends State<RecordButton> {
                               )
                             : const SizedBox.shrink(),
                         const SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         ElevatedButton(
                           style: ButtonStyle(
@@ -273,7 +223,7 @@ class _RecordButtonState extends State<RecordButton> {
       },
       child: Icon(
         _isRecording ? Icons.stop_rounded : Icons.mic_rounded,
-        size: 50,
+        size: 55,
         color: Colors.white,
       ),
     );

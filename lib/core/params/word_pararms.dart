@@ -112,3 +112,9 @@ class DeleteWordParams {
 
   DeleteWordParams({required this.accessToken, required this.wordId});
 }
+
+class GetWordByContentParams {
+  final String key;
+
+  GetWordByContentParams({required this.key});
+}

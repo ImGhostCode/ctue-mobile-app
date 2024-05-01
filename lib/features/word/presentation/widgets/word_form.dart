@@ -71,9 +71,13 @@ class _WordFormState extends State<WordForm> {
     );
 
     if (pickedFile.isNotEmpty) {
+      // Limit the number of images to 5
+      if (pickedFile.length > maxPictures) {
+        pickedFile.removeRange(maxPictures, pickedFile.length);
+      }
+
       setState(() {
         _selectedImages = pickedFile;
-        // print(_selectedImages);
       });
     }
   }

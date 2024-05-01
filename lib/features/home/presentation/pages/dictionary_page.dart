@@ -496,7 +496,8 @@ class Word {
 }
 
 class WordDetailAgrument {
-  final int id;
+  final int? id;
+  final String? content;
 
-  WordDetailAgrument({required this.id});
+  WordDetailAgrument({this.id, this.content});
 }

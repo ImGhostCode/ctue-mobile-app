@@ -11,6 +11,7 @@ class RadialBarChart extends StatefulWidget {
   final FontWeight fontWeight;
   final String? title;
   final Color? color;
+  final bool showTooltip;
   const RadialBarChart(
       {super.key,
       required this.initialPercent,
@@ -19,6 +20,7 @@ class RadialBarChart extends StatefulWidget {
       this.innerRadius = '80%',
       this.color,
       this.fontWeight = FontWeight.w900,
+      this.showTooltip = false,
       required this.diameter,
       required this.fontSize});
 
@@ -38,7 +40,7 @@ class _RadialBarChartState extends State<RadialBarChart> {
           children: [
             SfCircularChart(
                 margin: EdgeInsets.zero,
-                tooltipBehavior: TooltipBehavior(enable: true),
+                tooltipBehavior: TooltipBehavior(enable: widget.showTooltip),
                 series: <CircularSeries>[
                   RadialBarSeries<_RadialData, String>(
                       radius: widget.radius, // Percentage of total chart radius

@@ -11,6 +11,10 @@ abstract class WordRepository {
     required GetWordParams getWordParams,
   });
 
+  Future<Either<Failure, ResponseDataModel<WordEntity>>> getWordByContent({
+    required GetWordByContentParams getWordByContentParams,
+  });
+
   Future<Either<Failure, ResponseDataModel<WordEntity>>> getWordDetail({
     required GetWordParams getWordParams,
   });

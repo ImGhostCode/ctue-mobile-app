@@ -28,7 +28,7 @@ class ListenWordButton extends StatelessWidget {
                       ? Colors.grey.shade50
                       : Colors.tealAccent.shade700),
               padding: const MaterialStatePropertyAll(
-                  EdgeInsets.symmetric(horizontal: 8, vertical: 4))),
+                  EdgeInsets.symmetric(horizontal: 8, vertical: 6))),
           onPressed: isLoading
               ? null
               : () async {

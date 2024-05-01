@@ -10,6 +10,7 @@ import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/business/entities/word_response_entity.dart';
 import 'package:ctue_app/features/word/business/usecases/cre_word_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/del_word_usecase.dart';
+import 'package:ctue_app/features/word/business/usecases/get_word_by_content_ussecase.dart';
 import 'package:ctue_app/features/word/business/usecases/get_word_detail_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/get_word_usecase.dart';
 import 'package:ctue_app/features/word/business/usecases/look_up_by_image_usecase%20copy.dart';
@@ -38,6 +39,7 @@ class WordProvider extends ChangeNotifier {
   WordResEntity? wordResEntity;
   String? message;
   int? statusCode;
+  WordEntity? resGetWordByContent;
 
   bool get isLoading => _isLoading;
 
@@ -174,7 +176,7 @@ class WordProvider extends ChangeNotifier {
     );
   }
 
-  void eitherFailureOrWordDetail(int id) async {
+  Future eitherFailureOrWordDetail(int id) async {
     _isLoading = true;
     WordRepositoryImpl repository = WordRepositoryImpl(
       remoteDataSource: WordRemoteDataSourceImpl(
@@ -204,6 +206,41 @@ class WordProvider extends ChangeNotifier {
       (ResponseDataModel<WordEntity> newWord) {
         _isLoading = false;
 
+        wordEntity = newWord.data;
+        failure = null;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future eitherFailureOrGetWordByContent(String key) async {
+    _isLoading = true;
+    WordRepositoryImpl repository = WordRepositoryImpl(
+      remoteDataSource: WordRemoteDataSourceImpl(
+        dio: ApiService.dio,
+      ),
+      localDataSource: WordLocalDataSourceImpl(
+        sharedPreferences: await SharedPreferences.getInstance(),
+      ),
+      networkInfo: NetworkInfoImpl(
+        DataConnectionChecker(),
+      ),
+    );
+
+    final failureOrWord =
+        await GetWordByContentUsecase(wordRepository: repository).call(
+      getWordByContentParams: GetWordByContentParams(key: key),
+    );
+
+    failureOrWord.fold(
+      (Failure newFailure) {
+        _isLoading = false;
+        wordEntity = null;
+        failure = newFailure;
+        notifyListeners();
+      },
+      (ResponseDataModel<WordEntity> newWord) {
+        _isLoading = false;
         wordEntity = newWord.data;
         failure = null;
         notifyListeners();

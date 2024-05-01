@@ -1,8 +1,11 @@
-import 'dart:async';
+// ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+import 'dart:io';
+
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
-import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,7 +40,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
   Widget build(BuildContext context) {
     return Consumer<WordProvider>(builder: (context, wordProvider, child) {
       return SizedBox(
-        height: 45,
+        height: 50,
         child: SearchAnchor(
             searchController: searchController,
             isFullScreen: false,
@@ -46,6 +49,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
             viewBackgroundColor: Colors.white,
             viewSurfaceTintColor: Colors.white,
             viewHintText: 'Tra từ điển',
+            headerTextStyle: Theme.of(context).textTheme.bodyMedium,
             headerHintStyle: Theme.of(context)
                 .textTheme
                 .bodyMedium!
@@ -98,23 +102,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                     icon: const Icon(Icons.image_outlined),
                     color: Theme.of(context).colorScheme.primary,
                     onPressed: () async {
-                      final XFile? newImage =
-                          await picker.pickImage(source: ImageSource.gallery);
-
-                      if (newImage != null) {
-                        // ignore: use_build_context_synchronously
-                        await Provider.of<WordProvider>(context, listen: false)
-                            .eitherFailureOrLookUpByImage(newImage);
-                        // print(Provider.of<WordProvider>(context, listen: false)
-                        //     .lookUpByImageResults);
-                        // ignore: use_build_context_synchronously
-                        Navigator.pushNamed(context, '/look-up-result',
-                            arguments: ResultLookUpByImgAgr(
-                                // ignore: use_build_context_synchronously
-                                listObjects: Provider.of<WordProvider>(context,
-                                        listen: false)
-                                    .lookUpByImageResults));
-                      }
+                      await _handleLookUpByImage(context);
                     },
                   ),
                 ],
@@ -135,7 +123,8 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                 return ListTile(
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                  title: Text(wordProvider.lookUpResults[index].content),
+                  title: Text(wordProvider.lookUpResults[index].content,
+                      style: Theme.of(context).textTheme.bodyMedium),
                   onTap: () {
                     // setState(() {
                     //   controller.closeView(item);
@@ -155,9 +144,26 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
     });
   }
 
-  Future<void> _dialogTryAgainBuilder(BuildContext context) {
+  Future<void> _handleLookUpByImage(BuildContext context) async {
+    pickedImage =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+
+    if (pickedImage != null) {
+      await Provider.of<WordProvider>(context, listen: false)
+          .eitherFailureOrLookUpByImage(pickedImage!);
+
+      List<ObjectEntity> lookUpByImageResults =
+          Provider.of<WordProvider>(context, listen: false)
+              .lookUpByImageResults;
+
+      _dialogLookUpByImgBuilder(context, lookUpByImageResults);
+    }
+  }
+
+  Future<void> _dialogRecordTryAgainBuilder(BuildContext context) {
     return showDialog<void>(
         context: context,
+        barrierDismissible: true,
         barrierColor: Colors.black.withOpacity(0.8),
         builder: (BuildContext context) {
           return Column(
@@ -177,7 +183,6 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                             MaterialStatePropertyAll(Colors.white)),
                     onPressed: () {
                       Navigator.pop(context);
-
                       _dialogRecordBuilder(context);
                     },
                     child: Text(
@@ -194,6 +199,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
     _listen();
     return showDialog<void>(
         context: context,
+        barrierDismissible: false,
         barrierColor: Colors.black.withOpacity(0.8),
         builder: (BuildContext context) {
           return Column(
@@ -231,15 +237,17 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
         });
   }
 
-  Future<void> _dialogResultBuilder(BuildContext context) {
+  Future<void> _dialogRecordResultBuilder(BuildContext context) {
     return showDialog<void>(
         context: context,
+        barrierDismissible: true,
         barrierColor: Colors.black.withOpacity(0.8),
         builder: (BuildContext context) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 SizedBox(height: MediaQuery.of(context).size.height * 0.65),
                 // show result in text field
@@ -290,40 +298,13 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                     ),
                     Expanded(
                       child: ElevatedButton(
-                          onPressed: () async {
-                            // Navigator.pushNamed(context, '/look-up-result',
-                            //     arguments: ResultLookUpByImgAgr(
-                            //         listObjects: <ObjectEntity>[]));
-
-                            await Provider.of<WordProvider>(context,
-                                    listen: false)
-                                .eitherFailureOrLookUpDic(_text.toLowerCase());
-
-                            List<WordEntity> list = Provider.of<WordProvider>(
-                                    context,
-                                    listen: false)
-                                .lookUpResults;
-
+                          onPressed: () {
                             Navigator.pop(context);
 
-                            if (list.isNotEmpty &&
-                                list.any((element) =>
-                                    element.content.toLowerCase() ==
-                                    _text.toLowerCase())) {
-                              Navigator.pushNamed(context, '/word-detail',
-                                  arguments: WordDetailAgrument(
-                                    id: list
-                                        .firstWhere((element) =>
-                                            element.content.toLowerCase() ==
-                                            _text.toLowerCase())
-                                        .id,
-                                  ));
-                            } else {
-                              Navigator.pushNamed(context, '/look-up-result',
-                                  arguments: ResultLookUpByImgAgr(
-                                    listObjects: <ObjectEntity>[],
-                                  ));
-                            }
+                            Navigator.pushNamed(context, '/word-detail',
+                                arguments: WordDetailAgrument(
+                                  content: _text.toLowerCase(),
+                                ));
                           },
                           child: Text(
                             'Tra từ điển',
@@ -350,13 +331,13 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
           setState(() => _isListening = false);
           Navigator.pop(context);
           if (_text.isNotEmpty) {
-            _dialogResultBuilder(context);
+            _dialogRecordResultBuilder(context);
           }
         }
       }, onError: (val) {
         print('onError: $val');
         // Navigator.pop(context);
-        _dialogTryAgainBuilder(context);
+        _dialogRecordTryAgainBuilder(context);
       });
       if (available) {
         setState(() => _isListening = true);
@@ -370,8 +351,163 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
     } else {
       setState(() => _isListening = false);
       _speech!.stop();
-      Navigator.pop(context);
+      // Navigator.pop(context);
     }
+  }
+
+  Future<void> _dialogLookUpByImgBuilder(
+      BuildContext context1, List<ObjectEntity> lookUpByImageResults) {
+    return showDialog(
+        context: context1,
+        barrierColor: Colors.black.withOpacity(0.8),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+                lookUpByImageResults.isEmpty
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12)),
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: Image.file(
+                              File(pickedImage!.path),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Text('Không tìm thấy kết quả...',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.grey)),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                                style: const ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(Colors.white)),
+                                onPressed: () {
+                                  Navigator.pop(context1);
+                                  _handleLookUpByImage(context1);
+                                },
+                                child: Text(
+                                  'Thử lại',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                )),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12)),
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: Image.file(
+                              File(pickedImage!.path),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Tôi đã tìm thấy...',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(color: Colors.grey)),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.2,
+                                  child: ListView.separated(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      itemBuilder: (context, index) {
+                                        return Material(
+                                          child: ListTile(
+                                            title: Text(
+                                                lookUpByImageResults[index]
+                                                    .name,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium),
+                                            trailing: TextButton(
+                                                onPressed: () {
+                                                  Navigator.pushNamed(context,
+                                                      RouteNames.wordDetail,
+                                                      arguments: WordDetailAgrument(
+                                                          content:
+                                                              lookUpByImageResults[
+                                                                      index]
+                                                                  .name));
+                                                },
+                                                child: Text(
+                                                  'Tra cứu',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium!
+                                                      .copyWith(
+                                                          color: Colors
+                                                              .tealAccent
+                                                              .shade700),
+                                                )),
+                                          ),
+                                        );
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return const SizedBox(
+                                          height: 5,
+                                        );
+                                      },
+                                      itemCount: lookUpByImageResults.length),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
 

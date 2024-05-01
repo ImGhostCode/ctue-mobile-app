@@ -337,4 +337,10 @@ const String kTotalPrivate = 'totalPrivate';
 
 const String kInterestTopics = 'interestTopics';
 
+const String kObjectsResult = 'objectsResult';
+const String kTags = 'tags';
+const String kValues = 'values';
+
 Color isLoadingColor = Colors.grey.shade100;
+
+const int maxPictures = 5;

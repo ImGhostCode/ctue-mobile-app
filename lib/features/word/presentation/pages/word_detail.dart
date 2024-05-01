@@ -27,10 +27,15 @@ class _WordDetailState extends State<WordDetail> {
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as WordDetailAgrument;
-    Provider.of<WordProvider>(context, listen: false)
-        .eitherFailureOrWordDetail(args.id);
-    Provider.of<FavoriteProvider>(context, listen: false)
-        .eitherFailureOrIsFavorite(args.id);
+    if (args.id != null) {
+      Provider.of<WordProvider>(context, listen: false)
+          .eitherFailureOrWordDetail(args.id!);
+      Provider.of<FavoriteProvider>(context, listen: false)
+          .eitherFailureOrIsFavorite(args.id!);
+    } else if (args.content != null) {
+      Provider.of<WordProvider>(context, listen: false)
+          .eitherFailureOrGetWordByContent(args.content!);
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -57,6 +62,11 @@ class _WordDetailState extends State<WordDetail> {
 
             bool isLoading = wordProvider.isLoading;
 
+            if (!isLoading && wordDetail != null) {
+              Provider.of<FavoriteProvider>(context, listen: false)
+                  .eitherFailureOrIsFavorite(wordDetail.id);
+            }
+
             // Access the failure from the provider
             Failure? failure = wordProvider.failure;
 
@@ -65,7 +75,12 @@ class _WordDetailState extends State<WordDetail> {
               return CustomErrorWidget(
                   title: failure.errorMessage,
                   onTryAgain: () {
-                    wordProvider.eitherFailureOrWordDetail(args.id);
+                    if (args.id != null) {
+                      wordProvider.eitherFailureOrWordDetail(args.id!);
+                    } else if (args.content != null) {
+                      wordProvider
+                          .eitherFailureOrGetWordByContent(args.content!);
+                    }
                   });
             } else if (!isLoading && wordDetail == null) {
               // Handle the case where topics are empty
@@ -168,27 +183,27 @@ class _WordDetailState extends State<WordDetail> {
                                                 fontWeight: FontWeight.normal,
                                                 fontFamily: 'DoulosSIL'),
                                       ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(
-                                            Icons.volume_up_rounded,
-                                            color: Colors.grey.shade600,
-                                          ))
+                                      // IconButton(
+                                      //     onPressed: () {},
+                                      //     icon: Icon(
+                                      //       Icons.volume_up_rounded,
+                                      //       color: Colors.grey.shade600,
+                                      //     ))
                                     ],
                                   ),
 
                                   const SizedBox(
-                                    height: 5,
+                                    height: 10,
                                   ),
                                   wordDetail?.pictures != null &&
                                           wordDetail!.pictures.isNotEmpty
                                       ? SizedBox(
-                                          height: 180,
+                                          height: 170,
                                           child: ListView.separated(
                                               scrollDirection: Axis.horizontal,
                                               itemBuilder: (context, index) {
                                                 return Container(
-                                                    height: 180,
+                                                    height: 170,
                                                     width: 200,
                                                     decoration: BoxDecoration(
                                                       borderRadius:
@@ -228,7 +243,7 @@ class _WordDetailState extends State<WordDetail> {
                                         )
                                       : Container(),
                                   const SizedBox(
-                                    height: 5,
+                                    height: 10,
                                   ),
                                   RichText(
                                     text: TextSpan(
@@ -295,9 +310,9 @@ class _WordDetailState extends State<WordDetail> {
                                             color: Colors.black87,
                                             fontWeight: FontWeight.bold),
                                   ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
+                                  // const SizedBox(
+                                  //   height: 5,
+                                  // ),
                                   ...List.generate(
                                       wordDetail?.examples.length ?? 0,
                                       (index) => Row(
@@ -328,9 +343,9 @@ class _WordDetailState extends State<WordDetail> {
                                               )
                                             ],
                                           )),
-                                  // const SizedBox(
-                                  //   height: 10,
-                                  // ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -360,96 +375,128 @@ class _WordDetailState extends State<WordDetail> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Từ đồng nghĩa: ',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.bold),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          wordDetail?.synonyms.join(', ') ?? '',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                  color: Colors.black87,
-                                                  fontWeight:
-                                                      FontWeight.normal),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Từ trái nghĩa: ',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.bold),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          wordDetail?.antonyms.join(', ') ?? '',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                  color: Colors.black87,
-                                                  fontWeight:
-                                                      FontWeight.normal),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Ghi chú: ',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.bold),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          wordDetail?.note ?? '',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                  color: Colors.black87,
-                                                  fontWeight:
-                                                      FontWeight.normal),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  wordDetail?.synonyms != null &&
+                                          wordDetail!.synonyms.isNotEmpty
+                                      ? Column(
+                                          children: [
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Từ đồng nghĩa: ',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium!
+                                                      .copyWith(
+                                                          color: Colors.black87,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                ),
+                                                Flexible(
+                                                  child: Text(
+                                                    wordDetail.synonyms
+                                                        .join(', '),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.black87,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      : const SizedBox.shrink(),
+                                  wordDetail?.antonyms != null &&
+                                          wordDetail!.antonyms.isNotEmpty
+                                      ? Column(
+                                          children: [
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Từ trái nghĩa: ',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium!
+                                                      .copyWith(
+                                                          color: Colors.black87,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                ),
+                                                Flexible(
+                                                  child: Text(
+                                                    wordDetail.antonyms
+                                                        .join(', '),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.black87,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      : const SizedBox.shrink(),
+
+                                  wordDetail?.note != null
+                                      ? Column(
+                                          children: [
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Ghi chú: ',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium!
+                                                      .copyWith(
+                                                          color: Colors.black87,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                ),
+                                                Flexible(
+                                                  child: Text(
+                                                    wordDetail?.note ?? '',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.black87,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      : const SizedBox.shrink(),
                                   const SizedBox(
                                     height: 5,
                                   ),
