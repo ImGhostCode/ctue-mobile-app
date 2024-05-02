@@ -44,7 +44,7 @@ class ManagementPage extends StatelessWidget {
                           height: 5,
                         ),
                         Text(
-                          'Tổng quan',
+                          'Thống kê tổng quan',
                           textAlign: TextAlign.center,
                         )
                       ]),
@@ -65,7 +65,7 @@ class ManagementPage extends StatelessWidget {
                   ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(
-                            Colors.blueAccent.shade200)),
+                            Colors.lightBlue.shade800)),
                     onPressed: () {
                       Navigator.pushNamed(context, '/acc-management');
                     },
@@ -89,7 +89,7 @@ class ManagementPage extends StatelessWidget {
                   ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(
-                            Colors.yellowAccent.shade400)),
+                            Colors.yellowAccent.shade700)),
                     onPressed: () {
                       Navigator.pushNamed(context, '/dict-management');
                     },
@@ -136,7 +136,8 @@ class ManagementPage extends StatelessWidget {
                   ),
                   ElevatedButton(
                     style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(Colors.blue)),
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.blueAccent)),
                     onPressed: () {
                       Navigator.pushNamed(context, '/sen-management');
                     },
@@ -158,9 +159,9 @@ class ManagementPage extends StatelessWidget {
                         ]),
                   ),
                   ElevatedButton(
-                    style: ButtonStyle(
+                    style: const ButtonStyle(
                         backgroundColor:
-                            MaterialStatePropertyAll(Colors.yellow.shade800)),
+                            MaterialStatePropertyAll(Colors.orange)),
                     onPressed: () {
                       Navigator.pushNamed(context, '/irr-verb-management');
                     },
@@ -184,7 +185,7 @@ class ManagementPage extends StatelessWidget {
                   ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStatePropertyAll(Colors.teal.shade400)),
+                            MaterialStatePropertyAll(Colors.teal.shade300)),
                     onPressed: () {
                       Navigator.pushNamed(context, '/voca-set-management');
                     },

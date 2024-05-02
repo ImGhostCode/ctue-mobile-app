@@ -11,8 +11,9 @@ class GetVoiceParams {
 class TTSParams {
   final VoiceEntity voice;
   final String text;
+  final double? rate;
 
-  TTSParams({required this.voice, required this.text});
+  TTSParams({required this.voice, required this.text, this.rate = 1.0});
 }
 
 class EvaluateSpeechPronunParams {

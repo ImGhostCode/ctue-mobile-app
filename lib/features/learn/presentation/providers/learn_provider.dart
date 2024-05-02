@@ -77,6 +77,8 @@ class LearnProvider extends ChangeNotifier {
   int _nWNumOfListening = 1;
   int _nWNumOfChooseWord = 1;
   int _nWNumOfChooseMeaning = 1;
+  bool _autoPlayAudio = true;
+  bool _showPicture = true;
 
   set nWMaxNumOfWords(int value) {
     _nWMaxNumOfWords = value;
@@ -227,6 +229,32 @@ class LearnProvider extends ChangeNotifier {
       return prefs.getInt('_oWNumOfChooseMeaning')!;
     } else {
       return _oWNumOfChooseMeaning;
+    }
+  }
+
+  set autoPlayAudio(bool value) {
+    _autoPlayAudio = value;
+    prefs.setBool('autoPlayAudio', value).then((value) => {notifyListeners()});
+  }
+
+  bool get autoPlayAudio {
+    if (prefs.getBool('autoPlayAudio') != null) {
+      return prefs.getBool('autoPlayAudio')!;
+    } else {
+      return _autoPlayAudio;
+    }
+  }
+
+  set showPicture(bool value) {
+    _showPicture = value;
+    prefs.setBool('showPicture', value).then((value) => {notifyListeners()});
+  }
+
+  bool get showPicture {
+    if (prefs.getBool('showPicture') != null) {
+      return prefs.getBool('showPicture')!;
+    } else {
+      return _showPicture;
     }
   }
 

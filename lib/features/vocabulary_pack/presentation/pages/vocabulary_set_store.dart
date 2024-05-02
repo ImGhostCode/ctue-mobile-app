@@ -1,4 +1,3 @@
-import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/errors/failure.dart';
 import 'package:ctue_app/features/skeleton/widgets/custom_error_widget.dart';
 import 'package:ctue_app/features/topic/business/entities/topic_entity.dart';
@@ -6,6 +5,7 @@ import 'package:ctue_app/features/topic/presentation/providers/topic_provider.da
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
 import 'package:ctue_app/features/vocabulary_pack/business/entities/voca_set_entity.dart';
 import 'package:ctue_app/features/vocabulary_pack/presentation/providers/voca_set_provider.dart';
+import 'package:ctue_app/features/vocabulary_pack/presentation/widgets/vocab_pack_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -27,6 +27,7 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
   List<VocaSetEntity> _vocaSetBySpec = [];
   List<int> userInterestTopics = [];
   List<VocaSetEntity> _recommendVocaSets = [];
+  bool isLoadingPage = false;
 
   @override
   void initState() {
@@ -162,130 +163,8 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
-                                        return InkWell(
-                                          onTap: () {
-                                            Navigator.pushNamed(context,
-                                                '/vocabulary-set-detail',
-                                                arguments:
-                                                    VocabularySetArguments(
-                                                        id: _downloadedVocaSets[
-                                                                index]
-                                                            .id));
-                                          },
-                                          child: Container(
-                                            // height: 50,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 8),
-                                            width: 130,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                    color:
-                                                        Colors.grey.shade400)),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: 100,
-                                                  width: double.infinity,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    child: Image.network(
-                                                      _downloadedVocaSets[index]
-                                                          .picture!,
-                                                      errorBuilder: (context,
-                                                              error,
-                                                              stackTrace) =>
-                                                          Image.asset(
-                                                        'assets/images/broken-image.png',
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Flexible(
-                                                  // flex: 2,
-                                                  child: Text(
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    _downloadedVocaSets[index]
-                                                        .title,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium!
-                                                        .copyWith(
-                                                            color:
-                                                                Colors.black87),
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                // const SizedBox(
-                                                //   height: 5,
-                                                // ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons.list_rounded,
-                                                          size: 16,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        Text(
-                                                          '${_downloadedVocaSets[index].words.length}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodySmall!
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          11),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons
-                                                              .download_rounded,
-                                                          size: 16,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        Text(
-                                                          '${_downloadedVocaSets[index].downloads}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodySmall!
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          11),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
+                                        return VocabularyPackItem(
+                                            item: _downloadedVocaSets[index]);
                                       },
                                       separatorBuilder: (context, index) {
                                         return const SizedBox(
@@ -300,7 +179,7 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
                                 'Đề xuất cho bạn',
@@ -317,7 +196,7 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                               ),
                               Icon(
                                 Icons.recommend,
-                                color: Colors.yellow.shade700,
+                                color: Colors.yellow.shade600,
                                 size: 30,
                               )
                             ],
@@ -326,148 +205,24 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                             height: 10,
                           ),
                           _recommendVocaSets.isNotEmpty
-                              ? SizedBox(
+                              ? Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
                                   height: 185,
                                   child: ListView.separated(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
-                                        return InkWell(
-                                          onTap: () {
-                                            Navigator.pushNamed(context,
-                                                '/vocabulary-set-detail',
-                                                arguments:
-                                                    VocabularySetArguments(
-                                                        id: _recommendVocaSets[
-                                                                index]
-                                                            .id));
-                                          },
-                                          child: Container(
-                                            // height: 50,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 8),
-                                            width: 130,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                    color:
-                                                        Colors.grey.shade400)),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: 100,
-                                                  width: double.infinity,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    child: Image.network(
-                                                      _recommendVocaSets[index]
-                                                          .picture!,
-                                                      errorBuilder: (context,
-                                                              error,
-                                                              stackTrace) =>
-                                                          Image.asset(
-                                                        'assets/images/broken-image.png',
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Flexible(
-                                                  // flex: 2,
-                                                  child: Text(
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    _recommendVocaSets[index]
-                                                        .title,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium!
-                                                        .copyWith(
-                                                            color:
-                                                                Colors.black87),
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                // const SizedBox(
-                                                //   height: 5,
-                                                // ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons.list_rounded,
-                                                          size: 16,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        Text(
-                                                          '${_recommendVocaSets[index].words.length}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodySmall!
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          11),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons
-                                                              .download_rounded,
-                                                          size: 16,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        Text(
-                                                          '${_recommendVocaSets[index].downloads}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodySmall!
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          11),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
+                                        return VocabularyPackItem(
+                                            item: _recommendVocaSets[index]);
                                       },
                                       separatorBuilder: (context, index) {
                                         return const SizedBox(
                                           width: 10,
                                         );
                                       },
-                                      itemCount: _downloadedVocaSets.length),
+                                      itemCount: _recommendVocaSets.length),
                                 )
                               : const SizedBox.shrink(),
-                          const SizedBox(
-                            height: 15,
-                          ),
                           Text(
                             'Chuyên ngành',
                             style: Theme.of(context)
@@ -484,133 +239,19 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                   child: ListView.separated(
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
-                                        return InkWell(
-                                          onTap: () {
-                                            Navigator.pushNamed(context,
-                                                '/vocabulary-set-detail',
-                                                arguments:
-                                                    VocabularySetArguments(
-                                                        id: _vocaSetBySpec[
-                                                                index]
-                                                            .id));
-                                          },
-                                          child: Container(
-                                            // height: 50,
-                                            padding: const EdgeInsets.all(8),
-                                            width: 130,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                    color:
-                                                        Colors.grey.shade400)),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: 100,
-                                                  width: double.infinity,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    child: Image.network(
-                                                      _vocaSetBySpec[index]
-                                                          .picture!,
-                                                      errorBuilder: (context,
-                                                              error,
-                                                              stackTrace) =>
-                                                          Image.asset(
-                                                        'assets/images/broken-image.png',
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Flexible(
-                                                  // flex: 2,
-                                                  child: Text(
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    _vocaSetBySpec[index].title,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium!
-                                                        .copyWith(
-                                                            color:
-                                                                Colors.black87),
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                // const SizedBox(
-                                                //   height: 5,
-                                                // ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons.list_rounded,
-                                                          size: 16,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        Text(
-                                                          '${_vocaSetBySpec[index].words.length}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodySmall,
-                                                        )
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons
-                                                              .download_rounded,
-                                                          size: 16,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        Text(
-                                                          '${_vocaSetBySpec[index].downloads}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodySmall,
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
+                                        return VocabularyPackItem(
+                                            item: _vocaSetBySpec[index]);
                                       },
                                       separatorBuilder: (context, index) {
                                         return const SizedBox(
                                           width: 10,
                                         );
                                       },
-                                      itemCount: _vocaSetBySpec.length),
+                                      itemCount: _vocaSetByTopic.length),
                                 )
                               : const SizedBox.shrink(),
                           const SizedBox(
-                            height: 10,
+                            height: 15,
                           ),
                           Text(
                             'Chủ đề',
@@ -628,124 +269,8 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                   child: ListView.separated(
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
-                                        return InkWell(
-                                          onTap: () {
-                                            Navigator.pushNamed(context,
-                                                '/vocabulary-set-detail',
-                                                arguments:
-                                                    VocabularySetArguments(
-                                                        id: _vocaSetByTopic[
-                                                                index]
-                                                            .id));
-                                          },
-                                          child: Container(
-                                            // height: 50,
-                                            padding: const EdgeInsets.all(8),
-                                            width: 130,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                    color:
-                                                        Colors.grey.shade400)),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: 100,
-                                                  width: double.infinity,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    child: Image.network(
-                                                      _vocaSetByTopic[index]
-                                                          .picture!,
-                                                      errorBuilder: (context,
-                                                              error,
-                                                              stackTrace) =>
-                                                          Image.asset(
-                                                        'assets/images/broken-image.png',
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Flexible(
-                                                  // flex: 2,
-                                                  child: Text(
-                                                    maxLines: 2,
-                                                    textAlign: TextAlign.left,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    _vocaSetByTopic[index]
-                                                        .title,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium!
-                                                        .copyWith(
-                                                            color:
-                                                                Colors.black87),
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                // const SizedBox(
-                                                //   height: 5,
-                                                // ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons.list_rounded,
-                                                          size: 16,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        Text(
-                                                          '${_vocaSetByTopic[index].words.length}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodySmall,
-                                                        )
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons
-                                                              .download_rounded,
-                                                          size: 16,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        Text(
-                                                          '${_vocaSetByTopic[index].downloads}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodySmall,
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
+                                        return VocabularyPackItem(
+                                            item: _vocaSetByTopic[index]);
                                       },
                                       separatorBuilder: (context, index) {
                                         return const SizedBox(
@@ -811,10 +336,8 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                           horizontal: 8, vertical: 6),
                                       shape: RoundedRectangleBorder(
                                         side: BorderSide(
-                                          width: 2,
-                                          color: provider.isLoading
-                                              ? Colors.grey.shade100
-                                              : Colors.green,
+                                          width: 1.5,
+                                          color: Colors.grey.shade300,
                                         ),
                                         borderRadius: BorderRadius.circular(20),
                                       ),

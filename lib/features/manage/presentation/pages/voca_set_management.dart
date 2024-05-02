@@ -217,6 +217,7 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                       const SizedBox(
                         height: 10,
                       ),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -424,7 +425,57 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                       // const SizedBox(
                       //   height: 5,
                       // ),
-                      const Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                height: 8,
+                                width: 8,
+                                decoration: BoxDecoration(
+                                    color: Colors.yellow.shade700,
+                                    shape: BoxShape.circle),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                'Cá nhân',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                height: 8,
+                                width: 8,
+                                decoration: const BoxDecoration(
+                                    color: Colors.green,
+                                    shape: BoxShape.circle),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                'Công khai',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      // const Divider(),
                     ],
                   ),
                 ),

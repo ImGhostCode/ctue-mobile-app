@@ -260,7 +260,7 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                         margin: const EdgeInsets.only(bottom: 15),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            border: Border.all(),
+                            border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(12)),
                         padding: const EdgeInsets.all(8),
                         child: Wrap(children: [
@@ -272,8 +272,8 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                                 borderRadius: BorderRadius.circular(12),
                                 color: Colors.lightBlueAccent.shade100
                                     .withOpacity(0.6),
-                                border:
-                                    Border.all(color: Colors.lightBlueAccent),
+                                border: Border.all(
+                                    color: Colors.lightBlueAccent, width: 2),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.only(
@@ -344,8 +344,8 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                     // height: 300,
                     decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.primary),
+                        border:
+                            Border.all(color: Colors.grey.shade300, width: 1.5),
                         borderRadius: BorderRadius.circular(6)),
                     child: ListView.separated(
                         scrollDirection: Axis.vertical,
@@ -355,8 +355,8 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                             // horizontalTitleGap: 0,
                             titleAlignment: ListTileTitleAlignment.center,
                             // minVerticalPadding: 0,
-                            // contentPadding: const EdgeInsets.symmetric(
-                            //     horizontal: 8, vertical: 0),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 0),
                             title: Text(
                               filterdResults.elementAt(index).content,
                               style: Theme.of(context)
@@ -364,7 +364,7 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                                   .bodyMedium!
                                   .copyWith(
                                       color: Colors.blue,
-                                      fontWeight: FontWeight.w600),
+                                      fontWeight: FontWeight.w500),
                             ),
                             onTap: () {
                               setState(() {

@@ -35,7 +35,7 @@ class ListenSenButton extends StatelessWidget {
                     ? null
                     : () async {
                         VoiceEntity voice = await provider.getSelectedVoice();
-                        await provider.eitherFailureOrTts(text, voice);
+                        await provider.eitherFailureOrTts(text, voice, 1.0);
                         try {
                           await audioPlayer.play(BytesSource(
                               Uint8List.fromList(provider.audioBytes)));

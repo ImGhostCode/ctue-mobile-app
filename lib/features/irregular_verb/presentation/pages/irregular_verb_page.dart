@@ -207,7 +207,8 @@ class _IrregularVerbPageState extends State<IrregularVerbPage> {
                                             await provider.getSelectedVoice();
                                         await provider.eitherFailureOrTts(
                                             "${item.v1.replaceAll('/', '\n')}\n${item.v2.replaceAll('/', '\n')}\n${item.v3.replaceAll('/', '\n')}",
-                                            voice);
+                                            voice,
+                                            1.0);
                                         try {
                                           await audioPlayer.play(BytesSource(
                                               Uint8List.fromList(
@@ -281,7 +282,8 @@ Future<String?> showIrrVerbDetail(BuildContext context, IrrVerbEntity irrVerb,
                                     await provider.getSelectedVoice();
                                 await provider.eitherFailureOrTts(
                                     "${irrVerb.v1.replaceAll('/', '\n')}\n${irrVerb.v2.replaceAll('/', '\n')}\n${irrVerb.v3.replaceAll('/', '\n')}",
-                                    voice);
+                                    voice,
+                                    1.0);
                                 try {
                                   await audioPlayer.play(BytesSource(
                                       Uint8List.fromList(provider.audioBytes)));

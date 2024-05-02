@@ -22,13 +22,13 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             'Cài đặt',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          backgroundColor: Colors.grey.shade50,
+          backgroundColor: Colors.grey.shade50.withOpacity(0.6),
           // title: Text(
           //   args.titleAppBar,
           //   style: Theme.of(context).textTheme.titleMedium!.copyWith(),
           // ),
           // centerTitle: true,
-          elevation: 2,
+          elevation: 0,
           shadowColor: Colors.grey.shade100,
           surfaceTintColor: Colors.white,
           leading: IconButton(
@@ -50,7 +50,7 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
 
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                decoration: BoxDecoration(color: Colors.grey.shade200),
+                decoration: BoxDecoration(color: Colors.grey.shade100),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -70,22 +70,22 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
                     const SizedBox(
                       height: 15,
                     ),
-                    Text(
-                      'TỪ ÔN LẠI',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Colors.blue, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Cài đặt cách học cho các từ được nhắc ôn lại, các từ có cấp độ 1 trở lên',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    _buildListSettings(context, provider, false),
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    // Text(
+                    //   'TỪ ÔN LẠI',
+                    //   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    //       color: Colors.blue, fontWeight: FontWeight.bold),
+                    // ),
+                    // Text(
+                    //   'Cài đặt cách học cho các từ được nhắc ôn lại, các từ có cấp độ 1 trở lên',
+                    //   style: Theme.of(context).textTheme.bodySmall,
+                    // ),
+                    // const SizedBox(
+                    //   height: 5,
+                    // ),
+                    // _buildListSettings(context, provider, false),
+                    // const SizedBox(
+                    //   height: 15,
+                    // ),
                     Text(
                       'CHUNG',
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -109,36 +109,36 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
   Column _buildListGeneralSettings(BuildContext context) {
     return Column(
       children: [
-        Container(
-          // height: 30,
-          // width: double.infinity,
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(4), topRight: Radius.circular(4)),
-              color: Colors.white),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Chọn các từ mới ngẫu nhiên',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.black87, fontWeight: FontWeight.normal),
-              ),
-              Switch(
-                // This bool value toggles the switch.
-                value: random,
-                activeColor: Colors.blue,
-                onChanged: (bool value) {
-                  // This is called when the user toggles the switch.
-                  setState(() {
-                    random = value;
-                  });
-                },
-              )
-            ],
-          ),
-        ),
+        // Container(
+        //   // height: 30,
+        //   // width: double.infinity,
+        //   decoration: const BoxDecoration(
+        //       borderRadius: BorderRadius.only(
+        //           topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+        //       color: Colors.white),
+        //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Text(
+        //         'Chọn các từ mới ngẫu nhiên',
+        //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        //             color: Colors.black87, fontWeight: FontWeight.normal),
+        //       ),
+        //       Switch(
+        //         // This bool value toggles the switch.
+        //         value: random,
+        //         activeColor: Colors.blue,
+        //         onChanged: (bool value) {
+        //           // This is called when the user toggles the switch.
+        //           setState(() {
+        //             random = value;
+        //           });
+        //         },
+        //       )
+        //     ],
+        //   ),
+        // ),
         Container(
           // height: 30,
           // width: double.infinity,
@@ -154,13 +154,13 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
               ),
               Switch(
                 // This bool value toggles the switch.
-                value: random,
+                value: Provider.of<LearnProvider>(context, listen: true)
+                    .autoPlayAudio,
                 activeColor: Colors.blue,
                 onChanged: (bool value) {
                   // This is called when the user toggles the switch.
-                  setState(() {
-                    random = value;
-                  });
+                  Provider.of<LearnProvider>(context, listen: false)
+                      .autoPlayAudio = value;
                 },
               )
             ],
@@ -185,13 +185,13 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
               ),
               Switch(
                 // This bool value toggles the switch.
-                value: random,
+                value: Provider.of<LearnProvider>(context, listen: true)
+                    .showPicture,
                 activeColor: Colors.blue,
                 onChanged: (bool value) {
                   // This is called when the user toggles the switch.
-                  setState(() {
-                    random = value;
-                  });
+                  Provider.of<LearnProvider>(context, listen: false)
+                      .showPicture = value;
                 },
               )
             ],
@@ -206,15 +206,14 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
     return Column(
       children: [
         ElevatedButton(
-          style: const ButtonStyle(
-            padding: MaterialStatePropertyAll(
+          style: ButtonStyle(
+            padding: const MaterialStatePropertyAll(
                 EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
-            shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4)))),
-            backgroundColor: MaterialStatePropertyAll(Colors.white),
-            foregroundColor: MaterialStatePropertyAll(Colors.black87),
+            shape: MaterialStatePropertyAll(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+            backgroundColor: const MaterialStatePropertyAll(Colors.white),
+            surfaceTintColor: const MaterialStatePropertyAll(Colors.white),
+            foregroundColor: const MaterialStatePropertyAll(Colors.black87),
           ),
           onPressed: () =>
               _showDialogInputNumber(context, 'Số từ tối đa', isForNewWord),
@@ -232,138 +231,138 @@ class _LearnSettingPageState extends State<LearnSettingPage> {
             ],
           ),
         ),
-        ElevatedButton(
-          style: const ButtonStyle(
-            padding: MaterialStatePropertyAll(
-                EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
-            shape: MaterialStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-            backgroundColor: MaterialStatePropertyAll(Colors.white),
-            foregroundColor: MaterialStatePropertyAll(Colors.black87),
-          ),
-          onPressed: () => _showDialogChooseNumber(
-              context, 'Số câu hỏi dạng Viết khi học', [0, 1, 2, 3, 4, 5, 6, 7],
-              (int value) {
-            if (isForNewWord) {
-              provider.nWNumOfWritting = value;
-            } else {
-              provider.oWNumOfWritting = value;
-            }
-          }),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Viết',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.black87, fontWeight: FontWeight.normal),
-              ),
-              Text(
-                  '${isForNewWord ? provider.nWNumOfWritting : provider.oWNumOfWritting}',
-                  style: const TextStyle(color: Colors.blue)),
-            ],
-          ),
-        ),
-        ElevatedButton(
-          style: const ButtonStyle(
-            padding: MaterialStatePropertyAll(
-                EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
-            shape: MaterialStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-            backgroundColor: MaterialStatePropertyAll(Colors.white),
-            foregroundColor: MaterialStatePropertyAll(Colors.black87),
-          ),
-          onPressed: () => _showDialogChooseNumber(
-              context, 'Số câu hỏi dạng Nghe khi học', [0, 1, 2, 3, 4, 5, 6, 7],
-              (int value) {
-            if (isForNewWord) {
-              provider.nWNumOfListening = value;
-            } else {
-              provider.oWNumOfListening = value;
-            }
-          }),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Nghe',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.black87, fontWeight: FontWeight.normal),
-              ),
-              Text(
-                  '${isForNewWord ? provider.nWNumOfListening : provider.oWNumOfListening}',
-                  style: const TextStyle(color: Colors.blue)),
-            ],
-          ),
-        ),
-        ElevatedButton(
-          style: const ButtonStyle(
-            padding: MaterialStatePropertyAll(
-                EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
-            shape: MaterialStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-            backgroundColor: MaterialStatePropertyAll(Colors.white),
-            foregroundColor: MaterialStatePropertyAll(Colors.black87),
-          ),
-          onPressed: () => _showDialogChooseNumber(
-              context,
-              'Số câu hỏi dạng Chọn từ khi học',
-              [0, 1, 2, 3, 4, 5, 6, 7], (int value) {
-            if (isForNewWord) {
-              provider.nWNumOfChooseWord = value;
-            } else {
-              provider.oWNumOfChooseWord = value;
-            }
-          }),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Chọn từ',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.black87, fontWeight: FontWeight.normal),
-              ),
-              Text(
-                  '${isForNewWord ? provider.nWNumOfChooseWord : provider.oWNumOfChooseWord}',
-                  style: const TextStyle(color: Colors.blue)),
-            ],
-          ),
-        ),
-        ElevatedButton(
-          style: const ButtonStyle(
-            padding: MaterialStatePropertyAll(
-                EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
-            shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(4),
-                    bottomRight: Radius.circular(4)))),
-            backgroundColor: MaterialStatePropertyAll(Colors.white),
-            foregroundColor: MaterialStatePropertyAll(Colors.black87),
-          ),
-          onPressed: () => _showDialogChooseNumber(
-              context,
-              'Số câu hỏi dạng Chọn nghĩa khi học',
-              [0, 1, 2, 3, 4, 5, 6, 7], (int value) {
-            if (isForNewWord) {
-              provider.nWNumOfChooseMeaning = value;
-            } else {
-              provider.oWNumOfChooseMeaning = value;
-            }
-          }),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Chọn nghĩa',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.black87, fontWeight: FontWeight.normal),
-              ),
-              Text(
-                  '${isForNewWord ? provider.nWNumOfChooseMeaning : provider.oWNumOfChooseMeaning}',
-                  style: const TextStyle(color: Colors.blue)),
-            ],
-          ),
-        )
+        // ElevatedButton(
+        //   style: const ButtonStyle(
+        //     padding: MaterialStatePropertyAll(
+        //         EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
+        //     shape: MaterialStatePropertyAll(
+        //         RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+        //     backgroundColor: MaterialStatePropertyAll(Colors.white),
+        //     foregroundColor: MaterialStatePropertyAll(Colors.black87),
+        //   ),
+        //   onPressed: () => _showDialogChooseNumber(
+        //       context, 'Số câu hỏi dạng Viết khi học', [0, 1, 2, 3, 4, 5, 6, 7],
+        //       (int value) {
+        //     if (isForNewWord) {
+        //       provider.nWNumOfWritting = value;
+        //     } else {
+        //       provider.oWNumOfWritting = value;
+        //     }
+        //   }),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Text(
+        //         'Viết',
+        //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        //             color: Colors.black87, fontWeight: FontWeight.normal),
+        //       ),
+        //       Text(
+        //           '${isForNewWord ? provider.nWNumOfWritting : provider.oWNumOfWritting}',
+        //           style: const TextStyle(color: Colors.blue)),
+        //     ],
+        //   ),
+        // ),
+        // ElevatedButton(
+        //   style: const ButtonStyle(
+        //     padding: MaterialStatePropertyAll(
+        //         EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
+        //     shape: MaterialStatePropertyAll(
+        //         RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+        //     backgroundColor: MaterialStatePropertyAll(Colors.white),
+        //     foregroundColor: MaterialStatePropertyAll(Colors.black87),
+        //   ),
+        //   onPressed: () => _showDialogChooseNumber(
+        //       context, 'Số câu hỏi dạng Nghe khi học', [0, 1, 2, 3, 4, 5, 6, 7],
+        //       (int value) {
+        //     if (isForNewWord) {
+        //       provider.nWNumOfListening = value;
+        //     } else {
+        //       provider.oWNumOfListening = value;
+        //     }
+        //   }),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Text(
+        //         'Nghe',
+        //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        //             color: Colors.black87, fontWeight: FontWeight.normal),
+        //       ),
+        //       Text(
+        //           '${isForNewWord ? provider.nWNumOfListening : provider.oWNumOfListening}',
+        //           style: const TextStyle(color: Colors.blue)),
+        //     ],
+        //   ),
+        // ),
+        // ElevatedButton(
+        //   style: const ButtonStyle(
+        //     padding: MaterialStatePropertyAll(
+        //         EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
+        //     shape: MaterialStatePropertyAll(
+        //         RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+        //     backgroundColor: MaterialStatePropertyAll(Colors.white),
+        //     foregroundColor: MaterialStatePropertyAll(Colors.black87),
+        //   ),
+        //   onPressed: () => _showDialogChooseNumber(
+        //       context,
+        //       'Số câu hỏi dạng Chọn từ khi học',
+        //       [0, 1, 2, 3, 4, 5, 6, 7], (int value) {
+        //     if (isForNewWord) {
+        //       provider.nWNumOfChooseWord = value;
+        //     } else {
+        //       provider.oWNumOfChooseWord = value;
+        //     }
+        //   }),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Text(
+        //         'Chọn từ',
+        //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        //             color: Colors.black87, fontWeight: FontWeight.normal),
+        //       ),
+        //       Text(
+        //           '${isForNewWord ? provider.nWNumOfChooseWord : provider.oWNumOfChooseWord}',
+        //           style: const TextStyle(color: Colors.blue)),
+        //     ],
+        //   ),
+        // ),
+        // ElevatedButton(
+        //   style: const ButtonStyle(
+        //     padding: MaterialStatePropertyAll(
+        //         EdgeInsets.symmetric(vertical: 20, horizontal: 12)),
+        //     shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.only(
+        //             bottomLeft: Radius.circular(4),
+        //             bottomRight: Radius.circular(4)))),
+        //     backgroundColor: MaterialStatePropertyAll(Colors.white),
+        //     foregroundColor: MaterialStatePropertyAll(Colors.black87),
+        //   ),
+        //   onPressed: () => _showDialogChooseNumber(
+        //       context,
+        //       'Số câu hỏi dạng Chọn nghĩa khi học',
+        //       [0, 1, 2, 3, 4, 5, 6, 7], (int value) {
+        //     if (isForNewWord) {
+        //       provider.nWNumOfChooseMeaning = value;
+        //     } else {
+        //       provider.oWNumOfChooseMeaning = value;
+        //     }
+        //   }),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Text(
+        //         'Chọn nghĩa',
+        //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        //             color: Colors.black87, fontWeight: FontWeight.normal),
+        //       ),
+        //       Text(
+        //           '${isForNewWord ? provider.nWNumOfChooseMeaning : provider.oWNumOfChooseMeaning}',
+        //           style: const TextStyle(color: Colors.blue)),
+        //     ],
+        //   ),
+        // )
       ],
     );
   }

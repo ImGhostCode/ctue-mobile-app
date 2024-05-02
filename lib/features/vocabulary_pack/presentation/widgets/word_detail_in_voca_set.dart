@@ -3,6 +3,7 @@ import 'package:ctue_app/features/learn/presentation/pages/learned_result.dart';
 
 import 'package:ctue_app/features/profile/presentation/widgets/radial_bar_chart.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
+import 'package:ctue_app/features/word/presentation/widgets/listen_word_btn.dart';
 import 'package:flutter/material.dart';
 
 class WordDetailInVocaSet extends StatefulWidget {
@@ -28,7 +29,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
     final MemoryLevel level = getMemoryLevel(widget.memoryLevel ?? 1);
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -93,29 +94,29 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                           fontWeight: FontWeight.normal,
                           fontFamily: 'DoulosSIL'),
                     ),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.volume_up_rounded,
-                          color: Colors.grey.shade600,
-                        ))
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    ListenWordButton(
+                      text: widget.wordEntity!.content,
+                      showBackgound: false,
+                    ),
                   ],
                 ),
               ],
             ),
-
             const SizedBox(
               height: 5,
             ),
             widget.wordEntity!.pictures.isNotEmpty
                 ? SizedBox(
-                    height: 100,
+                    height: MediaQuery.of(context).size.width * 0.3,
                     child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return Container(
-                            height: 100,
-                            width: 130,
+                            height: MediaQuery.of(context).size.width * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.4,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -129,7 +130,7 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                                   color: Colors.grey.shade300,
                                   fit: BoxFit.cover,
                                 ),
-                                fit: BoxFit.fill,
+                                fit: BoxFit.contain,
                                 width: double.infinity,
                                 height: double.infinity,
                               ),
@@ -226,9 +227,9 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                         )
                       ],
                     )),
-            // const SizedBox(
-            //   height: 10,
-            // ),
+            const SizedBox(
+              height: 5,
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -249,111 +250,45 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
             const SizedBox(
               height: 5,
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Từ đồng nghĩa: ',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.black87, fontWeight: FontWeight.bold),
-                ),
-                Flexible(
-                  child: Text(
-                    widget.wordEntity!.synonyms.join(','),
+            if (widget.wordEntity!.synonyms.isNotEmpty)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Từ đồng nghĩa: ',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Colors.black87, fontWeight: FontWeight.normal),
+                        color: Colors.black87, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Từ trái nghĩa: ',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.black87, fontWeight: FontWeight.bold),
-                ),
-                Flexible(
-                  child: Text(
-                    widget.wordEntity!.antonyms.join(','),
+                  Flexible(
+                    child: Text(
+                      widget.wordEntity!.synonyms.join(','),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Colors.black87, fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                ],
+              ),
+            if (widget.wordEntity!.antonyms.isNotEmpty)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Từ trái nghĩa: ',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Colors.black87, fontWeight: FontWeight.normal),
+                        color: Colors.black87, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
-            ),
-            // const SizedBox(
-            //   height: 5,
-            // ),
-            // Row(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Text(
-            //       'Ghi chú: ',
-            //       style: Theme.of(context)
-            //           .textTheme
-            //           .bodyMedium!
-            //           .copyWith(color: Colors.black87, fontWeight: FontWeight.bold),
-            //     ),
-            //     Flexible(
-            //       child: Text(
-            //         'không có',
-            //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            //             color: Colors.black87, fontWeight: FontWeight.normal),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            // const SizedBox(
-            //   height: 5,
-            // ),
-            // Text(
-            //   'Chủ đề: ',
-            //   style: Theme.of(context)
-            //       .textTheme
-            //       .bodyMedium!
-            //       .copyWith(color: Colors.black87, fontWeight: FontWeight.bold),
-            // ),
-            // Container(
-            //   // height: 200,
-            //   // width: MediaQuery.of(context).size.width - 32,
-            //   padding: const EdgeInsets.all(8),
-            //   child: Wrap(
-            //     spacing: 4, // Adjust the spacing between items as needed
-            //     runSpacing: 5,
-            //     children: List.generate(
-            //       _topics.length,
-            //       (index) => Chip(
-            //         avatar: ClipOval(
-            //           child: Image.network(
-            //             _topics[index].picture,
-            //             fit: BoxFit.cover,
-            //             width: 60.0,
-            //             height: 60.0,
-            //           ),
-            //         ),
-            //         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            //         shape: RoundedRectangleBorder(
-            //           side: BorderSide(
-            //             color: Colors.tealAccent.shade200,
-            //           ),
-            //           borderRadius: BorderRadius.circular(20),
-            //         ),
-            //         label: Text(_topics[index].title),
-            //         backgroundColor: Colors.white,
-            //         labelStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            //               fontWeight: FontWeight.normal,
-            //               color: Theme.of(context).colorScheme.primary,
-            //             ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // const SizedBox(),
+                  Flexible(
+                    child: Text(
+                      widget.wordEntity!.antonyms.join(','),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Colors.black87, fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                ],
+              ),
           ]),
     );
   }

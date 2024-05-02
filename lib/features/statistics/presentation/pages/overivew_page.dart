@@ -287,7 +287,7 @@ class _OverviewPageState extends State<OverviewPage> {
                         const SizedBox(
                           width: 5,
                         ),
-                        Text('Bộ từ vựng ',
+                        Text('Gói từ vựng ',
                             style: Theme.of(context).textTheme.bodyLarge!
                             // .copyWith(color: Colors.white),
                             ),
@@ -301,14 +301,14 @@ class _OverviewPageState extends State<OverviewPage> {
                       height: 5,
                     ),
                     Text(
-                      'Bộ từ công khai: ${vocaSetStatisticsEntity?.totalPublic}',
+                      'Gói từ công khai: ${vocaSetStatisticsEntity?.totalPublic}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      'Bộ từ do người dùng tạo: ${vocaSetStatisticsEntity?.totalPrivate}',
+                      'Gói từ do người dùng tạo: ${vocaSetStatisticsEntity?.totalPrivate}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(
@@ -328,15 +328,18 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
+                            height: vocaSetStatisticsEntity!
+                                    .bySpecialization.length *
+                                60,
                             child: AspectRatio(
-                            aspectRatio: 1.6,
-                            child: BarChartWidget(
-                              chartData: vocaSetStatisticsEntity!.byTopic
-                                  .map(
-                                      (e) => BarChartData(e.topicName, e.count))
-                                  .toList(),
-                            ),
-                          )),
+                              aspectRatio: 1.6,
+                              child: BarChartWidget(
+                                chartData: vocaSetStatisticsEntity.byTopic
+                                    .map((e) =>
+                                        BarChartData(e.topicName, e.count))
+                                    .toList(),
+                              ),
+                            )),
                     const SizedBox(
                       height: 5,
                     ),
@@ -354,15 +357,17 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
+                            height:
+                                vocaSetStatisticsEntity!.byTopic.length * 60,
                             child: AspectRatio(
-                            aspectRatio: 1.6,
-                            child: BarChartWidget(
-                              chartData: vocaSetStatisticsEntity!.byTopic
-                                  .map(
-                                      (e) => BarChartData(e.topicName, e.count))
-                                  .toList(),
-                            ),
-                          )),
+                              aspectRatio: 1.6,
+                              child: BarChartWidget(
+                                chartData: vocaSetStatisticsEntity.byTopic
+                                    .map((e) =>
+                                        BarChartData(e.topicName, e.count))
+                                    .toList(),
+                              ),
+                            )),
                   ]),
             ));
       }
@@ -497,14 +502,16 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
+                            height: senStatisticsEntity!.byType.length * 60,
                             child: AspectRatio(
-                            aspectRatio: 1.6,
-                            child: BarChartWidget(
-                              chartData: senStatisticsEntity!.byType
-                                  .map((e) => BarChartData(e.typeName, e.count))
-                                  .toList(),
-                            ),
-                          )),
+                              aspectRatio: 1.6,
+                              child: BarChartWidget(
+                                chartData: senStatisticsEntity.byType
+                                    .map((e) =>
+                                        BarChartData(e.typeName, e.count))
+                                    .toList(),
+                              ),
+                            )),
                     const SizedBox(
                       height: 5,
                     ),
@@ -520,17 +527,22 @@ class _OverviewPageState extends State<OverviewPage> {
                     ),
                     isLoading
                         ? const SizedBox.shrink()
-                        : SizedBox(
-                            // width: MediaQuery.of(context).size.width - 100,
-                            child: AspectRatio(
-                            aspectRatio: 1.6,
-                            child: BarChartWidget(
-                              chartData: senStatisticsEntity!.byTopic
-                                  .map(
-                                      (e) => BarChartData(e.topicName, e.count))
-                                  .toList(),
-                            ),
-                          )),
+                        : SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: SizedBox(
+                                // width: MediaQuery.of(context).size.width - 100,
+                                height:
+                                    senStatisticsEntity!.byTopic.length * 60,
+                                child: AspectRatio(
+                                  aspectRatio: 1.6,
+                                  child: BarChartWidget(
+                                    chartData: senStatisticsEntity.byTopic
+                                        .map((e) =>
+                                            BarChartData(e.topicName, e.count))
+                                        .toList(),
+                                  ),
+                                )),
+                          ),
                   ]),
             ));
       }
@@ -599,15 +611,18 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
+                            height:
+                                wordStatisticsEntity!.bySpecialization.length *
+                                    60,
                             child: AspectRatio(
-                            aspectRatio: 1.6,
-                            child: BarChartWidget(
-                              chartData: wordStatisticsEntity!.bySpecialization
-                                  .map((e) => BarChartData(
-                                      e.specializationName, e.count))
-                                  .toList(),
-                            ),
-                          )),
+                              aspectRatio: 1.6,
+                              child: BarChartWidget(
+                                chartData: wordStatisticsEntity.bySpecialization
+                                    .map((e) => BarChartData(
+                                        e.specializationName, e.count))
+                                    .toList(),
+                              ),
+                            )),
                     const SizedBox(
                       height: 5,
                     ),
@@ -625,15 +640,16 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
+                            height: wordStatisticsEntity!.byLevel.length * 60,
                             child: AspectRatio(
-                            aspectRatio: 1.6,
-                            child: BarChartWidget(
-                              chartData: wordStatisticsEntity!.byLevel
-                                  .map(
-                                      (e) => BarChartData(e.levelName, e.count))
-                                  .toList(),
-                            ),
-                          )),
+                              aspectRatio: 1.6,
+                              child: BarChartWidget(
+                                chartData: wordStatisticsEntity.byLevel
+                                    .map((e) =>
+                                        BarChartData(e.levelName, e.count))
+                                    .toList(),
+                              ),
+                            )),
                     const SizedBox(
                       height: 5,
                     ),
@@ -651,15 +667,16 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
+                            height: wordStatisticsEntity!.byTopic.length * 60,
                             child: AspectRatio(
-                            aspectRatio: 1.6,
-                            child: BarChartWidget(
-                              chartData: wordStatisticsEntity!.byTopic
-                                  .map(
-                                      (e) => BarChartData(e.topicName, e.count))
-                                  .toList(),
-                            ),
-                          )),
+                              aspectRatio: 1.6,
+                              child: BarChartWidget(
+                                chartData: wordStatisticsEntity.byTopic
+                                    .map((e) =>
+                                        BarChartData(e.topicName, e.count))
+                                    .toList(),
+                              ),
+                            )),
                   ]),
             ));
       }

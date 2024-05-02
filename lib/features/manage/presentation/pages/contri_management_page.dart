@@ -25,6 +25,7 @@ const List<String> contriStates = <String>[
 class _ContributionManagementPageState
     extends State<ContributionManagementPage> {
   String selectedType = ContributionType.word;
+  String selectedTypeVi = ContributionType.wordVi;
   String selectedStatus = contriStates.first;
 
   final PagingController<int, ContributionEntity> _pagingController =
@@ -101,106 +102,121 @@ class _ContributionManagementPageState
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               mainAxisSize: MainAxisSize.max,
               children: [
-                DropdownMenu<String>(
-                  initialSelection: contriTypes.first,
-                  onSelected: (String? value) {
-                    switch (value) {
-                      case ContributionType.wordVi:
-                        selectedType = ContributionType.word;
-                        break;
-                      case ContributionType.sentenceVi:
-                        selectedType = ContributionType.sentence;
-                        break;
-                      default:
-                        selectedType = value!;
-                    }
-                    _pagingController.refresh();
-                  },
-                  textStyle: Theme.of(context).textTheme.bodyMedium,
-                  menuStyle: MenuStyle(
-                      // alignment: Alignment.bottomLeft,
-                      side: const MaterialStatePropertyAll(
-                          BorderSide(color: Colors.teal)),
-                      fixedSize: MaterialStatePropertyAll(
-                          Size.fromWidth(MediaQuery.of(context).size.width)),
-                      backgroundColor:
-                          const MaterialStatePropertyAll(Colors.white)),
-                  inputDecorationTheme: InputDecorationTheme(
-                    // fillColor: Colors.white, // Adjust to white background
-                    focusColor: Colors.green,
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                Center(
+                  child: DropdownMenu<String>(
+                    initialSelection: contriTypes.first,
+                    onSelected: (String? value) {
+                      switch (value) {
+                        case ContributionType.wordVi:
+                          selectedType = ContributionType.word;
+                          selectedTypeVi = ContributionType.wordVi;
+                          break;
+                        case ContributionType.sentenceVi:
+                          selectedType = ContributionType.sentence;
+                          selectedTypeVi = ContributionType.sentenceVi;
+                          break;
+                        default:
+                          selectedType = value!;
+                      }
+                      _pagingController.refresh();
+                    },
+                    textStyle: Theme.of(context).textTheme.bodyMedium,
+                    menuStyle: MenuStyle(
+                        alignment: Alignment.topCenter,
+                        maximumSize: MaterialStatePropertyAll(Size.fromWidth(
+                            MediaQuery.of(context).size.width * 0.9)),
+                        side: const MaterialStatePropertyAll(
+                            BorderSide(color: Colors.teal)),
+                        fixedSize: MaterialStatePropertyAll(Size.fromWidth(
+                            MediaQuery.of(context).size.width * 0.9)),
+                        surfaceTintColor:
+                            const MaterialStatePropertyAll(Colors.white),
+                        backgroundColor:
+                            const MaterialStatePropertyAll(Colors.white)),
+                    inputDecorationTheme: InputDecorationTheme(
+                      // fillColor: Colors.white, // Adjust to white background
+                      focusColor: Colors.green,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 0),
 
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: const BorderSide(
-                          color: Colors.teal,
-                          width: 1.5,
-                        )),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: const BorderSide(
+                            color: Colors.teal,
+                            width: 1.5,
+                          )),
+                    ),
+                    dropdownMenuEntries: contriTypes
+                        .map<DropdownMenuEntry<String>>((String value) {
+                      return DropdownMenuEntry<String>(
+                          value: value,
+                          label: value,
+                          trailingIcon: value == selectedTypeVi
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.teal,
+                                )
+                              : null);
+                    }).toList(),
                   ),
-                  dropdownMenuEntries: contriTypes
-                      .map<DropdownMenuEntry<String>>((String value) {
-                    return DropdownMenuEntry<String>(
-                        value: value,
-                        label: value,
-                        trailingIcon: value == selectedType
-                            ? const Icon(
-                                Icons.check,
-                                color: Colors.teal,
-                              )
-                            : null);
-                  }).toList(),
                 ),
-                DropdownMenu<String>(
-                  initialSelection: selectedStatus,
-                  onSelected: (String? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      selectedStatus = value!;
-                    });
-                    _pagingController.refresh();
-                  },
-                  textStyle: Theme.of(context).textTheme.bodyMedium,
-                  menuStyle: MenuStyle(
-                      side: const MaterialStatePropertyAll(
-                          BorderSide(color: Colors.teal)),
-                      fixedSize: MaterialStatePropertyAll(
-                          Size.fromWidth(MediaQuery.of(context).size.width)),
-                      backgroundColor:
-                          const MaterialStatePropertyAll(Colors.white)),
-                  inputDecorationTheme: InputDecorationTheme(
-                    // fillColor: Colors.white, // Adjust to white background
-                    focusColor: Colors.green,
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                Center(
+                  child: DropdownMenu<String>(
+                    initialSelection: selectedStatus,
+                    onSelected: (String? value) {
+                      // This is called when the user selects an item.
+                      setState(() {
+                        selectedStatus = value!;
+                      });
+                      _pagingController.refresh();
+                    },
+                    textStyle: Theme.of(context).textTheme.bodyMedium,
+                    menuStyle: MenuStyle(
+                        alignment: Alignment.topCenter,
+                        maximumSize: MaterialStatePropertyAll(Size.fromWidth(
+                            MediaQuery.of(context).size.width * 0.9)),
+                        side: const MaterialStatePropertyAll(
+                            BorderSide(color: Colors.teal)),
+                        fixedSize: MaterialStatePropertyAll(Size.fromWidth(
+                            MediaQuery.of(context).size.width * 0.9)),
+                        surfaceTintColor:
+                            const MaterialStatePropertyAll(Colors.white),
+                        backgroundColor:
+                            const MaterialStatePropertyAll(Colors.white)),
+                    inputDecorationTheme: InputDecorationTheme(
+                      // fillColor: Colors.white, // Adjust to white background
+                      focusColor: Colors.green,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 0),
 
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: const BorderSide(
-                          color: Colors.teal,
-                          width: 1.5,
-                        )),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: const BorderSide(
+                            color: Colors.teal,
+                            width: 1.5,
+                          )),
+                    ),
+                    dropdownMenuEntries: contriStates
+                        .map<DropdownMenuEntry<String>>((String value) {
+                      return DropdownMenuEntry<String>(
+                          value: value,
+                          label: value,
+                          leadingIcon: Container(
+                            height: 10,
+                            width: 10,
+                            decoration: BoxDecoration(
+                                color: getStatusColor2(value),
+                                // : Colors.green,
+                                shape: BoxShape.circle),
+                          ),
+                          trailingIcon: value == selectedStatus
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.teal,
+                                )
+                              : null);
+                    }).toList(),
                   ),
-                  dropdownMenuEntries: contriStates
-                      .map<DropdownMenuEntry<String>>((String value) {
-                    return DropdownMenuEntry<String>(
-                        value: value,
-                        label: value,
-                        leadingIcon: Container(
-                          height: 10,
-                          width: 10,
-                          decoration: BoxDecoration(
-                              color: getStatusColor2(value),
-                              // : Colors.green,
-                              shape: BoxShape.circle),
-                        ),
-                        trailingIcon: value == selectedStatus
-                            ? const Icon(
-                                Icons.check,
-                                color: Colors.teal,
-                              )
-                            : null);
-                  }).toList(),
                 ),
               ]),
           const SizedBox(

@@ -1,12 +1,20 @@
 import 'dart:async';
+import 'dart:math';
+import 'dart:typed_data';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:ctue_app/core/constants/constants.dart';
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
 import 'package:ctue_app/core/params/learn_params.dart';
+import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/features/learn/presentation/providers/learn_provider.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/colored_line.dart';
+import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
+import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
 import 'package:ctue_app/features/vocabulary_pack/presentation/widgets/word_detail_in_voca_set.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
+import 'package:ctue_app/features/word/presentation/widgets/listen_word_btn.dart';
 import 'package:flutter/material.dart';
 import 'dart:collection';
 
@@ -18,6 +26,8 @@ class LearnPage extends StatefulWidget {
   @override
   State<LearnPage> createState() => _LearnPageState();
 }
+
+final _audioPlayer = AudioService.player;
 
 class _LearnPageState extends State<LearnPage> {
   bool _dataInitialized = false; // Flag to track initialization
@@ -164,7 +174,7 @@ class _LearnPageState extends State<LearnPage> {
     _displayNextQuestion();
   }
 
-  void _displayNextQuestion() {
+  void _displayNextQuestion() async {
     if (questionQueue.isNotEmpty) {
       Widget nextQuestion = questionQueue.removeFirst();
       currStep = indexStep.first;
@@ -172,6 +182,24 @@ class _LearnPageState extends State<LearnPage> {
       setState(() {
         currQuestion = nextQuestion;
       });
+      if (Provider.of<LearnProvider>(context, listen: false).autoPlayAudio) {
+        VoiceEntity voice =
+            await Provider.of<SpeechProvider>(context, listen: false)
+                .getSelectedVoice();
+        await Provider.of<SpeechProvider>(context, listen: false)
+            .eitherFailureOrTts(
+                listLearningData[currWordIndex].word.content, voice, 1.0);
+
+        try {
+          await _audioPlayer.play(
+            BytesSource(Uint8List.fromList(
+                Provider.of<SpeechProvider>(context, listen: false)
+                    .audioBytes)),
+          );
+        } catch (e) {
+          print("Error playing audio: $e");
+        }
+      }
     } else {
       _displayResult();
     }
@@ -257,20 +285,7 @@ class _LearnPageState extends State<LearnPage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  // Navigator.of(context).pushNamed('/learn-setting');
-                  // setState(() {
-                  // currStep = currStep + 1;
-                  // if (currStep > 5) {
-                  //   currStep = 1;
-                  // }
-                  // _checkAnswer('userAnswer');
-                  // });
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/learning-result',
-                      arguments: LearningResultArguments(
-                          oldMemoryLevels: [],
-                          learnedWords: [],
-                          memoryLevels: []));
+                  Navigator.of(context).pushNamed(RouteNames.learnSetting);
                 },
                 icon: const Icon(
                   Icons.settings_rounded,
@@ -339,11 +354,12 @@ class _LearnPageState extends State<LearnPage> {
   Column _buildQuoteRows(BuildContext context, WordEntity word) {
     return Column(
       children: [
-        word.pictures.isNotEmpty
+        Provider.of<LearnProvider>(context, listen: false).showPicture &&
+                word.pictures.isNotEmpty
             ? Container(
                 margin: const EdgeInsets.all(16),
-                height: 100,
-                width: 130,
+                height: MediaQuery.of(context).size.height * 0.2,
+                width: MediaQuery.of(context).size.width * 0.3,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -436,44 +452,29 @@ class _LearnPageState extends State<LearnPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: 100,
-                width: 100,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12))),
-                  ),
-                  child: const Icon(
-                    Icons.volume_up_rounded,
-                    size: 50,
-                  ),
-                  onPressed: () {},
-                ),
-              ),
+                  height: 100,
+                  width: 100,
+                  child: ListenWordButton(
+                    text: word.content,
+                    iconSize: 50,
+                  )),
               const SizedBox(
                 width: 15,
               ),
               SizedBox(
-                height: 50,
-                width: 50,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12))),
-                      padding:
-                          const MaterialStatePropertyAll(EdgeInsets.all(4))),
-                  child: const Icon(
-                    Icons.slow_motion_video,
-                    size: 30,
-                  ),
-                  onPressed: () {},
-                ),
-              )
+                  height: 50,
+                  width: 50,
+                  child: ListenWordButton(
+                    icon: Icons.speed,
+                    text: word.content,
+                    rate: 0.5,
+                    iconSize: 30,
+                  )),
             ],
           ),
         ],
       )),
-      _buildAnswerInput(context)
+      _buildAnswerInput(context, null)
     ]);
   }
 
@@ -539,56 +540,88 @@ class _LearnPageState extends State<LearnPage> {
       children: [
         _buildQuoteRows(context, word),
         const Spacer(),
-        _buildAnswerInput(context)
+        _buildAnswerInput(context, word.content)
       ],
     );
   }
 
-  TextField _buildAnswerInput(BuildContext context) {
-    return TextField(
-      controller: _answerController,
-      style: const TextStyle(fontWeight: FontWeight.normal),
-      decoration: InputDecoration(
-        contentPadding:
-            const EdgeInsets.only(left: 18, top: 4, right: 4, bottom: 4),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide(color: Colors.grey.shade200),
-        ),
-        // enabledBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(18),
-        //     borderSide: BorderSide(color: Colors.grey.shade200)),
-        // focusedBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(18),
-        //     borderSide:
-        //         BorderSide(color: Colors.grey.shade500, width: 1.2)),
-        hintText: 'Nhập câu trả lời',
-        alignLabelWithHint: true,
+  String hideRandomCharacters(
+      String input, String hideWith, int numCharsToHide) {
+    Random random = Random();
+    List<String> chars = input.split('');
+    for (int i = 0; i < numCharsToHide; i++) {
+      int indexToHide = random.nextInt(chars.length);
+      chars[indexToHide] = hideWith;
+    }
+    return chars.join('');
+  }
 
-        prefixIcon: IconButton(
-          icon: Icon(
-            Icons.send,
-            color: Theme.of(context).colorScheme.primary,
+  Column _buildAnswerInput(BuildContext context, String? wordContent) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (wordContent != null)
+          Row(
+            children: [
+              const Text('Gợi ý: '),
+              Text(
+                hideRandomCharacters(wordContent, '_', wordContent.length ~/ 2),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: Colors.blue),
+              )
+            ],
           ),
-          onPressed: () {},
+        const SizedBox(
+          height: 10,
         ),
-        suffixIcon: IconButton(
-          icon: Icon(
-            Icons.lightbulb,
-            color: Theme.of(context).colorScheme.primary,
+        TextField(
+          controller: _answerController,
+          style: const TextStyle(fontWeight: FontWeight.normal),
+          decoration: InputDecoration(
+            contentPadding:
+                const EdgeInsets.only(left: 18, top: 4, right: 4, bottom: 4),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide(color: Colors.grey.shade200),
+            ),
+            // enabledBorder: OutlineInputBorder(
+            //     borderRadius: BorderRadius.circular(18),
+            //     borderSide: BorderSide(color: Colors.grey.shade200)),
+            // focusedBorder: OutlineInputBorder(
+            //     borderRadius: BorderRadius.circular(18),
+            //     borderSide:
+            //         BorderSide(color: Colors.grey.shade500, width: 1.2)),
+            hintText: 'Nhập câu trả lời',
+            alignLabelWithHint: true,
+
+            prefixIcon: IconButton(
+              icon: Icon(
+                Icons.send,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              onPressed: () {},
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                Icons.lightbulb,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              onPressed: () {
+                _showAnswerResult(
+                    context, listLearningData[indexWord.first].word, null);
+              },
+            ),
           ),
-          onPressed: () {
-            _showAnswerResult(
-                context, listLearningData[indexWord.first].word, null);
+          onSubmitted: (value) {
+            _checkAnswer(value);
+            setState(() {
+              _answerController.clear();
+            });
           },
         ),
-      ),
-      onSubmitted: (value) {
-        _checkAnswer(value);
-        setState(() {
-          _answerController.clear();
-        });
-      },
+      ],
     );
   }
 }

@@ -61,8 +61,10 @@ class _LoginPageState extends State<LoginPage> {
                 height: 4,
               ),
               TextFormField(
+                style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   // errorText: failure ?? failure.errorMessage,
+
                   errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.red.shade400)),
@@ -103,6 +105,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextFormField(
                 obscureText: !isPasswordVisible,
+                style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 20),

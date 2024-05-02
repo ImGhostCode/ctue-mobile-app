@@ -75,7 +75,7 @@ class SpeechRemoteDataSourceImpl implements SpeechRemoteDataSource {
           data: """
 <speak version='1.0' xml:lang='${ttsParams.voice.locale}'><voice xml:lang='${ttsParams.voice.locale}' xml:gender='${ttsParams.voice.gender}'
     name='${ttsParams.voice.shortName}'>
-        ${ttsParams.text}
+    <prosody rate="${ttsParams.rate}">${ttsParams.text}</prosody>
 </voice></speak>""",
           queryParameters: {
             'api_key': 'if needed',

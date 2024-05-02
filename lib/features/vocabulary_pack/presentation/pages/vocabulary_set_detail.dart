@@ -13,7 +13,6 @@ import 'package:ctue_app/features/vocabulary_pack/presentation/widgets/word_deta
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class VocabularySetDetail extends StatefulWidget {
   const VocabularySetDetail({super.key});
@@ -32,7 +31,8 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
   List<WordEntity> filteredWords = []; // new list for filtered words
   final TextEditingController _searchController =
       TextEditingController(); // new controller for search text field
-
+  bool isLoadingPage = true;
+  bool isInitialzedData = false;
   @override
   void initState() {
     _searchController
@@ -51,15 +51,6 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
 
   @override
   void didChangeDependencies() {
-    args = ModalRoute.of(context)!.settings.arguments as VocabularySetArguments;
-    Provider.of<LearnProvider>(context, listen: false)
-        .eitherFailureOrGetUpcomingReminder(args.id);
-    Provider.of<VocaSetProvider>(context, listen: false)
-        .eitherFailureOrGerVocaSetDetail(args.id);
-    Provider.of<LearnProvider>(context, listen: false)
-        .eitherFailureOrGetUsrLearnedWords(args.id);
-    Provider.of<VocaSetProvider>(context, listen: false)
-        .eitherFailureOrGerVocaSetStatistics(args.id);
     super.didChangeDependencies();
   }
 
@@ -69,18 +60,39 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
     super.dispose();
   }
 
+  void _initData() async {
+    args = ModalRoute.of(context)!.settings.arguments as VocabularySetArguments;
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUpcomingReminder(args.id);
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerVocaSetDetail(args.id);
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUsrLearnedWords(args.id);
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerVocaSetStatistics(args.id);
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!isInitialzedData) {
+      _initData();
+      isInitialzedData = true;
+    }
+
     return Consumer<VocaSetProvider>(builder: (context, provider, child) {
-      VocaSetEntity? vocaSetEntity = provider.vocaSetEntity;
-      VocaSetStatisticsEntity? vocaSetStatisticsEntity =
-          provider.vocaSetStatisticsEntity;
+      VocaSetEntity? vocaSetEntity;
+      VocaSetStatisticsEntity? vocaSetStatisticsEntity;
 
       bool isLoading = provider.isLoading;
 
-      if (!isLoading && vocaSetEntity != null) {
-        renderedWords ??= vocaSetEntity.words;
+      if (!isLoading) {
+        vocaSetEntity = provider.vocaSetEntity;
+        renderedWords ??= vocaSetEntity?.words ?? [];
+        vocaSetStatisticsEntity = provider.vocaSetStatisticsEntity;
       }
+
+      // if (!isLoading && vocaSetEntity != null) {
+      // }
 
       Failure? failure = provider.failure;
 
@@ -127,7 +139,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       onPressed: () {
                         Navigator.pushNamed(context, '/edit-voca-set',
                             arguments: EditVocaSetArguments(
-                              vocaSetEntity: vocaSetEntity,
+                              vocaSetEntity: vocaSetEntity!,
                               isAdmin: false,
                               callback: () async {
                                 // Provider.of<LearnProvider>(context,
@@ -164,13 +176,16 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                   color: Colors.grey.shade200,
                   child: Column(
                     children: [
-                      StatisticChart(
-                          totalWords: vocaSetEntity.words.length,
-                          dataStatistics: vocaSetStatisticsEntity ??
-                              VocaSetStatisticsEntity(
+                      vocaSetStatisticsEntity == null
+                          ? StatisticChart(
+                              totalWords: 0,
+                              dataStatistics: VocaSetStatisticsEntity(
                                   numberOfWords: 0,
                                   detailVocaSetStatisEntity:
-                                      DetailVocaSetStatisEntity())),
+                                      DetailVocaSetStatisEntity()))
+                          : StatisticChart(
+                              totalWords: vocaSetEntity.words.length,
+                              dataStatistics: vocaSetStatisticsEntity),
                       const SizedBox(
                         height: 20,
                       ),
@@ -202,7 +217,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                                   //     .upcomingReminder!.learnedWords
                                   //     .map((e) => e.word!)
                                   //     .toList(),
-                                  words: vocaSetEntity.words,
+                                  words: vocaSetEntity!.words,
                                   vocabularySetId: vocaSetEntity.id,
                                   reviewAt:
                                       learnProvider.upcomingReminder!.reviewAt,
@@ -211,7 +226,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                                 return ActionBox(
                                   isLoadingPage: isLoading,
                                   userLearnedWords: userLearnedWords,
-                                  words: vocaSetEntity.words,
+                                  words: vocaSetEntity!.words,
                                   vocabularySetId: vocaSetEntity.id,
                                 );
                               }
@@ -253,7 +268,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                           onChanged: (value) {
                             // setState(() {
                             _searchValue = value;
-                            renderedWords = vocaSetEntity.words
+                            renderedWords = vocaSetEntity!.words
                                 .where((element) =>
                                     element.content.contains(value) ||
                                     element.meanings.contains((value) => value

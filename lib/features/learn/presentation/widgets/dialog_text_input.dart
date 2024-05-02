@@ -47,6 +47,7 @@ class _DialogTextInputState extends State<DialogTextInput> {
             ),
             TextField(
               controller: _titleController,
+              style: Theme.of(context).textTheme.bodyMedium,
               decoration: InputDecoration(
                 // errorText: failure ?? failure.errorMessage,
                 errorBorder: OutlineInputBorder(

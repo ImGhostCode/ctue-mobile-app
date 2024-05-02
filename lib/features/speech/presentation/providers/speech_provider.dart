@@ -160,7 +160,7 @@ class SpeechProvider extends ChangeNotifier {
     );
   }
 
-  Future eitherFailureOrTts(String text, VoiceEntity voice) async {
+  Future eitherFailureOrTts(String text, VoiceEntity voice, double rate) async {
     isLoadingWidget = true;
 
     SpeechRepositoryImpl repository = SpeechRepositoryImpl(
@@ -176,7 +176,7 @@ class SpeechProvider extends ChangeNotifier {
     );
 
     final failureOrSpeech = await TtsUsecase(speechRepository: repository).call(
-      ttsParams: TTSParams(text: text, voice: voice),
+      ttsParams: TTSParams(text: text, voice: voice, rate: rate),
     );
 
     failureOrSpeech.fold(

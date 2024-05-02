@@ -29,6 +29,7 @@ class _DialogNumberInputState extends State<DialogNumberInput> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -46,7 +47,7 @@ class _DialogNumberInputState extends State<DialogNumberInput> {
             ),
             TextField(
               controller: _numberController,
-
+              style: Theme.of(context).textTheme.bodyMedium,
               decoration: InputDecoration(
                 // errorText: failure ?? failure.errorMessage,
                 errorBorder: OutlineInputBorder(
@@ -89,7 +90,7 @@ class _DialogNumberInputState extends State<DialogNumberInput> {
                 ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(
-                          Theme.of(context).colorScheme.secondary.withOpacity(
+                          Colors.tealAccent.shade700.withOpacity(
                               _numberController.text.isEmpty ? 0.7 : 1)),
                     ),
                     onPressed: _numberController.text.isNotEmpty
