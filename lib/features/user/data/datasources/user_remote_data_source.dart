@@ -68,11 +68,10 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       {required UpdateUserParams updateUserParams}) async {
     try {
       final formData = FormData.fromMap({
-        'name': updateUserParams.name ?? "",
-        'avt': updateUserParams.avt != null
-            ? MultipartFile.fromFileSync(updateUserParams.avt!.path,
-                filename: updateUserParams.avt!.name)
-            : '',
+        if (updateUserParams.name != null) 'name': updateUserParams.name,
+        if (updateUserParams.avt != null)
+          'avt': MultipartFile.fromFileSync(updateUserParams.avt!.path,
+              filename: updateUserParams.avt!.name),
         if (updateUserParams.interestTopics != null)
           'interestTopics': updateUserParams.interestTopics!.length > 1
               ? updateUserParams.interestTopics

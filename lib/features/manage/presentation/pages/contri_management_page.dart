@@ -59,7 +59,7 @@ class _ContributionManagementPageState
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
       } else {
-        final nextPageKey = pageKey + newItems.length;
+        final nextPageKey = pageKey + 1;
         _pagingController.appendPage(newItems, nextPageKey);
       }
     } catch (error) {
@@ -471,13 +471,8 @@ Future<String?> showWordConDetail(
                   ),
                   !isAdmin
                       ? Text(user.name)
-                      : TextButton(
-                          style: const ButtonStyle(
-                              padding:
-                                  MaterialStatePropertyAll(EdgeInsets.zero),
-                              overlayColor:
-                                  MaterialStatePropertyAll(Colors.transparent)),
-                          onPressed: () {
+                      : GestureDetector(
+                          onTap: () {
                             Navigator.pushNamed(
                                 context, RouteNames.accountDetail,
                                 arguments:
@@ -522,6 +517,19 @@ Future<String?> showWordConDetail(
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  Text(
+                    'Cấp độ: ',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Text('${contributionDetail['Level']['name']}',
+                      style: Theme.of(context).textTheme.bodyMedium),
+                ],
+              ),
               Text(
                 'Nghĩa của từ: ',
                 style: Theme.of(context)
@@ -533,8 +541,11 @@ Future<String?> showWordConDetail(
                 contributionDetail['meanings'].length,
                 (index) => Row(
                   children: [
+                    const SizedBox(
+                      width: 5,
+                    ),
                     Text(
-                      '- ${contributionDetail['meanings'][index]['typeId']}: ',
+                      '- ${contributionDetail['meanings'][index]['Type']['name']}: ',
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium!
@@ -553,7 +564,7 @@ Future<String?> showWordConDetail(
                         .bodyMedium!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text('${contributionDetail['specializationId']}'),
+                  Text('${contributionDetail['Specialization']['name']}'),
                 ],
               ),
               contributionDetail['pictures'].isNotEmpty
@@ -611,6 +622,9 @@ Future<String?> showWordConDetail(
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Câu ví dụ: ',
                           style: Theme.of(context)
@@ -637,10 +651,11 @@ Future<String?> showWordConDetail(
                         .bodyMedium!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text('${contributionDetail['topicId'].join(', ')}'),
+                  Text(
+                      '${contributionDetail['Topic'].map((topic) => topic['name']).join(', ')}'),
                 ],
               ),
-              contributionDetail['synonyms'] != null
+              contributionDetail['synonyms'].isNotEmpty
                   ? Row(
                       children: [
                         Text(
@@ -654,7 +669,7 @@ Future<String?> showWordConDetail(
                       ],
                     )
                   : const SizedBox.shrink(),
-              contributionDetail['antonyms'] != null
+              contributionDetail['antonyms'].isNotEmpty
                   ? Row(
                       children: [
                         Text(
@@ -668,7 +683,7 @@ Future<String?> showWordConDetail(
                       ],
                     )
                   : const SizedBox.shrink(),
-              contributionDetail['note'] != ''
+              contributionDetail['note'].isNotEmpty
                   ? Row(
                       children: [
                         Text(
@@ -881,13 +896,8 @@ Future<String?> showSentenceConDetail(
                   ),
                   !isAdmin
                       ? Text(user.name)
-                      : TextButton(
-                          style: const ButtonStyle(
-                              padding:
-                                  MaterialStatePropertyAll(EdgeInsets.zero),
-                              overlayColor:
-                                  MaterialStatePropertyAll(Colors.transparent)),
-                          onPressed: () {
+                      : GestureDetector(
+                          onTap: () {
                             Navigator.pushNamed(
                                 context, RouteNames.accountDetail,
                                 arguments:
@@ -946,7 +956,7 @@ Future<String?> showSentenceConDetail(
                         .bodyMedium!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text('${contributionDetail['typeId']}'),
+                  Text('${contributionDetail['Type']['name']}'),
                 ],
               ),
               RichText(
@@ -958,7 +968,8 @@ Future<String?> showSentenceConDetail(
                       .copyWith(fontWeight: FontWeight.bold),
                   children: <TextSpan>[
                     TextSpan(
-                      text: '${contributionDetail['topicId'].join(', ')}',
+                      text:
+                          '${contributionDetail['Topic'].map((topic) => topic['name']).join(', ')}',
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge!
@@ -967,7 +978,7 @@ Future<String?> showSentenceConDetail(
                   ],
                 ),
               ),
-              contributionDetail['note'] != null
+              contributionDetail['note'] != ''
                   ? Row(
                       children: [
                         Text(

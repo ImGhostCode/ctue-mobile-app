@@ -62,13 +62,13 @@ _getBgColor(type) {
       return Colors.orange.shade100;
 
     case Type.diphthongs:
-      return Colors.blue.shade300;
+      return Colors.orange.shade300.withOpacity(0.8);
 
     case Type.unvoiced:
-      return Colors.green.shade400;
+      return Colors.orange.shade100;
 
     case Type.voiced:
-      return Colors.teal.shade200;
+      return Colors.blueAccent.shade100.withOpacity(0.7);
 
     default:
       return Colors.amber.shade100;

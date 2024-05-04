@@ -41,9 +41,10 @@ class IPA extends StatelessWidget {
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                  height: 470,
+                  // height: 470,
                   width: MediaQuery.of(context).size.width,
                   child: GridView.builder(
+                    shrinkWrap: true,
                     itemCount: vowels.length,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
@@ -74,9 +75,10 @@ class IPA extends StatelessWidget {
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                  height: 350,
+                  // height: 350,
                   width: MediaQuery.of(context).size.width,
                   child: GridView.builder(
+                    shrinkWrap: true,
                     itemCount: diphthongs.length,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
@@ -107,9 +109,10 @@ class IPA extends StatelessWidget {
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                  height: 470,
+                  // height: 470,
                   width: MediaQuery.of(context).size.width,
                   child: GridView.builder(
+                    shrinkWrap: true,
                     itemCount: consonants.length,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:

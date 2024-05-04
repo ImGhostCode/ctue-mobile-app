@@ -107,6 +107,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
+  tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized(); // Ensure plugin initialization
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -305,6 +306,8 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.bold, color: Colors.blueGrey.shade700),
               titleMedium:
                   const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              titleSmall:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               labelMedium: const TextStyle(
                   // fontSize: 13,
                   fontWeight: FontWeight.bold),

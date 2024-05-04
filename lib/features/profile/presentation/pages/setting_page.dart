@@ -125,6 +125,25 @@ class _SettingPageState extends State<SettingPage> {
                         .isRemind,
                     activeColor: Colors.blue,
                     onChanged: (bool value) {
+                      if (value == false) {
+                        flutterLocalNotificationsPlugin.cancel(0);
+                      } else {
+                        final now = DateTime.now();
+                        final scheduledTime = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            Provider.of<LearnProvider>(context, listen: false)
+                                .remindTime
+                                .hour,
+                            Provider.of<LearnProvider>(context, listen: false)
+                                .remindTime
+                                .minute);
+                        scheduleNotification(
+                            'Nhắc nhở',
+                            'Hãy nghỉ ngơi một chút và bắt đầu học cùng CTUE nào!',
+                            scheduledTime);
+                      }
                       // This is called when the user toggles the switch.
                       Provider.of<LearnProvider>(context, listen: false)
                           .isRemind = value;
@@ -181,17 +200,22 @@ class _SettingPageState extends State<SettingPage> {
                       // ignore: use_build_context_synchronously
                       Provider.of<LearnProvider>(context, listen: false)
                           .remindTime = selectedTime24Hour;
-                      final now = DateTime.now();
-                      final scheduledTime = DateTime(
-                          now.year,
-                          now.month,
-                          now.day,
-                          selectedTime24Hour.hour,
-                          selectedTime24Hour.minute);
-                      await flutterLocalNotificationsPlugin.cancel(983);
-                      // Schedule the notification
-                      await scheduleNotification('Nhắc nhở',
-                          'Đã đến giờ học tập cùng CTUE!', scheduledTime);
+                      if (Provider.of<LearnProvider>(context, listen: false)
+                          .isRemind) {
+                        final now = DateTime.now();
+                        final scheduledTime = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            selectedTime24Hour.hour,
+                            selectedTime24Hour.minute);
+                        await flutterLocalNotificationsPlugin.cancel(0);
+                        // Schedule the notification
+                        await scheduleNotification(
+                            'Nhắc nhở',
+                            'Hãy nghỉ ngơi một chút và bắt đầu học cùng CTUE nào!',
+                            scheduledTime);
+                      }
                     }
                   },
                 ),
@@ -235,7 +259,7 @@ class _SettingPageState extends State<SettingPage> {
                                         .statusCode ==
                                     200) {
                                   await flutterLocalNotificationsPlugin
-                                      .cancel(983);
+                                      .cancel(0);
 
                                   // await SecureStorageService.secureStorage
                                   //     .delete(key: 'accessToken');
@@ -290,6 +314,15 @@ class Setting {
   Setting({required this.icon, required this.title, required this.onTap});
 }
 
+tz.TZDateTime _nextInstanceOfReminder(DateTime scheduledTime) {
+  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+  tz.TZDateTime scheduledDate = tz.TZDateTime.from(scheduledTime, tz.local);
+  if (scheduledDate.isBefore(now)) {
+    scheduledDate = scheduledDate.add(const Duration(days: 1));
+  }
+  return scheduledDate;
+}
+
 Future<void> scheduleNotification(
     String title, String body, DateTime scheduledTime) async {
   // Configure Android-specific details
@@ -300,6 +333,7 @@ Future<void> scheduleNotification(
     channelDescription: channelDescription,
     importance: Importance.max,
     priority: Priority.high,
+    icon: 'ctue_icon',
   );
 
   // Configure iOS-specific details
@@ -314,69 +348,13 @@ Future<void> scheduleNotification(
 
   // Schedule the notification using timezone support
   await flutterLocalNotificationsPlugin.zonedSchedule(
-      983,
+      0,
       title,
       body,
-      _nextInstanceOfDailyNotification(scheduledTime), // Modified calculation
+      _nextInstanceOfReminder(scheduledTime), // Use the local timezone
       platformChannelSpecifics,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents:
-          DateTimeComponents.time); // Repeat *at* the time, daily);
-}
-
-// Helper to calculate the next instance of the daily notification
-tz.TZDateTime _nextInstanceOfDailyNotification(DateTime scheduledTime) {
-  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-  tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month,
-      now.day, scheduledTime.hour, scheduledTime.minute, scheduledTime.second);
-
-  if (scheduledDate.isBefore(now)) {
-    scheduledDate = scheduledDate.add(const Duration(days: 1));
-  }
-  return scheduledDate;
-}
-
-// Add in a suitable place in your project
-Future<void> showDailyReminderNotification(TimeOfDay time) async {
-  // ... Initialization of flutter_local_notifications (check existing code)
-
-  var scheduledNotificationDateTime = tz.TZDateTime.now(tz.local)
-      .add(Duration(hours: time.hour, minutes: time.minute))
-      .subtract(Duration(
-          hours: DateTime.now().hour,
-          minutes: DateTime.now().minute)); // Time for today
-
-  const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-    'channelId',
-    'channelName',
-    channelDescription: 'channelDescription',
-    importance: Importance.max,
-    priority: Priority.high,
-  );
-
-  // Configure iOS-specific details
-  const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-      DarwinNotificationDetails();
-
-  // Configure common platform details
-  const NotificationDetails platformChannelSpecifics = NotificationDetails(
-    android: androidPlatformChannelSpecifics,
-    iOS: iOSPlatformChannelSpecifics,
-  );
-
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-      983, // Unique ID
-      'Daily Reminder',
-      'Your daily reminder message',
-      scheduledNotificationDateTime,
-      platformChannelSpecifics,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents:
-          DateTimeComponents.time // Repeat *at* the time, daily
-      );
+      matchDateTimeComponents: DateTimeComponents.time);
 }

@@ -12,6 +12,7 @@ import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/colored_line.dart';
 import 'package:ctue_app/features/speech/business/entities/voice_entity.dart';
 import 'package:ctue_app/features/speech/presentation/providers/speech_provider.dart';
+import 'package:ctue_app/features/vocabulary_pack/presentation/providers/voca_set_provider.dart';
 import 'package:ctue_app/features/vocabulary_pack/presentation/widgets/word_detail_in_voca_set.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:ctue_app/features/word/presentation/widgets/listen_word_btn.dart';
@@ -119,6 +120,8 @@ class _LearnPageState extends State<LearnPage> {
 // Create review reminder
     _createReviewReminder(learnedWords, memoryLevels, now);
 
+    _reloadData();
+
 // Show result
     // Navigator.pop(context);
     Navigator.pushReplacementNamed(context, '/learned-result',
@@ -126,6 +129,15 @@ class _LearnPageState extends State<LearnPage> {
             oldMemoryLevels: initMemoryLevels,
             learnedWords: learnedWords,
             memoryLevels: memoryLevels));
+  }
+
+  void _reloadData() {
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerUsrVocaSets();
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerVocaSetStatistics(null);
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUpcomingReminder(null);
   }
 
   void _saveLearnedResult(List<WordEntity> learnedWords, List<int> memoryLevels,
@@ -150,12 +162,10 @@ class _LearnPageState extends State<LearnPage> {
         .eitherFailureOrCreReviewReminder(vocabularySetId!, dataRemind);
   }
 
-  void _checkAnswer(dynamic userAnswer) {
-    // print(userAnswer);
+  void _checkAnswer(dynamic userAnswer) async {
     bool isCorrect =
         listLearningData[indexWord.first].word.content == userAnswer;
-    // print(isCorrect);
-    _showAnswerResult(
+    await _showAnswerResult(
         context, listLearningData[indexWord.first].word, isCorrect);
     if (!isCorrect) {
       if (++listLearningData[currWordIndex].numOfMistakes == 5) {
@@ -183,25 +193,28 @@ class _LearnPageState extends State<LearnPage> {
         currQuestion = nextQuestion;
       });
       if (Provider.of<LearnProvider>(context, listen: false).autoPlayAudio) {
-        VoiceEntity voice =
-            await Provider.of<SpeechProvider>(context, listen: false)
-                .getSelectedVoice();
-        await Provider.of<SpeechProvider>(context, listen: false)
-            .eitherFailureOrTts(
-                listLearningData[currWordIndex].word.content, voice, 1.0);
-
-        try {
-          await _audioPlayer.play(
-            BytesSource(Uint8List.fromList(
-                Provider.of<SpeechProvider>(context, listen: false)
-                    .audioBytes)),
-          );
-        } catch (e) {
-          print("Error playing audio: $e");
-        }
+        await _playAudio();
       }
     } else {
       _displayResult();
+    }
+  }
+
+  Future<void> _playAudio() async {
+    VoiceEntity voice =
+        await Provider.of<SpeechProvider>(context, listen: false)
+            .getSelectedVoice();
+    await Provider.of<SpeechProvider>(context, listen: false)
+        .eitherFailureOrTts(
+            listLearningData[currWordIndex].word.content, voice, 1.0);
+
+    try {
+      await _audioPlayer.play(
+        BytesSource(Uint8List.fromList(
+            Provider.of<SpeechProvider>(context, listen: false).audioBytes)),
+      );
+    } catch (e) {
+      print("Error playing audio: $e");
     }
   }
 
@@ -626,70 +639,64 @@ class _LearnPageState extends State<LearnPage> {
   }
 }
 
-void _showAnswerResult(context, WordEntity word, bool? isCorrect) {
-  setTimeout(callback, time) {
-    Duration timeDelay = Duration(milliseconds: time);
-    return Timer(timeDelay, callback);
-  }
+Future<void> _showAnswerResult(
+    context, WordEntity word, bool? isCorrect) async {
+  await Future.delayed(const Duration(milliseconds: 300));
 
-  setTimeout(
-      () => showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              backgroundColor: Colors.white,
-              surfaceTintColor: Colors.white,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  isCorrect != null
-                      ? Container(
-                          width: double.infinity,
-                          // height: 30,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(12),
-                                topRight: Radius.circular(12)),
-                            color:
-                                isCorrect ? Colors.green.shade400 : Colors.red,
-                          ),
-                          child: Text(
-                            isCorrect ? 'CHÍNH XÁC!' : 'CHƯA CHÍNH XÁC',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(
-                                    color: isCorrect
-                                        ? Colors.black87
-                                        : Colors.white),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Column(
-                      children: [
-                        WordDetailInVocaSet(
-                          wordEntity: word,
+  await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                isCorrect != null
+                    ? Container(
+                        width: double.infinity,
+                        // height: 30,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              topRight: Radius.circular(12)),
+                          color: isCorrect ? Colors.green.shade400 : Colors.red,
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(isCorrect != null ? 'Tiếp tục' : "Đóng"),
+                        child: Text(
+                          isCorrect ? 'CHÍNH XÁC!' : 'CHƯA CHÍNH XÁC',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                  color: isCorrect
+                                      ? Colors.black87
+                                      : Colors.white),
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                      )
+                    : const SizedBox.shrink(),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Column(
+                    children: [
+                      WordDetailInVocaSet(
+                        wordEntity: word,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(isCorrect != null ? 'Tiếp tục' : "Đóng"),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-          ),
-      200);
+          ));
 }
 
 class LearnData {

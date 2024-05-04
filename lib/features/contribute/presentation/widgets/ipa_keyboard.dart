@@ -55,7 +55,8 @@ class IPAKeyButton extends StatelessWidget {
         height: 35,
         width: 35,
         decoration: BoxDecoration(
-            color: Colors.blue, borderRadius: BorderRadius.circular(8)),
+            color: Colors.blueAccent.shade200,
+            borderRadius: BorderRadius.circular(8)),
         child: Center(
             child: text == 'Backspace'
                 ? const Icon(

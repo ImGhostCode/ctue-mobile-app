@@ -92,7 +92,11 @@ class _DictionaryPageState extends State<DictionaryPage> {
 
       await Provider.of<WordProvider>(context, listen: false)
           .eitherFailureOrWords(
-              selectedTopics.isEmpty ? userInterestTopics : selectedTopics,
+              _searchController.text.isNotEmpty
+                  ? []
+                  : (selectedTopics.isEmpty
+                      ? userInterestTopics
+                      : selectedTopics),
               selectedTypes,
               pageKey,
               'asc',
@@ -110,7 +114,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
       } else {
-        final nextPageKey = pageKey + newItems.length;
+        final nextPageKey = pageKey + 1;
         _pagingController.appendPage(newItems, nextPageKey);
       }
     } catch (error) {

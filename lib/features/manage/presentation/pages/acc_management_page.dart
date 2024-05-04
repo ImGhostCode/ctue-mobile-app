@@ -60,7 +60,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
       } else {
-        final nextPageKey = pageKey + newItems.length;
+        final nextPageKey = pageKey + 1;
         _pagingController.appendPage(newItems, nextPageKey);
       }
     } catch (error) {

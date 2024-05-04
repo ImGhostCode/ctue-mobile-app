@@ -329,8 +329,11 @@ class _OverviewPageState extends State<OverviewPage> {
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
                             height: vocaSetStatisticsEntity!
-                                    .bySpecialization.length *
-                                60,
+                                    .bySpecialization.isEmpty
+                                ? 300
+                                : vocaSetStatisticsEntity
+                                        .bySpecialization.length *
+                                    60,
                             child: AspectRatio(
                               aspectRatio: 1.6,
                               child: BarChartWidget(
@@ -357,8 +360,9 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
-                            height:
-                                vocaSetStatisticsEntity!.byTopic.length * 60,
+                            height: vocaSetStatisticsEntity!.byTopic.isEmpty
+                                ? 300
+                                : vocaSetStatisticsEntity.byTopic.length * 60,
                             child: AspectRatio(
                               aspectRatio: 1.6,
                               child: BarChartWidget(
@@ -502,7 +506,9 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
-                            height: senStatisticsEntity!.byType.length * 60,
+                            height: senStatisticsEntity!.byType.isEmpty
+                                ? 300
+                                : senStatisticsEntity.byType.length * 60,
                             child: AspectRatio(
                               aspectRatio: 1.6,
                               child: BarChartWidget(
@@ -531,8 +537,9 @@ class _OverviewPageState extends State<OverviewPage> {
                             scrollDirection: Axis.horizontal,
                             child: SizedBox(
                                 // width: MediaQuery.of(context).size.width - 100,
-                                height:
-                                    senStatisticsEntity!.byTopic.length * 60,
+                                height: senStatisticsEntity!.byTopic.isEmpty
+                                    ? 300
+                                    : senStatisticsEntity.byTopic.length * 60,
                                 child: AspectRatio(
                                   aspectRatio: 1.6,
                                   child: BarChartWidget(
@@ -611,8 +618,10 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
-                            height:
-                                wordStatisticsEntity!.bySpecialization.length *
+                            height: wordStatisticsEntity!
+                                    .bySpecialization.isEmpty
+                                ? 300
+                                : wordStatisticsEntity.bySpecialization.length *
                                     60,
                             child: AspectRatio(
                               aspectRatio: 1.6,
@@ -640,7 +649,9 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
-                            height: wordStatisticsEntity!.byLevel.length * 60,
+                            height: wordStatisticsEntity!.byLevel.isEmpty
+                                ? 300
+                                : wordStatisticsEntity.byLevel.length * 60,
                             child: AspectRatio(
                               aspectRatio: 1.6,
                               child: BarChartWidget(
@@ -667,7 +678,9 @@ class _OverviewPageState extends State<OverviewPage> {
                         ? const SizedBox.shrink()
                         : SizedBox(
                             // width: MediaQuery.of(context).size.width - 100,
-                            height: wordStatisticsEntity!.byTopic.length * 60,
+                            height: wordStatisticsEntity!.byTopic.isEmpty
+                                ? 300
+                                : wordStatisticsEntity.byTopic.length * 60,
                             child: AspectRatio(
                               aspectRatio: 1.6,
                               child: BarChartWidget(

@@ -79,7 +79,7 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
       } else {
-        final nextPageKey = pageKey + newItems.length;
+        final nextPageKey = pageKey + 1;
         _pagingController.appendPage(newItems, nextPageKey);
       }
     } catch (error) {

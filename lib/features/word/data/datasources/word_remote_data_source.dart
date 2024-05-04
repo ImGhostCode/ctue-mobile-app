@@ -40,13 +40,15 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
     try {
       final response = await dio.get('/words',
           queryParameters: {
-            'topic': getWordParams.topic!.length > 1
-                ? getWordParams.topic
-                : [getWordParams.topic],
-            "type": getWordParams.type,
+            if (getWordParams.topic != null && getWordParams.topic!.isNotEmpty)
+              'topic': getWordParams.topic!.length > 1
+                  ? getWordParams.topic
+                  : [getWordParams.topic],
+            if (getWordParams.type != null) "type": getWordParams.type,
             'page': getWordParams.page,
-            'level': getWordParams.level,
-            'specialization': getWordParams.specialization,
+            if (getWordParams.level != null) 'level': getWordParams.level,
+            if (getWordParams.specialization != null)
+              'specialization': getWordParams.specialization,
             'sort': getWordParams.sort,
             'key': getWordParams.key,
           },
@@ -165,7 +167,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
       dio.options.baseUrl = baseUrl;
 
       double threshold =
-          double.parse(dotenv.env['AZURE_DETECT_OBJECT_THRESOLD'] ?? '0.5');
+          double.parse(dotenv.env['AZURE_DETECT_OBJECT_THRESOLD'] ?? '0.7');
 
       return ResponseDataModel<List<ObjectModel>>.fromJson(
           json: response,
@@ -174,7 +176,7 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
             final values = json[kObjectsResult][kValues];
             values.forEach((value) {
               value[kTags].forEach((tag) {
-                if (tag[kConfidence] > threshold) results.add(tag);
+                if (tag[kConfidence] >= threshold) results.add(tag);
               });
             });
             return results.map((e) => ObjectModel.fromJson(json: e)).toList();

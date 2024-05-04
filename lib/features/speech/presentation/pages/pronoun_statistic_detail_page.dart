@@ -38,7 +38,13 @@ class ProStatisticDetailPage extends StatelessWidget {
         List<DetailEntity>? detailEntity =
             provider.pronuncStatisticEntity?.detail;
 
-        detailEntity?.sort((a, b) => b.avg - a.avg);
+        List<DetailEntity>? labelDoWell =
+            provider.pronuncStatisticEntity?.lablesDoWell;
+
+        List<DetailEntity>? labelNeedImprove =
+            provider.pronuncStatisticEntity?.lablesNeedToBeImprove;
+
+        // detailEntity?.sort((a, b) => b.avg - a.avg);
 
         bool isLoading = provider.isLoading;
 
@@ -63,30 +69,12 @@ class ProStatisticDetailPage extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Row(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     Text(
-                    //       'Đánh giá',
-                    //       style: Theme.of(context).textTheme.titleLarge,
-                    //     ),
-                    //     GradientBorderContainer(
-                    //       diameter: 80.0,
-                    //       borderWidth: 0.1, // 10% of diameter
-                    //       borderColor1: Colors.lightGreenAccent.shade700,
-                    //       borderColor2: Colors.lightGreenAccent.shade100,
-                    //       stop1: 0.6,
-                    //       stop2: 0.4,
-                    //       percent: 60,
-                    //       fontSize: 30,
-                    //     ),
-                    //   ],
-                    // ),
-                    // const SizedBox(
-                    //   height: 30,
-                    // ),
+                    Text(
+                      'Các âm làm tốt',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -95,11 +83,11 @@ class ProStatisticDetailPage extends StatelessWidget {
                       // },
                       itemBuilder: (context, index) {
                         Color lineColor =
-                            scoreToColor(detailEntity?[index].avg ?? -1);
+                            scoreToColor(labelDoWell?[index].avg ?? -1);
                         return ListTile(
                           leading: Text(
                             textAlign: TextAlign.left,
-                            '/${detailEntity?[index].label}/',
+                            '/${labelDoWell?[index].label}/',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
@@ -108,19 +96,19 @@ class ProStatisticDetailPage extends StatelessWidget {
                           ),
                           title: ColoredLine(
                               // length: 150,
-                              height: 9,
-                              percentLeft: detailEntity != null
-                                  ? (detailEntity[index].avg / 100)
+                              height: 5,
+                              percentLeft: labelDoWell != null
+                                  ? (labelDoWell[index].avg / 100)
                                   : 0,
-                              percentRight: detailEntity != null
-                                  ? (1 - (detailEntity[index].avg / 100))
+                              percentRight: labelDoWell != null
+                                  ? (1 - (labelDoWell[index].avg / 100))
                                   : 0,
                               colorLeft:
                                   isLoading ? Colors.grey.shade200 : lineColor,
                               colorRight: isLoading
                                   ? Colors.grey.shade200
                                   : lineColor.withOpacity(0.2)),
-                          subtitle: Text('${detailEntity?[index].avg}%',
+                          subtitle: Text('${labelDoWell?[index].avg}%',
                               textAlign: TextAlign.right,
                               style: Theme.of(context)
                                   .textTheme
@@ -131,7 +119,60 @@ class ProStatisticDetailPage extends StatelessWidget {
                               horizontal: 4, vertical: 0),
                         );
                       },
-                      itemCount: detailEntity?.length ?? 0,
+                      itemCount: labelDoWell?.length ?? 0,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Các âm cần cải thiện',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      // separatorBuilder: (context, index) {
+                      //   return const Divider();
+                      // },
+                      itemBuilder: (context, index) {
+                        Color lineColor =
+                            scoreToColor(labelNeedImprove?[index].avg ?? -1);
+                        return ListTile(
+                          leading: Text(
+                            textAlign: TextAlign.left,
+                            '/${labelNeedImprove?[index].label}/',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                    color: lineColor, fontFamily: 'DoulosSIL'),
+                          ),
+                          title: ColoredLine(
+                              // length: 150,
+                              height: 5,
+                              percentLeft: labelNeedImprove != null
+                                  ? (labelNeedImprove[index].avg / 100)
+                                  : 0,
+                              percentRight: labelNeedImprove != null
+                                  ? (1 - (labelNeedImprove[index].avg / 100))
+                                  : 0,
+                              colorLeft:
+                                  isLoading ? Colors.grey.shade200 : lineColor,
+                              colorRight: isLoading
+                                  ? Colors.grey.shade200
+                                  : lineColor.withOpacity(0.2)),
+                          subtitle: Text('${labelNeedImprove?[index].avg}%',
+                              textAlign: TextAlign.right,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: lineColor)),
+                          minVerticalPadding: 0,
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 0),
+                        );
+                      },
+                      itemCount: labelNeedImprove?.length ?? 0,
                     ),
                   ],
                 ),

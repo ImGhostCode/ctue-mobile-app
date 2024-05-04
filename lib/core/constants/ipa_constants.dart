@@ -205,6 +205,195 @@ final List<Phoneme> consonants = [
       type: Type.voiced,
       examples: ['back bæk', 'job dʒɒb'],
       source: 'us_phonetics_sound_book_2023feb.mp3'),
+  Phoneme(
+    label: 't',
+    tips: [
+      'Đọc gần giống âm T của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.unvoiced,
+    examples: ['top tɒp', 'cat kæt'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'd',
+    tips: [
+      'Đọc gần giống âm D của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Thanh quản rung nhẹ',
+    ],
+    type: Type.voiced,
+    examples: ['dog dɒɡ', 'bed bed'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'tʃ',
+    tips: [
+      'Đọc gần giống âm CH của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.unvoiced,
+    examples: ['chat tʃæt', 'church tʃɜːtʃ'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'dʒ',
+    tips: [
+      'Đọc gần giống âm GI của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Thanh quản rung nhẹ',
+    ],
+    type: Type.voiced,
+    examples: ['job dʒɒb', 'judge dʒʌdʒ'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'k',
+    tips: [
+      'Đọc gần giống âm C của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.unvoiced,
+    examples: ['cat kæt', 'back bæk'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'g',
+    tips: [
+      'Đọc gần giống âm G của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Thanh quản rung nhẹ',
+    ],
+    type: Type.voiced,
+    examples: ['go ɡəʊ', 'good ɡʊd'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'f',
+    tips: [
+      'Đọc gần giống âm PH của tiếng Việt, đưa môi chặn không khí trong miệng sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.unvoiced,
+    examples: ['fat fæt', 'off ɒf'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'v',
+    tips: [
+      'Đọc gần giống âm V của tiếng Việt, đưa môi chặn không khí trong miệng sau đó bật ra. Thanh quản rung nhẹ',
+    ],
+    type: Type.voiced,
+    examples: ['very ˈver.i', 'love lʌv'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'θ',
+    tips: [
+      'Đọc gần giống âm TH của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.unvoiced,
+    examples: ['think θɪŋk', 'both bəʊθ'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'ð',
+    tips: [
+      'Đọc gần giống âm TH của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Thanh quản rung nhẹ',
+    ],
+    type: Type.voiced,
+    examples: ['this ðɪs', 'mother ˈmʌðə(r)'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 's',
+    tips: [
+      'Đọc gần giống âm S của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.unvoiced,
+    examples: ['sit sɪt', 'face feɪs'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'z',
+    tips: [
+      'Đọc gần giống âm S của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Thanh quản rung nhẹ',
+    ],
+    type: Type.voiced,
+    examples: ['zoo zuː', 'rose rəʊz'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'ʃ',
+    tips: [
+      'Đọc gần giống âm X của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.unvoiced,
+    examples: ['she ʃiː', 'fish fɪʃ'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'ʒ',
+    tips: [
+      'Đọc gần giống âm GI của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Thanh quản rung nhẹ',
+    ],
+    type: Type.voiced,
+    examples: ['measure ˈmeʒə(r)', 'vision ˈvɪʒn'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'h',
+    tips: [
+      'Đọc gần giống âm H của tiếng Việt, không chặn luồng không khí trong miệng, thở ra khí qua mũi',
+    ],
+    type: Type.unvoiced,
+    examples: ['hat hæt', 'behind bɪˈhaɪnd'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'm',
+    tips: [
+      'Đọc gần giống âm M của tiếng Việt, đưa môi chặn không khí trong miệng sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.voiced,
+    examples: ['me miː', 'home həʊm'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'n',
+    tips: [
+      'Đọc gần giống âm N của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.voiced,
+    examples: ['noʊ nəʊ', 'pen pen'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'ŋ',
+    tips: [
+      'Đọc gần giống âm NG của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.voiced,
+    examples: ['sing sɪŋ', 'song sɒŋ'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'l',
+    tips: [
+      'Đọc gần giống âm L của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.voiced,
+    examples: ['like laɪk', 'call kɔːl'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'r',
+    tips: [
+      'Đọc gần giống âm R của tiếng Việt, đưa đầu lưỡi đến phía trên răng trên, sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.voiced,
+    examples: ['red red', 'car kɑːr'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
+  Phoneme(
+    label: 'w',
+    tips: [
+      'Đọc gần giống âm V của tiếng Việt, đưa môi chặn không khí trong miệng sau đó bật ra. Không thở ra khí qua mũi',
+    ],
+    type: Type.voiced,
+    examples: ['we wiː', 'swim swɪm'],
+    source: 'us_phonetics_sound_book_2023feb.mp3',
+  ),
 ];
 
 enum Type {

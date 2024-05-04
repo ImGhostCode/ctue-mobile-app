@@ -107,11 +107,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
                               List<int>? selectedTopics = getSelectedTopics(
                                   listWordTopics, listSentenceTopics);
                               await userProvider.eitherFailureOrUpdateUser(
-                                userDetail?.id ?? 0,
+                                userDetail!.id,
                                 pickedImage,
                                 newName,
                                 selectedTopics,
                               );
+
+                              Navigator.pop(context);
 
                               if (failure != null) {
                                 // Show a SnackBar with the failure message
@@ -162,7 +164,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     GestureDetector(
                       onTap: () async {
                         final XFile? newImage =
-                            await picker.pickImage(source: ImageSource.gallery);
+                            await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
 
                         if (newImage != null) {
                           setState(() {
@@ -326,11 +328,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                             //     BorderSide(color: Colors.green, width: 3)),
                                             backgroundColor:
                                                 MaterialStateProperty.all(
-                                                    Provider.of<TopicProvider>(
-                                                                context,
-                                                                listen: true)
-                                                            .isLoading
-                                                        ? Colors.blue.shade400
+                                                    (Provider.of<TopicProvider>(
+                                                                    context,
+                                                                    listen:
+                                                                        true)
+                                                                .isLoading ||
+                                                            isLoading)
+                                                        ? Colors.grey.shade300
                                                         : Colors.blue),
                                             padding: MaterialStateProperty.all(
                                                 const EdgeInsets.symmetric(
@@ -541,12 +545,20 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   bool canUpdate(BuildContext context) {
+    // bool areImagesEqual(XFile? newImage) {
+    //   // Add the missing function
+    //   // Compare the paths of the old and new images
+    //   return pickedImage != null &&
+    //       newImage != null &&
+    //       pickedImage!.path == newImage.path;
+    // }
+
     return !Provider.of<UserProvider>(context, listen: true).isLoading &&
-        ((isEdited &&
-                (newName.isNotEmpty || pickedImage != null) &&
-                (newName !=
-                        Provider.of<UserProvider>(context).userEntity!.name &&
-                    !areImagesEqual(pickedImage))) ||
+        (isEdited ||
+            (newName.isNotEmpty || pickedImage != null) ||
+            (newName.isEmpty && pickedImage != null) ||
+            (newName != Provider.of<UserProvider>(context).userEntity!.name) ||
+            !areImagesEqual(pickedImage) ||
             isEditedTopic);
   }
 

@@ -28,17 +28,18 @@ class _WordStorePageState extends State<WordStorePage> {
 
   @override
   void initState() {
+    Provider.of<VocaSetProvider>(context, listen: false).userVocaSets = [];
+    Provider.of<VocaSetProvider>(context, listen: false).failure = null;
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .vocaSetStatisticsEntity = null;
+    Provider.of<LearnProvider>(context, listen: false).currReminder = null;
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerUsrVocaSets();
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(null);
-    if (Provider.of<LearnProvider>(context, listen: false).upcomingReminder ==
-            null ||
-        Provider.of<LearnProvider>(context, listen: false).currReminder ==
-            null) {
-      Provider.of<LearnProvider>(context, listen: false)
-          .eitherFailureOrGetUpcomingReminder(null);
-    }
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUpcomingReminder(null);
+
     super.initState();
   }
 

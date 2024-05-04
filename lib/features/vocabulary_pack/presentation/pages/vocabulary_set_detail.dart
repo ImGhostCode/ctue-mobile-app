@@ -62,6 +62,16 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
 
   void _initData() async {
     args = ModalRoute.of(context)!.settings.arguments as VocabularySetArguments;
+    Provider.of<LearnProvider>(context, listen: false).upcomingReminder = null;
+    Provider.of<LearnProvider>(context, listen: false).learnedWords = [];
+    // Provider.of<LearnProvider>(context, listen: false).isLoading = true;
+    // Provider.of<VocaSetProvider>(context, listen: false).isLoading = true;
+    Provider.of<VocaSetProvider>(context, listen: false).vocaSetEntity = null;
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .vocaSetStatisticsEntity = null;
+    Provider.of<VocaSetProvider>(context, listen: false).failure = null;
+    Provider.of<LearnProvider>(context, listen: false).failure = null;
+
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrGetUpcomingReminder(args.id);
     Provider.of<VocaSetProvider>(context, listen: false)
@@ -177,15 +187,18 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                   child: Column(
                     children: [
                       vocaSetStatisticsEntity == null
-                          ? StatisticChart(
-                              totalWords: 0,
-                              dataStatistics: VocaSetStatisticsEntity(
-                                  numberOfWords: 0,
-                                  detailVocaSetStatisEntity:
-                                      DetailVocaSetStatisEntity()))
+                          ? Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12)),
+                              height: 200,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ))
                           : StatisticChart(
                               totalWords: vocaSetEntity.words.length,
                               dataStatistics: vocaSetStatisticsEntity),
+
                       const SizedBox(
                         height: 20,
                       ),

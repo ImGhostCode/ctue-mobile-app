@@ -164,7 +164,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
     return showDialog<void>(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black.withOpacity(0.8),
+        barrierColor: Colors.black.withOpacity(0.5),
         builder: (BuildContext context) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -200,7 +200,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
     return showDialog<void>(
         context: context,
         barrierDismissible: false,
-        barrierColor: Colors.black.withOpacity(0.8),
+        barrierColor: Colors.black.withOpacity(0.5),
         builder: (BuildContext context) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -241,7 +241,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
     return showDialog<void>(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black.withOpacity(0.8),
+        barrierColor: Colors.black.withOpacity(0.5),
         builder: (BuildContext context) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -359,7 +359,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
       BuildContext context1, List<ObjectEntity> lookUpByImageResults) {
     return showDialog(
         context: context1,
-        barrierColor: Colors.black.withOpacity(0.8),
+        barrierColor: Colors.black.withOpacity(0.5),
         builder: (BuildContext context) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
