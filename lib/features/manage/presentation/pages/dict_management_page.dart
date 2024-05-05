@@ -274,12 +274,25 @@ class _DictionaryManagementPageState extends State<DictionaryManagementPage> {
                                     fit: BoxFit.cover,
                                   ),
                                   fit: BoxFit.cover,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
                                 )
-                              : Container(),
+                              : Image.asset('assets/images/no-image.jpg',
+                                  // color: Colors.grey.shade300,
+                                  fit: BoxFit.cover),
                         ),
                         title: Text(item.content),
                         subtitle: Text(
-                          item.meanings[0].meaning,
+                          item.meanings.isNotEmpty
+                              ? item.meanings[0].meaning
+                              : '',
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
@@ -401,8 +414,21 @@ Future<void> showWordFilterModal(
                                               fit: BoxFit.cover,
                                               width: 60.0,
                                               height: 60.0,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                if (loadingProgress == null) {
+                                                  return child;
+                                                }
+                                                return const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              },
                                             )
-                                          : Container(),
+                                          : Image.asset(
+                                              'assets/images/no-image.jpg',
+                                              // color: Colors.grey.shade300,
+                                              fit: BoxFit.cover),
                                     ),
                                     Text(
                                       listTopics[index].name,

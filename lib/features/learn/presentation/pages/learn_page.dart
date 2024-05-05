@@ -388,6 +388,14 @@ class _LearnPageState extends State<LearnPage> {
                     fit: BoxFit.fill,
                     width: double.infinity,
                     height: double.infinity,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
                   ),
                 ),
               )

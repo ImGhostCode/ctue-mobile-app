@@ -46,163 +46,166 @@ class _WordStorePageState extends State<WordStorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.grey.shade100,
         body: CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          title: Image.asset(
-              'assets/images/ctue-high-resolution-logo-transparent2.png',
-              fit: BoxFit.fill,
-              width: 150),
-          actions: const [NotificationIcon()],
-        ),
-        SliverList(
-            delegate: SliverChildListDelegate([
-          Container(
-            decoration: BoxDecoration(color: Colors.grey.shade100),
-            child: Stack(
-              children: [
-                Container(
-                  height: 160,
-                  width: double.infinity,
-                  color: Colors.blue.shade800,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const SpacedRepetitionDetail()));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Wrap(
-                      children: [
-                        Text(
-                            'Học ít - Nhớ sâu từ vựng với phương phát khoa học',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.white)),
-                        const Text('Spaced Repetition ',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.white,
-                                color: Colors.white)),
-                        const Icon(
-                          Icons.info_outline,
-                          color: Colors.white,
-                          size: 18,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 390,
-                ),
-                Positioned(
-                  top: 60, // Center vertically
-                  left: 16,
-                  child: Consumer<VocaSetProvider>(
-                    builder: (context, provider, child) {
-                      bool isLoading = provider.isLoading;
-
-                      if (!isLoading &&
-                          provider.vocaSetStatisticsEntity == null) {
-                        return StatisticChart(
-                            dataStatistics: VocaSetStatisticsEntity(
-                                detailVocaSetStatisEntity:
-                                    DetailVocaSetStatisEntity(),
-                                numberOfWords: 0));
-                      } else {
-                        return Skeletonizer(
-                          enabled: isLoading,
-                          child: StatisticChart(
-                              dataStatistics: isLoading
-                                  ? VocaSetStatisticsEntity(
-                                      detailVocaSetStatisEntity:
-                                          DetailVocaSetStatisEntity(),
-                                      numberOfWords: 0)
-                                  : provider.vocaSetStatisticsEntity!),
-                        );
-                      }
-                    },
-                  ),
-                )
-              ],
+          slivers: [
+            SliverAppBar(
+              title: Image.asset(
+                  'assets/images/ctue-high-resolution-logo-transparent2.png',
+                  fit: BoxFit.fill,
+                  width: 150),
+              actions: const [NotificationIcon()],
             ),
-          ),
-          Consumer<LearnProvider>(
-            builder: (context, provider, child) {
-              bool isLoading = provider.isLoading;
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Container(
+                decoration: BoxDecoration(color: Colors.grey.shade100),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 160,
+                      width: double.infinity,
+                      color: Colors.blue.shade800,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const SpacedRepetitionDetail()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Wrap(
+                          children: [
+                            Text(
+                                'Học ít - Nhớ sâu từ vựng với phương phát khoa học',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.white)),
+                            const Text('Spaced Repetition ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Colors.white,
+                                    color: Colors.white)),
+                            const Icon(
+                              Icons.info_outline,
+                              color: Colors.white,
+                              size: 18,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 390,
+                    ),
+                    Positioned(
+                      top: 60, // Center vertically
+                      left: 16,
+                      child: Consumer<VocaSetProvider>(
+                        builder: (context, provider, child) {
+                          bool isLoading = provider.isLoading;
 
-              Failure? failure = provider.failure;
+                          if (!isLoading &&
+                              provider.vocaSetStatisticsEntity == null) {
+                            return StatisticChart(
+                                dataStatistics: VocaSetStatisticsEntity(
+                                    detailVocaSetStatisEntity:
+                                        DetailVocaSetStatisEntity(),
+                                    numberOfWords: 0));
+                          } else {
+                            return Skeletonizer(
+                              enabled: isLoading,
+                              child: StatisticChart(
+                                  dataStatistics: isLoading
+                                      ? VocaSetStatisticsEntity(
+                                          detailVocaSetStatisEntity:
+                                              DetailVocaSetStatisEntity(),
+                                          numberOfWords: 0)
+                                      : provider.vocaSetStatisticsEntity!),
+                            );
+                          }
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Consumer<LearnProvider>(
+                builder: (context, provider, child) {
+                  bool isLoading = provider.isLoading;
 
-              if (failure != null) {
-                return CustomErrorWidget(
-                    title: failure.errorMessage,
-                    onTryAgain: () {
-                      provider.eitherFailureOrGetUpcomingReminder(null);
-                    });
-              }
-              // else if (!isLoading && provider.currReminder != null) {
-              //   return Container(
-              //     padding:
-              //         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              //     color: Colors.grey.shade200,
-              //     child: ActionBox(
-              //       vocabularySetId: provider.currReminder!.vocabularySetId,
-              //       userLearnedWords: provider.currReminder!.learnedWords,
-              //       reviewAt: provider.currReminder!.reviewAt,
-              //     ),
-              //   );
-              // }
-              else if (!isLoading && provider.upcomingReminder != null) {
-                return Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  color: Colors.grey.shade200,
-                  child: ActionBox(
-                    isLoadingPage: isLoading,
-                    reviewReminderId: provider.upcomingReminder!.id,
-                    vocabularySetId: provider.upcomingReminder!.vocabularySetId,
-                    userLearnedWords: provider.upcomingReminder!.learnedWords,
-                    words: provider.upcomingReminder!.learnedWords
-                        .map((e) => e.word!)
-                        .toList(),
-                    reviewAt: provider.upcomingReminder!.reviewAt,
-                  ),
-                );
-              } else if (!isLoading && provider.upcomingReminder == null) {
-                return const SizedBox.shrink();
-              } else {
-                return Skeletonizer(
-                    enabled: isLoading,
-                    child: Container(
+                  Failure? failure = provider.failure;
+
+                  if (failure != null) {
+                    return CustomErrorWidget(
+                        title: failure.errorMessage,
+                        onTryAgain: () {
+                          provider.eitherFailureOrGetUpcomingReminder(null);
+                        });
+                  }
+                  // else if (!isLoading && provider.currReminder != null) {
+                  //   return Container(
+                  //     padding:
+                  //         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  //     color: Colors.grey.shade200,
+                  //     child: ActionBox(
+                  //       vocabularySetId: provider.currReminder!.vocabularySetId,
+                  //       userLearnedWords: provider.currReminder!.learnedWords,
+                  //       reviewAt: provider.currReminder!.reviewAt,
+                  //     ),
+                  //   );
+                  // }
+                  else if (!isLoading && provider.upcomingReminder != null) {
+                    return Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                       color: Colors.grey.shade200,
                       child: ActionBox(
                         isLoadingPage: isLoading,
-                        vocabularySetId: -1,
-                        words: const [],
+                        reviewReminderId: provider.upcomingReminder!.id,
+                        vocabularySetId:
+                            provider.upcomingReminder!.vocabularySetId,
+                        userLearnedWords:
+                            provider.upcomingReminder!.learnedWords,
+                        words: provider.upcomingReminder!.learnedWords
+                            .map((e) => e.word!)
+                            .toList(),
+                        reviewAt: provider.upcomingReminder!.reviewAt,
                       ),
-                    ));
-                // return const SizedBox.shrink();
-              }
-            },
-          ),
-          _buildVocabularySetManagement(context),
-          const SizedBox(
-            height: 10,
-          ),
-        ])),
-      ],
-    ));
+                    );
+                  } else if (!isLoading && provider.upcomingReminder == null) {
+                    return const SizedBox.shrink();
+                  } else {
+                    return Skeletonizer(
+                        enabled: isLoading,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          color: Colors.grey.shade200,
+                          child: ActionBox(
+                            isLoadingPage: isLoading,
+                            vocabularySetId: -1,
+                            words: const [],
+                          ),
+                        ));
+                    // return const SizedBox.shrink();
+                  }
+                },
+              ),
+              _buildVocabularySetManagement(context),
+              const SizedBox(
+                height: 10,
+              ),
+            ])),
+          ],
+        ));
   }
 
   Container _buildVocabularySetManagement(BuildContext context) {
@@ -335,10 +338,31 @@ class _WordStorePageState extends State<WordStorePage> {
             });
       } else if (!isLoading && listUsrVocaSets.isEmpty) {
         // Handle the case where topics are empty
-        return const SizedBox(
-          height: 50,
-          child: Center(child: Text('Không có dữ liệu')),
-        ); // or show an empty state message
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const SizedBox(
+              height: 40,
+            ),
+            Center(
+              child: Text(
+                'Bạn chưa có bộ từ nào',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontWeight: FontWeight.normal),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteNames.vocabularySets);
+                },
+                child: const Text('Tải bộ từ ngay'))
+          ],
+        );
       } else {
         return Skeletonizer(
             enabled: isLoading,

@@ -133,6 +133,15 @@ class _WordDetailInVocaSetState extends State<WordDetailInVocaSet> {
                                 fit: BoxFit.contain,
                                 width: double.infinity,
                                 height: double.infinity,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
                               ),
                             ),
                           );

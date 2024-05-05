@@ -22,7 +22,7 @@ class AccountModel extends AccountEntity {
       isBanned: json[kIsBanned],
       feedback: json[kFeedback],
       isDeleted: json[kIsDeleted] ?? false,
-      user: UserModel.fromJson(json: json[kUser]),
+      user: json[kUser] != null ? UserModel.fromJson(json: json[kUser]) : null,
     );
   }
 

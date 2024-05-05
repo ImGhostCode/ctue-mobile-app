@@ -261,21 +261,12 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
         "levelId": updateWordParams.levelId,
         "specializationId": updateWordParams.specializationId,
         "content": updateWordParams.content,
-        "meanings": updateWordParams.meanings.length > 1
-            ? updateWordParams.meanings
-                .map((meaning) => {
-                      'typeId': meaning.typeId,
-                      'meaning': meaning.meaning,
-                    })
-                .toList()
-            : [
-                updateWordParams.meanings
-                    .map((meaning) => {
-                          'typeId': meaning.typeId,
-                          'meaning': meaning.meaning,
-                        })
-                    .toList()
-              ],
+        "meanings": updateWordParams.meanings
+            .map((meaning) => {
+                  'typeId': meaning.typeId,
+                  'meaning': meaning.meaning,
+                })
+            .toList(),
         "note": updateWordParams.note,
         "phonetic": updateWordParams.phonetic,
         "examples": updateWordParams.examples.length > 1
@@ -287,12 +278,15 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
         "antonyms": updateWordParams.antonyms.length > 1
             ? updateWordParams.antonyms
             : [updateWordParams.antonyms],
-        "oldPictures": updateWordParams.oldPictures.length > 1
-            ? updateWordParams.oldPictures
-            : [updateWordParams.oldPictures],
-        "new_pictures": updateWordParams.pictures
-            .map((e) => MultipartFile.fromFileSync(e.path, filename: e.name))
-            .toList(),
+        "oldPictures": updateWordParams.oldPictures.isEmpty
+            ? []
+            : (updateWordParams.oldPictures.length > 1
+                ? updateWordParams.oldPictures
+                : [updateWordParams.oldPictures]),
+        if (updateWordParams.pictures.isNotEmpty)
+          "new_pictures": updateWordParams.pictures
+              .map((e) => MultipartFile.fromFileSync(e.path, filename: e.name))
+              .toList(),
       });
 
       final response = await dio.patch('/words/${updateWordParams.wordId}',

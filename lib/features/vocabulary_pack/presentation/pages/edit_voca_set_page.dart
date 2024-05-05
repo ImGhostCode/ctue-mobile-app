@@ -473,6 +473,15 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                                     width: 100,
                                     height: 100,
                                     fit: BoxFit.fill,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      }
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
                                   ),
                                   Positioned(
                                     top: -10,
@@ -737,8 +746,19 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                                     fit: BoxFit.fill,
                                     width: 60.0,
                                     height: 60.0,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      }
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
                                   )
-                                : Container(),
+                                : Image.asset('assets/images/no-image.jpg',
+                                    // color: Colors.grey.shade300,
+                                    fit: BoxFit.cover),
                           ),
                           label: Text(
                             topic.name,

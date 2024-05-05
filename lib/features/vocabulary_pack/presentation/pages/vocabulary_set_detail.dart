@@ -71,15 +71,14 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
         .vocaSetStatisticsEntity = null;
     Provider.of<VocaSetProvider>(context, listen: false).failure = null;
     Provider.of<LearnProvider>(context, listen: false).failure = null;
-
+    Provider.of<LearnProvider>(context, listen: false)
+        .eitherFailureOrGetUsrLearnedWords(args.id);
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrGetUpcomingReminder(args.id);
     Provider.of<VocaSetProvider>(context, listen: false)
-        .eitherFailureOrGerVocaSetDetail(args.id);
-    Provider.of<LearnProvider>(context, listen: false)
-        .eitherFailureOrGetUsrLearnedWords(args.id);
-    Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(args.id);
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerVocaSetDetail(args.id);
   }
 
   @override
@@ -97,7 +96,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
 
       if (!isLoading) {
         vocaSetEntity = provider.vocaSetEntity;
-        renderedWords ??= vocaSetEntity?.words ?? [];
+        renderedWords = vocaSetEntity?.words ?? [];
         vocaSetStatisticsEntity = provider.vocaSetStatisticsEntity;
       }
 
@@ -341,6 +340,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       //     ],
                       //   ),
                       // ]),
+
                       Column(
                           children: List.generate(
                               args.isAdmin ||

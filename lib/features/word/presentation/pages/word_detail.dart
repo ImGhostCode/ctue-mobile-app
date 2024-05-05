@@ -198,44 +198,69 @@ class _WordDetailState extends State<WordDetail> {
                                   wordDetail?.pictures != null &&
                                           wordDetail!.pictures.isNotEmpty
                                       ? SizedBox(
-                                          height: 170,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.2,
                                           child: ListView.separated(
+                                              shrinkWrap: true,
                                               scrollDirection: Axis.horizontal,
                                               itemBuilder: (context, index) {
                                                 return Container(
-                                                    height: 170,
-                                                    width: 200,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.3,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.6,
                                                     decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               12),
                                                     ),
                                                     child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      child: Image.network(
-                                                        wordDetail
-                                                            .pictures[index],
-                                                        errorBuilder: (context,
-                                                                error,
-                                                                stackTrace) =>
-                                                            Image.asset(
-                                                          'assets/images/broken-image.png',
-                                                          color: Colors
-                                                              .grey.shade300,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        child: Image.network(
+                                                          wordDetail
+                                                              .pictures[index],
+                                                          errorBuilder: (context,
+                                                                  error,
+                                                                  stackTrace) =>
+                                                              Image.asset(
+                                                            'assets/images/broken-image.png',
+                                                            color: Colors
+                                                                .grey.shade300,
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                           fit: BoxFit.cover,
-                                                        ),
-                                                        fit: BoxFit.contain,
-                                                        width: double.infinity,
-                                                        height: double.infinity,
-                                                      ),
-                                                    ));
+                                                          width:
+                                                              double.infinity,
+                                                          height:
+                                                              double.infinity,
+                                                          loadingBuilder: (context,
+                                                              child,
+                                                              loadingProgress) {
+                                                            if (loadingProgress ==
+                                                                null) {
+                                                              return child;
+                                                            }
+                                                            return const Center(
+                                                              child:
+                                                                  CircularProgressIndicator(),
+                                                            );
+                                                          },
+                                                        )));
                                               },
                                               separatorBuilder:
                                                   (context, index) {
                                                 return const SizedBox(
-                                                  width: 5,
+                                                  width: 15,
                                                 );
                                               },
                                               itemCount:
@@ -539,8 +564,23 @@ class _WordDetailState extends State<WordDetail> {
                                                     fit: BoxFit.cover,
                                                     width: 60.0,
                                                     height: 60.0,
+                                                    loadingBuilder: (context,
+                                                        child,
+                                                        loadingProgress) {
+                                                      if (loadingProgress ==
+                                                          null) {
+                                                        return child;
+                                                      }
+                                                      return const Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      );
+                                                    },
                                                   )
-                                                : Container(),
+                                                : Image.asset(
+                                                    'assets/images/no-image.jpg',
+                                                    // color: Colors.grey.shade300,
+                                                    fit: BoxFit.cover),
                                           ),
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8, vertical: 8),

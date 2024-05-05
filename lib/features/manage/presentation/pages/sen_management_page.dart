@@ -32,6 +32,7 @@ class _SentenceManagementPageState extends State<SentenceManagementPage> {
 
   @override
   void initState() {
+    Provider.of<TopicProvider>(context, listen: false).listTopicEntity = [];
     Provider.of<TopicProvider>(context, listen: false)
         .eitherFailureOrTopics(null, false, null);
 

@@ -249,43 +249,47 @@ class _SettingPageState extends State<SettingPage> {
                                 .isLoading
                             ? null
                             : () async {
-                                await Provider.of<AuthProvider>(context,
-                                        listen: false)
-                                    .eitherFailureOrLogout();
+                                try {
+                                  await Provider.of<AuthProvider>(context,
+                                          listen: false)
+                                      .eitherFailureOrLogout();
 
-                                // ignore: use_build_context_synchronously
-                                if (Provider.of<AuthProvider>(context,
+                                  // ignore: use_build_context_synchronously
+                                  if (Provider.of<AuthProvider>(context,
+                                              listen: false)
+                                          .statusCode ==
+                                      200) {
+                                    await flutterLocalNotificationsPlugin
+                                        .cancel(0);
+
+                                    // await SecureStorageService.secureStorage
+                                    //     .delete(key: 'accessToken');
+
+                                    await SecureStorageService.secureStorage
+                                        .deleteAll();
+
+                                    // Clear data in shared preferences
+                                    await SharedPrefService.prefs.clear();
+
+                                    // ignore: use_build_context_synchronously
+                                    Provider.of<SelectedPageProvider>(context,
                                             listen: false)
-                                        .statusCode ==
-                                    200) {
-                                  await flutterLocalNotificationsPlugin
-                                      .cancel(0);
+                                        .selectedPage = 0;
 
-                                  // await SecureStorageService.secureStorage
-                                  //     .delete(key: 'accessToken');
+                                    await Provider.of<HomeProvider>(context,
+                                            listen: false)
+                                        .removeRecentPages();
 
-                                  await SecureStorageService.secureStorage
-                                      .deleteAll();
+                                    FirebaseMessaging.instance
+                                        .unsubscribeFromTopic('all');
+                                    FirebaseMessaging.instance.deleteToken();
 
-                                  // Clear data in shared preferences
-                                  await SharedPrefService.prefs.clear();
-
-                                  // ignore: use_build_context_synchronously
-                                  Provider.of<SelectedPageProvider>(context,
-                                          listen: false)
-                                      .selectedPage = 0;
-
-                                  await Provider.of<HomeProvider>(context,
-                                          listen: false)
-                                      .removeRecentPages();
-
-                                  FirebaseMessaging.instance
-                                      .unsubscribeFromTopic('all');
-                                  FirebaseMessaging.instance.deleteToken();
-
-                                  // ignore: use_build_context_synchronously
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, '/welcome', (route) => false);
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context, '/welcome', (route) => false);
+                                  }
+                                } catch (e) {
+                                  print(e);
                                 }
                               },
                         child: Text(

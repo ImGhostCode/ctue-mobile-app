@@ -821,8 +821,8 @@ class _OverviewPageState extends State<OverviewPage> {
                       aspectRatio: 1.6,
                       child: ColumnChartWidget(
                         chartData: [
-                          ColumnChartData('Đang hoạt động',
-                              userStatisticsEntity!.active, 1),
+                          ColumnChartData(
+                              'Đã đăng ký', userStatisticsEntity!.active, 1),
                           ColumnChartData(
                               'Đã khóa', userStatisticsEntity.banned, 0),
                           ColumnChartData(

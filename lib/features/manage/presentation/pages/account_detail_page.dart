@@ -89,11 +89,19 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                     color: Colors.grey.shade300,
                                     fit: BoxFit.cover,
                                   ),
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
                                 )
-                              : Image.asset(
-                                  'assets/images/default-user3.png',
-                                  fit: BoxFit.cover,
-                                ),
+                              : Image.asset('assets/images/no-image.jpg',
+                                  // color: Colors.grey.shade300,
+                                  fit: BoxFit.cover),
                         ),
                       ),
                     ),

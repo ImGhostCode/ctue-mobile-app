@@ -401,8 +401,9 @@ class _WordFormState extends State<WordForm> {
               ),
               if (_selectedImages.isNotEmpty || _oldImages.isNotEmpty)
                 SizedBox(
-                  height: 100,
+                  height: MediaQuery.of(context).size.width * 0.25,
                   child: ListView.builder(
+                    shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemCount: _selectedImages.length +
                         _oldImages.length, // Combined length
@@ -411,19 +412,29 @@ class _WordFormState extends State<WordForm> {
                         // Display selected images
                         return Container(
                           width: MediaQuery.of(context).size.width *
-                              0.25, // 25% of screen width
-                          height: 100,
+                              0.3, // 25% of screen width
+                          height: MediaQuery.of(context).size.width * 0.25,
                           margin: const EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: Colors.teal),
                           ),
                           child: Stack(
                             children: [
+                              // PhotoView(
+                              //   imageProvider: FileImage(
+                              //       File(_selectedImages[index].path)),
+                              //   // customSize: MediaQuery.of(context).size,
+                              //   heroAttributes: const PhotoViewHeroAttributes(
+                              //     tag: "someTag",
+                              //   ),
+                              // ),
                               Image.file(
                                 File(_selectedImages[index].path),
                                 width: MediaQuery.of(context).size.width *
-                                    0.25, // 25% of screen width
-                                height: 100,
+                                    0.3, // 25% of screen width
+                                height:
+                                    MediaQuery.of(context).size.width * 0.25,
                                 fit: BoxFit.cover,
                               ),
                               Positioned(
@@ -432,9 +443,9 @@ class _WordFormState extends State<WordForm> {
                                 child: CircleAvatar(
                                   backgroundColor: Colors.transparent,
                                   child: IconButton(
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.close,
-                                      color: Colors.red,
+                                      color: Colors.red.shade400,
                                       size: 25,
                                     ),
                                     onPressed: () => _removeImage(index),
@@ -450,14 +461,15 @@ class _WordFormState extends State<WordForm> {
                             _oldImages[index - _selectedImages.length];
                         return Container(
                           width: MediaQuery.of(context).size.width *
-                              0.25, // 25% of screen width
-                          height: 100,
+                              0.3, // 25% of screen width
+                          height: MediaQuery.of(context).size.width * 0.25,
                           margin: const EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.teal),
                           ),
                           child: Stack(children: [
                             Image.network(
+                              height: MediaQuery.of(context).size.width * 0.25,
                               oldImageUrl,
                               errorBuilder: (context, error, stackTrace) =>
                                   Image.asset(
@@ -467,18 +479,27 @@ class _WordFormState extends State<WordForm> {
                               ),
                               // width: 100,
                               // height: 100,
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
                             ),
                             Positioned(
                               top: -10,
                               right: -10,
                               child: CircleAvatar(
-                                backgroundColor: Colors.white,
+                                backgroundColor: Colors.transparent,
                                 child: IconButton(
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.close,
-                                    color: Colors.red,
-                                    size: 20,
+                                    color: Colors.red.shade400,
+                                    size: 25,
                                   ),
                                   onPressed: () => _removeOldImage(index),
                                 ),
@@ -682,8 +703,19 @@ class _WordFormState extends State<WordForm> {
                                       fit: BoxFit.cover,
                                       width: 60.0,
                                       height: 60.0,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      },
                                     )
-                                  : Container(),
+                                  : Image.asset('assets/images/no-image.jpg',
+                                      // color: Colors.grey.shade300,
+                                      fit: BoxFit.cover),
                             ),
                             Text(
                               topic.name,
@@ -754,10 +786,7 @@ class _WordFormState extends State<WordForm> {
           Consumer<SpecializationProvider>(builder: (context, provider, child) {
         return DropdownButtonFormField<int>(
           style: Theme.of(context).textTheme.bodyMedium,
-          value: _selectedSpecializaiton =
-              provider.listSpecializations.isNotEmpty
-                  ? provider.listSpecializations[0].id
-                  : null,
+          value: _selectedSpecializaiton,
           validator: (int? value) {
             if (value == null) {
               return "Vui lòng chọn chuyên ngành";

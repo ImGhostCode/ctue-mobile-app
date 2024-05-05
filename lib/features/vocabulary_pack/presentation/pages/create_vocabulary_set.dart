@@ -639,8 +639,19 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                                     fit: BoxFit.fill,
                                     width: 60.0,
                                     height: 60.0,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      }
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
                                   )
-                                : Container(),
+                                : Image.asset('assets/images/no-image.jpg',
+                                    // color: Colors.grey.shade300,
+                                    fit: BoxFit.cover),
                           ),
                           label: Text(
                             topic.name,

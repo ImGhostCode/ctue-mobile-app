@@ -67,8 +67,19 @@ class ProfilePage extends StatelessWidget {
                                     fit: BoxFit.cover,
                                   ),
                                   fit: BoxFit.cover,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
                                 )
-                              : const FlutterLogo(),
+                              : Image.asset('assets/images/no-image.jpg',
+                                  // color: Colors.grey.shade300,
+                                  fit: BoxFit.cover),
                         ),
                       ),
                       // const Positioned(

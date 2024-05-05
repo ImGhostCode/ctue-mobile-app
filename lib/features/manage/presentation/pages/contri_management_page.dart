@@ -281,11 +281,19 @@ class _ContributionManagementPageState
                                   fit: BoxFit.cover,
                                 ),
                                 fit: BoxFit.cover,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
                               )
-                            : Image.asset(
-                                'assets/images/default-user3.png',
-                                fit: BoxFit.cover,
-                              ),
+                            : Image.asset('assets/images/no-image.jpg',
+                                // color: Colors.grey.shade300,
+                                fit: BoxFit.cover),
                       ),
                     ),
                     title: Text(item.content['content']),
@@ -588,22 +596,30 @@ Future<String?> showWordConDetail(
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return SizedBox(
-                                  width: MediaQuery.of(context).size.width *
-                                      0.25, // 25% of screen width
-                                  height: 100,
-                                  child: Image.network(
-                                    contributionDetail['pictures'][index],
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Image.asset(
-                                      'assets/images/broken-image.png',
-                                      color: Colors.grey.shade300,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25, // 25% of screen width
+                                    height: 100,
+                                    child: Image.network(
+                                      contributionDetail['pictures'][index],
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Image.asset(
+                                        'assets/images/broken-image.png',
+                                        color: Colors.grey.shade300,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      // height: 100,
                                       fit: BoxFit.cover,
-                                    ),
-                                    // height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                );
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      },
+                                    ));
                               },
                               separatorBuilder: (context, index) {
                                 return const SizedBox(

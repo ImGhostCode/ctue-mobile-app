@@ -31,20 +31,27 @@ class _SignUpPageState extends State<SignUpPage> {
 
   List<TopicEntity> listWordTopics = [];
   List<TopicEntity> listSentenceTopics = [];
-
+  bool isInitializeData = false;
   @override
   void initState() {
+    _loadData();
     super.initState();
   }
 
   @override
   void didChangeDependencies() async {
+    super.didChangeDependencies();
+  }
+
+  Future<void> _loadData() async {
     listWordTopics = await Provider.of<TopicProvider>(context, listen: false)
         .eitherFailureOrTopics(null, true, null);
     listSentenceTopics =
         await Provider.of<TopicProvider>(context, listen: false)
             .eitherFailureOrTopics(null, false, null);
-    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _dialogTopicBuilder(context);
+    });
   }
 
   @override
@@ -73,6 +80,7 @@ class _SignUpPageState extends State<SignUpPage> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Text(
                   'Tên tài khoản',
@@ -82,6 +90,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: 4,
                 ),
                 TextFormField(
+                  style: Theme.of(context).textTheme.bodyMedium,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
@@ -234,36 +243,36 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'Chủ đề yêu thích của bạn',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                          // side: MaterialStatePropertyAll(
-                          //     BorderSide(color: Colors.green, width: 3)),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.blue),
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 20))),
-                      onPressed: () {
-                        _dialogTopicBuilder(context);
-                      },
-                      child: Text(
-                        'Chọn chủ đề',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      )),
-                ),
+                // const SizedBox(
+                //   height: 10,
+                // ),
+                // Text(
+                //   'Chủ đề yêu thích của bạn',
+                //   style: Theme.of(context).textTheme.labelMedium,
+                // ),
+                // const SizedBox(
+                //   height: 8,
+                // ),
+                // SizedBox(
+                //   width: double.infinity,
+                //   child: ElevatedButton(
+                //       style: ButtonStyle(
+                //           // side: MaterialStatePropertyAll(
+                //           //     BorderSide(color: Colors.green, width: 3)),
+                //           backgroundColor:
+                //               MaterialStateProperty.all(Colors.blue),
+                //           padding: MaterialStateProperty.all(
+                //               const EdgeInsets.symmetric(
+                //                   horizontal: 16, vertical: 20))),
+                //       onPressed: () {
+                //         _dialogTopicBuilder(context);
+                //       },
+                //       child: Text(
+                //         'Chọn chủ đề',
+                //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                //             color: Colors.white, fontWeight: FontWeight.bold),
+                //       )),
+                // ),
                 const Spacer(),
                 Column(
                   mainAxisSize: MainAxisSize.min,
@@ -343,8 +352,12 @@ class _SignUpPageState extends State<SignUpPage> {
                               },
                         child: Provider.of<AuthProvider>(context, listen: true)
                                 .isLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
+                            ? const SizedBox(
+                                height: 25,
+                                width: 25,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
                               )
                             : Text(
                                 'Đăng ký',
@@ -411,7 +424,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             content: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.9,
-                height: MediaQuery.of(context).size.height * 0.6,
+                height: MediaQuery.of(context).size.height * 0.8,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -468,8 +481,22 @@ class _SignUpPageState extends State<SignUpPage> {
                                                   fit: BoxFit.cover,
                                                   width: 60.0,
                                                   height: 60.0,
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    if (loadingProgress ==
+                                                        null) {
+                                                      return child;
+                                                    }
+                                                    return const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    );
+                                                  },
                                                 )
-                                              : Container(),
+                                              : Image.asset(
+                                                  'assets/images/no-image.jpg',
+                                                  // color: Colors.grey.shade300,
+                                                  fit: BoxFit.cover),
                                         ),
                                         Text(
                                           topic.name,

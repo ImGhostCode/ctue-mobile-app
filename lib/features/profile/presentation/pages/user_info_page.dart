@@ -163,8 +163,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        final XFile? newImage =
-                            await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+                        final XFile? newImage = await picker.pickImage(
+                            source: ImageSource.gallery, imageQuality: 50);
 
                         if (newImage != null) {
                           setState(() {
@@ -205,8 +205,21 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                             fit: BoxFit.cover,
                                           ),
                                           fit: BoxFit.cover,
+                                          loadingBuilder: (context, child,
+                                              loadingProgress) {
+                                            if (loadingProgress == null) {
+                                              return child;
+                                            }
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
                                         )
-                                      : const FlutterLogo(),
+                                      : Image.asset(
+                                          'assets/images/no-image.jpg',
+                                          // color: Colors.grey.shade300,
+                                          fit: BoxFit.cover),
                             ),
                           ),
                           const Positioned(
@@ -449,8 +462,22 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                                   fit: BoxFit.cover,
                                                   width: 60.0,
                                                   height: 60.0,
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    if (loadingProgress ==
+                                                        null) {
+                                                      return child;
+                                                    }
+                                                    return const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    );
+                                                  },
                                                 )
-                                              : Container(),
+                                              : Image.asset(
+                                                  'assets/images/no-image.jpg',
+                                                  // color: Colors.grey.shade300,
+                                                  fit: BoxFit.cover),
                                         ),
                                         Text(
                                           topic.name,

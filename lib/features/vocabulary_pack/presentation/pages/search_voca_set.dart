@@ -164,9 +164,21 @@ class SearchVocaSetPage extends StatelessWidget {
                                                 fit: BoxFit.cover,
                                               ),
                                               fit: BoxFit.cover,
-                                            ),
-                                          )
-                                        : Container(),
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                if (loadingProgress == null) {
+                                                  return child;
+                                                }
+                                                return const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              },
+                                            ))
+                                        : Image.asset(
+                                            'assets/images/no-image.jpg',
+                                            // color: Colors.grey.shade300,
+                                            fit: BoxFit.cover),
                                   ),
                                   title: Text(
                                     searchResults[index].title,

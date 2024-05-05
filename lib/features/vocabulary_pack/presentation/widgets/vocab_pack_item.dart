@@ -28,17 +28,23 @@ class VocabularyPackItem extends StatelessWidget {
               height: 100,
               width: double.infinity,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  item.picture ?? '',
-                  errorBuilder: (context, error, stackTrace) => Image.asset(
-                    'assets/images/broken-image.png',
-                    color: Colors.grey.shade300,
-                    fit: BoxFit.cover,
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
+                  borderRadius: BorderRadius.circular(12),
+                  child: item.picture != null
+                      ? Image.network(
+                          item.picture!,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                            'assets/images/broken-image.png',
+                            color: Colors.grey.shade300,
+                            fit: BoxFit.cover,
+                          ),
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset(
+                          'assets/images/no-image.jpg',
+                          color: Colors.grey.shade300,
+                          fit: BoxFit.cover,
+                        )),
             ),
             const SizedBox(
               height: 5,

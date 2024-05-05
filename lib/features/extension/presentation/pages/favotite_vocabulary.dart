@@ -212,8 +212,19 @@ class _FavoriteVocabularyState extends State<FavoriteVocabulary> {
                           ? Image.network(
                               item.word!.pictures[0],
                               fit: BoxFit.cover,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
                             )
-                          : Container(),
+                          : Image.asset('assets/images/no-image.jpg',
+                              // color: Colors.grey.shade300,
+                              fit: BoxFit.cover),
                     ),
                     title: Text(item.word!.content),
                     subtitle: Text(

@@ -342,8 +342,18 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                                                                                       fit: BoxFit.cover,
                                                                                       width: 60.0,
                                                                                       height: 60.0,
+                                                                                      loadingBuilder: (context, child, loadingProgress) {
+                                                                                        if (loadingProgress == null) {
+                                                                                          return child;
+                                                                                        }
+                                                                                        return const Center(
+                                                                                          child: CircularProgressIndicator(),
+                                                                                        );
+                                                                                      },
                                                                                     )
-                                                                                  : Container(),
+                                                                                  : Image.asset('assets/images/no-image.jpg',
+                                                                                      // color: Colors.grey.shade300,
+                                                                                      fit: BoxFit.cover),
                                                                             ),
                                                                             Text(
                                                                               listTopics[index].name,

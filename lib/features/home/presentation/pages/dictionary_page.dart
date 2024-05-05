@@ -327,8 +327,25 @@ class _DictionaryPageState extends State<DictionaryPage> {
                                                                       .cover,
                                                                   width: 60.0,
                                                                   height: 60.0,
+                                                                  loadingBuilder:
+                                                                      (context,
+                                                                          child,
+                                                                          loadingProgress) {
+                                                                    if (loadingProgress ==
+                                                                        null) {
+                                                                      return child;
+                                                                    }
+                                                                    return const Center(
+                                                                      child:
+                                                                          CircularProgressIndicator(),
+                                                                    );
+                                                                  },
                                                                 )
-                                                              : Container(),
+                                                              : Image.asset(
+                                                                  'assets/images/no-image.jpg',
+                                                                  // color: Colors.grey.shade300,
+                                                                  fit: BoxFit
+                                                                      .cover),
                                                         ),
                                                         Text(
                                                           listTopics[index]
@@ -459,9 +476,20 @@ class _DictionaryPageState extends State<DictionaryPage> {
                                     color: Colors.grey.shade300,
                                     fit: BoxFit.cover,
                                   ),
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
                                   fit: BoxFit.cover,
                                 )
-                              : Container(),
+                              : Image.asset('assets/images/no-image.jpg',
+                                  // color: Colors.grey.shade300,
+                                  fit: BoxFit.cover),
                         ),
                         title: Text(item.content),
                         subtitle: Text(
