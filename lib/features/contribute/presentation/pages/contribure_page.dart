@@ -73,10 +73,11 @@ class ContributePage extends StatelessWidget {
                       ))
                 ],
               ),
-              const TabBar(
+              TabBar(
+                labelStyle: Theme.of(context).textTheme.bodyMedium,
                 indicatorSize: TabBarIndicatorSize.tab,
                 // isScrollable: false,
-                tabs: <Widget>[
+                tabs: const <Widget>[
                   Tab(
                     text: 'Đóng góp từ',
                   ),

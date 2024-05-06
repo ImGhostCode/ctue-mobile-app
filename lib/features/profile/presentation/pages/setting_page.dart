@@ -180,6 +180,23 @@ class _SettingPageState extends State<SettingPage> {
                           bottomLeft: Radius.circular(12),
                           bottomRight: Radius.circular(12))),
                   onTap: () async {
+                    // const AndroidNotificationDetails
+                    //     androidNotificationDetails = AndroidNotificationDetails(
+                    //         'your channel id', 'your channel name',
+                    //         channelDescription: 'your channel description',
+                    //         importance: Importance.max,
+                    //         priority: Priority.high,
+                    //         icon: 'ctue_icon',
+                    //         ticker: 'ticker');
+                    // const NotificationDetails notificationDetails =
+                    //     NotificationDetails(
+                    //         android: androidNotificationDetails);
+                    // await flutterLocalNotificationsPlugin.show(
+                    //     1,
+                    //     'Hey Thanh Liem',
+                    //     'Bạn có 3 từ cần ôn tập!',
+                    //     notificationDetails,
+                    //     payload: 'item x');
                     TimeOfDay? selectedTime24Hour = await showTimePicker(
                       context: context,
                       initialTime:

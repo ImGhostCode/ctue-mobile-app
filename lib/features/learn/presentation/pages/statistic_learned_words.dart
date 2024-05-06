@@ -43,6 +43,7 @@ class StatisticLearnedWordPage extends StatelessWidget {
                 onTap: (value) {
                   // print(value);
                 },
+                labelStyle: Theme.of(context).textTheme.bodyMedium,
                 isScrollable: true,
                 tabs: <Widget>[
                   Tab(

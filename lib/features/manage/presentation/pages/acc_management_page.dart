@@ -434,6 +434,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             child: TextField(
+              style: Theme.of(context).textTheme.bodyMedium,
               controller: reasonController,
               maxLines: 4,
               decoration: const InputDecoration(
@@ -467,9 +468,10 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                       if (Provider.of<UserProvider>(context, listen: false)
                               .statusCode ==
                           200) {
-                        setState(() {
-                          accountEntity.isBanned = !accountEntity.isBanned;
-                        });
+                        // setState(() {
+                        //   accountEntity.isBanned = !accountEntity.isBanned;
+                        // });
+                        _pagingController.refresh();
                       }
                     },
               child: const Text('Đồng ý'),

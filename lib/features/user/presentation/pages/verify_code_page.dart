@@ -406,8 +406,12 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                         },
                   child:
                       Provider.of<UserProvider>(context, listen: true).isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
+                          ? const SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
                             )
                           : Text(
                               'Xác nhận',

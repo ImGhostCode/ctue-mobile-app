@@ -21,9 +21,11 @@ class EditVocabularySet extends StatefulWidget {
   State<EditVocabularySet> createState() => _EditVocabularySetState();
 }
 
+enum VocaPackType { specialization, topic }
+
 class _EditVocabularySetState extends State<EditVocabularySet> {
   bool _dataInitialized = false; // Flag to track initialization
-
+  VocaPackType vocaPackType = VocaPackType.specialization;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -95,7 +97,16 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
     });
     oldPicture = args.vocaSetEntity.picture;
     if (args.isAdmin) {
-      _selectedSpecializaiton = args.vocaSetEntity.specId;
+      if (args.vocaSetEntity.specId != null) {
+        vocaPackType = VocaPackType.specialization;
+        _selectedSpecializaiton = args.vocaSetEntity.specId;
+      } else {
+        vocaPackType = VocaPackType.topic;
+        // selectedTopic = args.vocaSetEntity.topicId;
+      }
+      // if (args.vocaSetEntity.topicId != null) {
+      //   selectedTopic = args.vocaSetEntity.topicId;
+      // }
       _isPublic ??= args.vocaSetEntity.isPublic;
     }
 
@@ -114,7 +125,7 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Chỉnh sửa bộ từ',
+          'Chỉnh sửa gói từ vựng',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         backgroundColor: Colors.white,
@@ -150,14 +161,17 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                         .eitherFailureOrUpdateVocaSet(
                             args.vocaSetEntity.id,
                             _titleController.text,
-                            selectedTopic,
-                            _selectedSpecializaiton,
+                            vocaPackType.index == 1 ? selectedTopic : null,
+                            vocaPackType.index == 0
+                                ? _selectedSpecializaiton
+                                : null,
                             oldPicture,
                             _selectedImage,
                             _isPublic,
                             wordIds,
                             oldWords);
-                  } else if (!args.isAdmin) {
+                  }
+                  if (!args.isAdmin) {
                     await Provider.of<VocaSetProvider>(context, listen: false)
                         .eitherFailureOrUpdateVocaSet(
                             args.vocaSetEntity.id,
@@ -266,9 +280,59 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                     setState(() {});
                   },
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                args.isAdmin
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Loại gói từ vựng',
+                              style: Theme.of(context).textTheme.labelMedium),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Center(
+                            child: SegmentedButton<VocaPackType>(
+                              style: const ButtonStyle(
+                                  padding: MaterialStatePropertyAll(
+                                      EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 0)),
+                                  side: MaterialStatePropertyAll(BorderSide(
+                                      color: Colors.teal, width: 1.5))),
+                              segments: const <ButtonSegment<VocaPackType>>[
+                                ButtonSegment<VocaPackType>(
+                                    value: VocaPackType.specialization,
+                                    label: Text('Chuyên ngành'),
+                                    icon: Icon(
+                                      Icons.work_outline,
+                                      color: Colors.teal,
+                                      size: 25,
+                                    )),
+                                ButtonSegment<VocaPackType>(
+                                    value: VocaPackType.topic,
+                                    label: Text('Chủ đề'),
+                                    icon: Icon(
+                                      Icons.topic_outlined,
+                                      color: Colors.teal,
+                                      size: 25,
+                                    )),
+                              ],
+                              selected: <VocaPackType>{vocaPackType},
+                              onSelectionChanged:
+                                  (Set<VocaPackType> newSelection) {
+                                setState(() {
+                                  // By default there is only a single segment that can be
+                                  // selected at one time, so its value is always the first
+                                  // item in the selected set.
+                                  vocaPackType = newSelection.first;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
                 Text(
                   'Danh sách từ',
                   style: Theme.of(context).textTheme.labelMedium,
@@ -408,42 +472,100 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Chuyên ngành',
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          _buildSpecializaitons(context),
-                          _specError != null
-                              ? Text(
-                                  _specError!,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(color: Colors.red),
+                          // Text(
+                          //   'Chuyên ngành',
+                          //   style: Theme.of(context).textTheme.labelMedium,
+                          // ),
+                          // const SizedBox(
+                          //   height: 4,
+                          // ),
+                          // _buildSpecializaitons(context),
+                          // _specError != null
+                          //     ? Text(
+                          //         _specError!,
+                          //         style: Theme.of(context)
+                          //             .textTheme
+                          //             .bodySmall!
+                          //             .copyWith(color: Colors.red),
+                          //       )
+                          //     : const SizedBox.shrink(),
+                          // const SizedBox(
+                          //   height: 4,
+                          // ),
+                          // _buildTopics(context),
+                          // const SizedBox(
+                          //   height: 5,
+                          // ),
+                          // _topicError != null
+                          //     ? Text(
+                          //         _topicError!,
+                          //         style: Theme.of(context)
+                          //             .textTheme
+                          //             .bodySmall!
+                          //             .copyWith(color: Colors.red),
+                          //       )
+                          //     : const SizedBox.shrink(),
+                          // const SizedBox(
+                          //   height: 5,
+                          // ),
+                          vocaPackType == VocaPackType.specialization
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Chuyên ngành',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium,
+                                    ),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    _buildSpecializaitons(context),
+                                    _specError != null
+                                        ? Text(
+                                            _specError!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(color: Colors.red),
+                                          )
+                                        : const SizedBox.shrink(),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                  ],
                                 )
-                              : const SizedBox.shrink(),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          _buildTopics(context),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          _topicError != null
-                              ? Text(
-                                  _topicError!,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(color: Colors.red),
-                                )
-                              : const SizedBox.shrink(),
-                          const SizedBox(
-                            height: 5,
-                          ),
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Chủ đề',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium,
+                                    ),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    _buildTopics(context),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    _topicError != null
+                                        ? Text(
+                                            _topicError!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(color: Colors.red),
+                                          )
+                                        : const SizedBox.shrink(),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                  ],
+                                ),
                           Text(
                             'Thêm ảnh minh họa',
                             style: Theme.of(context).textTheme.labelMedium,
@@ -453,8 +575,8 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                           ),
                           if (oldPicture != null && _selectedImage == null)
                             Container(
-                              height: 100,
-                              width: 100,
+                              height: MediaQuery.of(context).size.width * 0.3,
+                              width: MediaQuery.of(context).size.width * 0.4,
                               margin: const EdgeInsets.only(right: 5),
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.teal),
@@ -470,8 +592,10 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                                       color: Colors.grey.shade300,
                                       fit: BoxFit.cover,
                                     ),
-                                    width: 100,
-                                    height: 100,
+                                    height:
+                                        MediaQuery.of(context).size.width * 0.3,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
                                     fit: BoxFit.fill,
                                     loadingBuilder:
                                         (context, child, loadingProgress) {
@@ -484,15 +608,15 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
                                     },
                                   ),
                                   Positioned(
-                                    top: -10,
-                                    right: -10,
+                                    top: -5,
+                                    right: -5,
                                     child: CircleAvatar(
-                                      backgroundColor: Colors.white,
+                                      backgroundColor: Colors.transparent,
                                       child: IconButton(
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.close,
-                                          color: Colors.red,
-                                          size: 20,
+                                          color: Colors.red.shade300,
+                                          size: 25,
                                         ),
                                         onPressed: () => _removeOldImage(),
                                       ),
@@ -594,7 +718,8 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
 
   bool _validateForm() {
     bool isValid = true;
-    if (_selectedSpecializaiton == null) {
+    if (vocaPackType == VocaPackType.specialization &&
+        _selectedSpecializaiton == null) {
       setState(() {
         _specError = 'Vui lòng chọn chuyên ngành';
       });
@@ -607,9 +732,10 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
       isValid = false;
     }
 
-    if (Provider.of<TopicProvider>(context, listen: false)
-        .getSelectedTopics()
-        .isEmpty) {
+    if (vocaPackType == VocaPackType.topic &&
+        Provider.of<TopicProvider>(context, listen: false)
+            .getSelectedTopics()
+            .isEmpty) {
       setState(() {
         _topicError = 'Vui lòng chọn chủ đề';
       });
@@ -623,6 +749,9 @@ class _EditVocabularySetState extends State<EditVocabularySet> {
       color: Colors.white,
       child:
           Consumer<SpecializationProvider>(builder: (context, provider, child) {
+        // _selectedSpecializaiton ??= provider.listSpecializations.isNotEmpty
+        //     ? provider.listSpecializations[0].id
+        //     : null;
         return DropdownButtonFormField<int>(
           style: Theme.of(context).textTheme.bodyMedium,
           value: _selectedSpecializaiton,

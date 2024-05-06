@@ -203,9 +203,13 @@ class VocaSetRemoteDataSourceImpl implements VocaSetRemoteDataSource {
               ? updateVocaSetParams.words
               : [updateVocaSetParams.words],
         if (updateVocaSetParams.oldWords != null)
-          'oldWords': updateVocaSetParams.oldWords!.length > 1
-              ? updateVocaSetParams.oldWords
-              : [updateVocaSetParams.oldWords],
+          'oldWords': updateVocaSetParams.oldWords!.isEmpty
+              ? [
+                  [-1]
+                ]
+              : (updateVocaSetParams.oldWords!.length > 1
+                  ? updateVocaSetParams.oldWords
+                  : [updateVocaSetParams.oldWords]),
         if (updateVocaSetParams.picture != null)
           "picture": MultipartFile.fromFileSync(
               updateVocaSetParams.picture!.path,

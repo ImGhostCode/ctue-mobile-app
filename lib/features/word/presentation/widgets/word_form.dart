@@ -784,6 +784,9 @@ class _WordFormState extends State<WordForm> {
       color: Colors.white,
       child:
           Consumer<SpecializationProvider>(builder: (context, provider, child) {
+        _selectedSpecializaiton ??= provider.listSpecializations.isNotEmpty
+            ? provider.listSpecializations[0].id
+            : null;
         return DropdownButtonFormField<int>(
           style: Theme.of(context).textTheme.bodyMedium,
           value: _selectedSpecializaiton,

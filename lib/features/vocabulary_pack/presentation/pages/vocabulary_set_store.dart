@@ -47,7 +47,7 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
       appBar: AppBar(
           centerTitle: true,
           title: Text(
-            'Các bộ từ vựng',
+            'Các gói từ vựng',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           backgroundColor: Colors.white,
@@ -177,50 +177,63 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                           const SizedBox(
                             height: 15,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Đề xuất cho bạn',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.teal.shade400,
-                                    ),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.recommend,
-                                color: Colors.yellow.shade600,
-                                size: 30,
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           _recommendVocaSets.isNotEmpty
-                              ? Container(
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  height: 185,
-                                  child: ListView.separated(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        return VocabularyPackItem(
-                                            item: _recommendVocaSets[index]);
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return const SizedBox(
-                                          width: 10,
-                                        );
-                                      },
-                                      itemCount: _recommendVocaSets.length),
+                              ? Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Đề xuất cho bạn',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.teal.shade400,
+                                              ),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Icon(
+                                          Icons.recommend,
+                                          color: Colors.yellow.shade600,
+                                          size: 30,
+                                        )
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    _recommendVocaSets.isNotEmpty
+                                        ? Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 10),
+                                            height: 185,
+                                            child: ListView.separated(
+                                                shrinkWrap: true,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemBuilder: (context, index) {
+                                                  return VocabularyPackItem(
+                                                      item: _recommendVocaSets[
+                                                          index]);
+                                                },
+                                                separatorBuilder:
+                                                    (context, index) {
+                                                  return const SizedBox(
+                                                    width: 10,
+                                                  );
+                                                },
+                                                itemCount:
+                                                    _recommendVocaSets.length),
+                                          )
+                                        : const SizedBox.shrink(),
+                                  ],
                                 )
                               : const SizedBox.shrink(),
                           Text(

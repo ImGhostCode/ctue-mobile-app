@@ -185,7 +185,7 @@ class ManagementPage extends StatelessWidget {
                   ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStatePropertyAll(Colors.teal.shade300)),
+                            MaterialStatePropertyAll(Colors.teal.shade400)),
                     onPressed: () {
                       Navigator.pushNamed(context, '/voca-set-management');
                     },
@@ -201,7 +201,7 @@ class ManagementPage extends StatelessWidget {
                             height: 5,
                           ),
                           Text(
-                            'Quản lý bộ từ vựng',
+                            'Quản lý gói từ vựng',
                             textAlign: TextAlign.center,
                           )
                         ]),

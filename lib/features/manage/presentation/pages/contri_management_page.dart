@@ -346,6 +346,7 @@ Future<void> _dialogRefuseConBuilder(BuildContext context,
         content: SizedBox(
           width: MediaQuery.of(context).size.width * 0.8,
           child: TextField(
+            style: Theme.of(context).textTheme.bodyMedium,
             controller: reasonController,
             maxLines: 4,
             decoration: const InputDecoration(
@@ -468,32 +469,35 @@ Future<String?> showWordConDetail(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Người đóng góp: ',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  !isAdmin
-                      ? Text(user.name)
-                      : GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, RouteNames.accountDetail,
-                                arguments:
-                                    AccountDetailArguments(userId: user.id));
-                          },
-                          child: Text(
-                            user.name,
-                            style: const TextStyle(
-                                decoration: TextDecoration.underline),
-                          ),
-                        )
-                ],
-              ),
+              if (isAdmin)
+                Row(
+                  children: [
+                    Text(
+                      'Người đóng góp: ',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    !isAdmin
+                        ? Text(user.name)
+                        : Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, RouteNames.accountDetail,
+                                    arguments: AccountDetailArguments(
+                                        userId: user.id));
+                              },
+                              child: Text(
+                                user.name,
+                                style: const TextStyle(
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          )
+                  ],
+                ),
               Row(
                 children: [
                   Text(
@@ -901,32 +905,37 @@ Future<String?> showSentenceConDetail(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Người đóng góp: ',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  !isAdmin
-                      ? Text(user.name)
-                      : GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, RouteNames.accountDetail,
-                                arguments:
-                                    AccountDetailArguments(userId: user.id));
-                          },
-                          child: Text(
-                            user.name,
-                            style: const TextStyle(
-                                decoration: TextDecoration.underline),
-                          ),
-                        )
-                ],
-              ),
+              if (isAdmin)
+                Row(
+                  children: [
+                    Text(
+                      'Người đóng góp: ',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    !isAdmin
+                        ? Text(user.name)
+                        : Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, RouteNames.accountDetail,
+                                    arguments: AccountDetailArguments(
+                                        userId: user.id));
+                              },
+                              child: Flexible(
+                                child: Text(
+                                  user.name,
+                                  style: const TextStyle(
+                                      decoration: TextDecoration.underline),
+                                ),
+                              ),
+                            ),
+                          )
+                  ],
+                ),
               RichText(
                 text: TextSpan(
                   text: 'Câu: ',

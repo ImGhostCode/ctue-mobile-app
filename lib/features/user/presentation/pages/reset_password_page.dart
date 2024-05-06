@@ -57,6 +57,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 height: 4,
               ),
               TextFormField(
+                style: Theme.of(context).textTheme.bodyMedium,
                 controller: _emailController,
                 decoration: InputDecoration(
                   contentPadding:

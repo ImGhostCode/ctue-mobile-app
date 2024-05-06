@@ -133,9 +133,9 @@ class _LearnPageState extends State<LearnPage> {
 
   void _reloadData() {
     Provider.of<VocaSetProvider>(context, listen: false)
-        .eitherFailureOrGerUsrVocaSets();
-    Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(null);
+    Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerUsrVocaSets();
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrGetUpcomingReminder(null);
   }
@@ -163,10 +163,13 @@ class _LearnPageState extends State<LearnPage> {
   }
 
   void _checkAnswer(dynamic userAnswer) async {
+    if (userAnswer == null) {
+      return;
+    }
     bool isCorrect =
         listLearningData[indexWord.first].word.content == userAnswer;
     await _showAnswerResult(
-        context, listLearningData[indexWord.first].word, isCorrect);
+        context, listLearningData[indexWord.first].word, isCorrect, userAnswer);
     if (!isCorrect) {
       if (++listLearningData[currWordIndex].numOfMistakes == 5) {
         _displayResult();
@@ -270,12 +273,12 @@ class _LearnPageState extends State<LearnPage> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const ColoredLine(
+          title: ColoredLine(
             height: 4.5,
             colorLeft: Colors.blue,
-            colorRight: Colors.grey,
-            percentLeft: 0.3,
-            percentRight: 0.7,
+            colorRight: Colors.grey.shade300,
+            percentLeft: currWordIndex / listLearningData.length,
+            percentRight: 1 - currWordIndex / listLearningData.length,
           ),
           backgroundColor: Colors.grey.shade50,
           // title: Text(
@@ -330,25 +333,29 @@ class _LearnPageState extends State<LearnPage> {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             return SizedBox(
-              height: 50,
+              height: 60,
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
                   _checkAnswer(shuffledAnswers[index].word.content);
                 },
                 style: ButtonStyle(
-                  // backgroundColor: MaterialStatePropertyAll(Colors.white),
-                  // foregroundColor: MaterialStatePropertyAll(Colors.black),
-                  // textStyle:,
+                  backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                  foregroundColor: const MaterialStatePropertyAll(Colors.black),
+                  surfaceTintColor:
+                      const MaterialStatePropertyAll(Colors.white),
+                  shadowColor: MaterialStateProperty.all(Colors.grey.shade500),
+
                   side: MaterialStateProperty.all(
-                      const BorderSide(color: Colors.grey)),
+                      BorderSide(color: Colors.grey.shade300)),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12))),
                   elevation:
                       MaterialStateProperty.all(2), // Set the elevation value
                   // You can also set other properties like shadowColor if needed
                 ),
-                child: Text(shuffledAnswers[index].word.content),
+                child: Text(shuffledAnswers[index].word.content,
+                    style: Theme.of(context).textTheme.bodyMedium),
               ),
             );
           },
@@ -371,32 +378,29 @@ class _LearnPageState extends State<LearnPage> {
                 word.pictures.isNotEmpty
             ? Container(
                 margin: const EdgeInsets.all(16),
-                height: MediaQuery.of(context).size.height * 0.2,
-                width: MediaQuery.of(context).size.width * 0.3,
+                height: MediaQuery.of(context).size.height * 0.15,
+                width: MediaQuery.of(context).size.width * 0.5,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    word.pictures[0],
-                    errorBuilder: (context, error, stackTrace) => Image.asset(
-                      'assets/images/broken-image.png',
-                      color: Colors.grey.shade300,
-                      fit: BoxFit.cover,
-                    ),
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                    height: double.infinity,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
+                child: Image.network(
+                  word.pictures[0],
+                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                    'assets/images/broken-image.png',
+                    color: Colors.grey.shade300,
+                    fit: BoxFit.cover,
                   ),
+                  fit: BoxFit.cover,
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
                 ),
               )
             : const SizedBox.shrink(),
@@ -531,18 +535,27 @@ class _LearnPageState extends State<LearnPage> {
                     _checkAnswer(shuffledAnswers[index].word.content);
                   },
                   style: ButtonStyle(
-                    // backgroundColor: MaterialStatePropertyAll(Colors.white),
-                    // foregroundColor: MaterialStatePropertyAll(Colors.black),
-                    // textStyle:,
+                    backgroundColor:
+                        const MaterialStatePropertyAll(Colors.white),
+                    foregroundColor:
+                        const MaterialStatePropertyAll(Colors.black),
+                    surfaceTintColor:
+                        const MaterialStatePropertyAll(Colors.white),
+                    shadowColor:
+                        MaterialStateProperty.all(Colors.grey.shade500),
+
                     side: MaterialStateProperty.all(
-                        const BorderSide(color: Colors.grey)),
+                        BorderSide(color: Colors.grey.shade300)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12))),
                     elevation:
                         MaterialStateProperty.all(2), // Set the elevation value
                     // You can also set other properties like shadowColor if needed
                   ),
-                  child: Text(shuffledAnswers[index].word.meanings[0].meaning),
+                  child: Text(
+                    shuffledAnswers[index].word.meanings[0].meaning,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
               );
             },
@@ -577,78 +590,93 @@ class _LearnPageState extends State<LearnPage> {
     return chars.join('');
   }
 
-  Column _buildAnswerInput(BuildContext context, String? wordContent) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (wordContent != null)
-          Row(
-            children: [
-              const Text('Gợi ý: '),
-              Text(
-                hideRandomCharacters(wordContent, '_', wordContent.length ~/ 2),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: Colors.blue),
-              )
-            ],
-          ),
-        const SizedBox(
-          height: 10,
-        ),
-        TextField(
-          controller: _answerController,
-          style: const TextStyle(fontWeight: FontWeight.normal),
-          decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.only(left: 18, top: 4, right: 4, bottom: 4),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide: BorderSide(color: Colors.grey.shade200),
-            ),
-            // enabledBorder: OutlineInputBorder(
-            //     borderRadius: BorderRadius.circular(18),
-            //     borderSide: BorderSide(color: Colors.grey.shade200)),
-            // focusedBorder: OutlineInputBorder(
-            //     borderRadius: BorderRadius.circular(18),
-            //     borderSide:
-            //         BorderSide(color: Colors.grey.shade500, width: 1.2)),
-            hintText: 'Nhập câu trả lời',
-            alignLabelWithHint: true,
+  bool showHint = false;
 
-            prefixIcon: IconButton(
-              icon: Icon(
-                Icons.send,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              onPressed: () {},
+  StatefulBuilder _buildAnswerInput(BuildContext context, String? wordContent) {
+    return StatefulBuilder(builder: (context, setState) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (showHint && wordContent != null)
+            Row(
+              children: [
+                const Text('Gợi ý: '),
+                Text(
+                  hideRandomCharacters(
+                      wordContent, '_', wordContent.length ~/ 2),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Colors.green, fontWeight: FontWeight.bold),
+                )
+              ],
             ),
-            suffixIcon: IconButton(
-              icon: Icon(
-                Icons.lightbulb,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              onPressed: () {
-                _showAnswerResult(
-                    context, listLearningData[indexWord.first].word, null);
-              },
-            ),
+          const SizedBox(
+            height: 10,
           ),
-          onSubmitted: (value) {
-            _checkAnswer(value);
-            setState(() {
-              _answerController.clear();
-            });
-          },
-        ),
-      ],
-    );
+          TextField(
+            controller: _answerController,
+            style: const TextStyle(fontWeight: FontWeight.normal),
+            decoration: InputDecoration(
+              contentPadding:
+                  const EdgeInsets.only(left: 18, top: 4, right: 4, bottom: 4),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
+              // enabledBorder: OutlineInputBorder(
+              //     borderRadius: BorderRadius.circular(18),
+              //     borderSide: BorderSide(color: Colors.grey.shade200)),
+              // focusedBorder: OutlineInputBorder(
+              //     borderRadius: BorderRadius.circular(18),
+              //     borderSide:
+              //         BorderSide(color: Colors.grey.shade500, width: 1.2)),
+              hintText: 'Nhập câu trả lời',
+              alignLabelWithHint: true,
+
+              prefixIcon: Icon(
+                Icons.send,
+                color: Colors.blue.shade700,
+              ),
+
+              suffixIcon: IconButton(
+                icon: Icon(
+                  Icons.lightbulb,
+                  color: Colors.blue.shade700,
+                ),
+                onPressed: () {
+                  // _showAnswerResult(
+                  //     context, listLearningData[indexWord.first].word, null);
+                  setState(() {
+                    showHint = !showHint;
+                  });
+                },
+              ),
+            ),
+            onSubmitted: (value) {
+              if (value.isEmpty) {
+                return;
+              }
+              _checkAnswer(value);
+              setState(() {
+                _answerController.clear();
+              });
+            },
+          ),
+        ],
+      );
+    });
   }
 }
 
 Future<void> _showAnswerResult(
-    context, WordEntity word, bool? isCorrect) async {
+    context, WordEntity word, bool? isCorrect, String userAnswer) async {
   await Future.delayed(const Duration(milliseconds: 300));
 
   await showDialog<String>(
@@ -672,7 +700,9 @@ Future<void> _showAnswerResult(
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(12),
                               topRight: Radius.circular(12)),
-                          color: isCorrect ? Colors.green.shade400 : Colors.red,
+                          color: isCorrect
+                              ? Colors.green.shade400
+                              : Colors.redAccent.shade100,
                         ),
                         child: Text(
                           isCorrect ? 'CHÍNH XÁC!' : 'CHƯA CHÍNH XÁC',
@@ -686,21 +716,40 @@ Future<void> _showAnswerResult(
                         ),
                       )
                     : const SizedBox.shrink(),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Column(
+                if (!isCorrect!)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      WordDetailInVocaSet(
-                        wordEntity: word,
+                      const SizedBox(
+                        height: 10,
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(isCorrect != null ? 'Tiếp tục' : "Đóng"),
-                      ),
+                      Text('CÂU TRẢ LỜI CỦA BẠN:: $userAnswer',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  color: Colors.redAccent.shade200,
+                                  fontWeight: FontWeight.bold)),
+                      Text('ĐÁP ÁN ĐÚNG: ${word.content}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  color: Colors.green.shade400,
+                                  fontWeight: FontWeight.bold)),
                     ],
                   ),
+                WordDetailInVocaSet(
+                  wordEntity: word,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(isCorrect ? 'Tiếp tục' : "Đóng"),
+                ),
+                const SizedBox(
+                  height: 10,
                 )
               ],
             ),

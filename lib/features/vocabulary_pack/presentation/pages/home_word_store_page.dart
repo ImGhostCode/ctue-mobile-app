@@ -12,7 +12,9 @@ import 'package:ctue_app/features/vocabulary_pack/presentation/providers/voca_se
 import 'package:ctue_app/features/learn/presentation/widgets/dialog_text_input.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/statistic_chart.dart';
 import 'package:ctue_app/features/learn/presentation/widgets/action_box.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -216,7 +218,7 @@ class _WordStorePageState extends State<WordStorePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Bộ từ của bạn',
+            'Gói từ của bạn',
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
@@ -256,22 +258,26 @@ class _WordStorePageState extends State<WordStorePage> {
                                   .eitherFailureOrGerUsrVocaSets();
                             }));
                   },
-                  child: Row(children: [
-                    const Icon(
-                      Icons.create_new_folder_rounded,
-                      color: Colors.teal,
-                    ),
-                    const SizedBox(
-                      width: 3,
-                    ),
-                    Text(
-                      'Tạo bộ từ mới',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Colors.black),
-                    )
-                  ]),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.create_new_folder_rounded,
+                          color: Colors.teal,
+                        ),
+                        const SizedBox(
+                          width: 3,
+                        ),
+                        Flexible(
+                          child: Text(
+                            'Tạo gói từ mới',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: Colors.black),
+                          ),
+                        )
+                      ]),
                 ),
               )),
               Expanded(
@@ -292,22 +298,26 @@ class _WordStorePageState extends State<WordStorePage> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/vocabulary-sets');
                   },
-                  child: Row(children: [
-                    const Icon(
-                      Icons.library_books,
-                      color: Colors.teal,
-                    ),
-                    const SizedBox(
-                      width: 3,
-                    ),
-                    Text(
-                      'Tải bộ từ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Colors.black),
-                    )
-                  ]),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.library_books,
+                          color: Colors.teal,
+                        ),
+                        const SizedBox(
+                          width: 3,
+                        ),
+                        Flexible(
+                          child: Text(
+                            'Tải gói từ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: Colors.black),
+                          ),
+                        )
+                      ]),
                 ),
               )),
             ],

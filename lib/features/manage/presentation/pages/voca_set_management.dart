@@ -101,7 +101,7 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
           title: Text(
-            'Quản lý bộ từ vựng',
+            'Quản lý gói từ vựng',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(),
           ),
           centerTitle: true,
@@ -112,7 +112,7 @@ class _VocaSetManagementPageState extends State<VocaSetManagementPage> {
                       arguments: CreateVocaSetArgument(
                           isAdmin: true,
                           callback: () {
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
                             _pagingController.refresh();
                           }));
                 },

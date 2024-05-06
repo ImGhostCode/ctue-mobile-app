@@ -142,7 +142,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
               ),
             ),
             actions: [
-              args.isAdmin
+              !args.isAdmin
                   ? const SizedBox.shrink()
                   : IconButton(
                       onPressed: () {
@@ -197,7 +197,6 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                           : StatisticChart(
                               totalWords: vocaSetEntity.words.length,
                               dataStatistics: vocaSetStatisticsEntity),
-
                       const SizedBox(
                         height: 20,
                       ),
@@ -301,46 +300,6 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                       const SizedBox(
                         height: 15,
                       ),
-                      // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      //   Text(
-                      //     'Xếp theo: ',
-                      //     style: Theme.of(context)
-                      //         .textTheme
-                      //         .bodySmall!
-                      //         .copyWith(color: Colors.blue),
-                      //   ),
-                      //   Text(
-                      //     sortBy,
-                      //     style: Theme.of(context)
-                      //         .textTheme
-                      //         .bodySmall!
-                      //         .copyWith(
-                      //             color: Colors.blue,
-                      //             fontWeight: FontWeight.bold),
-                      //   ),
-                      //   PopupMenuButton<String>(
-                      //     icon: const Icon(Icons.sort),
-                      //     onSelected: (value) {
-                      //       // setState(() {
-                      //       sortBy = value;
-                      //       // });
-                      //     },
-                      //     color: Colors.white,
-                      //     itemBuilder: (BuildContext context) =>
-                      //         <PopupMenuEntry<String>>[
-                      //       const PopupMenuItem<String>(
-                      //         value: 'Mới nhất',
-                      //         child: Text('Mới nhất'),
-                      //       ),
-                      //       const PopupMenuItem<String>(
-                      //         value: 'Chưa học',
-                      //         child: Text('Chưa học'),
-                      //       ),
-                      //       // Add more items if needed
-                      //     ],
-                      //   ),
-                      // ]),
-
                       Column(
                           children: List.generate(
                               args.isAdmin ||
@@ -406,30 +365,27 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                             const SizedBox(
                               height: 10,
                             ),
-                            OutlinedButton(
-                                onPressed: provider.isLoading
-                                    ? null
-                                    : () async {
-                                        await provider
-                                            .eitherFailureOrDownVocaSet(
-                                                provider.vocaSetEntity!.id);
-                                        // provider.eitherFailureOrGerVocaSets(
-                                        //     null, null, null);
-                                        setState(() {});
-                                      },
-                                child: provider.isLoading
-                                    ? const CircularProgressIndicator()
-                                    : Text(
-                                        'TẢI BỘ TỪ',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary),
-                                      )),
+                            ElevatedButton(
+                              onPressed: provider.isLoading
+                                  ? null
+                                  : () async {
+                                      await provider.eitherFailureOrDownVocaSet(
+                                          provider.vocaSetEntity!.id);
+                                      // provider.eitherFailureOrGerVocaSets(
+                                      //     null, null, null);
+                                      setState(() {});
+                                    },
+                              child: provider.isLoading
+                                  ? const CircularProgressIndicator()
+                                  : Text('TẢI BỘ TỪ',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16)),
+                            ),
                           ],
                         ),
                       ))
@@ -438,7 +394,6 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
         );
       } else {
         return const Scaffold(body: Center(child: Text('Không có dữ liệu')));
-        // return const Scaffold(body: Center(child: CircularProgressIndicator()));
       }
     });
   }

@@ -341,7 +341,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                         backgroundColor: Colors
-                                            .red, // You can customize the color
+                                            .green, // You can customize the color
                                       ),
                                     );
                                     // ignore: use_build_context_synchronously

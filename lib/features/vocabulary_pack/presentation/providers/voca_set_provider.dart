@@ -398,7 +398,7 @@ class VocaSetProvider extends ChangeNotifier {
   }
 
   Future eitherFailureOrDownVocaSet(int id) async {
-    _isLoading = true;
+    isLoading = true;
     VocaSetRepositoryImpl repository = VocaSetRepositoryImpl(
       remoteDataSource: VocaSetRemoteDataSourceImpl(
         dio: ApiService.dio,
@@ -422,16 +422,16 @@ class VocaSetProvider extends ChangeNotifier {
 
     failureOrDownVocaSet.fold(
       (Failure newFailure) {
-        _isLoading = false;
-        vocaSetEntity = null;
+        isLoading = false;
+        // vocaSetEntity = null;
         failure = newFailure;
         message = newFailure.errorMessage;
         statusCode = 400;
         notifyListeners();
       },
       (ResponseDataModel<VocaSetEntity> newVocaSet) {
-        _isLoading = false;
-        vocaSetEntity = newVocaSet.data;
+        isLoading = false;
+        // vocaSetEntity = newVocaSet.data;
         userVocaSets.add(newVocaSet.data);
         message = newVocaSet.message;
         statusCode = newVocaSet.statusCode;

@@ -21,7 +21,13 @@ class CreateVocabularySet extends StatefulWidget {
   State<CreateVocabularySet> createState() => _CreateVocabularySetState();
 }
 
+enum Calendar { day, week, month, year }
+
+enum VocaPackType { specialization, topic }
+
 class _CreateVocabularySetState extends State<CreateVocabularySet> {
+  Calendar calendarView = Calendar.day;
+  VocaPackType vocaPackType = VocaPackType.specialization;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -72,7 +78,7 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Tạo bộ từ mới',
+          'Tạo gói từ vựng mới',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         backgroundColor: Colors.white,
@@ -111,11 +117,15 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                     await Provider.of<VocaSetProvider>(context, listen: false)
                         .eitherFailureOrCreVocaSet(
                             _titleController.text,
-                            selectedTopic,
-                            _selectedSpecializaiton,
+                            vocaPackType.index == 1 ? selectedTopic : null,
+                            vocaPackType.index == 0
+                                ? _selectedSpecializaiton
+                                : null,
                             _selectedImage,
                             wordIds);
-                  } else {
+                  }
+
+                  if (!args.isAdmin) {
                     await Provider.of<VocaSetProvider>(context, listen: false)
                         .eitherFailureOrCreVocaSet(
                             _titleController.text, null, null, null, wordIds);
@@ -140,6 +150,8 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                             Colors.green, // You can customize the color
                       ),
                     );
+                    Navigator.of(context).pop();
+
                     // ignore: use_build_context_synchronously
                   } else if (Provider.of<VocaSetProvider>(context,
                               listen: false)
@@ -159,10 +171,11 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                             Colors.red, // You can customize the color
                       ),
                     );
+                    Navigator.of(context).pop();
                   }
                 }
                 // ignore: use_build_context_synchronously
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
               },
               child: Provider.of<VocaSetProvider>(context, listen: true)
                       .isLoading
@@ -193,9 +206,6 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                   'Tên bô từ',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
                 TextFormField(
                   controller: _titleController,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -219,31 +229,57 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                   },
                 ),
                 const SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 args.isAdmin
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Chuyên ngành',
-                            style: Theme.of(context).textTheme.labelMedium,
+                          Text('Loại gói từ vựng',
+                              style: Theme.of(context).textTheme.labelMedium),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Center(
+                            child: SegmentedButton<VocaPackType>(
+                              style: const ButtonStyle(
+                                  padding: MaterialStatePropertyAll(
+                                      EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 0)),
+                                  side: MaterialStatePropertyAll(BorderSide(
+                                      color: Colors.teal, width: 1.5))),
+                              segments: const <ButtonSegment<VocaPackType>>[
+                                ButtonSegment<VocaPackType>(
+                                    value: VocaPackType.specialization,
+                                    label: Text('Chuyên ngành'),
+                                    icon: Icon(
+                                      Icons.work_outline,
+                                      color: Colors.teal,
+                                      size: 25,
+                                    )),
+                                ButtonSegment<VocaPackType>(
+                                    value: VocaPackType.topic,
+                                    label: Text('Chủ đề'),
+                                    icon: Icon(
+                                      Icons.topic_outlined,
+                                      color: Colors.teal,
+                                      size: 25,
+                                    )),
+                              ],
+                              selected: <VocaPackType>{vocaPackType},
+                              onSelectionChanged:
+                                  (Set<VocaPackType> newSelection) {
+                                setState(() {
+                                  // By default there is only a single segment that can be
+                                  // selected at one time, so its value is always the first
+                                  // item in the selected set.
+                                  vocaPackType = newSelection.first;
+                                });
+                              },
+                            ),
                           ),
                           const SizedBox(
-                            height: 4,
-                          ),
-                          _buildSpecializaitons(context),
-                          _specError != null
-                              ? Text(
-                                  _specError!,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(color: Colors.red),
-                                )
-                              : const SizedBox.shrink(),
-                          const SizedBox(
-                            height: 4,
+                            height: 10,
                           ),
                         ],
                       )
@@ -266,12 +302,13 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                         child: Wrap(children: [
                           ...List.generate(selectedWords.length, (index) {
                             return Container(
+                              height: 40,
                               margin:
                                   const EdgeInsets.only(right: 5, bottom: 5),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: Colors.lightBlueAccent.shade100
-                                    .withOpacity(0.6),
+                                    .withOpacity(0.3),
                                 border: Border.all(
                                     color: Colors.lightBlueAccent, width: 2),
                               ),
@@ -383,29 +420,61 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                 const SizedBox(
                   height: 8,
                 ),
-                args.isAdmin
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildTopics(context),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          _topicError != null
-                              ? Text(
-                                  _topicError!,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(color: Colors.red),
-                                )
-                              : const SizedBox.shrink(),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink(),
+                if (args.isAdmin)
+                  vocaPackType == VocaPackType.specialization
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Chuyên ngành',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            _buildSpecializaitons(context),
+                            _specError != null
+                                ? Text(
+                                    _specError!,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(color: Colors.red),
+                                  )
+                                : const SizedBox.shrink(),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Chủ đề',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            _buildTopics(context),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            _topicError != null
+                                ? Text(
+                                    _topicError!,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(color: Colors.red),
+                                  )
+                                : const SizedBox.shrink(),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                          ],
+                        ),
                 args.isAdmin
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,8 +488,8 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                           ),
                           if (_selectedImage != null)
                             Container(
-                              height: 100,
-                              width: 100,
+                              height: MediaQuery.of(context).size.width * 0.3,
+                              width: MediaQuery.of(context).size.width * 0.4,
                               margin: const EdgeInsets.only(right: 5),
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.teal),
@@ -429,20 +498,22 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
                                 children: [
                                   Image.file(
                                     File(_selectedImage!.path),
-                                    width: 100,
-                                    height: 100,
+                                    height:
+                                        MediaQuery.of(context).size.width * 0.3,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
                                     fit: BoxFit.fill,
                                   ),
                                   Positioned(
-                                    top: -10,
-                                    right: -10,
+                                    top: -5,
+                                    right: -5,
                                     child: CircleAvatar(
-                                      backgroundColor: Colors.white,
+                                      backgroundColor: Colors.transparent,
                                       child: IconButton(
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.close,
-                                          color: Colors.red,
-                                          size: 20,
+                                          color: Colors.red.shade300,
+                                          size: 25,
                                         ),
                                         onPressed: () => _removeImage(),
                                       ),
@@ -494,7 +565,7 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
 
   bool _validateForm() {
     bool isValid = true;
-    if (_selectedSpecializaiton == null) {
+    if (vocaPackType.index == 0 && _selectedSpecializaiton == null) {
       setState(() {
         _specError = 'Vui lòng chọn chuyên ngành của từ';
       });
@@ -508,9 +579,10 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
       isValid = false;
     }
 
-    if (Provider.of<TopicProvider>(context, listen: false)
-        .getSelectedTopics()
-        .isEmpty) {
+    if (vocaPackType.index == 1 &&
+        Provider.of<TopicProvider>(context, listen: false)
+            .getSelectedTopics()
+            .isEmpty) {
       setState(() {
         _topicError = 'Vui lòng chọn chủ đề';
       });
@@ -524,12 +596,13 @@ class _CreateVocabularySetState extends State<CreateVocabularySet> {
       color: Colors.white,
       child:
           Consumer<SpecializationProvider>(builder: (context, provider, child) {
+        _selectedSpecializaiton ??= provider.listSpecializations.isNotEmpty
+            ? provider.listSpecializations[0].id
+            : null;
+
         return DropdownButtonFormField<int>(
           style: Theme.of(context).textTheme.bodyMedium,
-          value: _selectedSpecializaiton =
-              provider.listSpecializations.isNotEmpty
-                  ? provider.listSpecializations[0].id
-                  : null,
+          value: _selectedSpecializaiton,
           validator: (int? value) {
             if (value == null) {
               return "Vui lòng chọn chuyên ngành";
