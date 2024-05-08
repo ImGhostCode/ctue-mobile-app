@@ -377,7 +377,7 @@ class _VocabularySetDetailState extends State<VocabularySetDetail> {
                                     },
                               child: provider.isLoading
                                   ? const CircularProgressIndicator()
-                                  : Text('TẢI BỘ TỪ',
+                                  : Text('TẢI GÓI TỪ',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!

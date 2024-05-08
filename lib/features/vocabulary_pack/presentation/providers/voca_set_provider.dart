@@ -33,6 +33,7 @@ class VocaSetProvider extends ChangeNotifier {
   List<VocaSetEntity> listVocaSets = [];
   List<VocaSetEntity> searchResults = [];
   VocaSetStatisticsEntity? vocaSetStatisticsEntity;
+  VocaSetStatisticsEntity? homeVocaSetStatisticsEntity;
   VocabularySetResEntity? vocabularySetResEntity;
 
   Failure? failure;
@@ -254,14 +255,22 @@ class VocaSetProvider extends ChangeNotifier {
     failureOrGetVocaSetStatistics.fold(
       (Failure newFailure) {
         _isLoading = false;
-        vocaSetStatisticsEntity = null;
+        if (id == null) {
+          homeVocaSetStatisticsEntity = null;
+        } else {
+          vocaSetStatisticsEntity = null;
+        }
         failure = newFailure;
         message = newFailure.errorMessage;
         notifyListeners();
       },
       (ResponseDataModel<VocaSetStatisticsEntity> newVocaSets) {
         _isLoading = false;
-        vocaSetStatisticsEntity = newVocaSets.data;
+        if (id == null) {
+          homeVocaSetStatisticsEntity = newVocaSets.data;
+        } else {
+          vocaSetStatisticsEntity = newVocaSets.data;
+        }
         message = newVocaSets.message;
         failure = null;
         notifyListeners();

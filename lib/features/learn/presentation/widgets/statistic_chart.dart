@@ -84,6 +84,10 @@ class _StatisticChartState extends State<StatisticChart> {
                     text: '${widget.totalWords}',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                TextSpan(
+                  text: '\ttừ',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                )
               ],
             ),
           ),

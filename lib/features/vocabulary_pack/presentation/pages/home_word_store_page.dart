@@ -115,7 +115,7 @@ class _WordStorePageState extends State<WordStorePage> {
                           bool isLoading = provider.isLoading;
 
                           if (!isLoading &&
-                              provider.vocaSetStatisticsEntity == null) {
+                              provider.homeVocaSetStatisticsEntity == null) {
                             return StatisticChart(
                                 dataStatistics: VocaSetStatisticsEntity(
                                     detailVocaSetStatisEntity:
@@ -130,7 +130,7 @@ class _WordStorePageState extends State<WordStorePage> {
                                           detailVocaSetStatisEntity:
                                               DetailVocaSetStatisEntity(),
                                           numberOfWords: 0)
-                                      : provider.vocaSetStatisticsEntity!),
+                                      : provider.homeVocaSetStatisticsEntity!),
                             );
                           }
                         },

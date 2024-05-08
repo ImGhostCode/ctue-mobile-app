@@ -168,6 +168,8 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
 
       double threshold =
           double.parse(dotenv.env['AZURE_DETECT_OBJECT_THRESOLD'] ?? '0.7');
+      int maxResults =
+          int.parse(dotenv.env['AZURE_DETECT_OBJECT_MAX_RESULTS'] ?? '10');
 
       return ResponseDataModel<List<ObjectModel>>.fromJson(
           json: response,
@@ -175,10 +177,42 @@ class WordRemoteDataSourceImpl implements WordRemoteDataSource {
             final List<dynamic> results = [];
             final values = json[kObjectsResult][kValues];
             values.forEach((value) {
+              Map<String, dynamic> object = {};
+              final x = value[kBoundingBox][kX];
+              final y = value[kBoundingBox][kY];
+              final width = value[kBoundingBox][kWidth];
+              final height = value[kBoundingBox][kHeight];
+              object[kX] = x;
+              object[kY] = y;
+              object[kWidth] = width;
+              object[kHeight] = height;
               value[kTags].forEach((tag) {
-                if (tag[kConfidence] >= threshold) results.add(tag);
+                if (tag[kConfidence] >= threshold) {
+                  if (object[kTags] == null) {
+                    object[kTags] = [];
+                  }
+                  object[kTags].add({
+                    kName: tag[kName],
+                    kConfidence: tag[kConfidence],
+                  });
+                }
               });
+              results.add(object);
             });
+
+            // Remove object without tags
+            results.removeWhere((element) => element[kTags] == null);
+
+            // Sort by confidence desc
+            for (var element in results) {
+              if (element[kTags] != null) {
+                element[kTags].sort(
+                    (a, b) => b[kConfidence].compareTo(a[kConfidence]) as int);
+              }
+            }
+            // Limit results
+            results.length =
+                results.length > maxResults ? maxResults : results.length;
             return results.map((e) => ObjectModel.fromJson(json: e)).toList();
           });
     } on DioException catch (e) {

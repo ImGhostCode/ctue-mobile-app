@@ -91,11 +91,13 @@ class _NotificationPageState extends State<NotificationPage> {
         },
         builderDelegate: PagedChildBuilderDelegate<NotificationEntity>(
             itemBuilder: (context, item, index) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      // border: Border.all(color: Colors.blue, width: 1.5),
+                      border:
+                          Border.all(color: Colors.grey.shade200, width: 1.5),
                       borderRadius: BorderRadius.circular(12)),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

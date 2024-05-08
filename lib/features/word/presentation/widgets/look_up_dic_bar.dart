@@ -8,6 +8,7 @@ import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -21,7 +22,6 @@ class LookUpDicBar extends StatefulWidget {
 
 class _LookUpDicBarState extends State<LookUpDicBar> {
   final SearchController searchController = SearchController();
-
   final ImagePicker picker = ImagePicker();
 
   XFile? pickedImage;
@@ -197,6 +197,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
 
   Future<void> _dialogRecordBuilder(BuildContext context) {
     _listen();
+    Future.delayed(const Duration(seconds: 1), () {});
     return showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -326,7 +327,6 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
     if (!_isListening) {
       _text = '';
       bool available = await _speech!.initialize(onStatus: (val) {
-        print('onStatus: $val');
         if (val == 'done') {
           setState(() => _isListening = false);
           Navigator.pop(context);
@@ -335,8 +335,6 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
           }
         }
       }, onError: (val) {
-        print('onError: $val');
-        // Navigator.pop(context);
         _dialogRecordTryAgainBuilder(context);
       });
       if (available) {
@@ -356,10 +354,22 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
   }
 
   Future<void> _dialogLookUpByImgBuilder(
-      BuildContext context1, List<ObjectEntity> lookUpByImageResults) {
+      BuildContext context1, List<ObjectEntity> lookUpByImageResults) async {
+    final originalImage =
+        await decodeImageFromList(File(pickedImage!.path).readAsBytesSync());
+    final originalWidth = originalImage.width;
+    final originalHeight = originalImage.height;
+
+    final containerWidth = MediaQuery.of(context).size.width * 0.9;
+    final containerHeight = MediaQuery.of(context).size.height * 0.3;
+
+    final widthScale = containerWidth / originalWidth;
+    final heightScale = containerHeight / originalHeight;
+    final List<String> rendereddSuggestions = [];
+
     return showDialog(
         context: context1,
-        barrierColor: Colors.black.withOpacity(0.5),
+        barrierColor: Colors.black.withOpacity(0.7),
         builder: (BuildContext context) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -421,14 +431,37 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                     : Column(
                         children: [
                           Container(
+                            // alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12)),
+                              // color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             height: MediaQuery.of(context).size.height * 0.3,
                             width: MediaQuery.of(context).size.width * 0.9,
-                            child: Image.file(
-                              File(pickedImage!.path),
-                              fit: BoxFit.cover,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Positioned.fill(
+                                  child: Image.file(
+                                    File(pickedImage!.path),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                // Assuming you have a list of bounding boxes
+                                for (var box in lookUpByImageResults)
+                                  Positioned(
+                                    left: box.x * widthScale,
+                                    top: box.y * heightScale,
+                                    child: Container(
+                                      width: box.width * widthScale,
+                                      height: box.height * heightScale,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.blue, width: 1.5),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                           const SizedBox(
@@ -457,36 +490,66 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                                   child: ListView.separated(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.vertical,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       itemBuilder: (context, index) {
-                                        return Material(
-                                          child: ListTile(
-                                            title: Text(
+                                        return ListView.separated(
+                                          shrinkWrap: true,
+                                          separatorBuilder:
+                                              (context, indexSep) {
+                                            return const SizedBox(
+                                              height: 5,
+                                            );
+                                          },
+                                          itemBuilder: (context, indexInner) {
+                                            if (rendereddSuggestions.contains(
                                                 lookUpByImageResults[index]
-                                                    .name,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium),
-                                            trailing: TextButton(
-                                                onPressed: () {
-                                                  Navigator.pushNamed(context,
-                                                      RouteNames.wordDetail,
-                                                      arguments: WordDetailAgrument(
-                                                          content:
-                                                              lookUpByImageResults[
-                                                                      index]
-                                                                  .name));
-                                                },
-                                                child: Text(
-                                                  'Tra cứu',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium!
-                                                      .copyWith(
-                                                          color: Colors
-                                                              .tealAccent
-                                                              .shade700),
-                                                )),
-                                          ),
+                                                    .tags[indexInner]
+                                                    .name)) {
+                                              return const SizedBox.shrink();
+                                            }
+                                            rendereddSuggestions.add(
+                                                lookUpByImageResults[index]
+                                                    .tags[indexInner]
+                                                    .name);
+                                            return Material(
+                                              child: ListTile(
+                                                title: Text(
+                                                    lookUpByImageResults[index]
+                                                        .tags[indexInner]
+                                                        .name,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium),
+                                                trailing: TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          RouteNames.wordDetail,
+                                                          arguments: WordDetailAgrument(
+                                                              content:
+                                                                  lookUpByImageResults[
+                                                                          index]
+                                                                      .tags[
+                                                                          indexInner]
+                                                                      .name));
+                                                    },
+                                                    child: Text(
+                                                      'Tra cứu',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium!
+                                                          .copyWith(
+                                                              color: Colors
+                                                                  .tealAccent
+                                                                  .shade700),
+                                                    )),
+                                              ),
+                                            );
+                                          },
+                                          itemCount: lookUpByImageResults[index]
+                                              .tags
+                                              .length,
                                         );
                                       },
                                       separatorBuilder: (context, index) {

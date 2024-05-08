@@ -471,6 +471,7 @@ Future<String?> showWordConDetail(
             children: [
               if (isAdmin)
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Người đóng góp: ',

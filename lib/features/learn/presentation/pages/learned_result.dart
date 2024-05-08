@@ -1,14 +1,19 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ctue_app/core/constants/memory_level_constants.dart';
+import 'package:ctue_app/core/services/audio_service.dart';
 import 'package:ctue_app/features/learn/presentation/pages/learn_page.dart';
 import 'package:ctue_app/features/profile/presentation/widgets/radial_bar_chart.dart';
 import 'package:ctue_app/features/word/business/entities/word_entity.dart';
 import 'package:flutter/material.dart';
+
+final AudioPlayer player = AudioService.player;
 
 class LearningResult extends StatelessWidget {
   const LearningResult({super.key});
 
   @override
   Widget build(BuildContext context) {
+    player.play(AssetSource('audios/done.mp3'));
     final args =
         ModalRoute.of(context)!.settings.arguments as LearningResultArguments;
 
@@ -47,8 +52,8 @@ class LearningResult extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           SizedBox(
-            height: 150,
-            width: 250,
+            height: MediaQuery.of(context).size.height * 0.2,
+            width: MediaQuery.of(context).size.width * 0.6,
             child: Image.asset('assets/images/congratulation.png'),
           ),
           Text(
@@ -93,7 +98,8 @@ class LearningResult extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 6),
                       shape: RoundedRectangleBorder(
-                          side: const BorderSide(width: 2, color: Colors.green),
+                          side: BorderSide(
+                              width: 1.5, color: Colors.green.shade300),
                           borderRadius: BorderRadius.circular(20)),
                       avatar: RadialBarChart(
                           fontWeight: FontWeight.normal,
@@ -151,8 +157,8 @@ class LearningResult extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 6),
                       shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                              width: 2, color: Colors.redAccent),
+                          side: BorderSide(
+                              width: 1.5, color: Colors.redAccent.shade200),
                           borderRadius: BorderRadius.circular(20)),
                       avatar: RadialBarChart(
                           fontWeight: FontWeight.normal,

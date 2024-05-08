@@ -277,7 +277,7 @@ class _SettingPageState extends State<SettingPage> {
                                           .statusCode ==
                                       200) {
                                     await flutterLocalNotificationsPlugin
-                                        .cancel(0);
+                                        .cancelAll();
 
                                     // await SecureStorageService.secureStorage
                                     //     .delete(key: 'accessToken');

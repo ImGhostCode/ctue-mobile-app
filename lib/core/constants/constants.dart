@@ -232,6 +232,10 @@ String kGender = 'Gender';
 String kLocate = 'Locale';
 String kVoiceType = 'VoiceType';
 String kConfidence = 'confidence';
+String kX = 'x';
+String kY = 'y';
+String kHeight = 'h';
+String kWidth = 'w';
 String kLabel = 'label';
 String kScore = 'score';
 String kPhonemeAssessment = 'phonemeAssessments';
@@ -339,6 +343,7 @@ const String kInterestTopics = 'interestTopics';
 
 const String kObjectsResult = 'objectsResult';
 const String kTags = 'tags';
+const String kBoundingBox = 'boundingBox';
 const String kValues = 'values';
 
 Color isLoadingColor = Colors.grey.shade100;

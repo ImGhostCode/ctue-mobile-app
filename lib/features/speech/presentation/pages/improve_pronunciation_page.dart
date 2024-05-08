@@ -69,7 +69,7 @@ class ImprovePronunciationPage extends StatelessWidget {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: Colors.grey.shade400, width: 1.5)),
+                                  color: Colors.grey.shade300, width: 1.5)),
                           padding: const EdgeInsets.all(16),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

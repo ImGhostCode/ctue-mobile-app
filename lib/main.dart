@@ -61,7 +61,7 @@ import 'package:ctue_app/features/speech/presentation/providers/speech_provider.
 import 'package:ctue_app/features/topic/presentation/providers/topic_provider.dart';
 import 'package:ctue_app/features/type/presentation/providers/type_provider.dart';
 import 'package:ctue_app/features/user/presentation/providers/user_provider.dart';
-import 'package:ctue_app/features/word/presentation/pages/look_up_result_page.dart';
+// import 'package:ctue_app/features/word/presentation/pages/look_up_result_page.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:ctue_app/features/vocabulary_pack/presentation/pages/create_vocabulary_set.dart';
 import 'package:ctue_app/features/learn/presentation/pages/learn_page.dart';
@@ -362,7 +362,7 @@ class MyApp extends StatelessWidget {
           RouteNames.selectWord: (context) => const SelectWordPage(),
           RouteNames.learnedResult: (context) => const LearningResult(),
           RouteNames.dictionary: (context) => const DictionaryPage(),
-          RouteNames.lookUpResult: (context) => LookUpResultPage(),
+          // RouteNames.lookUpResult: (context) => LookUpResultPage(),
           RouteNames.wordDetail: (context) => const WordDetail(),
           RouteNames.irregularVerbs: (context) => const IrregularVerbPage(),
           RouteNames.favoriteVocabulary: (context) => FavoriteVocabulary(),

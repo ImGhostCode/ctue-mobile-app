@@ -125,7 +125,7 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                         context,
                         '/search-voca-set',
                         arguments: SearchVocaSetArgument(
-                            titleAppBar: 'Tìm kiếm bộ từ', title: value),
+                            titleAppBar: 'Tìm kiếm gói từ vựng', title: value),
                       );
                     }
                   }),
@@ -143,42 +143,51 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Bộ từ đã tải',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.teal.shade400,
+                          if (_downloadedVocaSets.isNotEmpty)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Gói từ vựng đã tải',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.teal.shade400,
+                                      ),
                                 ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          _downloadedVocaSets.isNotEmpty
-                              ? SizedBox(
-                                  height: 185,
-                                  child: ListView.separated(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        return VocabularyPackItem(
-                                            item: _downloadedVocaSets[index]);
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return const SizedBox(
-                                          width: 10,
-                                        );
-                                      },
-                                      itemCount: _downloadedVocaSets.length),
-                                )
-                              : const SizedBox.shrink(),
-                          const SizedBox(
-                            height: 15,
-                          ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                _downloadedVocaSets.isNotEmpty
+                                    ? SizedBox(
+                                        height: 185,
+                                        child: ListView.separated(
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (context, index) {
+                                              return VocabularyPackItem(
+                                                  item: _downloadedVocaSets[
+                                                      index]);
+                                            },
+                                            separatorBuilder: (context, index) {
+                                              return const SizedBox(
+                                                width: 10,
+                                              );
+                                            },
+                                            itemCount:
+                                                _downloadedVocaSets.length),
+                                      )
+                                    : const SizedBox.shrink(),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                              ],
+                            ),
                           _recommendVocaSets.isNotEmpty
                               ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       mainAxisAlignment:

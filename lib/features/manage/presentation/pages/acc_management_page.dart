@@ -298,6 +298,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                 ],
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Tên người dùng: ',
@@ -306,7 +307,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                         .bodyMedium!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text(account.user!.name),
+                  Flexible(child: Text(account.user!.name)),
                 ],
               ),
               Row(
