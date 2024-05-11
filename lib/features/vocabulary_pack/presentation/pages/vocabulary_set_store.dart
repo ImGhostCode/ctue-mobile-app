@@ -269,7 +269,7 @@ class _VocabularySetStoreState extends State<VocabularySetStore> {
                                           width: 10,
                                         );
                                       },
-                                      itemCount: _vocaSetByTopic.length),
+                                      itemCount: _vocaSetBySpec.length),
                                 )
                               : const SizedBox.shrink(),
                           const SizedBox(

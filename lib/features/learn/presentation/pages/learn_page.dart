@@ -122,6 +122,8 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
     Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerVocaSetStatistics(null);
     Provider.of<VocaSetProvider>(context, listen: false)
+        .eitherFailureOrGerVocaSetStatistics(args.vocabularySetId);
+    Provider.of<VocaSetProvider>(context, listen: false)
         .eitherFailureOrGerUsrVocaSets();
     Provider.of<LearnProvider>(context, listen: false)
         .eitherFailureOrGetUpcomingReminder(args.vocabularySetId);

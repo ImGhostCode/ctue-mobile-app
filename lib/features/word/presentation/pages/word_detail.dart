@@ -588,8 +588,8 @@ class _WordDetailState extends State<WordDetail> {
                                             side: BorderSide(
                                                 color: isLoading
                                                     ? Colors.grey.shade100
-                                                    : Colors.green,
-                                                width: 2),
+                                                    : Colors.green.shade300,
+                                                width: 1.5),
                                             borderRadius:
                                                 BorderRadius.circular(20),
                                           ),
@@ -612,9 +612,9 @@ class _WordDetailState extends State<WordDetail> {
                                   ),
                                   // const SizedBox(),
 
-                                  const SizedBox(
-                                    height: 250,
-                                  )
+                                  // const SizedBox(
+                                  //   height: 250,
+                                  // )
                                 ]),
                           ),
                         ),

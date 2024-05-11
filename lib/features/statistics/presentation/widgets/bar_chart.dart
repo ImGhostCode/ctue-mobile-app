@@ -30,10 +30,22 @@ class BarChartWidgetState extends State<BarChartWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // Step 1: Calculate the maximum value
+    int maxY = widget.chartData!.isNotEmpty
+        ? widget.chartData!
+            .map((e) => e.y)
+            .reduce((value, element) => value > element ? value : element)
+        : 0;
+    // Step 2: Calculate the interval
+    int interval = (maxY <= 0 ? 5 : (maxY / 10).ceil());
+
     return SfCartesianChart(
         title: ChartTitle(text: widget.chartTitle ?? ''),
         primaryXAxis: const CategoryAxis(),
-        primaryYAxis: const NumericAxis(minimum: 0, maximum: 40, interval: 10),
+        primaryYAxis: NumericAxis(
+            minimum: 0,
+            maximum: maxY.toDouble() <= 0 ? 10 : (maxY.toDouble() + 10),
+            interval: interval.toDouble() <= 0 ? 5 : interval.toDouble()),
         tooltipBehavior: _tooltip,
         series: <CartesianSeries<BarChartData, String>>[
           BarSeries<BarChartData, String>(

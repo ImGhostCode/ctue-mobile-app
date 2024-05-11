@@ -416,7 +416,7 @@ class _WordFormState extends State<WordForm> {
                           height: MediaQuery.of(context).size.width * 0.25,
                           margin: const EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
+                            // borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: Colors.teal),
                           ),
                           child: Stack(

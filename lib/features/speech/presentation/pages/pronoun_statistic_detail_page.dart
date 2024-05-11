@@ -43,6 +43,12 @@ class ProStatisticDetailPage extends StatelessWidget {
 
         List<DetailEntity>? labelNeedImprove =
             provider.pronuncStatisticEntity?.lablesNeedToBeImprove;
+        if (labelDoWell != null) {
+          labelDoWell.sort((a, b) => b.avg.compareTo(a.avg));
+        }
+        if (labelNeedImprove != null) {
+          labelNeedImprove.sort((a, b) => b.avg.compareTo(a.avg));
+        }
 
         // detailEntity?.sort((a, b) => b.avg - a.avg);
 

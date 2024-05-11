@@ -8,7 +8,6 @@ import 'package:ctue_app/features/home/presentation/pages/dictionary_page.dart';
 import 'package:ctue_app/features/word/business/entities/object_entity.dart';
 import 'package:ctue_app/features/word/presentation/providers/word_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -342,7 +341,7 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
         _speech!.listen(
           onResult: (val) {
             print(val.recognizedWords);
-            _text = val.recognizedWords.split(' ')[0];
+            _text = val.recognizedWords.toLowerCase();
           },
         );
       }
@@ -502,22 +501,19 @@ class _LookUpDicBarState extends State<LookUpDicBar> {
                                             );
                                           },
                                           itemBuilder: (context, indexInner) {
-                                            if (rendereddSuggestions.contains(
+                                            final String label =
                                                 lookUpByImageResults[index]
                                                     .tags[indexInner]
-                                                    .name)) {
+                                                    .name
+                                                    .toLowerCase();
+                                            if (rendereddSuggestions
+                                                .contains(label)) {
                                               return const SizedBox.shrink();
                                             }
-                                            rendereddSuggestions.add(
-                                                lookUpByImageResults[index]
-                                                    .tags[indexInner]
-                                                    .name);
+                                            rendereddSuggestions.add(label);
                                             return Material(
                                               child: ListTile(
-                                                title: Text(
-                                                    lookUpByImageResults[index]
-                                                        .tags[indexInner]
-                                                        .name,
+                                                title: Text(label,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyMedium),
