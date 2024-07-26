@@ -44,6 +44,7 @@ This application is built using Flutter, making it cross-platform and easy to ru
 ### Prerequisites
 
 Before you begin, ensure you have the following installed:
+- Backend: https://github.com/ImGhostCode/ctue-learn-english-api
 - Flutter (latest version)
 - Dart (latest version)
 - A suitable IDE (e.g., Android Studio, VS Code)
