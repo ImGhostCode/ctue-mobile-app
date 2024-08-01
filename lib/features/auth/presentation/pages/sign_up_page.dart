@@ -57,6 +57,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: Text(
@@ -477,6 +478,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                                     'assets/images/broken-image.png',
                                                     color: Colors.grey.shade300,
                                                     fit: BoxFit.cover,
+                                                    width: 60.0,
+                                                    height: 60.0,
                                                   ),
                                                   fit: BoxFit.cover,
                                                   width: 60.0,

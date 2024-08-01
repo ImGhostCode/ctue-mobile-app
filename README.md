@@ -84,3 +84,16 @@ flutter run -d <device_id>
 MIT
 
 ---
+
+## Screenshots
+
+<img src="./assets/screenshots/Screenshot_20240502_192958.jpg" width="250" height="500">
+<img src="./assets/screenshots/Screenshot_20240502_193005.jpg" width="250" height="500">
+<img src="./assets/screenshots/Screenshot_20240502_193405.jpg" width="250" height="500">
+<img src="./assets/screenshots/Screenshot_20240502_193813.jpg" width="250" height="500">
+<img src="./assets/screenshots/Screenshot_20240502_194049.jpg" width="250" height="500">
+<img src="./assets/screenshots/Screenshot_20240502_195310.jpg" width="250" height="500">
+<img src="./assets/screenshots/Screenshot_20240505_210655.jpg" width="250" height="500">
+<img src="./assets/screenshots/Screenshot_20240502_194354.jpg" width="250" height="500">
+
+

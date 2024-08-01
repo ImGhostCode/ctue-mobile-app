@@ -274,6 +274,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             primarySwatch: Colors.teal,
             primaryColor: Colors.teal,
+            scaffoldBackgroundColor: Colors.white,
             appBarTheme: AppBarTheme(
               backgroundColor: Colors.blue.shade800,
               // titleTextStyle: const TextStyle(
